@@ -8,7 +8,7 @@ export default function AboutPage() {
       </h1>
       <p className="mt-4 text-gray-700">
         Tourmate là ứng dụng hỗ trợ du lịch, kết nối bạn với những trải nghiệm
-        tuyệt vời!
+        tuyệt vời!!!
       </p>
     </main>
   );
