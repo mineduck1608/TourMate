@@ -21,17 +21,17 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build --configuration Release
-        working-directory: TourMateBE/
+        run: dotnet build ${{ github.workspace }}/TourMateBE/TourMateBE.sln --configuration Release
+        working-directory: ${{ github.workspace }}/TourMateBE/
 
       - name: dotnet publish
-        run: dotnet publish TourMateBE/TourMate/TourMateAPI.csproj -c Release -o output
+        run: dotnet publish ${{ github.workspace }}/TourMateBE/TourMate/TourMate.csproj -c Release -o ${{ github.workspace }}/output
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: output
+          path: ${{ github.workspace }}/output
 
   deploy:
     runs-on: windows-latest
@@ -62,4 +62,4 @@ jobs:
         with:
           app-name: 'tourmate'
           slot-name: 'Production'
-          package: .
+          package: ${{ github.workspace }}/output
