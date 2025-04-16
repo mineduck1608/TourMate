@@ -20,18 +20,17 @@ jobs:
         with:
           dotnet-version: '8.x'
 
-      - name: Build with dotnet
-        run: dotnet build --configuration Release
-        working-directory: TourMateBE/
+      - name: Restore and Build Solution
+        run: dotnet build TourMateBE/TourMateBE.sln --configuration Release
 
-      - name: dotnet publish
-        run: dotnet publish TourMateBE/TourMate/TourMate.csproj -c Release -o output
-        
+      - name: Publish Web App
+        run: dotnet publish TourMateBE/TourMate/TourMate.csproj -c Release -o publish
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: .net-app
-          path: output
+          name: tourmate-app
+          path: publish
 
   deploy:
     runs-on: windows-latest
@@ -46,8 +45,9 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: .net-app
-      
+          name: tourmate-app
+          path: ./app
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -61,4 +61,4 @@ jobs:
         with:
           app-name: 'tourmate'
           slot-name: 'Production'
-          package: .
+          package: ./app
