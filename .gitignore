@@ -53,3 +53,7 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /TourMateBE/.vs
+
+# appsettings.json
+appsettings.Development.json
+appsettings.json

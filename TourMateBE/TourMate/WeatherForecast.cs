@@ -1,4 +1,4 @@
-namespace API
+namespace TourMate
 {
     public class WeatherForecast
     {
