@@ -21,16 +21,17 @@ jobs:
           dotnet-version: '8.x'
 
       - name: Build with dotnet
-        run: dotnet build ${{ github.workspace }}\TourMateBE.sln --configuration Release
+        run: dotnet build --configuration Release
+        working-directory: TourMateBE/
 
       - name: dotnet publish
-        run: dotnet publish ${{ github.workspace }}\TourMateBE.sln -c Release -o "${{env.DOTNET_ROOT}}/myapp"
-
+        run: dotnet publish TourMateBE/TourMate/TourMate.csproj -c Release -o output
+        
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ${{env.DOTNET_ROOT}}/myapp
+          path: output
 
   deploy:
     runs-on: windows-latest
