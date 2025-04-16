@@ -25,7 +25,7 @@ jobs:
         working-directory: TourMateBE/
 
       - name: dotnet publish
-        run: dotnet publish TourMateBE/TourMate/TourMate.csproj -c Release -o output
+        run: dotnet publish TourMateBE/TourMate/TourMateAPI.csproj -c Release -o output
         
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
