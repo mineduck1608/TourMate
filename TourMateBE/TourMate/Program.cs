@@ -1,8 +1,14 @@
-﻿using StackExchange.Redis;
+﻿using Repositories.Repository;
+using StackExchange.Redis;
+using TourMate.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
+builder.Services.AddScoped<RefreshTokenRepository>();
+
+builder.Services.AddScoped<TokenService>();
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
