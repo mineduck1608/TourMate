@@ -1,6 +1,8 @@
 "use client";
 
 import Image from "next/image";
+import Anh1 from "@/public/Anh1.jpg";
+
 
 const AboutSunday = () => {
   return (
@@ -8,7 +10,7 @@ const AboutSunday = () => {
       <div className="relative w-full h-[600px]">
         {/* Background image */}
         <Image
-          src="/images/bg-sunset.jpg"
+          src={Anh1}
           alt="Thông tin về TourMate"
           fill
           className="object-cover"
@@ -51,7 +53,7 @@ const AboutSunday = () => {
             {/* Avatar tròn */}
             <div className="absolute -top-12 left-1/2 -translate-x-1/2">
               <Image
-                src="/images/avatar.jpg"
+                src={Anh1}
                 alt="Sunday team"
                 width={96}
                 height={96}
