@@ -1,7 +1,7 @@
 import 'flowbite';
-import Header from "../components/Header";
-import HeroSection from '../components/HeroSection';
-import AboutSunday from '../components/AboutSunday';
+import HeroSection from '@/components/HeroSection';
+import AboutSunday from '@/components/AboutSunday';
+import Header from '@/components/Header';
 
 export default function Home() {
   return (

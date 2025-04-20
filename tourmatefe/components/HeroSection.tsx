@@ -1,8 +1,8 @@
 import Image from "next/image";
 import React from "react";
-import Anh1 from "../public/Anh1.jpg";
-import Anh2 from "../public/Anh2.jpg";
-import Anh3 from "../public/Anh3.jpg";
+import Anh1 from "@/public/Anh1.jpg";
+import Anh2 from "@/public/Anh2.jpg";
+import Anh3 from "@/public/Anh3.jpg";
 
 
 const HeroSection = () => {
