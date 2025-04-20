@@ -22,15 +22,17 @@ namespace Services
         private readonly AccountRepository _repo;
         private readonly TokenService _tokenService;
         private readonly CustomerService _customerService;
+        private readonly TourGuideService _tourGuideService;
         private readonly RefreshTokenService _refreshTokenService;
 
 
 
-        public AccountService(AccountRepository repo, TokenService tokenService, CustomerService customerService, RefreshTokenService refreshTokenService)
+        public AccountService(AccountRepository repo, TokenService tokenService, CustomerService customerService, RefreshTokenService refreshTokenService, TourGuideService tourGuideService)
         {
             _repo = repo;
             _tokenService = tokenService;
             _customerService = customerService;
+            _tourGuideService = tourGuideService;
             _refreshTokenService = refreshTokenService;
         }
 
@@ -44,6 +46,31 @@ namespace Services
             {
                 var customer = await _customerService.GetCustomerByAccId(user.AccountId);
                 var accessToken = _tokenService.GenerateAccessToken(user.AccountId, customer.FullName, "Customer");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(user.AccountId);
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, tourGuide.FullName, "TourGuide");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "Admin")
+            {
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, "Admin", "Admin");
                 var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
 
                 return new AuthResponse
@@ -67,6 +94,31 @@ namespace Services
             {
                 var customer = await _customerService.GetCustomerByAccId(token.User.AccountId);
                 var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, customer.FullName, "Customer");
+                var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken
+                };
+            }
+
+            if (token.User.Role.RoleName == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(token.User.AccountId);
+                var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, tourGuide.FullName, "TourGuide");
+                var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken
+                };
+            }
+
+            if (token.User.Role.RoleName == "Admin")
+            {
+                var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, "Admin", "Admin");
                 var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
 
                 return new AuthResponse
