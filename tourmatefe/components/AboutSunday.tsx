@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import Anh1 from "@/public/Anh1.jpg";
+import Anh1 from "../public/Anh1.jpg";
 
 
 const AboutSunday = () => {
