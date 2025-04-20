@@ -1,0 +1,51 @@
+using Microsoft.AspNetCore.Mvc;
+using Repositories.Models;
+using Services;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class NewsController : ControllerBase
+    {
+        private readonly INewsService _newsService;
+
+        public NewsController(INewsService newsService)
+        {
+            _newsService = newsService;
+        }
+
+        [HttpGet("{id}")]
+        public ActionResult<News> Get(int id)
+        {
+            return Ok(_newsService.GetNews(id));
+        }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
+        {
+            return Ok(_newsService.GetAll(pageSize, pageIndex));
+        }
+
+        [HttpPost]
+        public IActionResult Create([FromBody] News news)
+        {
+            _newsService.CreateNews(news);
+            return CreatedAtAction(nameof(Get), new { id = news.NewsId }, news);
+        }
+
+        [HttpPut]
+        public IActionResult Update([FromBody] News news)
+        {
+            _newsService.UpdateNews(news);
+            return NoContent();
+        }
+
+        [HttpDelete("{id}")]
+        public IActionResult Delete(int id)
+        {
+            var result = _newsService.DeleteNews(id);
+            return result ? NoContent() : NotFound();
+        }
+    }
+}

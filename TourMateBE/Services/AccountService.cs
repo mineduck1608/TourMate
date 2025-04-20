@@ -13,7 +13,13 @@ namespace Services
 {
     public interface IAccountService
     {
-
+        Account GetAccount(int id);
+        IEnumerable<Account> GetAll(int pageSize, int pageIndex);
+        void CreateAccount(Account account);
+        void UpdateAccount(Account account);
+        bool DeleteAccount(int id);
+        Task<AuthResponse> LoginAsync(string email, string password);
+        Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
     }
 
     // Services/AuthService.cs
@@ -21,13 +27,13 @@ namespace Services
     {
         private readonly AccountRepository _repo;
         private readonly TokenService _tokenService;
-        private readonly CustomerService _customerService;
-        private readonly TourGuideService _tourGuideService;
-        private readonly RefreshTokenService _refreshTokenService;
+        private readonly ICustomerService _customerService;
+        private readonly ITourGuideService _tourGuideService;
+        private readonly IRefreshTokenService _refreshTokenService;
 
 
 
-        public AccountService(AccountRepository repo, TokenService tokenService, CustomerService customerService, RefreshTokenService refreshTokenService, TourGuideService tourGuideService)
+        public AccountService(AccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService)
         {
             _repo = repo;
             _tokenService = tokenService;
@@ -131,6 +137,31 @@ namespace Services
             return null;
         }
 
+        public Account GetAccount(int id)
+        {
+            return _repo.GetById(id);
+        }
+
+        public IEnumerable<Account> GetAll(int pageSize, int pageIndex)
+        {
+            return _repo.GetAll(pageSize, pageIndex);
+        }
+
+        public void CreateAccount(Account account)
+        {
+            _repo.Create(account);
+        }
+
+        public void UpdateAccount(Account account)
+        {
+            _repo.Update(account);
+        }
+
+        public bool DeleteAccount(int id)
+        {
+            _repo.Remove(id);
+            return true;
+        }
     }
 
 }

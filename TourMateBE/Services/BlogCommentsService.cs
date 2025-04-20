@@ -14,7 +14,7 @@ namespace Services
 
     public class BlogCommentService : IBlogCommentService
     {
-        private BlogCommentsRepository BlogCommentRepository { get; set; } = new();
+        private BlogCommentRepository BlogCommentRepository { get; set; } = new();
 
         public BlogComment GetBlogComment(int id)
         {

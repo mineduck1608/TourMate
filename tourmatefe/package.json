@@ -21,7 +21,8 @@
     "next": "15.3.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "react-router-dom": "^7.5.0"
+    "react-router-dom": "^7.5.0",
+    "tourmatefe": "file:"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
