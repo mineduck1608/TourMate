@@ -6,7 +6,7 @@ import Logo from "@/public/Logo.png";
 
 import 'flowbite';
 
-const Header = () => {
+const MegaMenu = () => {
 
 
   return (
@@ -172,4 +172,4 @@ const Header = () => {
   );
 };
 
-export default Header;
+export default MegaMenu;
