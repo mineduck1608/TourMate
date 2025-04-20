@@ -94,6 +94,13 @@ namespace Repositories.GenericRepository
             return true;
         }
 
+        public bool Remove(int id)
+        {
+            _context.Remove(GetById(id));
+            _context.SaveChanges();
+            return true;
+        }
+
         public async Task<bool> RemoveAsync(T entity)
         {
             _context.Remove(entity);
