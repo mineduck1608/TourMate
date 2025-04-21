@@ -24,7 +24,7 @@ const HeroSection = () => {
     <section className="w-full bg-white">
   <div className="grid md:grid-cols-2 grid-cols-1">
     {/* Khám phá */}
-    <div className="relative h-[600px] w-full"         data-aos='fade-right'
+    <div className="relative h-[600px] w-full"         data-aos='fade'
               data-aos-delay='400'>
       <Image
         src={Anh7}
@@ -48,7 +48,7 @@ const HeroSection = () => {
     </div>
 
     {/* Phong cách sống + Tâm hồn */}
-    <div className="flex flex-col"         data-aos='fade-left'
+    <div className="flex flex-col"         data-aos='fade'
               data-aos-delay='400'>
       {/* Phong cách sống */}
       <div className="relative h-[300px] w-full">
