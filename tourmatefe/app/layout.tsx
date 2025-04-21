@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers"; // đường dẫn có thể thay đổi tùy vị trí file providers.tsx
-import { ThemeModeScript } from 'flowbite-react';
+import { ThemeModeScript } from "flowbite-react";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -27,13 +27,17 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-                <ThemeModeScript />
+        <ThemeModeScript />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Charm:wght@400;700&display=swap"
+          rel="stylesheet"
+        />
       </head>
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         {/* Bao bọc toàn bộ cây component bằng Providers để có thể sử dụng React Query */}
-        <Providers>
-          {children}
-        </Providers>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
