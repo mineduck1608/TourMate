@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpGet("paged")]
-        public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
+        public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
             return Ok(_newsService.GetAll(pageSize, pageIndex));
         }

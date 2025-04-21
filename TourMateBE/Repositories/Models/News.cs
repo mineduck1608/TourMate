@@ -20,6 +20,4 @@ public partial class News
     public string BannerImg { get; set; }
 
     public virtual ICollection<NewsCategory> NewsCategories { get; set; } = new List<NewsCategory>();
-
-    public virtual ICollection<NewsComment> NewsComments { get; set; } = new List<NewsComment>();
 }

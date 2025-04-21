@@ -57,10 +57,6 @@ public partial class TourMateContext : DbContext
 
     public virtual DbSet<NewsCategory> NewsCategories { get; set; }
 
-    public virtual DbSet<NewsComment> NewsComments { get; set; }
-
-    public virtual DbSet<NewsReply> NewsReplies { get; set; }
-
     public virtual DbSet<Payment> Payments { get; set; }
 
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
@@ -642,69 +638,6 @@ public partial class TourMateContext : DbContext
                 .HasForeignKey(d => d.NewsId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKNewsCatego154935");
-        });
-
-        modelBuilder.Entity<NewsComment>(entity =>
-        {
-            entity.HasKey(e => e.NewsCommentId).HasName("PK__NewsComm__C49DE04575199369");
-
-            entity.ToTable("NewsComment");
-
-            entity.Property(e => e.NewsCommentId).HasColumnName("newsCommentId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasColumnName("content");
-            entity.Property(e => e.CreatedDate)
-                .HasColumnType("datetime")
-                .HasColumnName("createdDate");
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.NewsId).HasColumnName("newsId");
-            entity.Property(e => e.Rating).HasColumnName("rating");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updatedAt");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.NewsComments)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNewsCommen23725");
-
-            entity.HasOne(d => d.News).WithMany(p => p.NewsComments)
-                .HasForeignKey(d => d.NewsId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNewsCommen520782");
-        });
-
-        modelBuilder.Entity<NewsReply>(entity =>
-        {
-            entity.HasKey(e => e.NewsReplyId).HasName("PK__NewsRepl__DB1429933D150C66");
-
-            entity.ToTable("NewsReply");
-
-            entity.Property(e => e.NewsReplyId).HasColumnName("newsReplyId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasColumnName("content");
-            entity.Property(e => e.CreatedDate)
-                .HasColumnType("datetime")
-                .HasColumnName("createdDate");
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.ReplyFor).HasColumnName("replyFor");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updatedAt");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.NewsReplies)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNewsReply112342");
-
-            entity.HasOne(d => d.ReplyForNavigation).WithMany(p => p.NewsReplies)
-                .HasForeignKey(d => d.ReplyFor)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKNewsReply469429");
         });
 
         modelBuilder.Entity<Payment>(entity =>
