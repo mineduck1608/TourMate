@@ -21,10 +21,17 @@ namespace API.Controllers
             return Ok(_newsService.GetNews(id));
         }
 
-        [HttpGet]
+        [HttpGet("paged")]
         public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
         {
             return Ok(_newsService.GetAll(pageSize, pageIndex));
+        }
+
+        [HttpGet("all")]
+        public async Task<ActionResult<IEnumerable<News>>> GetAllList()
+        {
+            var result = await _newsService.GetAllList();
+            return Ok(result);
         }
 
         [HttpPost]

@@ -37,6 +37,11 @@ namespace Repositories.GenericRepository
                 .Take(pageSize)
                 .ToListAsync();
         }
+        public async Task<List<T>> GetAllList()
+        {
+            return await _context.Set<T>()
+                .ToListAsync();
+        }
         public void Create(T entity)
         {
             _context.Add(entity);
