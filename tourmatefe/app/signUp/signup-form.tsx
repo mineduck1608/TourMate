@@ -119,16 +119,18 @@ export function SignupForm({
           <div className="grid gap-2">
             <Label htmlFor="gender">Giới tính</Label>
             <select
-              id="gender"
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              required
-            >
-              <option value="" disabled selected>
-                Chọn giới tính
-              </option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-            </select>
+  id="gender"
+  className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+  required
+  defaultValue=""
+>
+  <option value="" disabled>
+    Chọn giới tính
+  </option>
+  <option value="male">Nam</option>
+  <option value="female">Nữ</option>
+</select>
+
           </div>
           <div className="grid gap-2">
             <Label htmlFor="birthdate">Ngày sinh</Label>
