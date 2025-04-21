@@ -30,8 +30,11 @@ const AboutSunday = () => {
         </h2>
       </div>
 
-      <div className="relative w-full h-[600px]" data-aos="fade-up"
-          data-aos-delay="300">
+      <div
+        className="relative w-full h-[600px]"
+        data-aos="fade-up"
+        data-aos-delay="300"
+      >
         {/* Background image */}
         <Image
           src={Anh1}
