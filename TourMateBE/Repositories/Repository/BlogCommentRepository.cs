@@ -3,7 +3,7 @@ using Repositories.GenericRepository;
 
 namespace Repositories.Repository
 {
-    public class BlogCommentsRepository : GenericRepository<BlogComment>
+    public class BlogCommentRepository : GenericRepository<BlogComment>
     {
     }
 }

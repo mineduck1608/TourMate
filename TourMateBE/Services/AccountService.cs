@@ -13,7 +13,13 @@ namespace Services
 {
     public interface IAccountService
     {
-
+        Account GetAccount(int id);
+        IEnumerable<Account> GetAll(int pageSize, int pageIndex);
+        void CreateAccount(Account account);
+        void UpdateAccount(Account account);
+        bool DeleteAccount(int id);
+        Task<AuthResponse> LoginAsync(string email, string password);
+        Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
     }
 
     // Services/AuthService.cs
@@ -21,16 +27,18 @@ namespace Services
     {
         private readonly AccountRepository _repo;
         private readonly TokenService _tokenService;
-        private readonly CustomerService _customerService;
-        private readonly RefreshTokenService _refreshTokenService;
+        private readonly ICustomerService _customerService;
+        private readonly ITourGuideService _tourGuideService;
+        private readonly IRefreshTokenService _refreshTokenService;
 
 
 
-        public AccountService(AccountRepository repo, TokenService tokenService, CustomerService customerService, RefreshTokenService refreshTokenService)
+        public AccountService(AccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService)
         {
             _repo = repo;
             _tokenService = tokenService;
             _customerService = customerService;
+            _tourGuideService = tourGuideService;
             _refreshTokenService = refreshTokenService;
         }
 
@@ -44,6 +52,31 @@ namespace Services
             {
                 var customer = await _customerService.GetCustomerByAccId(user.AccountId);
                 var accessToken = _tokenService.GenerateAccessToken(user.AccountId, customer.FullName, "Customer");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(user.AccountId);
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, tourGuide.FullName, "TourGuide");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "Admin")
+            {
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, "Admin", "Admin");
                 var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
 
                 return new AuthResponse
@@ -76,9 +109,59 @@ namespace Services
                 };
             }
 
+            if (token.User.Role.RoleName == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(token.User.AccountId);
+                var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, tourGuide.FullName, "TourGuide");
+                var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken
+                };
+            }
+
+            if (token.User.Role.RoleName == "Admin")
+            {
+                var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, "Admin", "Admin");
+                var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = newAccessToken,
+                    RefreshToken = newRefreshToken
+                };
+            }
+
             return null;
         }
 
+        public Account GetAccount(int id)
+        {
+            return _repo.GetById(id);
+        }
+
+        public IEnumerable<Account> GetAll(int pageSize, int pageIndex)
+        {
+            return _repo.GetAll(pageSize, pageIndex);
+        }
+
+        public void CreateAccount(Account account)
+        {
+            _repo.Create(account);
+        }
+
+        public void UpdateAccount(Account account)
+        {
+            _repo.Update(account);
+        }
+
+        public bool DeleteAccount(int id)
+        {
+            _repo.Remove(id);
+            return true;
+        }
     }
 
 }
