@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import Link from "next/link";
 
 export function LoginForm({
   className,
@@ -17,13 +18,13 @@ export function LoginForm({
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-[-4] w-40 mt-[-15]">
-                  <a href="/">
+                  <Link href="/">
                     <img
                       src="/Logo.png"
                       alt="TourMate Logo"
                       className="w-full h-auto"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <h1 className="text-2xl font-bold">
                   Chào mừng bạn quay trở lại
