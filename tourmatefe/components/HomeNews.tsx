@@ -42,7 +42,7 @@ export default function HomeNews() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       viewport={{ once: true }}
-      className="w-full px-8 py-6 overflow-hidden bg-gray-200 pb-10"
+      className="w-full px-8 py-6 overflow-hidden bg-gray-100 pb-10"
     >
       <h2 className="text-center text-4xl font-serif italic mb-5">Tin tức</h2>
 
