@@ -7,7 +7,7 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaPhoneAlt, FaEnvelope } from "rea
 export default function Footer() {
   return (
     <footer className="bg-white shadow-md mt-10" data-aos="zoom-in-up">
-              <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+              <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
       <div className="mx-auto max-w-screen-2xl px-4 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo */}
         <div className="flex flex-col items-start md:col-span-1">
@@ -59,8 +59,8 @@ export default function Footer() {
           </div>
         </div>
       </div>
-      <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400 pb-8">© 2025 <a href="https://flowbite.com/" className="hover:underline">TourMate™</a>. All Rights Reserved.</span>
+      <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
+        <span className="block text-sm text-gray-500 sm:text-center pb-8">© 2025 <a href="https://flowbite.com/" className="hover:underline">TourMate™</a>. All Rights Reserved.</span>
     </footer>
   );
 }
