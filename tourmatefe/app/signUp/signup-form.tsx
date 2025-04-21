@@ -39,20 +39,47 @@ export function SignupForm({
       {...props}
     >
       <div className="flex flex-col items-center gap-4 text-center mt-[-50]">
-        <Image
-          src="/Logo.png"
-          alt="TOURMATE Logo"
-          width={180}
-          height={180}
-          className="mb-[-20]"
-        />
+        <a href="/">
+          <Image
+            src="/Logo.png"
+            alt="TOURMATE Logo"
+            width={180}
+            height={180}
+            className="mb-[-20]"
+          />
+        </a>
         <h1 className="text-2xl font-bold">Tạo Tài Khoản</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Nhập thông tin của bạn bên dưới để tạo tài khoản.
         </p>
       </div>
-      <div className="grid gap-6">
+      <div className="grid gap-4">
+        <div className="grid gap-2">
+          <Label htmlFor="email">Email</Label>
+          <Input id="email" type="email" placeholder="m@example.com" required />
+        </div>
         <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="password">Mật Khẩu</Label>
+            <Input
+              id="password"
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="confirm-password">Xác Nhận Mật Khẩu</Label>
+            <Input
+              id="confirm-password"
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="full_name">Họ Tên</Label>
             <Input
@@ -63,15 +90,7 @@ export function SignupForm({
               required
             />
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              placeholder="m@example.com"
-              required
-            />
-          </div>
+
           <div className="grid gap-2">
             <Label htmlFor="phone">Số điện thoại</Label>
             <div className="relative">
@@ -127,27 +146,6 @@ export function SignupForm({
               <Input id="birthdate" type="date" className="ps-10" required />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="password">Mật Khẩu</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirm-password">Xác Nhận Mật Khẩu</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-          </div>
         </div>
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
@@ -197,7 +195,7 @@ export function SignupForm({
             />
             <path d="M1 1h22v22H1z" fill="none" />
           </svg>
-          Đăng Nhập với Google
+          Đăng Nhập Với Google
         </Button>
       </div>
       <div className="text-center text-sm">
