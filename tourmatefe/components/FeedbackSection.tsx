@@ -42,7 +42,7 @@ const feedbacks: Feedback[] = [
 export default function FeedbackSection() {
   return (
     <div className="bg-white py-16 px-4 md:px-10">
-      <h2 className="text-3xl md:text-4xl font-serif italic text-center mb-12"  data-aos="flip-down">
+      <h2 className="text-3xl md:text-4xl inter text-center mb-12"  data-aos="flip-down">
         Khách hàng nói gì về chúng tôi
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-4 gap-20 mx-auto" data-aos="flip-up">

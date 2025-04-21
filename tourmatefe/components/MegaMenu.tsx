@@ -12,10 +12,10 @@ const MegaMenu = () => {
 
   return (
 <nav className="bg-white border-gray-200 dark:bg-gray-900">
-    <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
+    <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
     <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
-            <Image src={Logo} className="h-20 w-20" alt="Flowbite Logo" />
-            <span className="self-center text-4xl font-serif italic whitespace-nowrap dark:text-white">TourMate</span>
+            <Image src={Logo} className="h-30 w-30" alt="Flowbite Logo" />
+            {/* <span className="self-center text-4xl font-serif italic whitespace-nowrap dark:text-white">TourMate</span> */}
         </Link>
         <div className="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse">
             <a href="login" className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Login</a>

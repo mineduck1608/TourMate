@@ -56,7 +56,7 @@ export default function TourGuideCard() {
 
   return (
     <div className="bg-gray-100 py-10 px-6">
-      <h2 className="text-center text-4xl font-serif italic mb-10" data-aos="fade-up">Hướng dẫn viên</h2>
+      <h2 className="text-center text-4xl mb-10 inter" data-aos="fade-up">Hướng dẫn viên</h2>
       <div className="grid md:grid-cols-2 gap-10">
         {guides.map((guide, i) => (
           <div
