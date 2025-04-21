@@ -37,10 +37,6 @@ public partial class Account
 
     public virtual ICollection<Message> Messages { get; set; } = new List<Message>();
 
-    public virtual ICollection<NewsComment> NewsComments { get; set; } = new List<NewsComment>();
-
-    public virtual ICollection<NewsReply> NewsReplies { get; set; } = new List<NewsReply>();
-
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();

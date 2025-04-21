@@ -65,12 +65,6 @@ builder.Services.AddScoped<INewsService, NewsService>();
 builder.Services.AddScoped<NewsCategoryRepository>();
 builder.Services.AddScoped<INewsCategoryService, NewsCategoryService>();
 
-builder.Services.AddScoped<NewsCommentsRepository>();
-builder.Services.AddScoped<INewsCommentsService, NewsCommentsService>();
-
-builder.Services.AddScoped<NewsReplyRepository>();
-builder.Services.AddScoped<INewsReplyService, NewsReplyService>();
-
 builder.Services.AddScoped<PaymentsRepository>();
 builder.Services.AddScoped<IPaymentsService, PaymentsService>();
 

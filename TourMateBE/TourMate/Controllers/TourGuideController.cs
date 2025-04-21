@@ -22,7 +22,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TourGuide>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 0)
+        public ActionResult<IEnumerable<TourGuide>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
             return Ok(_tourguideService.GetAll(pageSize, pageIndex));
         }
