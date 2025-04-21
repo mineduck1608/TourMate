@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Category category)
+        public IActionResult Create([FromBody] CategoryCreateModel data)
         {
+            var category = data.Convert();
             _categoryService.CreateCategory(category);
             return CreatedAtAction(nameof(Get), new { id = category.CategoryId }, category);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Category category)
+        public IActionResult Update([FromBody] CategoryCreateModel category)
         {
-            _categoryService.UpdateCategory(category);
+            _categoryService.UpdateCategory(category.Convert());
             return NoContent();
         }
 

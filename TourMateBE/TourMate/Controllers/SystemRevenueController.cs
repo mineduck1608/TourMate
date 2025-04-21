@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] SystemRevenue systemrevenue)
+        public IActionResult Create([FromBody] SystemRevenueCreateModel data)
         {
+            var systemrevenue = data.Convert();
             _systemrevenueService.CreateSystemRevenue(systemrevenue);
             return CreatedAtAction(nameof(Get), new { id = systemrevenue.SystemRevenueId }, systemrevenue);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] SystemRevenue systemrevenue)
+        public IActionResult Update([FromBody] SystemRevenueCreateModel systemrevenue)
         {
-            _systemrevenueService.UpdateSystemRevenue(systemrevenue);
+            _systemrevenueService.UpdateSystemRevenue(systemrevenue.Convert());
             return NoContent();
         }
 

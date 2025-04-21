@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] BlogCommentReply blogcommentreply)
+        public IActionResult Create([FromBody] BlogCommentReplyCreateModel data)
         {
-            _blogcommentreplyService.CreateBlogCommentReply(blogcommentreply);
+            var blogcommentreply = data.Convert();
+			_blogcommentreplyService.CreateBlogCommentReply(blogcommentreply);
             return CreatedAtAction(nameof(Get), new { id = blogcommentreply.BlogCommentReplyId }, blogcommentreply);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] BlogCommentReply blogcommentreply)
-        {
-            _blogcommentreplyService.UpdateBlogCommentReply(blogcommentreply);
+        public IActionResult Update([FromBody] BlogCommentReplyCreateModel data)
+		{
+			var blogcommentreply = data.Convert();
+			_blogcommentreplyService.UpdateBlogCommentReply(blogcommentreply);
             return NoContent();
         }
 

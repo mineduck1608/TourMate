@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Cvapplication cvapplication)
+        public IActionResult Create([FromBody] CvapplicationsCreateModel data)
         {
+            var cvapplication = data.Convert();
             _cvapplicationService.CreateCvapplication(cvapplication);
             return CreatedAtAction(nameof(Get), new { id = cvapplication.CvApplicationId }, cvapplication);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Cvapplication cvapplication)
+        public IActionResult Update([FromBody] CvapplicationsCreateModel cvapplication)
         {
-            _cvapplicationService.UpdateCvapplication(cvapplication);
+            _cvapplicationService.UpdateCvapplication(cvapplication.Convert());
             return NoContent();
         }
 
