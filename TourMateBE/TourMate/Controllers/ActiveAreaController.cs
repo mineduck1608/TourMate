@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,15 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ActiveArea activearea)
+        public IActionResult Create([FromBody] ActiveAreaCreateModel data)
         {
+            var activearea = data.Convert();
             _activeareaService.CreateActiveArea(activearea);
             return CreatedAtAction(nameof(Get), new { id = activearea.AreaId }, activearea);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] ActiveArea activearea)
+        public IActionResult Update([FromBody] ActiveAreaCreateModel data)
         {
+            var activearea = data.Convert();
             _activeareaService.UpdateActiveArea(activearea);
             return NoContent();
         }

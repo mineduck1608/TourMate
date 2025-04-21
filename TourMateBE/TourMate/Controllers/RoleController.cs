@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Role role)
+        public IActionResult Create([FromBody] RoleCreateModel data)
         {
+            var role = data.Convert();
             _roleService.CreateRole(role);
             return CreatedAtAction(nameof(Get), new { id = role.RoleId }, role);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Role role)
+        public IActionResult Update([FromBody] RoleCreateModel role)
         {
-            _roleService.UpdateRole(role);
+            _roleService.UpdateRole(role.Convert());
             return NoContent();
         }
 

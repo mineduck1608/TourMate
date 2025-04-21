@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Feedback feedback)
+        public IActionResult Create([FromBody] FeedbackCreateModel data)
         {
+            var feedback = data.Convert();
             _feedbackService.CreateFeedback(feedback);
             return CreatedAtAction(nameof(Get), new { id = feedback.FeedbackId }, feedback);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Feedback feedback)
+        public IActionResult Update([FromBody] FeedbackCreateModel feedback)
         {
-            _feedbackService.UpdateFeedback(feedback);
+            _feedbackService.UpdateFeedback(feedback.Convert());
             return NoContent();
         }
 

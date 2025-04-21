@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] BlogLike bloglike)
+        public IActionResult Create([FromBody] BlogLikeCreateModel data)
         {
+            var bloglike = data.Convert();
             _bloglikeService.CreateBlogLike(bloglike);
             return CreatedAtAction(nameof(Get), new { id = bloglike.BlogLikeId }, bloglike);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] BlogLike bloglike)
+        public IActionResult Update([FromBody] BlogLikeCreateModel bloglike)
         {
-            _bloglikeService.UpdateBlogLike(bloglike);
+            _bloglikeService.UpdateBlogLike(bloglike.Convert());
             return NoContent();
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,8 +29,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Bid bid)
+        public IActionResult Create([FromBody] BidCreateModel data)
         {
+            var bid = data.Convert();
             _bidService.CreateBid(bid);
             return CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid);
         }

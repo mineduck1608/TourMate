@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,15 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AccountMembership accountmembership)
+        public IActionResult Create([FromBody] AcountMembershipCreateModel data)
         {
+            var accountmembership = data.Convert();
             _accountmembershipService.CreateAccountMembership(accountmembership);
             return CreatedAtAction(nameof(Get), new { id = accountmembership.AccountMembershipId }, accountmembership);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] AccountMembership accountmembership)
+        public IActionResult Update([FromBody] AcountMembershipCreateModel data)
         {
+            var accountmembership = data.Convert();
             _accountmembershipService.UpdateAccountMembership(accountmembership);
             return NoContent();
         }

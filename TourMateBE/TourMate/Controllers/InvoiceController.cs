@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Invoice invoice)
+        public IActionResult Create([FromBody] InvoiceCreateModel data)
         {
+            var invoice = data.Convert();
             _invoiceService.CreateInvoice(invoice);
             return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Invoice invoice)
+        public IActionResult Update([FromBody] InvoiceCreateModel invoice)
         {
-            _invoiceService.UpdateInvoice(invoice);
+            _invoiceService.UpdateInvoice(invoice.Convert());
             return NoContent();
         }
 

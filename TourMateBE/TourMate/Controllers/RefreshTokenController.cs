@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] RefreshToken refreshtoken)
+        public IActionResult Create([FromBody] RefreshTokenCreateModel data)
         {
+            var refreshtoken = data.Convert();
             _refreshtokenService.CreateRefreshToken(refreshtoken);
             return CreatedAtAction(nameof(Get), new { id = refreshtoken.Id }, refreshtoken);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] RefreshToken refreshtoken)
+        public IActionResult Update([FromBody] RefreshTokenCreateModel refreshtoken)
         {
-            _refreshtokenService.UpdateRefreshToken(refreshtoken);
+            _refreshtokenService.UpdateRefreshToken(refreshtoken.Convert());
             return NoContent();
         }
 

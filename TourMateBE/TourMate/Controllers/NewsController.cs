@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -35,16 +36,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] News news)
+        public IActionResult Create([FromBody] NewsCreateModel data)
         {
+            var news = data.Convert();
             _newsService.CreateNews(news);
             return CreatedAtAction(nameof(Get), new { id = news.NewsId }, news);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] News news)
+        public IActionResult Update([FromBody] NewsCreateModel news)
         {
-            _newsService.UpdateNews(news);
+            _newsService.UpdateNews(news.Convert());
             return NoContent();
         }
 

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,8 +29,9 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Conversation conversation)
+        public IActionResult Create([FromBody] ConversationCreateModel data)
         {
+            var conversation = data.Convert();
             _conversationService.CreateConversation(conversation);
             return CreatedAtAction(nameof(Get), new { id = conversation.ConersationId }, conversation);
         }
