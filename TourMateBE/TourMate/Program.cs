@@ -1,6 +1,8 @@
-﻿using Repositories.Repository;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Repository;
+using Repositories.Context;
 using Services;
-using StackExchange.Redis;
+using System;
 using TourMate.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -97,6 +99,10 @@ builder.Services.AddScoped<TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
+builder.Services.AddDbContext<TourMateContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -105,12 +111,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-//// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
     app.UseSwagger();
     app.UseSwaggerUI();
-//}
+}
 
 app.UseHttpsRedirection();
 

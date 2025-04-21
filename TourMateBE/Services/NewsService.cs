@@ -10,6 +10,7 @@ namespace Services
         void CreateNews(News news);
         void UpdateNews(News news);
         bool DeleteNews(int id);
+        Task<IEnumerable<News>> GetAllList();
     }
 
     public class NewsService : INewsService
@@ -25,6 +26,13 @@ namespace Services
         {
             return NewsRepository.GetAll(pageSize, pageIndex);
         }
+
+        public async Task<IEnumerable<News>> GetAllList()
+        {
+            var list = await NewsRepository.GetAllList(); 
+            return list; 
+        }
+
 
         public void CreateNews(News news)
         {
