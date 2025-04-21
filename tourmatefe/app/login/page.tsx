@@ -1,31 +1,15 @@
-import { Plane } from "lucide-react";
-
 import { LoginForm } from "./login-form";
 
 export default function LoginPage() {
   return (
-    <div className="grid min-h-svh lg:grid-cols-2">
-      <div className="flex flex-col gap-4 p-6 md:p-10">
-        <div className="flex justify-center gap-2 md:justify-start">
-          <a href="#" className="flex items-center gap-2 font-medium">
-            <div className="flex h-6 w-6 items-center justify-center rounded-md bg-sky-500 text-white">
-              <Plane className="size-4" />
-            </div>
-            TOURMATE
-          </a>
-        </div>
-        <div className="flex flex-1 items-center justify-center">
-          <div className="w-full max-w-xs">
-            <LoginForm />
-          </div>
-        </div>
-      </div>
-      <div className="relative hidden bg-muted lg:block">
-        <img
-          src="/swimming-pool.jpg"
-          alt="Image"
-          className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
-        />
+    <div className="gradient-bg glowing-effect flex min-h-svh flex-col items-center justify-center p-6 md:p-10 relative overflow-hidden">
+      <img
+        src="/danang.jpg"
+        alt="Image"
+        className="absolute inset-0 h-full w-full object-cover blur-[2px] dark:brightness-[0.2] dark:grayscale"
+      />
+      <div className="w-full max-w-sm md:max-w-3xl relative z-10">
+        <LoginForm />
       </div>
     </div>
   );
