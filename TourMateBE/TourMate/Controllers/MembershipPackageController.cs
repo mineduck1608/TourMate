@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] MembershipPackage membershippackage)
+        public IActionResult Create([FromBody] MembershipPackageCreateModel data)
         {
+            var membershippackage = data.Convert();
             _membershippackageService.CreateMembershipPackages(membershippackage);
             return CreatedAtAction(nameof(Get), new { id = membershippackage.MembershipPackageId }, membershippackage);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] MembershipPackage membershippackage)
+        public IActionResult Update([FromBody] MembershipPackageCreateModel membershippackage)
         {
-            _membershippackageService.UpdateMembershipPackages(membershippackage);
+            _membershippackageService.UpdateMembershipPackages(membershippackage.Convert());
             return NoContent();
         }
 

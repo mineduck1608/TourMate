@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] Payment payment)
+        public IActionResult Create([FromBody] PaymentCreateModel data)
         {
+            var payment = data.Convert();
             _paymentService.CreatePayments(payment);
             return CreatedAtAction(nameof(Get), new { id = payment.PaymentId }, payment);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Payment payment)
+        public IActionResult Update([FromBody] PaymentCreateModel payment)
         {
-            _paymentService.UpdatePayments(payment);
+            _paymentService.UpdatePayments(payment.Convert());
             return NoContent();
         }
 

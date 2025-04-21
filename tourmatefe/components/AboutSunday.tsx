@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import Anh1 from "../public/Anh1.jpg";
-import Logo from "../public/Logo.png";
+import Anh1 from "@/public/Anh1.jpg";
+import Logo from "@/public/Logo.png";
 import "@/styles/globals.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -23,7 +23,7 @@ const AboutSunday = () => {
       <div className="flex justify-center">
         <h2
           className="mb-10 text-4xl font-serif italic text-center"
-          data-aos="fade-up"
+          data-aos="zoom-in"
           data-aos-delay="300"
         >
           Thông tin về chúng tôi
@@ -32,7 +32,7 @@ const AboutSunday = () => {
 
       <div
         className="relative w-full h-[600px]"
-        data-aos="fade-up"
+        data-aos="zoom-in"
         data-aos-delay="300"
       >
         {/* Background image */}

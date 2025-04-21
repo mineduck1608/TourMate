@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -28,16 +29,17 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TourGuide tourguide)
+        public IActionResult Create([FromBody] TourGuideCreateModel data)
         {
+            var tourguide = data.Convert();
             _tourguideService.CreateTourGuide(tourguide);
             return CreatedAtAction(nameof(Get), new { id = tourguide.TourGuideId }, tourguide);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] TourGuide tourguide)
+        public IActionResult Update([FromBody] TourGuideCreateModel tourguide)
         {
-            _tourguideService.UpdateTourGuide(tourguide);
+            _tourguideService.UpdateTourGuide(tourguide.Convert());
             return NoContent();
         }
 

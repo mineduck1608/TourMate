@@ -5,17 +5,18 @@ import Image from "next/image";
 import Logo from "@/public/Logo.png";
 
 import 'flowbite';
-
+import Link from "next/link";
+    
 const MegaMenu = () => {
 
 
   return (
 <nav className="bg-white border-gray-200 dark:bg-gray-900">
     <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto p-4">
-    <a href="https://flowbite.com" className="flex items-center space-x-3 rtl:space-x-reverse">
+    <Link href="/" className="flex items-center space-x-3 rtl:space-x-reverse">
             <Image src={Logo} className="h-20 w-20" alt="Flowbite Logo" />
             <span className="self-center text-4xl font-serif italic whitespace-nowrap dark:text-white">TourMate</span>
-        </a>
+        </Link>
         <div className="flex items-center md:order-2 space-x-1 md:space-x-2 rtl:space-x-reverse">
             <a href="login" className="text-gray-800 dark:text-white hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:hover:bg-gray-700 focus:outline-none dark:focus:ring-gray-800">Login</a>
             <a href="signUp" className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800">Sign up</a>

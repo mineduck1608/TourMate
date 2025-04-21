@@ -3,7 +3,7 @@
 import Image from "next/image";
 import React, { useEffect } from "react";
 import Anh7 from "../public/Anh7.jpg";
-import Anh5 from "@/public/Anh5.jpg";
+// import Anh5 from "@/public/Anh5.jpg";
 import Anh3 from "@/public/Anh3.jpg";
 import "@/styles/globals.css";
 import AOS from "aos";
@@ -53,7 +53,7 @@ const HeroSection = () => {
       {/* Phong cách sống */}
       <div className="relative h-[300px] w-full">
         <Image
-          src={Anh5}
+          src="https://img.freepik.com/free-photo/tourists-take-boat-ban-rak-thai-village-mae-hong-son-province-thailand_335224-1302.jpg?t=st=1745242612~exp=1745246212~hmac=cddcf4dbbc5a34989655479be3006c5170ee554e310f01f3928e617de9dac786&w=996"
           alt="Phong cách sống"
           fill
           className="object-cover"
