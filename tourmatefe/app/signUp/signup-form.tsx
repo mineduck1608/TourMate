@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
+import Link from "next/link";
 
 export function SignupForm({
   className,
@@ -39,7 +40,7 @@ export function SignupForm({
       {...props}
     >
       <div className="flex flex-col items-center gap-4 text-center mt-[-50]">
-        <a href="/">
+        <Link href="/">
           <Image
             src="/Logo.png"
             alt="TOURMATE Logo"
@@ -47,7 +48,7 @@ export function SignupForm({
             height={180}
             className="mb-[-20]"
           />
-        </a>
+        </Link>
         <h1 className="text-2xl font-bold">Tạo Tài Khoản</h1>
         <p className="text-balance text-sm text-muted-foreground">
           Nhập thông tin của bạn bên dưới để tạo tài khoản.
