@@ -161,9 +161,9 @@ export function SignupForm({
           </div>
           <label htmlFor="terms" className="text-sm text-muted-foreground">
             Tôi đồng ý với{" "}
-            <a href="#" className="text-primary hover:underline">
+            <Link href="#" className="text-primary hover:underline">
               các điều khoản và điều kiện
-            </a>
+            </Link>
           </label>
         </div>
         <Button type="submit" className="w-full cursor-pointer">
@@ -203,9 +203,9 @@ export function SignupForm({
       </div>
       <div className="text-center text-sm">
         Đã có tài khoản?{" "}
-        <a href="/login" className="underline underline-offset-4">
+        <Link href="/login" className="underline underline-offset-4">
           Đăng Nhập
-        </a>
+        </Link>
       </div>
     </form>
   );

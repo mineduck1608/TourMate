@@ -45,12 +45,12 @@ export function LoginForm({
               <div className="grid gap-2">
                 <div className="flex items-center">
                   <Label htmlFor="password">Mật Khẩu</Label>
-                  <a
+                  <Link
                     href="#"
                     className="ml-auto text-sm underline-offset-2 hover:underline"
                   >
                     Quên mật khẩu?
-                  </a>
+                  </Link>
                 </div>
                 <Input id="password" type="password" required />
               </div>
@@ -90,9 +90,9 @@ export function LoginForm({
               </Button>
               <div className="text-center text-sm">
                 Không có tài khoản?{" "}
-                <a href="/signUp" className="underline underline-offset-4">
+                <Link href="/signUp" className="underline underline-offset-4">
                   Đăng Ký
-                </a>
+                </Link>
               </div>
             </div>
           </form>
@@ -107,7 +107,7 @@ export function LoginForm({
       </Card>
       <div className="text-balance text-center text-xs text-white [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
         Bằng cách nhấn Tiếp tục, bạn đồng ý với{" "}
-        <a href="#">Điều khoản Dịch vụ</a> và <a href="#">Chính sách Bảo mật</a>{" "}
+        <Link href="#">Điều khoản Dịch vụ</Link> và <Link href="#">Chính sách Bảo mật</Link>{" "}
         của chúng tôi.
       </div>
     </div>
