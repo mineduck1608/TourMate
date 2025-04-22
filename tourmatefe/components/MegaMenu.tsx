@@ -1,13 +1,25 @@
 "use client";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { usePathname } from 'next/navigation'; // Correct import for App Directory
 import Image from "next/image";
 import Logo from "@/public/Logo.png";
-
 import 'flowbite';
 import Link from "next/link";
 
 const MegaMenu = () => {
+  const [isMounted, setIsMounted] = useState(false);
+  const currentRoute = usePathname();
+
+  // Set the mounted state to true after component mounts
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  if (!isMounted) {
+    return null; // Render nothing while waiting for the component to mount
+  }
+
   return (
     <nav className="bg-white border-gray-200">
       <div className="flex flex-wrap items-center justify-between max-w-screen-xl mx-auto">
@@ -27,26 +39,46 @@ const MegaMenu = () => {
         <div id="mega-menu-icons" className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1">
           <ul className="flex flex-col mt-4 font-medium md:flex-row md:mt-0 md:space-x-8 rtl:space-x-reverse">
             <li>
-              <Link href="/" className="block py-2 px-3 text-blue-600 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0" aria-current="page">Trang chủ</Link>
+              <Link 
+                href="/" 
+                className={`block py-2 px-3 ${currentRoute === "/" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`} 
+                aria-current={currentRoute === "/" ? "page" : undefined}
+              >
+                Trang chủ
+              </Link>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">Về chúng tôi</a>
+              <a 
+                href="#"
+                className={`block py-2 px-3 ${currentRoute === "/about" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+              >
+                Về chúng tôi
+              </a>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">Tin tức</a>
+              <a 
+                href="#"
+                className={`block py-2 px-3 ${currentRoute === "/news" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+              >
+                Tin tức
+              </a>
             </li>
             <li>
-              <button id="mega-menu-icons-dropdown-button" data-dropdown-toggle="mega-menu-icons-dropdown" className="flex items-center justify-between w-full py-2 px-3 font-medium text-gray-900 border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">
+              <button 
+                id="mega-menu-icons-dropdown-button" 
+                data-dropdown-toggle="mega-menu-icons-dropdown" 
+                className={`flex items-center justify-between w-full py-2 px-3 font-medium ${currentRoute.startsWith("/user/services/") ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+              >
                 Dịch vụ
                 <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
                   <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="m1 1 4 4 4-4" />
                 </svg>
               </button>
               <div id="mega-menu-icons-dropdown" className="absolute z-10 grid hidden w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md md:grid-cols-2">
-                <div className="p-4 pb-0 text-gray-900 md:pb-4">
+              <div className="p-4 pb-0 text-gray-900 md:pb-4">
                   <ul className="space-y-4" aria-labelledby="mega-menu-icons-dropdown-button">
                   <li>
-                                    <a href="/user/area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
+                                    <Link href="/user/services/area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
                                         <span className="sr-only">Địa điểm hoạt động</span>
                                         <svg className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="m1.56 6.245 8 3.924a1 1 0 0 0 .88 0l8-3.924a1 1 0 0 0 0-1.8l-8-3.925a1 1 0 0 0-.88 0l-8 3.925a1 1 0 0 0 0 1.8Z"/>
@@ -54,7 +86,7 @@ const MegaMenu = () => {
                                             <path d="M17.993 13.191a1 1 0 0 0-1 1v.163l-7 3.435-7-3.435v-.163a1 1 0 1 0-2 0v.787a1 1 0 0 0 .56.9l8 3.925a1 1 0 0 0 .88 0l8-3.925a1 1 0 0 0 .56-.9v-.787a1 1 0 0 0-1-1Z"/>
                                         </svg>
                                         Địa điểm hoạt động
-                                    </a>
+                                    </Link>
                                 </li>
                                
                                 <li>
@@ -94,7 +126,12 @@ const MegaMenu = () => {
               </div>
             </li>
             <li>
-              <a href="/user/aboutUs" className="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">Liên hệ</a>
+              <a 
+                href="/user/aboutUs" 
+                className={`block py-2 px-3 ${currentRoute === "/user/aboutUs" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+              >
+                Liên hệ
+              </a>
             </li>
           </ul>
         </div>
