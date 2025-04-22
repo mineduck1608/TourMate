@@ -1,15 +1,13 @@
 // tourmatefe/app/about/page.tsx
+import Banner from '@/components/Banner';
 
 export default function AboutPage() {
   return (
-    <main className="p-8">
-      <h1 className="text-3xl font-bold text-green-600">
-        Giới thiệu về Tourmate
-      </h1>
-      <p className="mt-4 text-gray-700">
-        Tourmate là ứng dụng hỗ trợ du lịch, kết nối bạn với những trải nghiệm
-        tuyệt vời!!!
-      </p>
-    </main>
+    <div>
+       <Banner 
+        imageUrl="https://img.freepik.com/free-photo/city-water_1417-1902.jpg?t=st=1745300345~exp=1745303945~hmac=da67d1a3c246aae8db124eb79afe486b89b0e304343c87834e85fceec37a7ab7&w=996" 
+        title="Khám Phá Ẩm Thực Địa Phương Tại Hà Nội"
+      />
+    </div>
   );
 }
