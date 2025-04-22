@@ -10,6 +10,7 @@ import Footer from '@/components/Footer';
 
 
 export default function Home() {
+
   return (
     <div>
       <MegaMenu />
@@ -18,7 +19,6 @@ export default function Home() {
       <AboutSunday />
       <HomeNews />
       <FeedbackSection />
-      <hr className="h-px my-8 bg-gray-200 border-0 dark:bg-gray-700 mr-5 ml-5" data-aos="fade-in"></hr>
       <ContactPagination />
       <Footer />
     </div>

@@ -85,7 +85,7 @@ const MegaMenu = () => {
               </div>
             </li>
             <li>
-              <a href="#" className="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">Liên hệ</a>
+              <a href="customer/aboutUs" className="block py-2 px-3 text-gray-900 border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0">Liên hệ</a>
             </li>
           </ul>
         </div>
