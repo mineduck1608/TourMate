@@ -179,7 +179,7 @@ export default function Home() {
           </div>
 
           {/* Phân trang */}
-          <div className="flex justify-center items-center mt-6 space-x-6">
+          <div className="flex justify-center items-center mt-10 space-x-6">
             <button
               onClick={() => handlePageChange(-1)}
               disabled={currentPage === 1}
