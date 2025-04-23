@@ -115,8 +115,8 @@ export default function Home() {
     <div>
       <div>
         <Banner
-          imageUrl="https://img.freepik.com/free-photo/city-water_1417-1902.jpg?t=st=1745300345~exp=1745303945~hmac=da67d1a3c246aae8db124eb79afe486b89b0e304343c87834e85fceec37a7ab7&w=996"
-          title="Khám Phá Ẩm Thực Địa Phương Tại Hà Nội"
+          imageUrl="https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"
+          title="Khám Phá Các Địa Điểm Du Lịch Tại Việt Nam"
         />
       </div>
       <div className="flex flex-col md:flex-row gap-10 p-15 bg-gray-100">
