@@ -19,28 +19,28 @@ const testimonials: Testimonial[] = [
     name: "Minh Phương",
     quote:
       "TourMate giúp tôi tìm được một hướng dẫn viên địa phương tuyệt vời tại Đà Lạt. Chuyến đi trở nên thú vị hơn rất nhiều nhờ những câu chuyện và góc nhìn mà tôi chưa từng biết!",
-    image: "/woman.jpeg?height=400&width=400",
+    image: "/woman.jpeg",
   },
   {
     id: 2,
     name: "Thanh Hà",
     quote:
       "Chuyến du lịch Hội An của tôi trở nên đặc biệt nhờ hướng dẫn viên từ TourMate. Tôi được khám phá những con hẻm nhỏ, quán ăn địa phương mà không có trong sách hướng dẫn du lịch nào.",
-    image: "/woman2.jpeg?height=200&width=200",
+    image: "/woman2.jpeg",
   },
   {
     id: 3,
     name: "Quang Minh",
     quote:
       "Đây là lần đầu tiên tôi sử dụng dịch vụ hướng dẫn viên địa phương và TourMate không làm tôi thất vọng. Chuyến đi Sapa của tôi trở nên đáng nhớ với những trải nghiệm văn hóa độc đáo.",
-    image: "/man.jpg?height=200&width=200",
+    image: "/man.jpg?",
   },
   {
     id: 4,
     name: "Thu Trang",
     quote:
       "TourMate giúp tôi kết nối với một hướng dẫn viên địa phương tại Phú Quốc. Chúng tôi đã khám phá những bãi biển hoang sơ và thưởng thức hải sản tươi ngon tại những nơi chỉ người địa phương mới biết.",
-    image: "/woman3.jpeg?height=200&width=200",
+    image: "/woman3.jpeg",
   },
 ];
 

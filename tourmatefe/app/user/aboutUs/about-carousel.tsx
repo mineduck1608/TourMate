@@ -15,21 +15,21 @@ const aboutItems: AboutItem[] = [
     title: "TẦM NHÌN",
     description:
       "Trở thành nền tảng kết nối du lịch hàng đầu, mang đến trải nghiệm cá nhân hóa và chân thực.",
-    image: "/passport1.jpg?height=600&width=800",
+    image: "/passport1.jpg",
   },
   {
     id: 2,
     title: "SỨ MỆNH",
     description:
       "Kết nối du khách với hướng dẫn viên địa phương chất lượng. Thúc đẩy du lịch bền vững và hỗ trợ cộng đồng hướng dẫn viên.",
-    image: "/tourguide.jpg?height=600&width=800",
+    image: "/tourguide.jpg",
   },
   {
     id: 3,
     title: "GIÁ TRỊ CỐT LÕI",
     description:
-      "Cá nhân hóa – Tạo hành trình phù hợp với từng du khách. Chân thực – Mang đến trải nghiệm địa phương sâu sắc.",
-    image: "/personalization.jpg?height=600&width=800",
+      "Cá nhân hóa - Tạo hành trình phù hợp với từng du khách. Chân thực - Mang đến trải nghiệm địa phương sâu sắc.",
+    image: "/personalization.jpg",
   },
 ];
 
