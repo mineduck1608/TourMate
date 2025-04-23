@@ -19,28 +19,28 @@ const testimonials: Testimonial[] = [
     name: "Minh Phương",
     quote:
       "TourMate giúp tôi tìm được một hướng dẫn viên địa phương tuyệt vời tại Đà Lạt. Chuyến đi trở nên thú vị hơn rất nhiều nhờ những câu chuyện và góc nhìn mà tôi chưa từng biết!",
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/woman.jpeg?height=400&width=400",
   },
   {
     id: 2,
     name: "Thanh Hà",
     quote:
       "Chuyến du lịch Hội An của tôi trở nên đặc biệt nhờ hướng dẫn viên từ TourMate. Tôi được khám phá những con hẻm nhỏ, quán ăn địa phương mà không có trong sách hướng dẫn du lịch nào.",
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/woman2.jpeg?height=200&width=200",
   },
   {
     id: 3,
     name: "Quang Minh",
     quote:
       "Đây là lần đầu tiên tôi sử dụng dịch vụ hướng dẫn viên địa phương và TourMate không làm tôi thất vọng. Chuyến đi Sapa của tôi trở nên đáng nhớ với những trải nghiệm văn hóa độc đáo.",
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/man.jpg?height=200&width=200",
   },
   {
     id: 4,
     name: "Thu Trang",
     quote:
       "TourMate giúp tôi kết nối với một hướng dẫn viên địa phương tại Phú Quốc. Chúng tôi đã khám phá những bãi biển hoang sơ và thưởng thức hải sản tươi ngon tại những nơi chỉ người địa phương mới biết.",
-    image: "/placeholder.svg?height=200&width=200",
+    image: "/woman3.jpeg?height=200&width=200",
   },
 ];
 
@@ -77,31 +77,48 @@ export default function CustomerTestimonials() {
   return (
     <section className="py-20 bg-gray-100 relative overflow-hidden">
       {/* Decorative Elements */}
-      <div className="absolute top-10 left-10 w-24 h-24 opacity-60 hidden md:block">
+      <div className="absolute top-[-40] left-10 w-55 opacity-60 hidden md:block transform rotate-12">
         <Image
-          src="/placeholder.svg?height=200&width=200"
+          src="/shell.png?height=200&width=200"
           alt="Seashell decoration"
-          width={100}
-          height={100}
+          width={300}
+          height={300}
         />
       </div>
 
       <div className="absolute top-10 right-10 hidden md:block">
         <div className="relative w-40 h-48">
-          <div className="absolute top-0 right-0 w-32 h-40 bg-white p-1 shadow-md rotate-6 z-10">
-            <div className="w-full h-full bg-gray-200"></div>
+          <div className="absolute top-0 right-0 w-40 h-45 bg-white p-2 shadow-md rotate-6 z-10">
+            <div className="relative w-full h-full bg-gray-200">
+              <Image
+                src="/travel.jpg" // Đường dẫn đến ảnh của bạn
+                alt="Travel memory 1"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
-          <div className="absolute top-4 right-8 w-32 h-40 bg-white p-1 shadow-md -rotate-3">
-            <div className="w-full h-full bg-gray-200"></div>
+          <div className="absolute top-4 right-8 w-40 h-45 bg-white p-2 shadow-md -rotate-3">
+            <div className="relative w-full h-full bg-gray-200">
+              <Image
+                src="/travel2.jpg" // Đường dẫn đến ảnh của bạn
+                alt="Travel memory 1"
+                fill
+                className="object-cover"
+              />
+            </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-10 left-10 hidden md:block">
-        <div className="relative w-48 h-48">
-          <div className="absolute bottom-0 left-0 w-12 h-12 bg-gray-300 rounded-full"></div>
-          <div className="absolute bottom-10 left-10 w-16 h-8 bg-gray-400 rounded-full transform -rotate-12"></div>
-          <div className="absolute bottom-5 left-20 w-20 h-20 bg-gray-200"></div>
+      <div className="absolute bottom-5 left-10 hidden md:block">
+        <div className="relative w-60 h-55">
+          <Image
+            src="/travel-items.png" // Đường dẫn đến ảnh của bạn
+            alt="Travel memory 1"
+            fill
+            className="object-cover"
+          />
         </div>
       </div>
 
@@ -124,12 +141,12 @@ export default function CustomerTestimonials() {
                 transition={{ duration: 0.5 }}
                 className="flex flex-col items-center"
               >
-                <div className="w-24 h-24 md:w-32 md:h-32 rounded-full overflow-hidden border-4 border-blue-100 shadow-lg mb-8">
+                <div className="w-24 h-24 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-blue-200 shadow-lg mb-8">
                   <Image
-                    src={testimonials[currentIndex].image || "/placeholder.svg"}
+                    src={testimonials[currentIndex].image || "/travel.jpg"}
                     alt={testimonials[currentIndex].name}
-                    width={128}
-                    height={128}
+                    width={500}
+                    height={500}
                     className="object-cover w-full h-full"
                   />
                 </div>
