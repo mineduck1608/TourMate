@@ -1,0 +1,64 @@
+name: Build and deploy ASP.Net Core app to Azure Web App - tourmate
+
+on:
+  push:
+    branches:
+      - development
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: windows-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up .NET Core
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.x'
+
+      - name: Restore and Build Solution
+        run: dotnet build TourMateBE/TourMateBE.sln --configuration Release
+
+      - name: Publish Web App
+        run: dotnet publish TourMateBE/TourMate/TourMate.csproj -c Release -o publish
+
+      - name: Upload artifact for deployment job
+        uses: actions/upload-artifact@v4
+        with:
+          name: tourmate-app
+          path: publish
+
+  deploy:
+    runs-on: windows-latest
+    needs: build
+    environment:
+      name: 'Production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    permissions:
+      id-token: write
+
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: tourmate-app
+          path: ./app
+
+      - name: Login to Azure
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZUREAPPSERVICE_CLIENTID_ECF7E7A8CBD9449C8658C92D7901D0F9 }}
+          tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_3197BA59E5C6475686230ECB66209D3E }}
+          subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_DF8C54ACE3D7421E810868ED710812EE }}
+
+      - name: Deploy to Azure Web App
+        id: deploy-to-webapp
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: 'tourmate'
+          slot-name: 'Production'
+          package: ./app
