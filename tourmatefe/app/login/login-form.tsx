@@ -30,7 +30,7 @@ export function LoginForm({
                   Chào mừng bạn quay trở lại
                 </h1>
                 <p className="text-balance text-muted-foreground">
-                  Đăng nhập vào tài khoản Tourmate
+                  Đăng nhập tài khoản TourMate
                 </p>
               </div>
               <div className="grid gap-2">

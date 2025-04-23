@@ -14,5 +14,9 @@ namespace Repositories.Repository
         {
             return await _context.Customers.FirstOrDefaultAsync(x => x.AccountId == accId);
         }
+        public async Task<Customer> GetByPhone(string phone)
+        {
+            return await _context.Customers.FirstOrDefaultAsync(x => x.Phone == phone);
+        }
     }
 }

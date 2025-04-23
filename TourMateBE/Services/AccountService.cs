@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using TourMate.Utils;
+using Services.Utils;
 
 
 namespace Services
@@ -15,11 +15,12 @@ namespace Services
     {
         Account GetAccount(int id);
         IEnumerable<Account> GetAll(int pageSize, int pageIndex);
-        void CreateAccount(Account account);
         void UpdateAccount(Account account);
         bool DeleteAccount(int id);
         Task<AuthResponse> LoginAsync(string email, string password);
         Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
+        Task<Account> GetAccountByEmail(string email);
+        Task<bool> CreateAccount(Account account);
     }
 
     // Services/AuthService.cs
@@ -42,8 +43,10 @@ namespace Services
             _refreshTokenService = refreshTokenService;
         }
 
+
         public async Task<AuthResponse> LoginAsync(string email, string password)
         {
+            password = HashString.ToHashString(password);
             var user = await _repo.GetAccountByLogin(email, password);
             if (user == null || user.Password != password)
                 return null;
@@ -136,6 +139,12 @@ namespace Services
 
             return null;
         }
+        public async Task<Account> GetAccountByEmail(string email)
+        {
+            // Kiểm tra tài khoản đã tồn tại
+            return await _repo.GetAccountByEmail(email);
+        }
+
 
         public Account GetAccount(int id)
         {
@@ -147,9 +156,10 @@ namespace Services
             return _repo.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateAccount(Account account)
+        public async Task<bool> CreateAccount(Account account)
         {
-            _repo.Create(account);
+            // Gọi phương thức bất đồng bộ để tạo tài khoản
+            return await _repo.CreateAsync(account);
         }
 
         public void UpdateAccount(Account account)
