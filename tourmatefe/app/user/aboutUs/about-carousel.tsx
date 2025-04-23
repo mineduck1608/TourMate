@@ -15,7 +15,7 @@ const aboutItems: AboutItem[] = [
     title: "TẦM NHÌN",
     description:
       "Trở thành nền tảng kết nối du lịch hàng đầu, mang đến trải nghiệm cá nhân hóa và chân thực.",
-    image: "/passport1.jpg",
+    image: "/passport.jpg",
   },
   {
     id: 2,
@@ -43,8 +43,8 @@ export default function AboutCarousel() {
           </h2>
           <div className="w-20 h-1 bg-teal-500 mx-auto mb-6"></div>
           <p className="text-gray-600 max-w-2xl mx-auto">
-            Learn more about our company's vision, mission, and core values that
-            drive everything we do
+            Learn more about our company&rsquo;s vision, mission, and core
+            values that drive everything we do
           </p>
         </div>
 

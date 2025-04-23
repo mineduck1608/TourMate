@@ -33,7 +33,7 @@ const testimonials: Testimonial[] = [
     name: "Quang Minh",
     quote:
       "Đây là lần đầu tiên tôi sử dụng dịch vụ hướng dẫn viên địa phương và TourMate không làm tôi thất vọng. Chuyến đi Sapa của tôi trở nên đáng nhớ với những trải nghiệm văn hóa độc đáo.",
-    image: "/man.jpg?",
+    image: "/man.jpg",
   },
   {
     id: 4,
@@ -154,7 +154,7 @@ export default function CustomerTestimonials() {
                 <div className="text-center mb-6">
                   <Quote className="h-10 w-10 text-blue-200 mx-auto mb-4" />
                   <p className="text-gray-700 text-lg md:text-xl italic leading-relaxed mb-6">
-                    "{testimonials[currentIndex].quote}"
+                    &ldquo;{testimonials[currentIndex].quote}&rdquo;
                   </p>
                   <h3 className="text-xl font-bold text-blue-600">
                     {testimonials[currentIndex].name}
