@@ -13,9 +13,10 @@ namespace Services
         Task<Customer> GetCustomerByAccId(int accId);
         Customer GetCustomer(int id);
         IEnumerable<Customer> GetAll(int pageSize, int pageIndex);
-        void CreateCustomer(Customer customer);
+        Task<bool> CreateCustomer(Customer customer);
         void UpdateCustomer(Customer customer);
         bool DeleteCustomer(int id);
+        Task<Customer> GetCustomerByPhone(string phone);
     }
     public class CustomerService : ICustomerService
     {
@@ -30,6 +31,12 @@ namespace Services
         {
             return await _repository.GetByAccId(accId);
         }
+
+        public async Task<Customer> GetCustomerByPhone(string phone)
+        {
+            return await _repository.GetByPhone(phone);
+        }
+
         public Customer GetCustomer(int id)
         {
             return _repository.GetById(id);
@@ -40,9 +47,9 @@ namespace Services
             return _repository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateCustomer(Customer customer)
+        public async Task<bool> CreateCustomer(Customer customer)
         {
-            _repository.Create(customer);
+            return await _repository.CreateAsync(customer);
         }
 
         public void UpdateCustomer(Customer customer)

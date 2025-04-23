@@ -14,5 +14,10 @@ namespace Repositories.Repository
         {
             return await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email && a.Password == password);
         }
+
+        public async Task<Account> GetAccountByEmail(string email)
+        {
+            return await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
+        }
     }
 }

@@ -48,10 +48,18 @@ namespace Repositories.GenericRepository
             _context.SaveChanges();
         }
 
-        public async Task<int> CreateAsync(T entity)
+        public async Task<bool> CreateAsync(T entity)
         {
-            _context.Add(entity);
-            return await _context.SaveChangesAsync();
+            try
+            {
+                _context.Add(entity);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
         public void Update(T entity)

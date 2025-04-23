@@ -8,7 +8,7 @@ using System.Text;
 using Microsoft.Extensions.Configuration;
 
 
-namespace TourMate.Utils
+namespace Services.Utils
 {
     public class TokenService
     {
