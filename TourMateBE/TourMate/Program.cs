@@ -3,7 +3,7 @@ using Repositories.Repository;
 using Repositories.Context;
 using Services;
 using System;
-using TourMate.Utils;
+using Services.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
