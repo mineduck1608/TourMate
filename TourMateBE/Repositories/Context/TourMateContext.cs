@@ -155,6 +155,9 @@ public partial class TourMateContext : DbContext
             entity.Property(e => e.AreaContent)
                 .IsRequired()
                 .HasColumnName("areaContent");
+            entity.Property(e => e.AreaType)
+                .IsRequired()
+                .HasColumnName("areaType");
             entity.Property(e => e.AreaName)
                 .IsRequired()
                 .HasMaxLength(255)
@@ -394,10 +397,7 @@ public partial class TourMateContext : DbContext
 
             entity.Property(e => e.CustomerId).HasColumnName("customerId");
             entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.Address)
-                .IsRequired()
-                .HasMaxLength(255)
-                .HasColumnName("address");
+            
             entity.Property(e => e.DateOfBirth).HasColumnName("dateOfBirth");
             entity.Property(e => e.FullName)
                 .IsRequired()

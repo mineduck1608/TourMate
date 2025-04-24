@@ -18,6 +18,7 @@ public partial class ActiveArea
     public string AreaContent { get; set; }
 
     public string BannerImg { get; set; }
+    public string AreaType { get; set; }
 
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 

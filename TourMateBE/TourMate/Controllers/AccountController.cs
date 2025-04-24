@@ -82,7 +82,6 @@ namespace API.Controllers
                 Gender = gender,
                 Phone = phone,
                 DateOfBirth = dateOfBirth,
-                Address = address
             };
 
             // Lưu tài khoản
