@@ -55,12 +55,12 @@ const MegaMenu = () => {
               </Link>
             </li>
             <li>
-              <a 
-                href="#"
-                className={`block py-2 px-3 ${currentRoute === "/about" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+              <Link 
+                href="/user/aboutUs"
+                className={`block py-2 px-3 ${currentRoute === "/user/aboutUs" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Về chúng tôi
-              </a>
+              </Link>
             </li>
             <li>
               <a 

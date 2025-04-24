@@ -5,6 +5,9 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight, Quote } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { motion, AnimatePresence } from "framer-motion";
+import 'aos/dist/aos.css';
+import AOS from 'aos';
+
 
 interface Testimonial {
   id: number;
@@ -18,7 +21,7 @@ const testimonials: Testimonial[] = [
     id: 1,
     name: "Minh Phương",
     quote:
-      "TourMate giúp tôi tìm được một hướng dẫn viên địa phương tuyệt vời tại Đà Lạt. Chuyến đi trở nên thú vị hơn rất nhiều nhờ những câu chuyện và góc nhìn mà tôi chưa từng biết!",
+      "TourMate giúp tôi tìm được một hướng dẫn viên địa phương tuyệt vời tại Đà Lạt. Chuyến đi trở nên thú vị hơn rất nhiều nhờ những câu chuyện và góc nhìn mà tôi chưa từng biết! Nhất định trong chuyến đi tiếp theo tôi sẽ tiếp tục đồng hành của TourMate.",
     image: "/woman.jpeg",
   },
   {
@@ -48,6 +51,15 @@ export default function CustomerTestimonials() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isAnimating, setIsAnimating] = useState(false);
 
+  useEffect(() => {
+        AOS.init({
+          offset: 0,
+          delay: 200,
+          duration: 1200,
+          once: true,
+        });
+      }, []);
+
   const nextSlide = useCallback(() => {
     if (isAnimating) return;
     setIsAnimating(true);
@@ -75,16 +87,16 @@ export default function CustomerTestimonials() {
   }, [nextSlide]);
 
   return (
-    <section className="py-20 bg-gray-100 relative overflow-hidden">
+    <section className="py-20 bg-gray-100 relative overflow-hidden" data-aos="fade-in">
       {/* Decorative Elements */}
-      <div className="absolute top-[-40] left-10 w-55 opacity-60 hidden md:block transform rotate-12">
-        <Image
-          src="/shell.png?height=200&width=200"
-          alt="Seashell decoration"
-          width={300}
-          height={300}
-        />
-      </div>
+       <div className="absolute top-[-40] left-10 w-55 opacity-60 hidden md:block transform rotate-12 drop-shadow-lg">
+    <Image
+      src="/shell.png?height=200&width=200"
+      alt="Seashell decoration"
+      width={300}
+      height={300}
+    />
+  </div>
 
       <div className="absolute top-10 right-10 hidden md:block">
         <div className="relative w-40 h-48">

@@ -1,6 +1,9 @@
 "use client";
 
 import Image from "next/image";
+import 'aos/dist/aos.css';
+import AOS from 'aos';
+import { useEffect } from "react";
 
 interface AboutItem {
   id: number;
@@ -34,10 +37,20 @@ const aboutItems: AboutItem[] = [
 ];
 
 export default function AboutCarousel() {
+
+  useEffect(() => {
+      AOS.init({
+        offset: 0,
+        delay: 200,
+        duration: 1200,
+        once: true,
+      });
+    }, []);
+
   return (
     <div className="py-16 bg-white">
       <div className="container mx-auto px-4">
-        <div className="text-center mb-12">
+        <div className="text-center mb-12" data-aos="fade-up">
           <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
             About Us
           </h2>
@@ -48,7 +61,7 @@ export default function AboutCarousel() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto" data-aos="flip-up">
           {aboutItems.map((item) => (
             <div key={item.id} className="flex flex-col items-center">
               <div className="relative w-full h-64 mb-6 overflow-hidden rounded-lg">
