@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import PaginateList from "@/app/news/paginate-list";
 
 type NewsItem = {
   id: number;
@@ -19,7 +20,7 @@ const mockNews: NewsItem[] = Array.from({ length: 12 }, (_, i) => ({
   date: `2025-04-${(i % 30 + 1).toString().padStart(2, "0")}`,
 }));
 
-const PAGE_SIZE = 3;
+const PAGE_SIZE = 4;
 
 export default function HomeNews() {
   const [page, setPage] = useState(1);
@@ -42,9 +43,9 @@ export default function HomeNews() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       viewport={{ once: true }}
-      className="w-full px-10 py-6 overflow-hidden bg-gray-100 pb-10"
+      className="w-full px-10 py-6 overflow-hidden pb-10"
     >
-      <h2 className="text-center text-4xl inter mb-10 mt-5">Tin tức</h2>
+      <h2 className="text-blue-800 text-3xl inter mb-10 mt-5">Bài viết & Tin tức</h2>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -79,6 +80,7 @@ export default function HomeNews() {
           ))}
         </motion.div>
       </AnimatePresence>
+      <PaginateList current={page} maxPage={2} />
     </motion.div>
   );
 }
