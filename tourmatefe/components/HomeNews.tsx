@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import PaginateList from "@/app/news/paginate-list";
+import Link from "next/link";
 
 type NewsItem = {
   id: number;
@@ -20,7 +21,7 @@ const mockNews: NewsItem[] = Array.from({ length: 12 }, (_, i) => ({
   date: `2025-04-${(i % 30 + 1).toString().padStart(2, "0")}`,
 }));
 
-const PAGE_SIZE = 4;
+const PAGE_SIZE = 10;
 
 export default function HomeNews() {
   const [page, setPage] = useState(1);
@@ -71,16 +72,31 @@ export default function HomeNews() {
                 alt={item.title}
                 className="w-full h-70 object-cover"
               />
-              <div className="p-6">
-                <p className="text-sm text-gray-500 mb-1">{item.date}</p>
-                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-700">{item.description}</p>
+              <div className="flex justify-between">
+                <div className="p-6">
+                  <p className="text-sm text-gray-500 mb-1">{item.date}</p>
+                  <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                  <p className="text-sm text-gray-700">{item.description}</p>
+                </div>
+                <div className="relative content-center">
+                  <Link 
+                    href={'/news/1'}
+                    className="text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                    Xem ngay
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
       </AnimatePresence>
-      <PaginateList current={page} maxPage={2} />
+      <div className="mt-10 place-self-center">
+        <PaginateList
+          current={page}
+          maxPage={2}
+          onClick={(page) => setPage(page)}
+        />
+      </div>
     </motion.div>
   );
 }

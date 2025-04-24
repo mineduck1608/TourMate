@@ -17,15 +17,15 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<News> Get(int id)
+        public async Task<ActionResult<News>> GetAsync(int id)
         {
-            return Ok(_newsService.GetNews(id));
+            return Ok(await _newsService.GetNews(id));
         }
 
         [HttpGet("paged")]
-        public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<IEnumerable<News>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_newsService.GetAll(pageSize, pageIndex));
+            return Ok(await _newsService.GetAll(pageSize, pageIndex));
         }
 
         [HttpGet("all")]
@@ -36,24 +36,24 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] NewsCreateModel data)
+        public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
             var news = data.Convert();
-            _newsService.CreateNews(news);
-            return CreatedAtAction(nameof(Get), new { id = news.NewsId }, news);
+            await _newsService.CreateNews(news);
+            return CreatedAtAction(nameof(GetAsync), new { id = news.NewsId }, news);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] NewsCreateModel news)
+        public async Task<IActionResult> UpdateAsync([FromBody] NewsCreateModel news)
         {
-            _newsService.UpdateNews(news.Convert());
+            await _newsService.UpdateNews(news.Convert());
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _newsService.DeleteNews(id);
+            var result = await _newsService.DeleteNews(id);
             return result ? NoContent() : NotFound();
         }
     }

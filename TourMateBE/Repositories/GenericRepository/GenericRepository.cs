@@ -121,6 +121,13 @@ namespace Repositories.GenericRepository
             return true;
         }
 
+        public async Task<bool> RemoveAsync(int id)
+        {
+            _context.Remove(GetById(id));
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public T GetById(int id)
         {
             var entity = _context.Set<T>().Find(id);
