@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using System.Linq;
 
 namespace API.Controllers
 {
@@ -23,9 +25,15 @@ namespace API.Controllers
         }
 
         [HttpGet("paged")]
-        public async Task<ActionResult<IEnumerable<News>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<News>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _newsService.GetAll(pageSize, pageIndex));
+            var result = await _newsService.GetAll(pageSize, pageIndex);
+            int count = result.Result.Count;
+            for (int i = 0; i < count; i++)
+            {
+                result.Result[i].Content = null;
+            }
+            return Ok(result);
         }
 
         [HttpGet("all")]

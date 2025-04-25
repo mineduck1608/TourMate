@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
+using Repositories.DTO;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -30,12 +31,27 @@ namespace Repositories.GenericRepository
                 .Take(pageSize)
                 .ToList();
         }
-        public async Task<List<T>> GetAllAsync(int pageSize, int pageIndex)
+        public async Task<PagedResult<T>> GetAllPaged(int pageSize, int pageIndex)
         {
-            return await _context.Set<T>()
+            var result = await _context.Set<T>()
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToListAsync();
+            var totalAmount = await _context.Set<T>().CountAsync();
+            return new()
+            {
+                Result = result,
+                TotalResult = totalAmount,
+                TotalPage = totalAmount / pageSize + (totalAmount  % pageSize != 0 ? 1 : 0)
+            };
+        }
+        public async Task<List<T>> GetAllAsync(int pageSize, int pageIndex)
+        {
+            var result = await _context.Set<T>()
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .ToListAsync();
+            return result;
         }
         public async Task<List<T>> GetAllList()
         {

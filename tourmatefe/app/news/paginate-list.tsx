@@ -26,8 +26,8 @@ export default function PaginateList({ current, maxPage, onClick }: PaginationPr
                             <li key={adjusted}>
                                 <button
                                     onClick={() => onClick(adjusted)}
-                                    className={"flex items-center justify-center px-4 h-10 leading-tight text-gray-500  border border-gray-300  hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                        + ` ${isCurrent ? 'bg-blue-100 ' : 'bg-white hover:bg-gray-100'}`
+                                    className={"flex items-center justify-center px-4 h-10 leading-tight   border border-gray-300  hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
+                                        + ` ${isCurrent ? 'bg-blue-100 ' : 'bg-white hover:bg-gray-100 text-gray-500'}`
                                     }>
                                     {adjusted}
                                 </button>

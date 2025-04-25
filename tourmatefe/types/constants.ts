@@ -1,4 +1,4 @@
-export const apiUrl = 'https://localhost:7205/api'
+export const apiUrl = 'https://localhost:7147/api'
 
 export const getToken = () => {
   return sessionStorage.getItem('token')

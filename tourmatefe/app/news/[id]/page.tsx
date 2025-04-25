@@ -1,4 +1,5 @@
-import React from 'react'
+"use client";
+import React, { use } from 'react'
 import Header from '@/components/MegaMenu';
 import Footer from '@/components/Footer';
 import Banner from '@/components/Banner';
@@ -6,22 +7,37 @@ import RecentNews from './recent-news';
 import NewsCategories from './categories';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
+import { useQuery } from '@tanstack/react-query';
+import { getNews,} from '../newsList';
 
 export default function NewsDetailPage({
     params,
 }: {
-    params: { id: string };
+    params: Promise<{ id: string }>;
 }) {
+    const {id} = use(params);
+
+    const { data } = useQuery({
+        queryKey: ['news', id],
+        queryFn: () => getNews(id),
+        staleTime: 24 * 3600 * 1000,
+    })
+    const news = data?.data
+
     return (<div className='admin-layout'>
         <Header />
         <div className='h-[100%]'>
-            <Banner
-                imageUrl="/news-banner.png"
-                title="TIN TỨC"
-            />
+            {
+                news?.bannerImg && news?.title &&
+                <Banner
+                imageUrl={news?.bannerImg}
+                title={news?.title}
+            />}
         </div>
-        <div className='flex justify-between mt-10'>
-            <div className='w-[70%] p-2'>A</div>
+        <div className='flex justify-between py-10 px-5'>
+            <div className='w-[70%] p-2'>
+                {data?.data?.content}
+            </div>
             <div className='w-[25%] p-2 *:mb-10'>
                 <RecentNews />
                 <NewsCategories />
@@ -31,7 +47,7 @@ export default function NewsDetailPage({
                         <p>Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ chuyên gia và rất vui được trò chuyện với bạn.</p>
                         <table className='mt-5'>
                             <tbody>
-                                <tr className='*:p-1'>
+                                <tr className='*:p-2'>
                                     <td>
                                         <FaPhoneAlt fill='#ffffff' size={20} />
                                     </td>

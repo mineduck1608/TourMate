@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -6,7 +7,7 @@ namespace Services
     public interface INewsService
     {
         Task<News> GetNews(int id);
-        Task<IEnumerable<News>> GetAll(int pageSize, int pageIndex);
+        Task<PagedResult<News>> GetAll(int pageSize, int pageIndex);
         Task CreateNews(News news);
         Task UpdateNews(News news);
         Task<bool> DeleteNews(int id);
@@ -22,9 +23,9 @@ namespace Services
             return await NewsRepository.GetByIdAsync(id);
         }
 
-        public async Task<IEnumerable<News>> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<News>> GetAll(int pageSize, int pageIndex)
         {
-            return await NewsRepository.GetAllAsync(pageSize, pageIndex);
+            return await NewsRepository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<IEnumerable<News>> GetAllList()

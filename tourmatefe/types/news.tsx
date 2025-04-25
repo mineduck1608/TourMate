@@ -1,7 +1,7 @@
 export type News = {
     newsId: number;
     title: string;
-    createdDate: Date; // or string if you prefer to handle it as ISO string
+    createdDate: string; // or string if you prefer to handle it as ISO string
     isDeleted: boolean;
     content: string;
     bannerImg: string;
