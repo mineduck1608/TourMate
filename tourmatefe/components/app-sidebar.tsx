@@ -137,13 +137,13 @@ const data = {
   ],
   projects: [
     {
-      name: "Design Engineering",
-      url: "#",
+      name: "Tin tức",
+      url: "/admin/news",
       icon: Frame,
     },
     {
-      name: "Sales & Marketing",
-      url: "#",
+      name: "Dashboard",
+      url: "/admin/dashboard",
       icon: PieChart,
     },
     {
