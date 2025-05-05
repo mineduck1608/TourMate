@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getNewsList } from "@/app/news/newsList";
+import PaginateList from "@/app/news/paginate-list";
 
 export default function HomeNews() {
   const [page, setPage] = useState(1);
-  const pageSize = 12
-  const {data } = useQuery({
+  const pageSize = 3
+  const { data } = useQuery({
     queryKey: ['news', pageSize, page],
     queryFn: () => getNewsList(pageSize, page),
     staleTime: 24 * 3600 * 1000,
@@ -17,10 +18,10 @@ export default function HomeNews() {
   const maxPage = data?.data.totalPage ?? 0
   useEffect(() => {
     const timer = setInterval(() => {
-      if(page < maxPage){
+      if (page < maxPage) {
         setPage(p => p + 1)
       }
-    }, 3000); // đổi trang mỗi 10 giây
+    }, 10000); // đổi trang mỗi 10 giây
     return () => clearInterval(timer);
   }, [page, maxPage]);
 
@@ -65,7 +66,7 @@ export default function HomeNews() {
                   {/* <p className="text-sm text-gray-700">{item.}</p> */}
                 </div>
                 <div className="relative content-center">
-                  <Link 
+                  <Link
                     href={'/news/' + item.newsId}
                     className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                     Xem ngay
@@ -77,6 +78,11 @@ export default function HomeNews() {
         </motion.div>
       </AnimatePresence>
       <div className="mt-10 place-self-center">
+        <PaginateList current={page} maxPage={maxPage}
+          onClick={(p) => {
+            setPage(p)
+          }}
+        />
       </div>
     </motion.div>
   );

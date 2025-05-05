@@ -8,7 +8,7 @@ export default function NewsListPage() {
     return (
         <div className='admin-layout'>
             <Header />
-            <div className='w-[80%] place-self-center'>
+            <div className=''>
                 <Banner
                     imageUrl="/news-banner.png"
                     title="TIN TỨC"
