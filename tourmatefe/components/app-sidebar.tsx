@@ -4,7 +4,6 @@ import * as React from "react"
 import {
   BookOpen,
   Bot,
-  Command,
   Frame,
   LifeBuoy,
   Map,
@@ -27,6 +26,9 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+import Image from "next/image"
+import Logo from "@/public/Logo.png";
+
 
 const data = {
   user: {
@@ -145,8 +147,8 @@ const data = {
       icon: PieChart,
     },
     {
-      name: "Travel",
-      url: "#",
+      name: "Địa điểm hoạt động",
+      url: "/admin/active-area",
       icon: Map,
     },
   ],
@@ -160,12 +162,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <SidebarMenuButton size="lg" asChild>
               <a href="#">
-                <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
-                  <Command className="size-4" />
+                <div className="size-10">
+                  <Image
+                    src={Logo}
+                    alt="Logo"
+                    width={40}
+                    height={40}
+                    className="rounded-full"
+                  />
                 </div>
                 <div className="grid flex-1 text-left text-sm leading-tight">
-                  <span className="truncate font-medium">Acme Inc</span>
-                  <span className="truncate text-xs">Enterprise</span>
+                  <span className="truncate font-medium">TourMate</span>
+                  <span className="truncate text-xs">Reach the world your way</span>
                 </div>
               </a>
             </SidebarMenuButton>

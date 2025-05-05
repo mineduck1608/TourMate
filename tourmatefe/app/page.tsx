@@ -18,9 +18,9 @@ export default function Home() {
       <HeroSection />
       <TourGuideCard />
       <AboutSunday />
-      <HomeNews />
       <FeedbackSection />
       <ContactPagination />
+      <HomeNews />
       <Footer />
     </div>
   );

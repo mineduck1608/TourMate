@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import PaginateList from "@/app/news/paginate-list";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getNewsList } from "@/app/news/newsList";
@@ -78,11 +77,6 @@ export default function HomeNews() {
         </motion.div>
       </AnimatePresence>
       <div className="mt-10 place-self-center">
-        <PaginateList
-          current={page}
-          maxPage={maxPage}
-          onClick={(page) => setPage(page)}
-        />
       </div>
     </motion.div>
   );
