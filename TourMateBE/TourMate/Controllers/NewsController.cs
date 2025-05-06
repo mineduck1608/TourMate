@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/news")]
     [ApiController]
     public class NewsController : ControllerBase
     {
@@ -24,15 +24,17 @@ namespace API.Controllers
             return Ok(await _newsService.GetNews(id));
         }
 
-        [HttpGet("paged")]
-        public async Task<ActionResult<PagedResult<News>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<News>>> GetAllAsync([FromQuery] int size = 10, [FromQuery] int page = 1)
         {
-            var result = await _newsService.GetAll(pageSize, pageIndex);
-            int count = result.Result.Count;
-            for (int i = 0; i < count; i++)
+            var result = await _newsService.GetAll(size, page);
+            // Tạo đối tượng response với dữ liệu đã bọc
+            var response = new PagedResult<News>
             {
-                result.Result[i].Content = null;
-            }
+                Result = result.Result, // Tin tức đã bọc trong "Data"
+                TotalResult = result.TotalResult, // Tổng số kết quả
+                TotalPage = result.TotalPage // Tổng số trang
+            };
             return Ok(result);
         }
 

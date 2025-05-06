@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
-import { ColumnDef } from "@tanstack/react-table"
-import { MoreHorizontal } from "lucide-react"
- 
-import { Button } from "@/components/ui/button"
+import { ColumnDef } from "@tanstack/react-table";
+import { MoreHorizontal } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,56 +10,114 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
+import { News } from "@/types/news";
+import { Checkbox } from "@/components/ui/checkbox";
 
-import { ArrowUpDown } from "lucide-react"
+// Hàm định dạng ngày theo dd/mm/yyyy
+const formatDate = (date: string) => {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, '0');
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const year = d.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
-// This type is used to define the shape of our data.
-// You can use a Zod schema here if you want.
-export type Payment = {
-  id: string
-  amount: number
-  status: "pending" | "processing" | "success" | "failed"
-  email: string
-}
-
-export const columns: ColumnDef<Payment>[] = [
+export const columns: ColumnDef<News>[] = [
   {
-    accessorKey: "status",
-    header: "Status",
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value: boolean) => table.toggleAllPageRowsSelected(value)}
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value: boolean) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
-    accessorKey: "email",
-    header: ({ column }) => {
-        return (
-          <Button
-            variant="ghost"
-            onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
-          >
-            Email
-            <ArrowUpDown className="ml-2 h-4 w-4" />
-          </Button>
-        )
-      },
+    accessorKey: "title",
+    header: "Tiêu đề",
+    cell: ({ row }) => (
+      <div
+        style={{
+          maxWidth: '300px',       // Chiều rộng tối đa của cột
+          whiteSpace: 'normal',    // Cho phép nội dung xuống dòng
+          overflowWrap: 'break-word', // Cho phép cắt từ nếu cần thiết
+        }}
+      >
+        {row.getValue('title')}
+      </div>
+    ),
   },
   {
-    accessorKey: "amount",
-    header: () => <div className="text-right">Amount</div>,
+    accessorKey: "createdDate",
+    header: "Ngày tạo",
+    cell: ({ row }) => formatDate(row.getValue("createdDate")), // Định dạng lại ngày
+    meta: {
+      style: { width: "150px" } // Chỉnh chiều rộng cột
+    }
+  },
+  {
+    accessorKey: "content",
+    header: "Nội dung",
+    cell: ({ row }) => (
+      <div
+        style={{
+          maxWidth: '600px',
+          whiteSpace: 'normal',  // Cho phép nội dung xuống dòng
+          overflowWrap: 'break-word', // Cho phép cắt từ nếu quá dài
+        }}
+        dangerouslySetInnerHTML={{
+          __html: row.getValue("content") || "",  // Hiển thị HTML (cẩn thận với dữ liệu không xác thực)
+        }}
+      />
+    ),
+  },
+  {
+    accessorKey: "bannerImg",
+    header: "Ảnh",
     cell: ({ row }) => {
-      const amount = parseFloat(row.getValue("amount"))
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(amount)
- 
-      return <div className="text-right font-medium">{formatted}</div>
-    },
+      const imageUrl = row.getValue('bannerImg') as string;
+      return (
+        <div
+          style={{
+            maxWidth: '200px',
+            whiteSpace: 'normal', // Cho phép ảnh xuống dòng nếu cần
+            overflowWrap: 'break-word',
+          }}
+        >
+          {/* Hiển thị ảnh nếu có URL */}
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img 
+              src={imageUrl} 
+              alt="Banner" 
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh
+            />
+          ) : (
+            <span>No Image</span> // Nếu không có ảnh, hiển thị "No Image"
+          )}
+        </div>
+      );
+    }
   },
   {
     id: "actions",
     cell: ({ row }) => {
-      const payment = row.original
- 
+      const data = row.original;
+
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -72,7 +129,7 @@ export const columns: ColumnDef<Payment>[] = [
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Actions</DropdownMenuLabel>
             <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(payment.id)}
+              onClick={() => navigator.clipboard.writeText(data.newsId.toString())}
             >
               Copy payment ID
             </DropdownMenuItem>
@@ -81,7 +138,7 @@ export const columns: ColumnDef<Payment>[] = [
             <DropdownMenuItem>View payment details</DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];

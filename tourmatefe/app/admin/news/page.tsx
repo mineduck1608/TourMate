@@ -1,3 +1,5 @@
+"use client";
+
 import { AppSidebar } from "@/components/app-sidebar";
 import {
   Breadcrumb,
@@ -14,120 +16,29 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { DataTable } from "./data-table";
-import { columns, Payment } from "./columns";
+import { columns } from "./columns";
+import { useQuery } from "@tanstack/react-query";
+import { useQueryString } from "../../utils/utils";
+import { getNews } from "@/app/api/news.api";
 
-async function getData(): Promise<Payment[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },{
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },{
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },{
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },{
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-    {
-      id: "728ed52f",
-      amount: 100,
-      status: "pending",
-      email: "m@example.com",
-    },
-  ];
-}
+const LIMIT = 10;
 
-export default async function Page() {
-  const data = await getData();
+export default function Page() {
+  const queryString: { page?: string } = useQueryString();
+  const page = Number(queryString.page) || 1;
+
+  const { data } = useQuery({
+    queryKey: ['news', page],
+    queryFn: () => {
+      const controller = new AbortController();
+      setTimeout(() => {
+        controller.abort();
+      }, 5000);  // Hủy yêu cầu sau 5 giây nếu không có phản hồi
+      return getNews(page, LIMIT, controller.signal);
+    },
+    retry: 0,
+    refetchOnWindowFocus: false, // Tắt refetch khi người dùng quay lại tab
+  });
 
   return (
     <SidebarProvider>
@@ -155,8 +66,9 @@ export default async function Page() {
             </Breadcrumb>
           </div>
         </header>
-            <div className="w-[95%] mx-auto rounded-md border p-5">
-              <DataTable columns={columns} data={data} />
+        <div className="w-[95%] mx-auto rounded-md border p-5 mb-10">
+          {/* Hiển thị bảng dữ liệu khi có dữ liệu */}
+          <DataTable columns={columns} data={data?.result ?? []} totalResults={data?.totalResult ?? 0} totalPages={data?.totalPage ?? 0} page={page}/>
         </div>
       </SidebarInset>
     </SidebarProvider>

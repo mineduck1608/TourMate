@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Providers from "./providers"; // đường dẫn có thể thay đổi tùy vị trí file providers.tsx
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css'; // import the CSS for the Toastify component
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,6 +39,7 @@ export default function RootLayout({
       >
         {/* Bao bọc toàn bộ cây component bằng Providers để có thể sử dụng React Query */}
         <Providers>{children}</Providers>
+        <ToastContainer />
       </body>
     </html>
   );
