@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<News>>> GetAllAsync([FromQuery] int size = 10, [FromQuery] int page = 1)
+        public async Task<ActionResult<PagedResult<News>>> GetAllAsync(int size = 10, int page = 1)
         {
             var result = await _newsService.GetAll(size, page);
             // Tạo đối tượng response với dữ liệu đã bọc

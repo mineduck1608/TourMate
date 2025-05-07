@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/invoices")]
     [ApiController]
     public class InvoiceController : ControllerBase
     {

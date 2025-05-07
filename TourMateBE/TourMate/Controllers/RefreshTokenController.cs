@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/refresh-tokens")]
     [ApiController]
     public class RefreshTokenController : ControllerBase
     {

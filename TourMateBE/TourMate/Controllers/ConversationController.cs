@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/conversations")]
     [ApiController]
     public class ConversationController : ControllerBase
     {
