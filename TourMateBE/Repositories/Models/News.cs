@@ -11,7 +11,7 @@ public partial class News
 
     public string Title { get; set; }
 
-    public DateOnly CreatedDate { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public bool IsDeleted { get; set; }
 

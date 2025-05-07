@@ -49,8 +49,9 @@ namespace API.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
             var news = data.Convert();
+            news.CreatedAt = DateTime.Now;
             await _newsService.CreateNews(news);
-            return CreatedAtAction(nameof(GetAsync), new { id = news.NewsId }, news);
+            return Ok();
         }
 
         [HttpPut]
