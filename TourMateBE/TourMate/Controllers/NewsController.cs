@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Services;
 using System.Linq;
@@ -49,16 +50,20 @@ namespace API.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
             var news = data.Convert();
-            news.CreatedAt = DateTime.Now;
             await _newsService.CreateNews(news);
             return Ok();
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] NewsCreateModel news)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] NewsUpdateModel data)
         {
-            await _newsService.UpdateNews(news.Convert());
-            return NoContent();
+            var news = data.Convert();
+            var result = await _newsService.UpdateNews(news);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]

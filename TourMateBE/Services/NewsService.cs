@@ -9,7 +9,7 @@ namespace Services
         Task<News> GetNews(int id);
         Task<PagedResult<News>> GetAll(int pageSize, int pageIndex);
         Task CreateNews(News news);
-        Task UpdateNews(News news);
+        Task<bool> UpdateNews(News news);
         Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
     }
@@ -40,9 +40,10 @@ namespace Services
             await NewsRepository.CreateAsync(news);
         }
 
-        public async Task UpdateNews(News news)
+        public async Task<bool> UpdateNews(News news)
         {
-            await NewsRepository.UpdateAsync(news);
+            
+            return await NewsRepository.UpdateAsync(news);
         }
 
         public async Task<bool> DeleteNews(int id)

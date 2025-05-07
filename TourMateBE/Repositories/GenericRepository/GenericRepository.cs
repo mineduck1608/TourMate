@@ -108,7 +108,7 @@ namespace Repositories.GenericRepository
             //_context.SaveChanges();
         }
 
-        public async Task<int> UpdateAsync(T entity)
+        public async Task<bool> UpdateAsync(T entity)
         {
             //var trackerEntity = _context.Set<T>().Local.FirstOrDefault(e => e == entity);
             //if (trackerEntity != null)
@@ -118,10 +118,17 @@ namespace Repositories.GenericRepository
             //var tracker = _context.Attach(entity);
             //tracker.State = EntityState.Modified;
             //return await _context.SaveChangesAsync();
-
-            var tracker = _context.Attach(entity);
-            tracker.State = EntityState.Modified;
-            return await _context.SaveChangesAsync();
+            try
+            {
+                var tracker = _context.Attach(entity);
+                tracker.State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
 
             //if (_context.Entry(entity).State == EntityState.Detached)
             //{

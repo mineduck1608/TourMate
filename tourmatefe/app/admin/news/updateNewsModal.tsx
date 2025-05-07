@@ -10,41 +10,23 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 
 import "react-quill-new/dist/quill.snow.css";
 
-type NewsModalProps = {
+type UpdateNewsModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  currentNews?: News | null;
+  currentNews: News;
   onSave: (newsData: News) => void;
 };
 
-const NewsModal: React.FC<NewsModalProps> = ({
+const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
   isOpen,
   onClose,
   currentNews,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<News>({
-    newsId: 0,
-    title: "",
-    createdAt: "",
-    isDeleted: false,
-    content: "",
-    bannerImg: "",
-  });
+  const [formData, setFormData] = useState<News>(currentNews);
 
   useEffect(() => {
-    if (currentNews) {
-      setFormData(currentNews);
-    } else {
-      setFormData({
-        newsId: 0,
-        title: "",
-        createdAt: "",
-        isDeleted: false,
-        content: "",
-        bannerImg: "",
-      });
-    }
+    setFormData(currentNews);
   }, [currentNews]);
 
   const handleChange = (
@@ -70,7 +52,6 @@ const NewsModal: React.FC<NewsModalProps> = ({
         isOpen ? "block" : "hidden"
       }`}
     >
-      {/* Overlay */}
       <div
         className={`absolute inset-0 bg-black opacity-50 ${
           isOpen ? "block" : "hidden"
@@ -78,11 +59,10 @@ const NewsModal: React.FC<NewsModalProps> = ({
         onClick={onClose}
       ></div>
 
-      {/* Modal Content */}
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
         <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            {currentNews ? "Cập nhật tin tức" : "Thêm tin tức mới"}
+            Cập nhật tin tức
           </h3>
           <button
             type="button"
@@ -145,7 +125,6 @@ const NewsModal: React.FC<NewsModalProps> = ({
               >
                 Nội dung
               </label>
-              {/* React Quill Editor */}
               <ReactQuill
                 value={formData.content}
                 onChange={handleEditorChange}
@@ -170,7 +149,7 @@ const NewsModal: React.FC<NewsModalProps> = ({
               type="submit"
               className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
-              {currentNews ? "Cập nhật tin tức" : "Thêm tin tức"}
+              Cập nhật tin tức
             </button>
           </div>
         </form>
@@ -179,4 +158,4 @@ const NewsModal: React.FC<NewsModalProps> = ({
   );
 };
 
-export default NewsModal;
+export default UpdateNewsModal;

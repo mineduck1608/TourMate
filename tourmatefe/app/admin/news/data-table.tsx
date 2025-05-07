@@ -32,11 +32,11 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { News } from "@/types/news";
-import NewsModal from "./modal";
-import { useMutation } from "@tanstack/react-query";
-import { addNews, updateNews } from "@/app/api/news.api";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { addNews, getNews } from "@/app/api/news.api";
 import { toast } from "react-toastify";
 import Link from 'next/link';
+import AddNewsModal from "./addNewsModal";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -77,51 +77,43 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
-  const [currentNews, setCurrentNews] = React.useState<News | null>(null);
-
-  const openModal = (news?: News) => {
-    setCurrentNews(news || null);
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-    setCurrentNews(null);
-  };
-
-  const handleSave = (newsData: News) => {
-    if (newsData.newsId) {
-      updateNewsMutation.mutate({ id: newsData.newsId, data: newsData });
-    } else {
-      addNewsMutation.mutate(newsData);
-    }
-  };
-
-
-  // Mutation for adding news
-  const addNewsMutation = useMutation({
-    mutationFn: addNews,
-    onSuccess: () => {
-      toast.success("Thêm tin tức thành công");
-    },
-    onError: (error) => {
-      toast.error("Thêm tin tức thất bại");
-      console.error(error);
-    },
-  });
-
-  // Mutation for updating news
-  const updateNewsMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: News }) => updateNews(id, data),
-    onSuccess: () => {
-      toast.success("Cập nhật tin tức thành công");
-    },
-    onError: (error) => {
-      toast.error("Cập nhật tin tức thất bại");
-      console.error(error);
-    },
-  });
+    const { refetch } = useQuery({
+      queryKey: ['news', page], // Pass page and limit as part of the query key
+      queryFn: ({ queryKey }) => {
+        const [, page, limit] = queryKey; // Destructure page and limit from queryKey
+        return getNews(page, limit); // Pass the extracted values to getNews
+      },
+      enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
+    });
+  
+    const [isModalOpen, setIsModalOpen] = React.useState(false);
+  
+    const openModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const closeModal = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleSave = (newsData: News) => {
+        newsData.isDeleted = false;
+        newsData.createdAt = new Date().toISOString();
+        addNewsMutation.mutate(newsData);
+    };
+  
+    // Mutation for adding news
+    const addNewsMutation = useMutation({
+      mutationFn: addNews,
+      onSuccess: () => {
+        toast.success('Thêm tin tức thành công');
+        refetch(); // Refetch dữ liệu sau khi thêm thành công
+      },
+      onError: (error) => {
+        toast.error('Thêm tin tức thất bại');
+        console.error(error);
+      },
+    });
 
   return (
     <div>
@@ -268,7 +260,7 @@ export function DataTable<TData, TValue>({
             </Link>
       )}
 </div>
-      <NewsModal isOpen={isModalOpen} onClose={closeModal} currentNews={currentNews} onSave={handleSave} />
+      <AddNewsModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
     </div>
   );
 }
