@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import { getNewsList } from "@/app/news/newsList";
+import dayjs from 'dayjs'
 import PaginateList from "@/app/news/paginate-list";
 
 export default function HomeNews() {
@@ -61,7 +62,7 @@ export default function HomeNews() {
               />
               <div className="flex justify-between">
                 <div className="p-6">
-                  <p className="text-sm text-gray-500 mb-1">{item.createdAt}</p>
+                  <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</p>
                   <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                   {/* <p className="text-sm text-gray-700">{item.}</p> */}
                 </div>
