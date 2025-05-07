@@ -8,7 +8,7 @@ using Services.Utils;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {

@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/cv-applications")]
     [ApiController]
     public class CvapplicationController : ControllerBase
     {

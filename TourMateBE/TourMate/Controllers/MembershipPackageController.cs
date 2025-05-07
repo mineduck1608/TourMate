@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/membership-packages")]
     [ApiController]
     public class MembershipPackageController : ControllerBase
     {

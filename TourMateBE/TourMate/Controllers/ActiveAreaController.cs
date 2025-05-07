@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/active-areas")]
     [ApiController]
     public class ActiveAreaController : ControllerBase
     {
