@@ -20,6 +20,7 @@ import { columns } from "./columns";
 import { useQuery } from "@tanstack/react-query";
 import { useQueryString } from "../../utils/utils";
 import { getNews } from "@/app/api/news.api";
+import { Suspense } from 'react'
 
 const LIMIT = 10;
 
@@ -41,6 +42,7 @@ export default function Page() {
   });
 
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -72,5 +74,6 @@ export default function Page() {
         </div>
       </SidebarInset>
     </SidebarProvider>
+    </Suspense>
   );
 }
