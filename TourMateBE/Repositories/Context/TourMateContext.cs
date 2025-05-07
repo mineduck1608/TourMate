@@ -611,7 +611,7 @@ public partial class TourMateContext : DbContext
             entity.Property(e => e.Content)
                 .IsRequired()
                 .HasColumnName("content");
-            entity.Property(e => e.CreatedDate).HasColumnName("createdAt");
+            entity.Property(e => e.CreatedAt).HasColumnName("createdAt");
             entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
             entity.Property(e => e.Title)
                 .IsRequired()

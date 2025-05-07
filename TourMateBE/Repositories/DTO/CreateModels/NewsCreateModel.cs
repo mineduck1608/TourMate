@@ -6,7 +6,7 @@ namespace Repositories.DTO.CreateModels
     {
         public string Title { get; set; }
 
-        public DateTime CreatedDate { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         public bool IsDeleted { get; set; }
 
@@ -16,7 +16,7 @@ namespace Repositories.DTO.CreateModels
         public News Convert() => new()
         {
             Title = Title,
-            CreatedDate = CreatedDate,
+            CreatedAt = CreatedAt,
             IsDeleted = IsDeleted,
             Content = Content,
             BannerImg = BannerImg,
