@@ -17,7 +17,6 @@ public partial class Customer
 
     public DateOnly DateOfBirth { get; set; }
 
-
     public string Phone { get; set; }
 
     public virtual Account Account { get; set; }

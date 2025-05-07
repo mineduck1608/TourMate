@@ -31,18 +31,34 @@ namespace Repositories.GenericRepository
                 .Take(pageSize)
                 .ToList();
         }
-        public async Task<PagedResult<T>> GetAllPaged(int pageSize, int pageIndex)
+        public async Task<PagedResult<T>> GetAllPaged(int pageSize, int pageIndex, string sortBy = "CreatedAt", bool descending = true)
         {
-            var result = await _context.Set<T>()
+            var query = _context.Set<T>().AsQueryable();
+
+            // Sắp xếp theo trường được chỉ định
+            if (descending)
+            {
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            }
+            else
+            {
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+            }
+
+            // Phân trang
+            var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToListAsync();
+
+            // Lấy tổng số bản ghi
             var totalAmount = await _context.Set<T>().CountAsync();
-            return new()
+
+            return new PagedResult<T>
             {
                 Result = result,
                 TotalResult = totalAmount,
-                TotalPage = totalAmount / pageSize + (totalAmount  % pageSize != 0 ? 1 : 0)
+                TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
             };
         }
         public async Task<List<T>> GetAllAsync(int pageSize, int pageIndex)

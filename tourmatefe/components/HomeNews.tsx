@@ -61,7 +61,7 @@ export default function HomeNews() {
               />
               <div className="flex justify-between">
                 <div className="p-6">
-                  <p className="text-sm text-gray-500 mb-1">{item.createdDate}</p>
+                  <p className="text-sm text-gray-500 mb-1">{item.createdAt}</p>
                   <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                   {/* <p className="text-sm text-gray-700">{item.}</p> */}
                 </div>

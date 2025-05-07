@@ -26,7 +26,7 @@ const NewsModal: React.FC<NewsModalProps> = ({
   const [formData, setFormData] = useState<News>({
     newsId: 0,
     title: "",
-    createdDate: "",
+    createdAt: "",
     isDeleted: false,
     content: "",
     bannerImg: "",
@@ -39,7 +39,7 @@ const NewsModal: React.FC<NewsModalProps> = ({
       setFormData({
         newsId: 0,
         title: "",
-        createdDate: "",
+        createdAt: "",
         isDeleted: false,
         content: "",
         bannerImg: "",
@@ -106,7 +106,7 @@ const NewsModal: React.FC<NewsModalProps> = ({
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 sm:grid-cols-2">
-            <div>
+            <div className="sm:col-span-2">
               <label
                 htmlFor="title"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -120,23 +120,6 @@ const NewsModal: React.FC<NewsModalProps> = ({
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Nhập tiêu đề"
                 value={formData.title}
-                onChange={handleChange}
-                required
-              />
-            </div>
-            <div>
-              <label
-                htmlFor="createdDate"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
-                Ngày tạo
-              </label>
-              <input
-                type="date"
-                name="createdDate"
-                id="createdDate"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                value={formData.createdDate}
                 onChange={handleChange}
                 required
               />
