@@ -56,12 +56,12 @@ export default function Home() {
       </div>
       <div className="flex flex-col md:flex-row gap-10 p-15 bg-gray-100">
         {/* Bộ lọc bên trái */}
-        {/* <div data-aos="fade-right" className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full">
+        <div data-aos="fade-right" className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full">
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
           <input
             type="text"
-            value={searchTerm}
-            onChange={handleSearchChange}
+            // value={searchTerm}
+            // onChange={handleSearchChange}
             placeholder="Tìm kiếm thành phố..."
             className="w-full mb-4 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           />
@@ -69,8 +69,8 @@ export default function Home() {
             Vùng miền:
           </label>
           <select
-            value={regionFilter}
-            onChange={handleRegionChange}
+            // value={regionFilter}
+            // onChange={handleRegionChange}
             className="w-full p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
             <option value="all">Tất cả</option>
@@ -79,7 +79,7 @@ export default function Home() {
             <option value="central">Miền Trung</option>
             <option value="central">Miền Tây</option>
           </select>
-        </div> */}
+        </div>
 
         {/* Danh sách thành phố */}
         <div data-aos="fade-left" className="md:w-2/3 w-full ml-15">
