@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const LIMIT = 8;
 
-export function ActiveAreaList() {
+function ActiveAreaList() {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
   const router = useRouter();
