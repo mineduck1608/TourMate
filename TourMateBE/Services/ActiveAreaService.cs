@@ -8,6 +8,8 @@ namespace Services
     {
         ActiveArea GetActiveArea(int id);
         Task<PagedResult<ActiveArea>> GetAll(int pageSize, int pageIndex);
+        Task<PagedResult<ActiveArea>> GetActiveAreas(string search, string region, int page, int limit);
+
         Task<bool> CreateActiveArea(ActiveArea activearea);
         Task<bool> UpdateActiveArea(ActiveArea activearea);
         bool DeleteActiveArea(int id);
@@ -26,6 +28,13 @@ namespace Services
         {
             return await  ActiveAreaRepository.GetAllPaged(pageSize, pageIndex);
         }
+
+        // L?y các ActiveAreas v?i b? l?c và phân trang
+        public async Task<PagedResult<ActiveArea>> GetActiveAreas(string search, string region, int page, int limit)
+        {
+            return await ActiveAreaRepository.GetActiveAreas(search, region, page, limit);
+        }
+
 
         public async Task<bool> CreateActiveArea(ActiveArea activearea)
         {

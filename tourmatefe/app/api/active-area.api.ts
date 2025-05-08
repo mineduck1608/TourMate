@@ -14,6 +14,21 @@ export const getActiveAreas = async (page: number | string, limit: number | stri
     return res.data;
   };
 
+  export const getFilteredActiveAreas = async (page: number | string, limit: number | string, search: string, region: string, signal?: AbortSignal) => {
+    const res = await http.get<PagedResult<ActiveArea>>('active-area/filtered-area', {
+      params: {
+        pageSize: limit,
+        pageIndex: page,
+        search: search,
+        region: region
+      },
+      signal
+    });
+  
+    return res.data;
+  };
+
+
 export const getActiveArea = (id: number | string) => http.get<ActiveArea>(`active-area/${id}`)
 
 export const addActiveArea = async (data: ActiveArea) => {

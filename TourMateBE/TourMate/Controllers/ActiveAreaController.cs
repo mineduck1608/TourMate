@@ -37,6 +37,27 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [HttpGet("filtered-area")]
+        public async Task<ActionResult<PagedResult<ActiveArea>>> GetActiveAreas(
+            string search = "",
+            string region = "",
+            int pageIndex = 1,
+            int pageSize = 8)
+        {
+            // Gọi service để lấy dữ liệu đã lọc và phân trang
+            var result = await _activeareaService.GetActiveAreas(search, region, pageIndex, pageSize);
+
+            // Tạo đối tượng PagedResult để trả về cho client
+            var response = new PagedResult<ActiveArea>
+            {
+                Result = result.Result,  // Các ActiveArea đã lọc
+                TotalResult = result.TotalResult,  // Tổng số kết quả
+                TotalPage = result.TotalPage  // Tổng số trang
+            };
+
+            return Ok(response);  // Trả về dữ liệu dưới dạng OK response
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ActiveAreaCreateModel data)
         {
