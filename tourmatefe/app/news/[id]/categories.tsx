@@ -5,35 +5,35 @@ import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 
 export default function NewsCategories() {
-    const tags = Array.from({ length: 6 }).map(
-        (_, i) => `Khám phá địa điểm đặc sắc tại Hải Phòng ${i}`
-    )
+    const tags = [
+        'Khám phá',
+        'Tips',
+        'Câu chuyện',
+        'Điểm đến'
+    ]
     return (
-        <div>
-            <ScrollArea className="h-52 rounded-md border shadow-md">
-                <div className="p-4">
-                    <h4 className="mb-4 text-3xl font-medium leading-none">Danh mục</h4>
-                    <table>
-                        <tbody>
-                            {tags.map((tag) => (
-                                <tr key={tag} className='*:p-1'>
-                                    <td>
-                                        <FaArrowRight />
-                                    </td>
-                                    <td className='w-full'>
-                                        <div className='py-1'>
-                                            <Link href={'#'} className="text-md flex items-center">
-                                                {tag}
-                                            </Link>
-                                            <Separator />
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-
-                </div>
+        <div className='rounded-md border shadow-md'>
+            <h4 className="p-3 text-3xl font-medium leading-none">Danh mục</h4>
+            <ScrollArea className="h-44 px-3">
+                <table>
+                    <tbody>
+                        {tags.map((tag) => (
+                            <tr key={tag} className='*:p-1'>
+                                <td>
+                                    <FaArrowRight />
+                                </td>
+                                <td className='w-full'>
+                                    <div className='py-1'>
+                                        <Link href={'#'} className="text-md flex items-center">
+                                            {tag}
+                                        </Link>
+                                        <Separator />
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </ScrollArea>
         </div>
     )

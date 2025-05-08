@@ -1,45 +1,37 @@
-"use client";
-import React, { use } from 'react'
-import Header from '@/components/MegaMenu';
-import Footer from '@/components/Footer';
+'use client'
+import { getActiveArea } from '@/app/api/active-area.api';
 import Banner from '@/components/Banner';
-import RecentNews from './recent-news';
-import NewsCategories from './categories';
-import { ScrollArea } from '@/components/ui/scroll-area';
-import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
-import { getOneNews } from '@/app/api/news.api';
+import React, { use } from 'react'
 
-export default function NewsDetailPage({
+export default function ServiceDetail({
     params,
 }: {
     params: Promise<{ id: string }>;
 }) {
-    const {id} = use(params);
+    const { id } = use(params);
 
     const { data } = useQuery({
         queryKey: ['news', id],
-        queryFn: () => getOneNews(id),
+        queryFn: () => getActiveArea(id),
         staleTime: 24 * 3600 * 1000,
     })
-    const news = data?.data
-
+    const area = data?.data
     return (<div className='admin-layout'>
-        <Header />
         <div className='h-[100%]'>
             {
-                news?.bannerImg && news?.title &&
+                area?.bannerImg && area?.areaTitle &&
                 <Banner
-                imageUrl={news?.bannerImg}
-                title={news?.title}
-            />}
+                    imageUrl={area?.bannerImg}
+                    title={area?.areaTitle}
+                />}
         </div>
         <div className='flex justify-between py-10 px-5'>
             <div className='w-[70%] p-2'>
-                {data?.data?.content}
+                {area?.areaContent}
             </div>
-            <div className='w-[25%] p-2 *:mb-10'>
-                <RecentNews currentId={id}/>
+            {/* <div className='w-[25%] p-2 *:mb-10'>
+                <RecentNews currentId={id} />
                 <NewsCategories />
                 <ScrollArea className="h-60 rounded-md border shadow-md bg-black">
                     <div className="p-4 text-white">
@@ -67,8 +59,7 @@ export default function NewsDetailPage({
                         </table>
                     </div>
                 </ScrollArea>
-            </div>
+            </div> */}
         </div>
-        <Footer />
     </div>)
 }
