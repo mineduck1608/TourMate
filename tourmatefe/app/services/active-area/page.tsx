@@ -18,7 +18,7 @@ function ActiveAreaList() {
   const router = useRouter();
 
   const handlePageChange = (a: number) => {
-    router.push(`/user/services/active-area?page=${page + a}`);
+    router.push(`/services/active-area?page=${page + a}`);
   };
 
   const { data } = useQuery({

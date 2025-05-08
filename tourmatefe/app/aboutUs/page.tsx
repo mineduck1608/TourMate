@@ -4,10 +4,13 @@ import AboutUsHero from "./aboutHeroSection";
 import AboutCarousel from "./about-carousel";
 import OurSight from "./our-sight";
 import CustomerTestimonials from "./testimonial-carousel";
+import Footer from "@/components/Footer";
+import MegaMenu from "@/components/MegaMenu";
 
 export default function Page() {
   return (
     <main>
+      <MegaMenu />
       <AboutUsHero
         badge="Thành lập 2025"
         title1="Hành trình của bạn"
@@ -17,6 +20,7 @@ export default function Page() {
       <AboutCarousel />
       <OurSight />
       <CustomerTestimonials />
+      <Footer />
     </main>
   );
 }

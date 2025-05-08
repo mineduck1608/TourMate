@@ -6,8 +6,8 @@ import { FaFacebookF, FaInstagram, FaTwitter, FaPhoneAlt, FaEnvelope } from "rea
 
 export default function Footer() {
   return (
-    <footer className="bg-white shadow-md mt-10" data-aos="zoom-in-up">
-              <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
+    <footer className="bg-white shadow-md" data-aos="zoom-in-up">
+              <hr className="border-gray-200 sm:mx-auto" />
       <div className="mx-auto max-w-screen-2xl px-4 py-10 grid grid-cols-1 md:grid-cols-5 gap-8">
         {/* Logo */}
         <Link href="/" className="flex items-center md:col-span-1 mb-4 md:mb-0">

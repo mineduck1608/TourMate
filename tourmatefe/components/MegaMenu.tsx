@@ -56,8 +56,8 @@ const MegaMenu = () => {
             </li>
             <li>
               <Link 
-                href="/user/aboutUs"
-                className={`block py-2 px-3 ${currentRoute === "/user/aboutUs" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                href="/aboutUs"
+                className={`block py-2 px-3 ${currentRoute === "/aboutUs" ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Về chúng tôi
               </Link>
@@ -74,7 +74,7 @@ const MegaMenu = () => {
               <button 
                 id="mega-menu-icons-dropdown-button" 
                 onClick={toggleDropdown}
-                className={`flex items-center justify-between w-full py-2 px-3 font-medium ${currentRoute.startsWith("/user/services/") ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                className={`flex items-center justify-between w-full py-2 px-3 font-medium ${currentRoute.startsWith("/services/") ? "text-blue-600" : "text-gray-900"} border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Dịch vụ
                 <svg className="w-2.5 h-2.5 ms-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 10 6">
@@ -85,7 +85,7 @@ const MegaMenu = () => {
               <div className="p-4 pb-0 text-gray-900 md:pb-4">
                   <ul className="space-y-4" aria-labelledby="mega-menu-icons-dropdown-button">
                   <li>
-                                    <Link href="/user/services/active-area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
+                                    <Link href="/services/active-area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
                                         <span className="sr-only">Địa điểm hoạt động</span>
                                         <svg className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="m1.56 6.245 8 3.924a1 1 0 0 0 .88 0l8-3.924a1 1 0 0 0 0-1.8l-8-3.925a1 1 0 0 0-.88 0l-8 3.925a1 1 0 0 0 0 1.8Z"/>
