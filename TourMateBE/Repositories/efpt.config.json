@@ -1,6 +1,6 @@
 ﻿{
    "CodeGenerationMode": 4,
-   "ContextClassName": "TourMateContext",
+   "ContextClassName": "TourmateContext",
    "ContextNamespace": null,
    "FilterSchemas": false,
    "IncludeConnectionString": true,
@@ -47,10 +47,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Category]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Contact]",
          "ObjectType": 0
       },
@@ -84,18 +80,6 @@
       },
       {
          "Name": "[dbo].[News]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[NewsCategory]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[NewsComment]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[NewsReply]",
          "ObjectType": 0
       },
       {

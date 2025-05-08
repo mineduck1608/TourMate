@@ -32,9 +32,6 @@ builder.Services.AddScoped<IBlogCommentReplyService, BlogCommentReplyService>();
 builder.Services.AddScoped<BlogLikeRepository>();
 builder.Services.AddScoped<IBlogLikeService, BlogLikeService>();
 
-builder.Services.AddScoped<CategoryRepository>();
-builder.Services.AddScoped<ICategoryService, CategoryService>();
-
 builder.Services.AddScoped<ContactRepository>();
 builder.Services.AddScoped<IContactService, ContactService>();
 
@@ -61,9 +58,6 @@ builder.Services.AddScoped<IMessagesService, MessagesService>();
 
 builder.Services.AddScoped<NewsRepository>();
 builder.Services.AddScoped<INewsService, NewsService>();
-
-builder.Services.AddScoped<NewsCategoryRepository>();
-builder.Services.AddScoped<INewsCategoryService, NewsCategoryService>();
 
 builder.Services.AddScoped<PaymentsRepository>();
 builder.Services.AddScoped<IPaymentsService, PaymentsService>();
