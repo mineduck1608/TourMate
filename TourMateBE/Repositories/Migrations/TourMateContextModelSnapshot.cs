@@ -10,7 +10,7 @@ using Repositories.Context;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(TourMateContext))]
+    [DbContext(typeof(TourmateContext))]
     partial class TourMateContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
@@ -31,7 +31,7 @@ namespace Repositories.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("AccountId"));
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -213,7 +213,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -597,7 +597,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -644,7 +644,7 @@ namespace Repositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("areaId");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -810,7 +810,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateOnly>("CreatedDate")
+                    b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date")
                         .HasColumnName("createdDate");
 
@@ -875,7 +875,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -923,7 +923,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateTime>("CreatedDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
                         .HasColumnName("createdDate");
 
@@ -1291,7 +1291,7 @@ namespace Repositories.Migrations
                         .HasColumnType("nvarchar(max)")
                         .HasColumnName("content");
 
-                    b.Property<DateOnly>("CreatedDate")
+                    b.Property<DateOnly>("CreatedAt")
                         .HasColumnType("date")
                         .HasColumnName("createdDate");
 

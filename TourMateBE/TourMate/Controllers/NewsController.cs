@@ -1,11 +1,14 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Services;
+using System.Linq;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/news")]
     [ApiController]
     public class NewsController : ControllerBase
     {
@@ -17,15 +20,23 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<News> Get(int id)
+        public async Task<ActionResult<News>> GetAsync(int id)
         {
-            return Ok(_newsService.GetNews(id));
+            return Ok(await _newsService.GetNews(id));
         }
 
-        [HttpGet("paged")]
-        public ActionResult<IEnumerable<News>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<News>>> GetAllAsync(int size = 10, int page = 1)
         {
-            return Ok(_newsService.GetAll(pageSize, pageIndex));
+            var result = await _newsService.GetAll(size, page);
+            // Tạo đối tượng response với dữ liệu đã bọc
+            var response = new PagedResult<News>
+            {
+                Result = result.Result, // Tin tức đã bọc trong "Data"
+                TotalResult = result.TotalResult, // Tổng số kết quả
+                TotalPage = result.TotalPage // Tổng số trang
+            };
+            return Ok(result);
         }
 
         [HttpGet("all")]
@@ -36,24 +47,33 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] NewsCreateModel data)
+        public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
             var news = data.Convert();
-            _newsService.CreateNews(news);
-            return CreatedAtAction(nameof(Get), new { id = news.NewsId }, news);
+            var result = await _newsService.CreateNews(news);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] NewsCreateModel news)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> UpdateAsync([FromBody] NewsUpdateModel data)
         {
-            _newsService.UpdateNews(news.Convert());
-            return NoContent();
+            var news = data.Convert();
+            var result = await _newsService.UpdateNews(news);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _newsService.DeleteNews(id);
+            var result = await _newsService.DeleteNews(id);
             return result ? NoContent() : NotFound();
         }
     }

@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/blog-likes")]
     [ApiController]
     public class BlogLikeController : ControllerBase
     {

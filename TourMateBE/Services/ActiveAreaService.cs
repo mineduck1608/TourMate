@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -6,9 +7,9 @@ namespace Services
     public interface IActiveAreaService
     {
         ActiveArea GetActiveArea(int id);
-        IEnumerable<ActiveArea> GetAll(int pageSize, int pageIndex);
-        void CreateActiveArea(ActiveArea activearea);
-        void UpdateActiveArea(ActiveArea activearea);
+        Task<PagedResult<ActiveArea>> GetAll(int pageSize, int pageIndex);
+        Task<bool> CreateActiveArea(ActiveArea activearea);
+        Task<bool> UpdateActiveArea(ActiveArea activearea);
         bool DeleteActiveArea(int id);
     }
 
@@ -21,19 +22,20 @@ namespace Services
             return ActiveAreaRepository.GetById(id);
         }
 
-        public IEnumerable<ActiveArea> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<ActiveArea>> GetAll(int pageSize, int pageIndex)
         {
-            return ActiveAreaRepository.GetAll(pageSize, pageIndex);
+            return await  ActiveAreaRepository.GetAllPaged(pageSize, pageIndex);
         }
 
-        public void CreateActiveArea(ActiveArea activearea)
+        public async Task<bool> CreateActiveArea(ActiveArea activearea)
         {
-            ActiveAreaRepository.Create(activearea);
+            return await ActiveAreaRepository.CreateAsync(activearea);
         }
 
-        public void UpdateActiveArea(ActiveArea activearea)
+
+        public async Task<bool> UpdateActiveArea(ActiveArea activearea)
         {
-            ActiveAreaRepository.Update(activearea);
+            return await ActiveAreaRepository.UpdateAsync(activearea);
         }
 
         public bool DeleteActiveArea(int id)

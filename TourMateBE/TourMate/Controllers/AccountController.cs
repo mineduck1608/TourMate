@@ -8,7 +8,7 @@ using Services.Utils;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/accounts")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -82,7 +82,6 @@ namespace API.Controllers
                 Gender = gender,
                 Phone = phone,
                 DateOfBirth = dateOfBirth,
-                Address = address
             };
 
             // Lưu tài khoản

@@ -1,11 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/active-area")]
     [ApiController]
     public class ActiveAreaController : ControllerBase
     {
@@ -23,25 +25,40 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<ActiveArea>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_activeareaService.GetAll(pageSize, pageIndex));
+           var result = await _activeareaService.GetAll(pageSize, pageIndex);
+            var response = new PagedResult<ActiveArea>
+            {
+                Result = result.Result, // Tin tức đã bọc trong "Data"
+                TotalResult = result.TotalResult, // Tổng số kết quả
+                TotalPage = result.TotalPage // Tổng số trang
+            };
+            return Ok(result);
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] ActiveAreaCreateModel data)
+        public async Task<IActionResult> Create([FromBody] ActiveAreaCreateModel data)
         {
             var activearea = data.Convert();
-            _activeareaService.CreateActiveArea(activearea);
-            return CreatedAtAction(nameof(Get), new { id = activearea.AreaId }, activearea);
+            var result = await _activeareaService.CreateActiveArea(activearea);
+            if(result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] ActiveAreaCreateModel data)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromBody] ActiveAreaUpdateModal data)
         {
             var activearea = data.Convert();
-            _activeareaService.UpdateActiveArea(activearea);
-            return NoContent();
+            var result = await _activeareaService.UpdateActiveArea(activearea);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]

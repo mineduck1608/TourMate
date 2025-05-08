@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -5,11 +6,11 @@ namespace Services
 {
     public interface INewsService
     {
-        News GetNews(int id);
-        IEnumerable<News> GetAll(int pageSize, int pageIndex);
-        void CreateNews(News news);
-        void UpdateNews(News news);
-        bool DeleteNews(int id);
+        Task<News> GetNews(int id);
+        Task<PagedResult<News>> GetAll(int pageSize, int pageIndex);
+        Task<bool> CreateNews(News news);
+        Task<bool> UpdateNews(News news);
+        Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
     }
 
@@ -17,14 +18,14 @@ namespace Services
     {
         private NewsRepository NewsRepository { get; set; } = new();
 
-        public News GetNews(int id)
+        public async Task<News> GetNews(int id)
         {
-            return NewsRepository.GetById(id);
+            return await NewsRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<News> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<News>> GetAll(int pageSize, int pageIndex)
         {
-            return NewsRepository.GetAll(pageSize, pageIndex);
+            return await NewsRepository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<IEnumerable<News>> GetAllList()
@@ -34,19 +35,20 @@ namespace Services
         }
 
 
-        public void CreateNews(News news)
+        public async Task<bool> CreateNews(News news)
         {
-            NewsRepository.Create(news);
+            return await NewsRepository.CreateAsync(news);
         }
 
-        public void UpdateNews(News news)
+        public async Task<bool> UpdateNews(News news)
         {
-            NewsRepository.Update(news);
+            
+            return await NewsRepository.UpdateAsync(news);
         }
 
-        public bool DeleteNews(int id)
+        public async Task<bool> DeleteNews(int id)
         {
-            NewsRepository.Remove(id);
+            await NewsRepository.RemoveAsync(id);
             return true;
         }
     }

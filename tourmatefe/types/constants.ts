@@ -1,4 +1,4 @@
-export const apiUrl = 'https://localhost:7205/api'
+export const apiUrl = 'https://tourmate-avbjemhvezgqa4en.southeastasia-01.azurewebsites.net/api'
 
 export const getToken = () => {
   return sessionStorage.getItem('token')

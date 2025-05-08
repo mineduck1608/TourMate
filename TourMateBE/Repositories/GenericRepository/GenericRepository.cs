@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
+using Repositories.DTO;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -11,14 +12,14 @@ namespace Repositories.GenericRepository
 {
     public class GenericRepository<T> where T : class
     {
-        protected TourMateContext _context;
+        protected TourmateContext _context;
 
         public GenericRepository()
         {
             _context ??= new();
         }
 
-        public GenericRepository(TourMateContext context)
+        public GenericRepository(TourmateContext context)
         {
             _context = context;
         }
@@ -30,12 +31,43 @@ namespace Repositories.GenericRepository
                 .Take(pageSize)
                 .ToList();
         }
-        public async Task<List<T>> GetAllAsync(int pageSize, int pageIndex)
+        public async Task<PagedResult<T>> GetAllPaged(int pageSize, int pageIndex, string sortBy = "CreatedAt", bool descending = true)
         {
-            return await _context.Set<T>()
+            var query = _context.Set<T>().AsQueryable();
+
+            // Sắp xếp theo trường được chỉ định
+            if (descending)
+            {
+                query = query.OrderByDescending(e => EF.Property<object>(e, sortBy));
+            }
+            else
+            {
+                query = query.OrderBy(e => EF.Property<object>(e, sortBy));
+            }
+
+            // Phân trang
+            var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToListAsync();
+
+            // Lấy tổng số bản ghi
+            var totalAmount = await _context.Set<T>().CountAsync();
+
+            return new PagedResult<T>
+            {
+                Result = result,
+                TotalResult = totalAmount,
+                TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
+            };
+        }
+        public async Task<List<T>> GetAllAsync(int pageSize, int pageIndex)
+        {
+            var result = await _context.Set<T>()
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .ToListAsync();
+            return result;
         }
         public async Task<List<T>> GetAllList()
         {
@@ -76,7 +108,7 @@ namespace Repositories.GenericRepository
             //_context.SaveChanges();
         }
 
-        public async Task<int> UpdateAsync(T entity)
+        public async Task<bool> UpdateAsync(T entity)
         {
             //var trackerEntity = _context.Set<T>().Local.FirstOrDefault(e => e == entity);
             //if (trackerEntity != null)
@@ -86,10 +118,17 @@ namespace Repositories.GenericRepository
             //var tracker = _context.Attach(entity);
             //tracker.State = EntityState.Modified;
             //return await _context.SaveChangesAsync();
-
-            var tracker = _context.Attach(entity);
-            tracker.State = EntityState.Modified;
-            return await _context.SaveChangesAsync();
+            try
+            {
+                var tracker = _context.Attach(entity);
+                tracker.State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
 
             //if (_context.Entry(entity).State == EntityState.Detached)
             //{
@@ -117,6 +156,13 @@ namespace Repositories.GenericRepository
         public async Task<bool> RemoveAsync(T entity)
         {
             _context.Remove(entity);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> RemoveAsync(int id)
+        {
+            _context.Remove(GetById(id));
             await _context.SaveChangesAsync();
             return true;
         }

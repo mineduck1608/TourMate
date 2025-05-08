@@ -8,6 +8,7 @@ const nextConfig: NextConfig = {
       'images.unsplash.com',
       'i.pravatar.cc',
       'img.freepik.com', // thêm domain freepik
+      'bestlocationhotels.com',
     ],
   },
 };

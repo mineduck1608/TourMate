@@ -12,7 +12,6 @@ namespace Repositories.DTO.CreateModels
 
         public DateOnly DateOfBirth { get; set; }
 
-        public string Address { get; set; }
 
         public string Phone { get; set; }
         public Customer Convert() => new()
@@ -20,9 +19,9 @@ namespace Repositories.DTO.CreateModels
             FullName = FullName,
             AccountId = AccountId,
             Gender = Gender,
-            Address = Address,
             Phone = Phone,
             CustomerId = 0,
+            DateOfBirth = DateOfBirth,
         };
     }
 }

@@ -41,7 +41,7 @@ const feedbacks: Feedback[] = [
 
 export default function FeedbackSection() {
   return (
-    <div className="bg-white py-16 px-4 md:px-10">
+    <div className="bg-gray-100 py-16 px-4 md:px-10">
       <h2 className="text-3xl md:text-4xl inter text-center mb-12"  data-aos="flip-down">
         Khách hàng nói gì về chúng tôi
       </h2>

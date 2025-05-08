@@ -3,7 +3,7 @@ using Repositories.Repository;
 using Repositories.Context;
 using Services;
 using System;
-using TourMate.Utils;
+using Services.Utils;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -93,10 +93,14 @@ builder.Services.AddScoped<TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
-builder.Services.AddDbContext<TourMateContext>(options =>
+builder.Services.AddDbContext<TourmateContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
+builder.Services.AddCors(options =>
+                options.AddDefaultPolicy(policy =>
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
+                    )
+                );
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -117,5 +121,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseCors();
 
 app.Run();

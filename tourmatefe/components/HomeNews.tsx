@@ -2,39 +2,29 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-
-type NewsItem = {
-  id: number;
-  title: string;
-  description: string;
-  imageUrl: string;
-  date: string;
-};
-
-const mockNews: NewsItem[] = Array.from({ length: 12 }, (_, i) => ({
-  id: i + 1,
-  title: `Tiêu đề tin tức ${i + 1}`,
-  description: `Đây là đoạn mô tả ngắn cho tin tức số ${i + 1}.`,
-  imageUrl: `https://picsum.photos/seed/news${i + 1}/600/400`,
-  date: `2025-04-${(i % 30 + 1).toString().padStart(2, "0")}`,
-}));
-
-const PAGE_SIZE = 3;
+import Link from "next/link";
+import { useQuery } from "@tanstack/react-query";
+import { getNewsList } from "@/app/news/newsList";
+import dayjs from 'dayjs'
+import PaginateList from "@/app/news/paginate-list";
 
 export default function HomeNews() {
   const [page, setPage] = useState(1);
-
-  const start = (page - 1) * PAGE_SIZE;
-  const end = start + PAGE_SIZE;
-  const pageData = mockNews.slice(start, end);
-  const hasMore = end < mockNews.length;
-
+  const pageSize = 3
+  const { data } = useQuery({
+    queryKey: ['news', pageSize, page],
+    queryFn: () => getNewsList(pageSize, page),
+    staleTime: 24 * 3600 * 1000,
+  })
+  const maxPage = data?.data.totalPage ?? 0
   useEffect(() => {
     const timer = setInterval(() => {
-      setPage((prev) => (hasMore ? prev + 1 : 1));
+      if (page < maxPage) {
+        setPage(p => p + 1)
+      }
     }, 10000); // đổi trang mỗi 10 giây
     return () => clearInterval(timer);
-  }, [page]);
+  }, [page, maxPage]);
 
   return (
     <motion.div
@@ -42,9 +32,9 @@ export default function HomeNews() {
       whileInView={{ opacity: 1, y: 0 }}
       transition={{ duration: 1 }}
       viewport={{ once: true }}
-      className="w-full px-10 py-6 overflow-hidden bg-gray-100 pb-10"
+      className="w-full px-10 py-6 overflow-hidden pb-10"
     >
-      <h2 className="text-center text-4xl inter mb-10 mt-5">Tin tức</h2>
+      <h2 className="text-blue-800 text-3xl inter mb-10 mt-5">Bài viết & Tin tức</h2>
 
       <AnimatePresence mode="wait">
         <motion.div
@@ -55,9 +45,9 @@ export default function HomeNews() {
           transition={{ duration: 0.8 }}
           className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
         >
-          {pageData.map((item) => (
+          {data?.data.result.map((item) => (
             <motion.div
-              key={item.id}
+              key={item.newsId}
               whileHover={{
                 scale: 1.05,
                 boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
@@ -66,19 +56,35 @@ export default function HomeNews() {
               className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all"
             >
               <img
-                src={item.imageUrl}
+                src={item.bannerImg}
                 alt={item.title}
                 className="w-full h-70 object-cover"
               />
-              <div className="p-6">
-                <p className="text-sm text-gray-500 mb-1">{item.date}</p>
-                <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                <p className="text-sm text-gray-700">{item.description}</p>
+              <div className="flex justify-between">
+                <div className="p-6">
+                  <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                  <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                  {/* <p className="text-sm text-gray-700">{item.}</p> */}
+                </div>
+                <div className="relative content-center">
+                  <Link
+                    href={'/news/' + item.newsId}
+                    className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                    Xem ngay
+                  </Link>
+                </div>
               </div>
             </motion.div>
           ))}
         </motion.div>
       </AnimatePresence>
+      <div className="mt-10 place-self-center">
+        <PaginateList current={page} maxPage={maxPage}
+          onClick={(p) => {
+            setPage(p)
+          }}
+        />
+      </div>
     </motion.div>
   );
 }

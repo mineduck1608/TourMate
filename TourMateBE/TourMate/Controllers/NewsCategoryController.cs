@@ -5,7 +5,7 @@ using Services;
 
 namespace API.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/news-categories")]
     [ApiController]
     public class NewsCategoryController : ControllerBase
     {
