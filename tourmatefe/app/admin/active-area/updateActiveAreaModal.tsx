@@ -115,10 +115,10 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
                   setFormData({ ...formData, areaType: e.target.value })
                 }}
               >
-                <option value={'north'}>Bắc</option>
-                <option value={'center'}>Trung</option>
-                <option value={'south'}>Nam</option>
-                <option value={'west'}>Tây</option>
+                <option value={'Miền Bắc'}>Miền Bắc</option>
+                <option value={'Miền Trung'}>Miền Trung</option>
+                <option value={'Miền Nam'}>Miền Nam</option>
+                <option value={'Miền Tây'}>Miền Tây</option>
               </select>
             </div>
             <div className="sm:col-span-1">
