@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll(int pageSize = 10, int pageIndex = 1)
         {
            var result = await _activeareaService.GetAll(pageSize, pageIndex);
             var response = new PagedResult<ActiveArea>

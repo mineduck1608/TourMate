@@ -85,7 +85,7 @@ const MegaMenu = () => {
               <div className="p-4 pb-0 text-gray-900 md:pb-4">
                   <ul className="space-y-4" aria-labelledby="mega-menu-icons-dropdown-button">
                   <li>
-                                    <Link href="/user/services/area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
+                                    <Link href="/user/services/active-area" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
                                         <span className="sr-only">Địa điểm hoạt động</span>
                                         <svg className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                                             <path d="m1.56 6.245 8 3.924a1 1 0 0 0 .88 0l8-3.924a1 1 0 0 0 0-1.8l-8-3.925a1 1 0 0 0-.88 0l-8 3.925a1 1 0 0 0 0 1.8Z"/>

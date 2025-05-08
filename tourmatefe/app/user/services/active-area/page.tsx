@@ -1,115 +1,50 @@
 "use client";
 
 import Banner from "@/components/Banner";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import { useQueryString } from "@/app/utils/utils";
+import { useQuery } from "@tanstack/react-query";
+import { getActiveAreas } from "@/app/api/active-area.api";
+import { useRouter } from "next/navigation";
 
-const citiesData = [
-  {
-    name: "Hà Nội",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=1",
-  },
-  {
-    name: "Hồ Chí Minh",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=2",
-  },
-  {
-    name: "Đà Nẵng",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=3",
-  },
-  {
-    name: "Huế",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=4",
-  },
-  {
-    name: "Hải Phòng",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=5",
-  },
-  {
-    name: "Nha Trang",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=6",
-  },
-  {
-    name: "Cần Thơ",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=7",
-  },
-  {
-    name: "Đà Lạt",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=8",
-  },
-  {
-    name: "Quy Nhơn",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=9",
-  },
-  {
-    name: "Vinh",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=10",
-  },
-  // Có thể thêm nhiều city nữa
-];
+const LIMIT = 8;
 
 export default function Home() {
-  const [searchTerm, setSearchTerm] = useState("");
-  const [regionFilter, setRegionFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const citiesPerPage = 6;
+  const queryString: { page?: string } = useQueryString();
+  const page = Number(queryString.page) || 1;
+  const router = useRouter();
 
-  
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
+  const handlePageChange = (a: number) => {
+    router.push(`/user/services/active-area?page=${page + a}`);
   };
 
-  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRegionFilter(e.target.value);
-    setCurrentPage(1);
-  };
-
-  const filteredCities = citiesData.filter((city) => {
-    return (
-      city.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (regionFilter === "all" ||
-        city.region.toLowerCase() === regionFilter.toLowerCase())
-    );
+  const { data } = useQuery({
+    queryKey: ["active-area", page],
+    queryFn: () => {
+      const controller = new AbortController();
+      setTimeout(() => {
+        controller.abort();
+      }, 5000);
+      return getActiveAreas(page, LIMIT, controller.signal);
+    },
+    retry: 0,
+    refetchOnWindowFocus: false,
   });
-
-  const totalPages = Math.ceil(filteredCities.length / citiesPerPage);
-  const startIndex = (currentPage - 1) * citiesPerPage;
-  const currentCities = filteredCities.slice(
-    startIndex,
-    startIndex + citiesPerPage
-  );
-
-  const handlePageChange = (direction: number) => {
-    setCurrentPage((prevPage) =>
-      Math.max(1, Math.min(totalPages, prevPage + direction))
-    );
-  };
 
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, [currentPage, searchTerm, regionFilter]);
+  }, []);
 
-    useEffect(() => {
-      AOS.init({
-        offset: 0,
-        delay: 200,
-        duration: 1200,
-        once: true,
-      });
-    }, []);
+  useEffect(() => {
+    AOS.init({
+      offset: 0,
+      delay: 200,
+      duration: 1200,
+      once: true,
+    });
+  }, []);
 
   return (
     <div>
@@ -121,7 +56,7 @@ export default function Home() {
       </div>
       <div className="flex flex-col md:flex-row gap-10 p-15 bg-gray-100">
         {/* Bộ lọc bên trái */}
-        <div data-aos="fade-right" className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full">
+        {/* <div data-aos="fade-right" className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full">
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
           <input
             type="text"
@@ -142,8 +77,9 @@ export default function Home() {
             <option value="north">Miền Bắc</option>
             <option value="south">Miền Nam</option>
             <option value="central">Miền Trung</option>
+            <option value="central">Miền Tây</option>
           </select>
-        </div>
+        </div> */}
 
         {/* Danh sách thành phố */}
         <div data-aos="fade-left" className="md:w-2/3 w-full ml-15">
@@ -151,25 +87,23 @@ export default function Home() {
             Danh sách thành phố
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {currentCities.map((city, index) => (
+            {data?.result?.map((area, index) => (
               <div
                 key={index}
                 className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform"
               >
                 <div className="overflow-hidden">
                   <img
-                    src={city.image}
-                    alt={city.name}
+                    src={area.bannerImg || "/fallback.jpg"}
+                    alt={area.areaName}
                     className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"
                   />
                 </div>
                 <div className="p-6">
                   <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                    {city.name}
+                    {area.areaName}
                   </h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Vùng: {city.region}
-                  </p>
+                  <p className="text-gray-600 text-sm mb-4">{area.areaType}</p>
                   <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
                     Xem ngay
                   </button>
@@ -182,17 +116,17 @@ export default function Home() {
           <div className="flex justify-center items-center mt-10 space-x-6">
             <button
               onClick={() => handlePageChange(-1)}
-              disabled={currentPage === 1}
+              disabled={page === 1}
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang trước
             </button>
             <span className="text-lg text-gray-700 font-semibold">
-              Trang {currentPage} / {totalPages}
+              Trang {page} / {data?.totalPage}
             </span>
             <button
               onClick={() => handlePageChange(1)}
-              disabled={currentPage === totalPages}
+              disabled={page === data?.totalPage}
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang sau

@@ -5,8 +5,8 @@ import { PagedResult } from '@/types/pagedResult';
 export const getActiveAreas = async (page: number | string, limit: number | string, signal?: AbortSignal) => {
     const res = await http.get<PagedResult<ActiveArea>>('active-area', {
       params: {
-        size: limit,
-        page: page
+        pageSize: limit,
+        pageIndex: page
       },
       signal
     });

@@ -97,7 +97,6 @@ export function DataTable<TData, TValue>({
     };
   
     const handleSave = (newsData: News) => {
-        newsData.isDeleted = false;
         newsData.createdAt = new Date().toISOString();
         addNewsMutation.mutate(newsData);
     };

@@ -15,6 +15,7 @@ namespace Repositories.DTO.CreateModels
 
         public string BannerImg { get; set; }
         public string AreaType { get; set; }
+        public DateTime CreatedAt { get; set; }
         public ActiveArea Convert() => new()
         {
             AreaName = AreaName,
@@ -23,7 +24,8 @@ namespace Repositories.DTO.CreateModels
             AreaContent = AreaContent,
             BannerImg = BannerImg,
             AreaId = 0,
-            AreaType = AreaType
+            AreaType = AreaType,
+            CreatedAt = CreatedAt
         };
     }
 }
