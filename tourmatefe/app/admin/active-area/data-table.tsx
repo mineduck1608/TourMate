@@ -98,7 +98,8 @@ export function DataTable<TData, TValue>({
   
     const handleSave = (data: ActiveArea) => {
       console.log(data);
-        addActiveAreaMutation.mutate(data);
+      data.createdAt = new Date().toISOString(); // Set createdAt to current date
+      addActiveAreaMutation.mutate(data);
     };
   
     const addActiveAreaMutation = useMutation({

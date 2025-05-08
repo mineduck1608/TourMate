@@ -24,7 +24,8 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
     areaSubtitle: "",
     areaContent: "",
     bannerImg: "",
-    areaType: ""
+    areaType: "",
+    createdAt: "",
   });
 
   const handleChange = (
@@ -48,7 +49,8 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
       areaSubtitle: "",
       areaContent: "",
       bannerImg: "",
-      areaType: ""
+      areaType: "",
+      createdAt: "",
     });
     onClose();
   };
