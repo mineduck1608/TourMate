@@ -12,7 +12,7 @@ import Link from "next/link";
 
 const LIMIT = 8;
 
-export default function Home() {
+export function ActiveAreaList() {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
   const router = useRouter();
@@ -50,7 +50,6 @@ export default function Home() {
 
   return (
     <div>
-      <Suspense fallback={<div>Loading...</div>}>
         <div>
           <Banner
             imageUrl="https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"
@@ -137,7 +136,14 @@ export default function Home() {
             </div>
           </div>
         </div>
-      </Suspense>
     </div>
   );
+}
+
+export default function ActiveAreaDriver(){
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <ActiveAreaList />
+    </Suspense>
+  )
 }
