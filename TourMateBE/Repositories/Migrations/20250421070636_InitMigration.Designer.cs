@@ -11,7 +11,7 @@ using Repositories.Context;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(TourMateContext))]
+    [DbContext(typeof(TourmateContext))]
     [Migration("20250421070636_InitMigration")]
     partial class InitMigration
     {

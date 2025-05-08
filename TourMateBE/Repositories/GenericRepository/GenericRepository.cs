@@ -12,14 +12,14 @@ namespace Repositories.GenericRepository
 {
     public class GenericRepository<T> where T : class
     {
-        protected TourMateContext _context;
+        protected TourmateContext _context;
 
         public GenericRepository()
         {
             _context ??= new();
         }
 
-        public GenericRepository(TourMateContext context)
+        public GenericRepository(TourmateContext context)
         {
             _context = context;
         }

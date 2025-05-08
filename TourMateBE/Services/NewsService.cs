@@ -8,7 +8,7 @@ namespace Services
     {
         Task<News> GetNews(int id);
         Task<PagedResult<News>> GetAll(int pageSize, int pageIndex);
-        Task CreateNews(News news);
+        Task<bool> CreateNews(News news);
         Task<bool> UpdateNews(News news);
         Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
@@ -35,9 +35,9 @@ namespace Services
         }
 
 
-        public async Task CreateNews(News news)
+        public async Task<bool> CreateNews(News news)
         {
-            await NewsRepository.CreateAsync(news);
+            return await NewsRepository.CreateAsync(news);
         }
 
         public async Task<bool> UpdateNews(News news)

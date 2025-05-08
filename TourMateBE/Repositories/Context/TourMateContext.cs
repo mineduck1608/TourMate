@@ -1,17 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Repositories.Models;
 
 namespace Repositories.Context;
 
-public partial class TourMateContext : DbContext
+public partial class TourmateContext : DbContext
 {
-    public TourMateContext()
+    public TourmateContext()
     {
     }
 
-    public TourMateContext(DbContextOptions<TourMateContext> options)
+    public TourmateContext(DbContextOptions<TourmateContext> options)
         : base(options)
     {
     }
@@ -72,9 +73,19 @@ public partial class TourMateContext : DbContext
 
     public virtual DbSet<TourService> TourServices { get; set; }
 
+    public static string GetConnectionString(string connectionStringName)
+    {
+        var config = new ConfigurationBuilder()
+            .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
+            .AddJsonFile("appsettings.json")
+            .Build();
+
+        string connectionString = config.GetConnectionString(connectionStringName);
+        return connectionString;
+    }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=tcp:tourmate.database.windows.net,1433;Database=tourmate;UID=tourmate;PWD=Duc0977300916@;TrustServerCertificate=True");
+        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection")).UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking);
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -160,6 +171,9 @@ public partial class TourMateContext : DbContext
             entity.Property(e => e.BannerImg)
                 .HasMaxLength(255)
                 .HasColumnName("bannerImg");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createdAt");
         });
 
         modelBuilder.Entity<Bid>(entity =>

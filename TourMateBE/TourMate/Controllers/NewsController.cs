@@ -50,8 +50,12 @@ namespace API.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
             var news = data.Convert();
-            await _newsService.CreateNews(news);
-            return Ok();
+            var result = await _newsService.CreateNews(news);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpPut("{id}")]

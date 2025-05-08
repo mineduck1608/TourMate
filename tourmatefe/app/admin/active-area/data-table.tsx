@@ -31,12 +31,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { News } from "@/types/news";
 import { useMutation, useQuery } from "@tanstack/react-query";
-import { addNews, getNews } from "@/app/api/news.api";
 import { toast } from "react-toastify";
 import Link from 'next/link';
-import AddNewsModal from "./addNewsModal";
+import { addActiveArea, getActiveAreas } from "@/app/api/active-area.api";
+import { ActiveArea } from "@/types/active-area";
+import AddActiveAreaModal from "./addActiveAreaModal";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,10 +78,10 @@ export function DataTable<TData, TValue>({
   });
 
     const { refetch } = useQuery({
-      queryKey: ['news', page], // Pass page and limit as part of the query key
+      queryKey: ['active-area', page], // Pass page and limit as part of the query key
       queryFn: ({ queryKey }) => {
         const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-        return getNews(page, limit); // Pass the extracted values to getNews
+        return getActiveAreas(page, limit);
       },
       enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
     });
@@ -96,15 +96,13 @@ export function DataTable<TData, TValue>({
       setIsModalOpen(false);
     };
   
-    const handleSave = (newsData: News) => {
-        newsData.isDeleted = false;
-        newsData.createdAt = new Date().toISOString();
-        addNewsMutation.mutate(newsData);
+    const handleSave = (data: ActiveArea) => {
+      console.log(data);
+        addActiveAreaMutation.mutate(data);
     };
   
-    // Mutation for adding news
-    const addNewsMutation = useMutation({
-      mutationFn: addNews,
+    const addActiveAreaMutation = useMutation({
+      mutationFn: addActiveArea,
       onSuccess: () => {
         toast.success('Thêm tin tức thành công');
         refetch(); // Refetch dữ liệu sau khi thêm thành công
@@ -120,14 +118,14 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center pb-5">
         <Input
           placeholder="Tìm kiếm..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("areaName")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
+            table.getColumn("areaName")?.setFilterValue(event.target.value)
           }
           className="max-w-sm bg-white mr-5"
         />
         <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
-          Tạo tin tức mới
+          Thêm địa điểm mới
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -209,7 +207,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 pt-5">
   <div className="flex-1 text-sm text-muted-foreground">
-  {table.getFilteredSelectedRowModel().rows.length} trên {totalResults} dòng được chọn.
+    {table.getFilteredSelectedRowModel().rows.length} trên {totalResults} dòng được chọn.
   </div>
     {/* Previous Button */}
       {page === 1 ? (
@@ -218,11 +216,11 @@ export function DataTable<TData, TValue>({
          size="sm"
          disabled
        >
-         Trước
+         Truớc
        </Button>
      ) : (
       <Link
-      href={`/admin/news?page=${page - 1}`}
+      href={`/admin/active-area?page=${page - 1}`}
     >
       <Button
         variant="outline"
@@ -249,7 +247,7 @@ export function DataTable<TData, TValue>({
       </Button>
       ) : (
         <Link
-              href={`/admin/news?page=${page + 1}`}
+              href={`/admin/active-area?page=${page + 1}`}
         >
               <Button
                 variant="outline"
@@ -260,7 +258,7 @@ export function DataTable<TData, TValue>({
             </Link>
       )}
 </div>
-      <AddNewsModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
+      <AddActiveAreaModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
     </div>
   );
 }

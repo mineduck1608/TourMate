@@ -8,20 +8,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { News } from "@/types/news";
 import React, { useState } from "react";
 import DeleteModal from "@/components/DeleteModal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { deleteNews, getNews, updateNews } from "@/app/api/news.api";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
-import UpdateNewsModal from "./updateNewsModal";
+import { ActiveArea } from "@/types/active-area";
+import { deleteActiveArea, getActiveAreas, updateActiveArea } from "@/app/api/active-area.api";
+import UpdateActiveAreaModal from "./updateActiveAreaModal";
 
-interface NewsActionsProps {
-  data: News;
+interface ActiveAreaActionsProps {
+  data: ActiveArea;
 }
 
-const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
+const ActiveAreaActions: React.FC<ActiveAreaActionsProps> = ({ data }) => {
   const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState<string | null>(null); // Store item to delete
   const queryClient = useQueryClient()
@@ -34,10 +34,10 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const { refetch } = useQuery({
-    queryKey: ['news', page], // Pass page and limit as part of the query key
+    queryKey: ['active-area', page], // Pass page and limit as part of the query key
     queryFn: ({ queryKey }) => {
       const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-      return getNews(page, limit); // Pass the extracted values to getNews
+      return getActiveAreas(page, limit);
     },
     enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
   });
@@ -50,19 +50,18 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
         setIsModalOpen(false);
       };
     
-      const handleSave = (newsData: News) => {
-          updateNewsMutation.mutate({ id: newsData.newsId, data: newsData });
+      const handleSave = (data: ActiveArea) => {
+          updateActiveAreaMutation.mutate({ id: data.areaId, data: data});
       };
 
-    // Mutation for updating news
-    const updateNewsMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: News }) => updateNews(id, data),
+    const  updateActiveAreaMutation = useMutation({  
+        mutationFn: ({ id, data }: { id: number; data: ActiveArea }) => updateActiveArea(id, data),
         onSuccess: () => {
-          toast.success('Cập nhật tin tức thành công');
+          toast.success('Cập nhật địa điểm thành công');
           refetch(); // Refetch dữ liệu sau khi cập nhật thành công
         },
         onError: (error) => {
-          toast.error('Cập nhật tin tức thất bại');
+          toast.error('Cập nhật địa điểm thất bại');
           console.error(error);
         },
       });
@@ -76,10 +75,10 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
   };
 
   const deleteMutation = useMutation({
-    mutationFn: (id: number | string) => deleteNews(id),
+    mutationFn: (id: number | string) => deleteActiveArea(id),
     onSuccess: () => {
-      toast.success(`Xóa tin tức thành công`)
-      queryClient.invalidateQueries({ queryKey: ['news', page], exact: true })
+      toast.success(`Xóa địa điểm thành công`)
+      queryClient.invalidateQueries({ queryKey: ['active-area', page], exact: true })
     }
   });
 
@@ -95,14 +94,14 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
           <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(data.newsId.toString())}
+            onClick={() => navigator.clipboard.writeText(data.areaId.toString())}
           >
             Copy payment ID
           </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem  onClick={openModal}>Cập nhật</DropdownMenuItem>
           <DropdownMenuItem
-            onClick={() => { setItemToDelete(data.newsId.toString()); openDeleteModal(); }}
+            onClick={() => { setItemToDelete(data.areaId.toString()); openDeleteModal(); }}
           >
             Xóa
           </DropdownMenuItem>
@@ -114,15 +113,15 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        message="Are you sure you want to delete this news?"
+        message="Bạn có chắc muốn xóa địa điểm này?"
       />
 
-      {/* Render UpdateNewsModal only when needed */}
+      {/* Render UpdateAreaModal only when needed */}
       {isModalOpen && (
-        <UpdateNewsModal
+        <UpdateActiveAreaModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          currentNews={data}
+          currentData={data}
           onSave={handleSave}
         />
       )}
@@ -130,4 +129,4 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
   );
 };
 
-export default NewsActions;
+export default ActiveAreaActions;

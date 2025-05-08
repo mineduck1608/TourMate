@@ -10,7 +10,7 @@ using Repositories.Context;
 
 namespace Repositories.Migrations
 {
-    [DbContext(typeof(TourMateContext))]
+    [DbContext(typeof(TourmateContext))]
     partial class TourMateContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
