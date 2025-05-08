@@ -8,6 +8,7 @@ import { useQueryString } from "@/app/utils/utils";
 import { useQuery } from "@tanstack/react-query";
 import { getActiveAreas } from "@/app/api/active-area.api";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 const LIMIT = 8;
 
@@ -31,6 +32,7 @@ export default function Home() {
     },
     retry: 0,
     refetchOnWindowFocus: false,
+    staleTime: 24 * 3600 * 1000
   });
 
   useEffect(() => {
@@ -103,10 +105,10 @@ export default function Home() {
                   <h4 className="font-semibold text-xl text-gray-800 mb-2">
                     {area.areaName}
                   </h4>
-                  <p className="text-gray-600 text-sm mb-4">{area.areaType}</p>
-                  <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
+                  <p className="text-gray-600 text-sm mb-4">Khu vực: {area.areaType}</p>
+                  <Link href={`active-area/${area.areaId}`} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                     Xem ngay
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}

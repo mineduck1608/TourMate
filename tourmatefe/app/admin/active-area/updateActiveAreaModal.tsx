@@ -26,6 +26,8 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
   const [formData, setFormData] = useState<ActiveArea>(currentData);
 
   useEffect(() => {
+    console.log(currentData);
+    
     setFormData(currentData);
   }, [currentData]);
 
@@ -81,7 +83,7 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
           </button>
         </div>
         <form onSubmit={handleSubmit}>
-        <div className="grid gap-4 mb-4 sm:grid-cols-2">
+          <div className="grid gap-4 mb-4 sm:grid-cols-2">
             <div className="sm:col-span-1">
               <label
                 htmlFor="areaName"
@@ -107,16 +109,17 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
               >
                 Khu vực
               </label>
-              <input
-                type="text"
-                name="areaType"
-                id="areaType"
+              <select
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập khu vực"
-                value={formData.areaType}
-                onChange={handleChange}
-                required
-              />
+                onChange={(e) => {
+                  setFormData({ ...formData, areaType: e.target.value })
+                }}
+              >
+                <option value={'north'}>Bắc</option>
+                <option value={'center'}>Trung</option>
+                <option value={'south'}>Nam</option>
+                <option value={'west'}>Tây</option>
+              </select>
             </div>
             <div className="sm:col-span-1">
               <label

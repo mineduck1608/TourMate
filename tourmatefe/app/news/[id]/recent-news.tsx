@@ -1,25 +1,53 @@
+import { getNews } from '@/app/api/news.api'
 import { ScrollArea } from '@/components/ui/scroll-area'
-import { Separator } from '@/components/ui/separator'
+import { Separator } from '@radix-ui/react-dropdown-menu'
+import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
 import React from 'react'
 
-export default function RecentNews() {
-    const tags = Array.from({ length: 50 }).map(
-        (_, i) => `Khám phá địa điểm đặc sắc tại Hải Phòng ${i}`
-    )
+export default function RecentNews(params: { currentId?: number | string }) {
+    const size = 5
+    const { data } = useQuery({
+        queryKey: ['news', size, 1],
+        queryFn: () => {
+            const controller = new AbortController()
+            setTimeout(() => {
+                controller.abort()
+            }, 5000);
+            return getNews(1, size)
+        }
+    })
+    const current = params.currentId
+        ? (typeof params.currentId === 'string'
+            ? Number.parseInt(params.currentId)
+            : params.currentId
+        )
+        : -1
+    const news = data?.result ?? []
     return (
-        <div>
-            <ScrollArea className="h-80 rounded-md border shadow-md">
-                <div className="p-4">
-                    <h4 className="mb-4 text-3xl font-medium leading-none">Bài viết gần đây</h4>
-                    {tags.map((tag) => (
-                        <div key={tag}>
-                            <div className="text-md">
-                                {tag}
-                            </div>
-                            <Separator className="my-2" />
-                        </div>
-                    ))}
-                </div>
+        <div className='rounded-md border shadow-md'>
+            <h4 className="p-2 text-3xl font-medium leading-none">Bài viết gần đây</h4>
+            <Separator />
+            <ScrollArea className="h-96 px-3">
+                <table>
+                    <tbody>
+                        {
+                            news.map((v) => (
+                                <tr key={v.newsId} className='border-b-2'>
+                                    <td className='py-1'>
+                                        <img src={v.bannerImg} className='max-w-[150px]' />
+                                    </td>
+                                    <td className='p-2'>
+                                        {v.newsId !== current
+                                            ? <Link href={'/news/' + v.newsId}>{v.title}</Link>
+                                            : <p className='font-semibold'>{v.title}</p>
+                                        }
+                                    </td>
+                                </tr>
+                            ))
+                        }
+                    </tbody>
+                </table>
             </ScrollArea>
         </div>
     )

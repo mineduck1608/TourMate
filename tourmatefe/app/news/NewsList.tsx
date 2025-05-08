@@ -5,11 +5,12 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from 'dayjs'
-import { getNews } from "@/app/api/news.api";
+import { getNews } from "../api/news.api";
+import PaginateList from "./paginate-list";
 
-export default function HomeNews() {
+export default function NewsList() {
   const [page, setPage] = useState(1);
-  const pageSize = 3
+  const pageSize = 12
   const { data } = useQuery({
     queryKey: ['news', pageSize, page],
     queryFn: () => getNews(page, pageSize),
@@ -77,6 +78,13 @@ export default function HomeNews() {
           ))}
         </motion.div>
       </AnimatePresence>
+      <div className="mt-10 place-self-center">
+        <PaginateList current={page} maxPage={maxPage}
+          onClick={(p) => {
+            setPage(p)
+          }}
+        />
+      </div>
     </motion.div>
   );
 }
