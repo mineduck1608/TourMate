@@ -119,8 +119,9 @@ function ActiveAreaList() {
                   <h4 className="font-semibold text-xl text-gray-800 mb-2">
                     {area.areaName}
                   </h4>
-                  <p className="text-gray-600 text-sm mb-4">Khu vực: {area.areaType}</p>
-                  <Link href={`active-area/${area.areaId}`} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
+                  <p className="text-gray-600 text-md">{area.areaTitle}</p>
+                  <p className="text-gray-600 text-sm mb-5">{area.areaType}</p>
+                  <Link href={`active-area/detail?id=${area.areaId}`} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                     Xem ngay
                   </Link>
                 </div>
@@ -142,7 +143,7 @@ function ActiveAreaList() {
             </span>
             <button
               onClick={() => handlePageChange(1)}
-              disabled={page === data?.totalPage || data?.totalPage === 0}
+              disabled={page === data?.totalPage || data?.totalPage === 0 || data?.totalPage === undefined}
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang sau

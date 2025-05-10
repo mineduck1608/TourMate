@@ -29,7 +29,7 @@ export const getActiveAreas = async (page: number | string, limit: number | stri
   };
 
 
-export const getActiveArea = (id: number | string) => http.get<ActiveArea>(`active-area/${id}`)
+export const getActiveArea = async (id: number | string) => http.get<ActiveArea>(`active-area/${id}`)
 
 export const addActiveArea = async (data: ActiveArea) => {
   const response = await http.post('/active-area', data);
