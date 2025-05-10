@@ -1,3 +1,5 @@
+"use client"
+
 import { Suspense } from "react";
 import { getActiveArea } from "@/app/api/active-area.api";
 import { useQueryString } from "@/app/utils/utils";
