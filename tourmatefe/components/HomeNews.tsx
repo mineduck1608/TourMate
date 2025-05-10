@@ -49,10 +49,10 @@ export default function HomeNews() {
               key={item.newsId}
               whileHover={{
                 scale: 1.05,
-                boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
+                //boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
               }}
               transition={{ duration: 0.1, ease: "easeInOut" }}
-              className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all"
+              className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
             >
               <img
                 src={item.bannerImg}
