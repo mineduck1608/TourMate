@@ -1,5 +1,4 @@
-"use client";
-
+import { Suspense } from "react";
 import { getActiveArea } from "@/app/api/active-area.api";
 import { useQueryString } from "@/app/utils/utils";
 import Banner from "@/components/Banner";
@@ -35,15 +34,15 @@ const AreaDetail = () => {
   return (
     <div className="flex flex-wrap">
       {/* Left content section */}
-        <Banner
-          imageUrl={data?.data?.bannerImg || "https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"}
-          title={data?.data?.areaTitle || "No title available"}
-          subtitle={data?.data?.areaSubtitle || "No title available"}
-        />
+      <Banner
+        imageUrl={data?.data?.bannerImg || "https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"}
+        title={data?.data?.areaTitle || "No title available"}
+        subtitle={data?.data?.areaSubtitle || "No title available"}
+      />
       <div className="w-full lg:w-3/4 text-2xl font-bold p-10">
-          <h1>{data?.data?.areaTitle}</h1>
-          <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.data?.areaContent || "") }} />
-        </div>
+        <h1>{data?.data?.areaTitle}</h1>
+        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.data?.areaContent || "") }} />
+      </div>
       {/* Right sidebar */}
       <div className="w-full lg:w-1/4 p-10">
         <div className="bg-gray-100 p-4 rounded-lg">
@@ -59,4 +58,10 @@ const AreaDetail = () => {
   );
 };
 
-export default AreaDetail;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <AreaDetail />
+    </Suspense>
+  );
+}
