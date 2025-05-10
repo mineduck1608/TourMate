@@ -42,7 +42,7 @@ export default function NewsDetailPage({
             <div className='w-[30%] p-2 *:mb-10'>
                 <RecentNews currentId={id} />
                 <NewsCategories />
-                <ScrollArea className="h-60 rounded-md border shadow-md bg-black">
+                <ScrollArea className="h-60 rounded-md border shadow-lg bg-black">
                     <div className="p-4 text-white">
                         <h4 className="mb-4 text-3xl leading-none">Bạn có câu hỏi nào không?</h4>
                         <p>Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ chuyên gia và rất vui được trò chuyện với bạn.</p>

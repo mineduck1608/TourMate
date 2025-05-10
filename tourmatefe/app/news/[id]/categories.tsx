@@ -12,7 +12,7 @@ export default function NewsCategories() {
         'Điểm đến'
     ]
     return (
-        <div className='rounded-md border shadow-md'>
+        <div className='rounded-md border shadow-lg'>
             <h4 className="px-6 py-3 text-3xl font-medium leading-none">Danh mục</h4>
             <ScrollArea className="h-44 px-3">
                 <table>

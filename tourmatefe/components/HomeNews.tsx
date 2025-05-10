@@ -12,7 +12,7 @@ export default function HomeNews() {
   const pageSize = 3
   const { data } = useQuery({
     queryKey: ['news', pageSize, page],
-    queryFn: () => getNews(page, pageSize),
+    queryFn: () => getNews(page, pageSize, ''),
     staleTime: 24 * 3600 * 1000,
   })
   const maxPage = data?.totalPage ?? 0

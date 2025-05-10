@@ -15,7 +15,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
             setTimeout(() => {
                 controller.abort()
             }, 5000);
-            return getNews(1, size)
+            return getNews(1, size, '')
         }
     })
     const current = params.currentId
@@ -26,7 +26,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
         : -1
     const news = data?.result ?? []
     return (
-        <div className='rounded-md border shadow-md'>
+        <div className='rounded-md border shadow-lg'>
             <h4 className="px-6 py-3 text-3xl font-medium leading-none">Bài viết gần đây</h4>
             <Separator />
             <ScrollArea className="h-96 px-6 py-3">
