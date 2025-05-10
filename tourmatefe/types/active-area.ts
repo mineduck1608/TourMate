@@ -6,4 +6,5 @@ export type ActiveArea = {
     areaContent: string;
     bannerImg: string;
     areaType: string;
+    createdAt: string;
 };

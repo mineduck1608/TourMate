@@ -10,39 +10,25 @@ export default function PaginateList({ current, maxPage, onClick }: PaginationPr
 
     return (
         <nav aria-label="Page navigation example">
-            <ul className="inline-flex -space-x-px text-base h-10">
-                <li>
-                    <button onClick={() => {
-                        if (current > 1) {
-                            onClick(current - 1)
-                        }
-                    }} className="flex items-center justify-center px-4 h-10 ms-0 leading-tight text-gray-500 bg-white border border-e-0 border-gray-300 rounded-s-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">&lt;</button>
-                </li>
-                {
-                    Array.from({ length: maxPage }).map((_, i) => {
-                        const adjusted = i + 1
-                        const isCurrent = current === adjusted
-                        return (
-                            <li key={adjusted}>
-                                <button
-                                    onClick={() => onClick(adjusted)}
-                                    className={"flex items-center justify-center px-4 h-10 leading-tight   border border-gray-300  hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white"
-                                        + ` ${isCurrent ? 'bg-blue-100 ' : 'bg-white hover:bg-gray-100 text-gray-500'}`
-                                    }>
-                                    {adjusted}
-                                </button>
-                            </li>
-                        )
-                    })
-                }
-                <li>
-                    <button onClick={() => {
-                        if (current < maxPage) {
-                            onClick(current + 1)
-                        }
-                    }} className="flex items-center justify-center px-4 h-10 leading-tight text-gray-500 bg-white border border-gray-300 rounded-e-lg hover:bg-gray-100 hover:text-gray-700 dark:bg-gray-800 dark:border-gray-700 dark:text-gray-400 dark:hover:bg-gray-700 dark:hover:text-white">&gt;</button>
-                </li>
-            </ul>
+            <div className="flex justify-center items-center mt-10 space-x-6">
+                <button
+                    onClick={() => onClick(current - 1)}
+                    disabled={current === 1}
+                    className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
+                >
+                    Trang trước
+                </button>
+                <span className="text-lg text-gray-700 font-semibold">
+                    Trang {current} / {maxPage}
+                </span>
+                <button
+                    onClick={() => onClick(current + 1)}
+                    disabled={current === maxPage || maxPage === 0}
+                    className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
+                >
+                    Trang sau
+                </button>
+            </div>
         </nav>
     )
 }

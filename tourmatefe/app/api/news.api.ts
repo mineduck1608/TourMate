@@ -5,8 +5,8 @@ import { PagedResult } from '@/types/pagedResult';
 export const getNews = async (page: number | string, limit: number | string, signal?: AbortSignal) => {
     const res = await http.get<PagedResult<News>>('news', {
       params: {
-        size: limit,
-        page: page
+        pageSize: limit,
+        pageIndex: page
       },
       signal
     });

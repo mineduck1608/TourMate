@@ -4,7 +4,7 @@ import ImageUpload from "@/components/image-upload";
 
 // Dynamically import ReactQuill with no SSR (Server-Side Rendering)
 const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false,  // Disable SSR for this component
+  ssr: false, // Disable SSR for this component
 });
 
 import "react-quill-new/dist/quill.snow.css";
@@ -16,7 +16,11 @@ type AddActiveAreaModalProps = {
   onSave: (activeAreaData: ActiveArea) => void;
 };
 
-const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose, onSave }) => {
+const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
+  isOpen,
+  onClose,
+  onSave,
+}) => {
   const [formData, setFormData] = useState<ActiveArea>({
     areaId: 0,
     areaName: "",
@@ -24,7 +28,8 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
     areaSubtitle: "",
     areaContent: "",
     bannerImg: "",
-    areaType: ""
+    areaType: "Miền Bắc",
+    createdAt: "",
   });
 
   const handleChange = (
@@ -41,6 +46,7 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
+    console.log(formData);
     setFormData({
       areaId: 0,
       areaName: "",
@@ -48,17 +54,22 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
       areaSubtitle: "",
       areaContent: "",
       bannerImg: "",
-      areaType: ""
+      areaType: "Miền Bắc",
+      createdAt: "",
     });
     onClose();
   };
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${
+        isOpen ? "block" : "hidden"
+      }`}
     >
       <div
-        className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"}`}
+        className={`absolute inset-0 bg-black opacity-50 ${
+          isOpen ? "block" : "hidden"
+        }`}
         onClick={onClose}
       ></div>
 
@@ -114,16 +125,18 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({ isOpen, onClose
               >
                 Khu vực
               </label>
-              <input
-                type="text"
-                name="areaType"
-                id="areaType"
+              <select
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập khu vực"
-                value={formData.areaType}
-                onChange={handleChange}
-                required
-              />
+                onChange={(e) =>
+                  setFormData({ ...formData, areaType: e.target.value })
+                }
+                value={formData.areaType} // Đảm bảo value trùng khớp với giá trị trong formData
+              >
+                <option value="Miền Bắc">Miền Bắc</option>
+                <option value="Miền Trung">Miền Trung</option>
+                <option value="Miền Nam">Miền Nam</option>
+                <option value="Miền Tây">Miền Tây</option>
+              </select>
             </div>
             <div className="sm:col-span-1">
               <label

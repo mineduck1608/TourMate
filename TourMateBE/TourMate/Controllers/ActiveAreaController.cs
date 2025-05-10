@@ -25,7 +25,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll(int pageSize = 10, int pageIndex = 1)
         {
            var result = await _activeareaService.GetAll(pageSize, pageIndex);
             var response = new PagedResult<ActiveArea>
@@ -35,6 +35,27 @@ namespace API.Controllers
                 TotalPage = result.TotalPage // Tổng số trang
             };
             return Ok(result);
+        }
+
+        [HttpGet("filtered-area")]
+        public async Task<ActionResult<PagedResult<ActiveArea>>> GetActiveAreas(
+            string search = "",
+            string region = "",
+            int pageIndex = 1,
+            int pageSize = 8)
+        {
+            // Gọi service để lấy dữ liệu đã lọc và phân trang
+            var result = await _activeareaService.GetActiveAreas(search, region, pageIndex, pageSize);
+
+            // Tạo đối tượng PagedResult để trả về cho client
+            var response = new PagedResult<ActiveArea>
+            {
+                Result = result.Result,  // Các ActiveArea đã lọc
+                TotalResult = result.TotalResult,  // Tổng số kết quả
+                TotalPage = result.TotalPage  // Tổng số trang
+            };
+
+            return Ok(response);  // Trả về dữ liệu dưới dạng OK response
         }
 
         [HttpPost]

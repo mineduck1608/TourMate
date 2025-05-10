@@ -19,12 +19,13 @@ namespace Repositories.DTO.UpdateModals
         public string Content { get; set; }
 
         public string BannerImg { get; set; }
+        public string Category { get; set; }
         public News Convert() => new()
         {
             Title = Title,
             CreatedAt = CreatedAt,
-            IsDeleted = IsDeleted,
             Content = Content,
+            Category = Category,
             BannerImg = BannerImg,
             NewsId = NewsId,
         };

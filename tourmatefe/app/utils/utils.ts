@@ -1,3 +1,5 @@
+"use client"
+
 import axios, { AxiosError } from 'axios'
 import { useSearchParams } from 'next/navigation'
 import { useEffect, useState } from 'react'

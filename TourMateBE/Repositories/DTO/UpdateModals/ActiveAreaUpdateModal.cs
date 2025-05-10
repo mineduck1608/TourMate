@@ -20,6 +20,7 @@ namespace Repositories.DTO.UpdateModals
 
         public string BannerImg { get; set; }
         public string AreaType { get; set; }
+        public DateTime CreatedAt { get; set; }
         public ActiveArea Convert() => new()
         {
             AreaName = AreaName,
@@ -28,7 +29,8 @@ namespace Repositories.DTO.UpdateModals
             AreaContent = AreaContent,
             BannerImg = BannerImg,
             AreaId = AreaId,
-            AreaType = AreaType
+            AreaType = AreaType,
+            CreatedAt = CreatedAt,            
         };
     }
 }

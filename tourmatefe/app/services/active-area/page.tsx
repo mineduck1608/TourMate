@@ -1,115 +1,66 @@
 "use client";
 
 import Banner from "@/components/Banner";
-import { useState, useEffect } from "react";
+import { Suspense, useEffect, useState } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";
+import { useQueryString } from "@/app/utils/utils";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { getFilteredActiveAreas } from "@/app/api/active-area.api";
 
-const citiesData = [
-  {
-    name: "Hà Nội",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=1",
-  },
-  {
-    name: "Hồ Chí Minh",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=2",
-  },
-  {
-    name: "Đà Nẵng",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=3",
-  },
-  {
-    name: "Huế",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=4",
-  },
-  {
-    name: "Hải Phòng",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=5",
-  },
-  {
-    name: "Nha Trang",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=6",
-  },
-  {
-    name: "Cần Thơ",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=7",
-  },
-  {
-    name: "Đà Lạt",
-    region: "South",
-    image: "https://picsum.photos/400/250?random=8",
-  },
-  {
-    name: "Quy Nhơn",
-    region: "Central",
-    image: "https://picsum.photos/400/250?random=9",
-  },
-  {
-    name: "Vinh",
-    region: "North",
-    image: "https://picsum.photos/400/250?random=10",
-  },
-  // Có thể thêm nhiều city nữa
-];
+const LIMIT = 8;
 
-export default function Home() {
+function ActiveAreaList() {
+  const queryString: { page?: string } = useQueryString();
+  const page = Number(queryString.page) || 1;
+  const router = useRouter();
+
+  // Tạo state để lưu giá trị tìm kiếm và vùng miền
   const [searchTerm, setSearchTerm] = useState("");
-  const [regionFilter, setRegionFilter] = useState("all");
-  const [currentPage, setCurrentPage] = useState(1);
-  const citiesPerPage = 6;
+  const [selectedRegion, setSelectedRegion] = useState("");
 
-  
-
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchTerm(e.target.value);
-    setCurrentPage(1);
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
   };
 
-  const handleRegionChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setRegionFilter(e.target.value);
-    setCurrentPage(1);
+  const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      setSelectedRegion(event.target.value);
   };
 
-  const filteredCities = citiesData.filter((city) => {
-    return (
-      city.name.toLowerCase().includes(searchTerm.toLowerCase()) &&
-      (regionFilter === "all" ||
-        city.region.toLowerCase() === regionFilter.toLowerCase())
-    );
+  const handlePageChange = (a: number) => {
+    router.push(`/services/active-area?page=${page + a}&search=${searchTerm}&region=${selectedRegion}`);
+  };
+
+  const { data } = useQuery({
+    queryKey: ["active-area", page, searchTerm, selectedRegion],
+    queryFn: () => {
+      const controller = new AbortController();
+      setTimeout(() => {
+        controller.abort();
+      }, 5000);
+      return getFilteredActiveAreas(page, LIMIT, searchTerm, selectedRegion, controller.signal);
+    },
+    retry: 0,
+    refetchOnWindowFocus: false,
+    staleTime: 24 * 3600 * 1000
   });
 
-  const totalPages = Math.ceil(filteredCities.length / citiesPerPage);
-  const startIndex = (currentPage - 1) * citiesPerPage;
-  const currentCities = filteredCities.slice(
-    startIndex,
-    startIndex + citiesPerPage
-  );
-
-  const handlePageChange = (direction: number) => {
-    setCurrentPage((prevPage) =>
-      Math.max(1, Math.min(totalPages, prevPage + direction))
-    );
-  };
-
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [currentPage, searchTerm, regionFilter]);
+    AOS.init({
+      offset: 0,
+      delay: 200,
+      duration: 1200,
+      once: true,
+    });
+  }, []);
 
-    useEffect(() => {
-      AOS.init({
-        offset: 0,
-        delay: 200,
-        duration: 1200,
-        once: true,
-      });
-    }, []);
+  // Lắng nghe sự thay đổi của các tham số và cập nhật URL
+  useEffect(() => {
+    // Sử dụng replace thay vì push để tránh cuộn trang lên đầu
+    router.replace(`/services/active-area?page=${page}&search=${searchTerm}&region=${selectedRegion}`);
+  }, [page, searchTerm, selectedRegion, router]);
 
   return (
     <div>
@@ -134,14 +85,15 @@ export default function Home() {
             Vùng miền:
           </label>
           <select
-            value={regionFilter}
+            value={selectedRegion}
             onChange={handleRegionChange}
             className="w-full p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
           >
-            <option value="all">Tất cả</option>
-            <option value="north">Miền Bắc</option>
-            <option value="south">Miền Nam</option>
-            <option value="central">Miền Trung</option>
+            <option value="">Tất cả</option>
+            <option value="Miền Bắc">Miền Bắc</option>
+            <option value="Miền Nam">Miền Nam</option>
+            <option value="Miền Trung">Miền Trung</option>
+            <option value="Miền Tây">Miền Tây</option>
           </select>
         </div>
 
@@ -151,28 +103,27 @@ export default function Home() {
             Danh sách thành phố
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-            {currentCities.map((city, index) => (
+            {data?.result?.map((area, index) => (
               <div
                 key={index}
                 className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform"
               >
                 <div className="overflow-hidden">
                   <img
-                    src={city.image}
-                    alt={city.name}
+                    src={area.bannerImg || "/fallback.jpg"}
+                    alt={area.areaName}
                     className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"
                   />
                 </div>
                 <div className="p-6">
                   <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                    {city.name}
+                    {area.areaName}
                   </h4>
-                  <p className="text-gray-600 text-sm mb-4">
-                    Vùng: {city.region}
-                  </p>
-                  <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300">
+                  <p className="text-gray-600 text-md">{area.areaTitle}</p>
+                  <p className="text-gray-600 text-sm mb-5">{area.areaType}</p>
+                  <Link href={`active-area/detail?id=${area.areaId}`} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                     Xem ngay
-                  </button>
+                  </Link>
                 </div>
               </div>
             ))}
@@ -182,17 +133,17 @@ export default function Home() {
           <div className="flex justify-center items-center mt-10 space-x-6">
             <button
               onClick={() => handlePageChange(-1)}
-              disabled={currentPage === 1}
+              disabled={page === 1}
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang trước
             </button>
             <span className="text-lg text-gray-700 font-semibold">
-              Trang {currentPage} / {totalPages}
+              Trang {page} / {data?.totalPage}
             </span>
             <button
               onClick={() => handlePageChange(1)}
-              disabled={currentPage === totalPages}
+              disabled={page === data?.totalPage || data?.totalPage === 0 || data?.totalPage === undefined}
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang sau
@@ -201,5 +152,13 @@ export default function Home() {
         </div>
       </div>
     </div>
+  );
+}
+
+export default function ActiveAreaDriver() {
+  return (
+    <Suspense fallback={<p>Loading...</p>}>
+      <ActiveAreaList />
+    </Suspense>
   );
 }

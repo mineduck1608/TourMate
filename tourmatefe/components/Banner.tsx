@@ -5,9 +5,10 @@ import React from 'react';
 interface BannerProps {
   imageUrl: string;
   title: string;
+  subtitle?: string;
 }
 
-const Banner: React.FC<BannerProps> = ({ imageUrl, title }) => {
+const Banner: React.FC<BannerProps> = ({ imageUrl, title, subtitle }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: '400px' }}>
       <img 
@@ -23,8 +24,13 @@ const Banner: React.FC<BannerProps> = ({ imageUrl, title }) => {
       <div className="banner-title">
         {title}
       </div>
+      {subtitle && (
+        <div className="banner-subtitle">
+          {subtitle}
+        </div>
+      )}
       <style jsx>{`
-              @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=EB+Garamond&display=swap');
 
         .banner-title {
           display: flex;
@@ -43,9 +49,30 @@ const Banner: React.FC<BannerProps> = ({ imageUrl, title }) => {
           padding: 0 20px; /* Adds some padding to the title */
         }
 
+        .banner-subtitle {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          position: absolute;
+          top: 60%;
+          left: 50%;
+          transform: translateX(-50%);
+          color: #fff;
+          font-size: 1.5rem;
+          text-align: center;
+          width: 100%;
+          font-family: 'EB Garamond', serif;
+          padding: 0 20px;
+          text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.6);
+        }
+
         @media (max-width: 768px) {
           .banner-title {
             font-size: 1.8rem; /* Smaller font size for tablets */
+          }
+
+          .banner-subtitle {
+            font-size: 1.2rem; /* Smaller font size for subtitles on tablets */
           }
         }
 
@@ -53,6 +80,11 @@ const Banner: React.FC<BannerProps> = ({ imageUrl, title }) => {
           .banner-title {
             font-size: 1.5rem; /* Even smaller font size for mobile screens */
           }
+
+          .banner-subtitle {
+            font-size: 1rem; /* Even smaller font size for subtitles on mobile */
+          }
+
           div {
             height: 250px; /* Adjust height on mobile for better readability */
           }

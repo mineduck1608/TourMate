@@ -2,7 +2,7 @@ import React from 'react'
 import Header from '@/components/MegaMenu';
 import Footer from '@/components/Footer';
 import Banner from '@/components/Banner';
-import HomeNews from '@/components/HomeNews';
+import NewsList from './NewsList';
 
 export default function NewsListPage() {
     return (
@@ -15,7 +15,7 @@ export default function NewsListPage() {
                 />
             </div>
             <div className='w-[85%] place-self-center'>
-                <HomeNews />
+                <NewsList />
             </div>
             <Footer />
         </div>

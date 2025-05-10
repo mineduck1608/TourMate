@@ -13,14 +13,15 @@ namespace Repositories.DTO.CreateModels
         public string Content { get; set; }
 
         public string BannerImg { get; set; }
+        public string Category { get; set; }
         public News Convert() => new()
         {
             Title = Title,
             CreatedAt = CreatedAt,
-            IsDeleted = IsDeleted,
             Content = Content,
             BannerImg = BannerImg,
             NewsId = 0,
+            Category = Category,
         };
     }
 }

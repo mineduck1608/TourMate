@@ -8,7 +8,7 @@ import NewsCategories from './categories';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { FaEnvelope, FaPhoneAlt } from 'react-icons/fa';
 import { useQuery } from '@tanstack/react-query';
-import { getNews,} from '../newsList';
+import { getOneNews } from '@/app/api/news.api';
 
 export default function NewsDetailPage({
     params,
@@ -19,7 +19,7 @@ export default function NewsDetailPage({
 
     const { data } = useQuery({
         queryKey: ['news', id],
-        queryFn: () => getNews(id),
+        queryFn: () => getOneNews(id),
         staleTime: 24 * 3600 * 1000,
     })
     const news = data?.data
@@ -39,7 +39,7 @@ export default function NewsDetailPage({
                 {data?.data?.content}
             </div>
             <div className='w-[25%] p-2 *:mb-10'>
-                <RecentNews />
+                <RecentNews currentId={id}/>
                 <NewsCategories />
                 <ScrollArea className="h-60 rounded-md border shadow-md bg-black">
                     <div className="p-4 text-white">
