@@ -26,11 +26,15 @@ function ActiveAreaList() {
   };
 
   const handleRegionChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-      setSelectedRegion(event.target.value);
+    setSelectedRegion(event.target.value);
   };
 
   const handlePageChange = (a: number) => {
-    router.push(`/services/active-area?page=${page + a}&search=${searchTerm}&region=${selectedRegion}`);
+    router.push(
+      `/services/active-area?page=${
+        page + a
+      }&search=${searchTerm}&region=${selectedRegion}`
+    );
   };
 
   const { data } = useQuery({
@@ -40,11 +44,17 @@ function ActiveAreaList() {
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return getFilteredActiveAreas(page, LIMIT, searchTerm, selectedRegion, controller.signal);
+      return getFilteredActiveAreas(
+        page,
+        LIMIT,
+        searchTerm,
+        selectedRegion,
+        controller.signal
+      );
     },
     retry: 0,
     refetchOnWindowFocus: false,
-    staleTime: 24 * 3600 * 1000
+    staleTime: 24 * 3600 * 1000,
   });
 
   useEffect(() => {
@@ -59,7 +69,9 @@ function ActiveAreaList() {
   // Lắng nghe sự thay đổi của các tham số và cập nhật URL
   useEffect(() => {
     // Sử dụng replace thay vì push để tránh cuộn trang lên đầu
-    router.replace(`/services/active-area?page=${page}&search=${searchTerm}&region=${selectedRegion}`);
+    router.replace(
+      `/services/active-area?page=${page}&search=${searchTerm}&region=${selectedRegion}`
+    );
   }, [page, searchTerm, selectedRegion, router]);
 
   return (
@@ -72,7 +84,10 @@ function ActiveAreaList() {
       </div>
       <div className="flex flex-col md:flex-row gap-10 p-15 bg-gray-100">
         {/* Bộ lọc bên trái */}
-        <div data-aos="fade-right" className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full">
+        <div
+          data-aos="fade-right"
+          className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full"
+        >
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
           <input
             type="text"
@@ -104,28 +119,33 @@ function ActiveAreaList() {
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
             {data?.result?.map((area, index) => (
-              <div
+              <Link
                 key={index}
-                className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform"
+                href={`active-area/detail?id=${area.areaId}`}
+                passHref
               >
-                <div className="overflow-hidden">
-                  <img
-                    src={area.bannerImg || "/fallback.jpg"}
-                    alt={area.areaName}
-                    className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"
-                  />
+                <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform cursor-pointer">
+                  <div className="overflow-hidden">
+                    <img
+                      src={area.bannerImg || "/fallback.jpg"}
+                      alt={area.areaName}
+                      className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"
+                    />
+                  </div>
+                  <div className="p-6">
+                    <h4 className="font-semibold text-xl text-gray-800 mb-2">
+                      {area.areaName}
+                    </h4>
+                    <p className="text-gray-600 text-md">{area.areaTitle}</p>
+                    <p className="text-gray-600 text-sm mb-5">
+                      {area.areaType}
+                    </p>
+                    <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
+                      Xem ngay
+                    </button>
+                  </div>
                 </div>
-                <div className="p-6">
-                  <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                    {area.areaName}
-                  </h4>
-                  <p className="text-gray-600 text-md">{area.areaTitle}</p>
-                  <p className="text-gray-600 text-sm mb-5">{area.areaType}</p>
-                  <Link href={`active-area/detail?id=${area.areaId}`} className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
-                    Xem ngay
-                  </Link>
-                </div>
-              </div>
+              </Link>
             ))}
           </div>
 
@@ -143,7 +163,11 @@ function ActiveAreaList() {
             </span>
             <button
               onClick={() => handlePageChange(1)}
-              disabled={page === data?.totalPage || data?.totalPage === 0 || data?.totalPage === undefined}
+              disabled={
+                page === data?.totalPage ||
+                data?.totalPage === 0 ||
+                data?.totalPage === undefined
+              }
               className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
             >
               Trang sau
