@@ -55,25 +55,27 @@ export default function NewsList() {
               transition={{ duration: 0.1, ease: "easeInOut" }}
               className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all"
             >
-              <img
-                src={item.bannerImg}
-                alt={item.title}
-                className="w-full h-70 object-cover"
-              />
-              <div className="flex justify-between">
-                <div className="p-6">
-                  <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}</p>
-                  <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
-                  {/* <p className="text-sm text-gray-700">{item.}</p> */}
+              <Link href={'/news/' + item.newsId}>
+                <img
+                  src={item.bannerImg}
+                  alt={item.title}
+                  className="w-full h-70 object-cover"
+                />
+                <div className="flex justify-between">
+                  <div className="p-6">
+                    <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                    <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
+                    {/* <p className="text-sm text-gray-700">{item.}</p> */}
+                  </div>
+                  <div className="relative content-center">
+                    <p
+
+                      className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                      Xem ngay
+                    </p>
+                  </div>
                 </div>
-                <div className="relative content-center">
-                  <Link
-                    href={'/news/' + item.newsId}
-                    className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                    Xem ngay
-                  </Link>
-                </div>
-              </div>
+              </Link>
             </motion.div>
           ))}
         </motion.div>

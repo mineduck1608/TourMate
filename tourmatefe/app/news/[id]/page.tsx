@@ -15,7 +15,7 @@ export default function NewsDetailPage({
 }: {
     params: Promise<{ id: string }>;
 }) {
-    const {id} = use(params);
+    const { id } = use(params);
 
     const { data } = useQuery({
         queryKey: ['news', id],
@@ -30,16 +30,17 @@ export default function NewsDetailPage({
             {
                 news?.bannerImg && news?.title &&
                 <Banner
-                imageUrl={news?.bannerImg}
-                title={news?.title}
-            />}
+                    imageUrl={news?.bannerImg}
+                    title={news?.title}
+                />
+            }
         </div>
-        <div className='flex justify-between py-10 px-5'>
-            <div className='w-[70%] p-2'>
-                {data?.data?.content}
-            </div>
-            <div className='w-[25%] p-2 *:mb-10'>
-                <RecentNews currentId={id}/>
+        <div className='flex justify-between py-10 px-10'>
+            <div className='w-[65%] p-2'
+                dangerouslySetInnerHTML={{ __html: data?.data?.content ?? '' }}
+            />
+            <div className='w-[30%] p-2 *:mb-10'>
+                <RecentNews currentId={id} />
                 <NewsCategories />
                 <ScrollArea className="h-60 rounded-md border shadow-md bg-black">
                     <div className="p-4 text-white">

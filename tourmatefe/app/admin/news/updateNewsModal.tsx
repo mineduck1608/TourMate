@@ -87,7 +87,7 @@ const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 sm:grid-cols-2">
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <label
                 htmlFor="title"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -105,7 +105,7 @@ const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
                 required
               />
             </div>
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-1">
               <label
                 htmlFor="areaType"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

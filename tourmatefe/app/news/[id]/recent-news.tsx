@@ -2,6 +2,7 @@ import { getNews } from '@/app/api/news.api'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
 import Link from 'next/link'
 import React from 'react'
 
@@ -26,22 +27,23 @@ export default function RecentNews(params: { currentId?: number | string }) {
     const news = data?.result ?? []
     return (
         <div className='rounded-md border shadow-md'>
-            <h4 className="p-2 text-3xl font-medium leading-none">Bài viết gần đây</h4>
+            <h4 className="px-6 py-3 text-3xl font-medium leading-none">Bài viết gần đây</h4>
             <Separator />
-            <ScrollArea className="h-96 px-3">
+            <ScrollArea className="h-96 px-6 py-3">
                 <table>
                     <tbody>
                         {
                             news.map((v) => (
-                                <tr key={v.newsId} className='border-b-2'>
-                                    <td className='py-1'>
+                                <tr key={v.newsId} className='border-b-2 h-max'>
+                                    <td className=''>
                                         <img src={v.bannerImg} className='max-w-[150px]' />
                                     </td>
-                                    <td className='p-2'>
+                                    <td className='p-2 h-[105px] flex flex-col justify-between'>
                                         {v.newsId !== current
                                             ? <Link href={'/news/' + v.newsId}>{v.title}</Link>
                                             : <p className='font-semibold'>{v.title}</p>
                                         }
+                                        <p>{dayjs(v.createdAt).format('DD/MM/YYYY HH:mm')}</p>
                                     </td>
                                 </tr>
                             ))
