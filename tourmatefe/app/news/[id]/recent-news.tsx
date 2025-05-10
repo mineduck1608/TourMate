@@ -40,10 +40,10 @@ export default function RecentNews(params: { currentId?: number | string }) {
                                     </td>
                                     <td className='p-2 h-[105px] flex flex-col justify-between'>
                                         {v.newsId !== current
-                                            ? <Link href={'/news/' + v.newsId}>{v.title}</Link>
+                                            ? <Link href={'/news/' + v.newsId} className=''>{v.title}</Link>
                                             : <p className='font-semibold'>{v.title}</p>
                                         }
-                                        <p>{dayjs(v.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                                        <p className='font-light'>{dayjs(v.createdAt).format('DD/MM/YYYY HH:mm')}</p>
                                     </td>
                                 </tr>
                             ))

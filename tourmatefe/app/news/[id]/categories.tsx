@@ -13,18 +13,18 @@ export default function NewsCategories() {
     ]
     return (
         <div className='rounded-md border shadow-md'>
-            <h4 className="p-3 text-3xl font-medium leading-none">Danh mục</h4>
+            <h4 className="px-6 py-3 text-3xl font-medium leading-none">Danh mục</h4>
             <ScrollArea className="h-44 px-3">
                 <table>
                     <tbody>
                         {tags.map((tag) => (
-                            <tr key={tag} className='*:p-1'>
+                            <tr key={tag} className='*:px-3 *:p-1'>
                                 <td>
                                     <FaArrowRight />
                                 </td>
                                 <td className='w-full'>
                                     <div className='py-1'>
-                                        <Link href={'#'} className="text-md flex items-center">
+                                        <Link href={'/news?category=' + tag} className="text-md flex items-center">
                                             {tag}
                                         </Link>
                                         <Separator />

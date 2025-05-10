@@ -18,7 +18,7 @@ export default function NewsPage() {
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return getNews(page, LIMIT, controller.signal);
+      return getNews(page, LIMIT, '', controller.signal);
     },
     retry: 0,
     refetchOnWindowFocus: false,

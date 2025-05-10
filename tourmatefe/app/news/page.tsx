@@ -1,10 +1,10 @@
-import React from 'react'
+import React, { Suspense } from 'react'
 import Header from '@/components/MegaMenu';
 import Footer from '@/components/Footer';
 import Banner from '@/components/Banner';
 import NewsList from './NewsList';
 
-export default function NewsListPage() {
+function NewsListPage() {
     return (
         <div className='admin-layout'>
             <Header />
@@ -19,5 +19,13 @@ export default function NewsListPage() {
             </div>
             <Footer />
         </div>
+    )
+}
+
+export default function NewsListDriver(){
+    return(
+        <Suspense fallback={<p>Loading...</p>}>
+            <NewsListPage />
+        </Suspense>
     )
 }

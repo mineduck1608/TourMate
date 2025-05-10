@@ -7,13 +7,16 @@ import { useQuery } from "@tanstack/react-query";
 import dayjs from 'dayjs'
 import { getNews } from "../api/news.api";
 import PaginateList from "./paginate-list";
+import { useQueryString } from "../utils/utils";
 
 export default function NewsList() {
+  const queryString: { category?: string } = useQueryString();
   const [page, setPage] = useState(1);
+  const category = queryString.category ?? ''
   const pageSize = 12
   const { data } = useQuery({
-    queryKey: ['news', pageSize, page],
-    queryFn: () => getNews(page, pageSize),
+    queryKey: ['news', pageSize, page, category],
+    queryFn: () => getNews(page, pageSize, category),
     staleTime: 24 * 3600 * 1000,
   })
   const maxPage = data?.totalPage ?? 0

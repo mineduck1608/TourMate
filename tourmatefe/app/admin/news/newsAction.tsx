@@ -37,7 +37,7 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
     queryKey: ['news', page], // Pass page and limit as part of the query key
     queryFn: ({ queryKey }) => {
       const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-      return getNews(page, limit); // Pass the extracted values to getNews
+      return getNews(page, limit, ''); // Pass the extracted values to getNews
     },
     enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
   });
