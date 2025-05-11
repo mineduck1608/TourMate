@@ -16,9 +16,11 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar"
 import CustomerPage from "./customerPage"
+import { Suspense } from 'react';
 
 export default function Page() {
   return (
+    <Suspense fallback={<div>Loading...</div>}>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>
@@ -50,5 +52,6 @@ export default function Page() {
           </div>
       </SidebarInset>
     </SidebarProvider>
+    </Suspense>
   )
 }
