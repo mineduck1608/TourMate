@@ -34,9 +34,9 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Link from 'next/link';
-import { addActiveArea, getActiveAreas } from "@/app/api/active-area.api";
-import { ActiveArea } from "@/types/active-area";
-import AddActiveAreaModal from "./addActiveAreaModal";
+import { addCustomer, getCustomers } from "@/app/api/customer.api";
+import AddCustomerModal from "./addCustomerModal";
+import { Customer } from "@/types/customer";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,14 +78,14 @@ export function DataTable<TData, TValue>({
   });
 
     const { refetch } = useQuery({
-      queryKey: ['active-area', page], // Pass page and limit as part of the query key
+      queryKey: ['customer', page], // Pass page and limit as part of the query key
       queryFn: ({ queryKey }) => {
         const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
         const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-        return getActiveAreas(page, limit, controller.signal); // Pass the extracted values to getActiveAreas
+        return getCustomers(page, limit, controller.signal);
       },
       enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
     });
@@ -100,20 +100,22 @@ export function DataTable<TData, TValue>({
       setIsModalOpen(false);
     };
   
-    const handleSave = (data: ActiveArea) => {
-      data.createdAt = new Date().toISOString();
-      console.log(data);
-      addActiveAreaMutation.mutate(data);
+    const handleSave = (data: Customer) => {
+        data.createdAt = new Date().toISOString();
+        data.roleId = 2;
+        data.status = true;
+        addCustomerMutation.mutate(data);
     };
   
-    const addActiveAreaMutation = useMutation({
-      mutationFn: addActiveArea,
+    // Mutation for adding customer
+    const addCustomerMutation = useMutation({
+      mutationFn: addCustomer,
       onSuccess: () => {
-        toast.success('Thêm tin tức thành công');
+        toast.success('Thêm khách hàng thành công');
         refetch(); // Refetch dữ liệu sau khi thêm thành công
       },
       onError: (error) => {
-        toast.error('Thêm tin tức thất bại');
+        toast.error('Thêm khách hàng thất bại');
         console.error(error);
       },
     });
@@ -123,14 +125,14 @@ export function DataTable<TData, TValue>({
       <div className="flex items-center pb-5">
         <Input
           placeholder="Tìm kiếm..."
-          value={(table.getColumn("areaName")?.getFilterValue() as string) ?? ""}
+          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
-            table.getColumn("areaName")?.setFilterValue(event.target.value)
+            table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm bg-white mr-5"
         />
         <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
-          Thêm địa điểm mới
+          Tạo khách hàng mới
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -212,7 +214,7 @@ export function DataTable<TData, TValue>({
 
       <div className="flex items-center justify-end space-x-2 pt-5">
   <div className="flex-1 text-sm text-muted-foreground">
-    {table.getFilteredSelectedRowModel().rows.length} trên {totalResults} dòng được chọn.
+  {table.getFilteredSelectedRowModel().rows.length} trên {totalResults} dòng được chọn.
   </div>
     {/* Previous Button */}
       {page === 1 ? (
@@ -221,11 +223,11 @@ export function DataTable<TData, TValue>({
          size="sm"
          disabled
        >
-         Truớc
+         Trước
        </Button>
      ) : (
       <Link
-      href={`/admin/active-area?page=${page - 1}`}
+      href={`/admin/customer?page=${page - 1}`}
     >
       <Button
         variant="outline"
@@ -252,7 +254,7 @@ export function DataTable<TData, TValue>({
       </Button>
       ) : (
         <Link
-              href={`/admin/active-area?page=${page + 1}`}
+              href={`/admin/customer?page=${page + 1}`}
         >
               <Button
                 variant="outline"
@@ -263,7 +265,7 @@ export function DataTable<TData, TValue>({
             </Link>
       )}
 </div>
-      <AddActiveAreaModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
+      <AddCustomerModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
     </div>
   );
 }

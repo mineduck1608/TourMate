@@ -26,9 +26,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<News>>> GetAllAsync(int pageSize = 10, int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<News>>> Search(string category = "", int pageSize = 10, int pageIndex = 1)
         {
-            var result = await _newsService.GetAll(pageSize, pageIndex);
+            var result = await _newsService.FilterByCategory(pageSize, pageIndex, category);
             // Tạo đối tượng response với dữ liệu đã bọc
             var response = new PagedResult<News>
             {

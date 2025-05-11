@@ -1,24 +1,23 @@
-// components/NewsPage.js
 import { useQuery } from "@tanstack/react-query";
 import { useQueryString } from "../../utils/utils";
-import { getNews } from "@/app/api/news.api";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
+import { getCustomers } from "@/app/api/customer.api";
 
 const LIMIT = 10;
 
-export default function NewsPage() {
+export default function CustomerPage() {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
 
   const { data } = useQuery({
-    queryKey: ['news', page],
+    queryKey: ['customer', page],
     queryFn: () => {
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return getNews(page, LIMIT, '', controller.signal);
+      return getCustomers(page, LIMIT, controller.signal);
     },
     retry: 0,
     refetchOnWindowFocus: false,

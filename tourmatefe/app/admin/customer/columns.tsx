@@ -1,9 +1,9 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { News } from "@/types/news";
 import { Checkbox } from "@/components/ui/checkbox";
-import NewsActions from "./newsAction";
+import { Customer } from "@/types/customer";
+import CustomerActions from "./customerAction";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
 const formatDate = (dateString: string) => {
@@ -20,7 +20,7 @@ const formatDate = (dateString: string) => {
 
 
 
-export const columns: ColumnDef<News>[] = [
+export const columns: ColumnDef<Customer>[] = [
 
   {
     id: "select",
@@ -74,18 +74,15 @@ export const columns: ColumnDef<News>[] = [
       <div
         style={{
           maxWidth: '600px',
-          maxHeight: '400px',
-          whiteSpace: 'nowrap',  // Không cho phép xuống dòng
-          overflow: 'hidden',  // Ẩn phần tràn ra ngoài
-          textOverflow: 'ellipsis',  // Thêm "..." nếu nội dung dài quá
-          overflowWrap: 'break-word',  // Cho phép cắt từ nếu quá dài
+          whiteSpace: 'normal',  // Cho phép nội dung xuống dòng
+          overflowWrap: 'break-word', // Cho phép cắt từ nếu quá dài
         }}
         dangerouslySetInnerHTML={{
           __html: row.getValue("content") || "",  // Hiển thị HTML (cẩn thận với dữ liệu không xác thực)
         }}
       />
     ),
-  },  
+  },
   {
     accessorKey: "bannerImg",
     header: "Ảnh",
@@ -118,7 +115,7 @@ export const columns: ColumnDef<News>[] = [
     id: "actions",
     cell: ({ row }) => {
       const data = row.original;
-      return <NewsActions data={data} />
+      return <CustomerActions data={data} />
     },
   },
 ];

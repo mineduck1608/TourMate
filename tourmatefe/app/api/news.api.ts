@@ -2,11 +2,12 @@ import { News } from '@/types/news'
 import http from '../utils/http'
 import { PagedResult } from '@/types/pagedResult';
 
-export const getNews = async (page: number | string, limit: number | string, signal?: AbortSignal) => {
+export const getNews = async (page: number | string, limit: number | string, category: string, signal?: AbortSignal) => {
     const res = await http.get<PagedResult<News>>('news', {
       params: {
         pageSize: limit,
-        pageIndex: page
+        pageIndex: page,
+        category: category
       },
       signal
     });

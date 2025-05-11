@@ -12,6 +12,7 @@ namespace Services
         Task<bool> UpdateNews(News news);
         Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
+        Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category);
     }
 
     public class NewsService : INewsService
@@ -50,6 +51,11 @@ namespace Services
         {
             await NewsRepository.RemoveAsync(id);
             return true;
+        }
+
+        public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category)
+        {
+            return await NewsRepository.FilterByCategory(pageSize, pageIndex, category);
         }
     }
 }

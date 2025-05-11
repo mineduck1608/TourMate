@@ -96,8 +96,11 @@ export const columns: ColumnDef<ActiveArea>[] = [
       <div
         style={{
           maxWidth: '600px',
-          whiteSpace: 'normal',  // Cho phép nội dung xuống dòng
-          overflowWrap: 'break-word', // Cho phép cắt từ nếu quá dài
+          maxHeight: '400px',
+          whiteSpace: 'nowrap',  // Không cho phép xuống dòng
+          overflow: 'hidden',  // Ẩn phần tràn ra ngoài
+          textOverflow: 'ellipsis',  // Thêm "..." nếu nội dung dài quá
+          overflowWrap: 'break-word',  // Cho phép cắt từ nếu quá dài
         }}
         dangerouslySetInnerHTML={{
           __html: row.getValue("areaContent") || "",  // Hiển thị HTML (cẩn thận với dữ liệu không xác thực)
