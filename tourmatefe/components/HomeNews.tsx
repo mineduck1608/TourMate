@@ -18,10 +18,8 @@ export default function HomeNews() {
   const maxPage = data?.totalPage ?? 0
   useEffect(() => {
     const timer = setInterval(() => {
-      if (page < maxPage) {
-        setPage(p => p + 1)
-      }
-    }, 10000); // đổi trang mỗi 10 giây
+      setPage(p => page < maxPage ? p + 1 : 1)
+    }, 5000); // đổi trang mỗi 10 giây
     return () => clearInterval(timer);
   }, [page, maxPage]);
 
@@ -61,7 +59,7 @@ export default function HomeNews() {
               />
               <div className="flex justify-between">
                 <div className="p-6">
-                  <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                  <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}</p>
                   <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                   {/* <p className="text-sm text-gray-700">{item.}</p> */}
                 </div>

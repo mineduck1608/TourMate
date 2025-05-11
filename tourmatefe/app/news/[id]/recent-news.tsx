@@ -26,15 +26,15 @@ export default function RecentNews(params: { currentId?: number | string }) {
         : -1
     const news = data?.result ?? []
     return (
-        <div className='rounded-md border shadow-lg'>
+        <div className='rounded-md border shadow-lg bg-gray-100'>
             <h4 className="px-6 py-3 text-3xl font-medium leading-none">Bài viết gần đây</h4>
             <Separator />
-            <ScrollArea className="h-96 px-6 py-3">
+            <ScrollArea className="h-96 px-6 pb-3 ">
                 <table>
                     <tbody>
                         {
                             news.map((v) => (
-                                <tr key={v.newsId} className='border-b-2 h-max'>
+                                <tr key={v.newsId} className='border-b-2 h-max '>
                                     <td className=''>
                                         <img src={v.bannerImg} className='max-w-[150px]' />
                                     </td>
@@ -43,7 +43,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
                                             ? <Link href={'/news/' + v.newsId} className=''>{v.title}</Link>
                                             : <p className='font-semibold'>{v.title}</p>
                                         }
-                                        <p className='font-light'>{dayjs(v.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                                        <p className='font-light'>{dayjs(v.createdAt).format('DD/MM/YYYY HH:mm:ss')}</p>
                                     </td>
                                 </tr>
                             ))
