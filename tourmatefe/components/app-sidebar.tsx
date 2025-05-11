@@ -10,7 +10,7 @@ import {
   PieChart,
   Send,
   Settings2,
-  SquareTerminal,
+  ContactRound
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
@@ -38,23 +38,19 @@ const data = {
   },
   navMain: [
     {
-      title: "Playground",
+      title: "User",
       url: "#",
-      icon: SquareTerminal,
+      icon: ContactRound,
       isActive: true,
       items: [
         {
-          title: "History",
-          url: "#",
+          title: "Customer",
+          url: "/admin/customer",
         },
         {
-          title: "Starred",
-          url: "#",
-        },
-        {
-          title: "Settings",
-          url: "#",
-        },
+          title: "TourGuide",
+          url: "/admin/tour-guide",
+        }
       ],
     },
     {
