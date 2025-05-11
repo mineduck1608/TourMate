@@ -18,13 +18,15 @@ export default function NewsCategories() {
                 <table>
                     <tbody>
                         {tags.map((tag) => (
-                            <tr key={tag} className='*:px-3 *:p-1'>
+                            <tr key={tag} className='*:px-3 *:p-1 hover:text-gray-600'>
                                 <td>
                                     <FaArrowRight />
                                 </td>
                                 <td className='w-full'>
                                     <div className='py-1'>
-                                        <Link href={'/news?category=' + tag} className="text-md flex items-center">
+                                        <Link href={'/news?category=' + tag} 
+                                        className="text-md flex items-center "
+                                        >
                                             {tag}
                                         </Link>
                                         <Separator />

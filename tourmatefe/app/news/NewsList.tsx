@@ -66,7 +66,7 @@ export default function NewsList() {
                 />
                 <div className="flex justify-between">
                   <div className="p-6">
-                    <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm')}</p>
+                    <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdAt).format('DD/MM/YYYY HH:mm:ss')}</p>
                     <h3 className="font-semibold text-lg mb-2">{item.title}</h3>
                     {/* <p className="text-sm text-gray-700">{item.}</p> */}
                   </div>
