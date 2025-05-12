@@ -1,4 +1,5 @@
-﻿using Repositories.Models;
+﻿using Repositories.DTO;
+using Repositories.Models;
 using Repositories.Repository;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace Services
     public interface ITourGuideService
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
-        TourGuide GetTourGuide(int id);
-        IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex);
+        Task<TourGuide> GetTourGuideAsync(int id);
+        Task<PagedResult<TourGuide>> GetAllAsync(int pageSize, int pageIndex);
         void UpdateTourGuide(TourGuide tourguide);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourGuide);
@@ -30,14 +31,14 @@ namespace Services
         {
             return await _repository.GetByAccId(accId);
         }
-        public TourGuide GetTourGuide(int id)
+        public async Task<TourGuide> GetTourGuideAsync(int id)
         {
-            return _repository.GetById(id);
+            return await _repository.GetById(id);
         }
 
-        public IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourGuide>> GetAllAsync(int pageSize, int pageIndex)
         {
-            return _repository.GetAll(pageSize, pageIndex);
+            return await _repository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<bool> CreateTourGuide(TourGuide tourGuide)

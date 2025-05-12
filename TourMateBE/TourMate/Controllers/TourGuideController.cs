@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -17,15 +18,15 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TourGuide> Get(int id)
+        public async Task<ActionResult<TourGuide>> GetAsync(int id)
         {
-            return Ok(_tourguideService.GetTourGuide(id));
+            return Ok(await _tourguideService.GetTourGuideAsync(id));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TourGuide>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourGuide>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_tourguideService.GetAll(pageSize, pageIndex));
+            return Ok(await _tourguideService.GetAllAsync(pageSize, pageIndex));
         }
 
         [HttpPost]
@@ -33,7 +34,7 @@ namespace API.Controllers
         {
             var tourguide = data.Convert();
             _tourguideService.CreateTourGuide(tourguide);
-            return CreatedAtAction(nameof(Get), new { id = tourguide.TourGuideId }, tourguide);
+            return CreatedAtAction(nameof(GetAsync), new { id = tourguide.TourGuideId }, tourguide);
         }
 
         [HttpPut]
