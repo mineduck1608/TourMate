@@ -1,23 +1,24 @@
-import { Customer } from "@/types/customer";
+import { CreateCustomer } from "@/types/customer";
 import { useState } from "react";
 
 type AddCustomerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Customer) => void;
+  onSave: (data: CreateCustomer) => void;
 };
+
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   isOpen,
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<Customer>({
+  const [formData, setFormData] = useState<CreateCustomer>({
     customerId: 0,
     accountId: 0,
     fullName: "",
     gender: "",
     phone: "",
-    dateOfBirth: new Date(),
+    dateOfBirth: "",
     email: "",
     password: "",
     status: true,
@@ -26,22 +27,26 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({
+      ...prev,
+      [name]: name === "dateOfBirth" ? value : value, // Keep it as string format
+    }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
+    console.log("Form data submitted:", formData);
     setFormData({
       customerId: 0,
       accountId: 0,
       fullName: "",
       gender: "",
       phone: "",
-      dateOfBirth: new Date(),
+      dateOfBirth: "",
       email: "",
       password: "",
       status: true,
@@ -91,23 +96,127 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
         </div>
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 sm:grid-cols-2">
+            {/* Email Input */}
             <div className="sm:col-span-1">
               <label
-                htmlFor="title"
+                htmlFor="email"
                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
               >
-                Tiêu đề
+                Email
+              </label>
+              <input
+                type="email"
+                name="email"
+                id="email"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Nhập email"
+                value={formData.email}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Password Input */}
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Password
+              </label>
+              <input
+                type="password"
+                name="password"
+                id="password"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Nhập password"
+                value={formData.password}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Full Name Input */}
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="fullName"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Họ và tên
               </label>
               <input
                 type="text"
-                name="title"
-                id="title"
+                name="fullName"
+                id="fullName"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập tiêu đề"
+                placeholder="Nhập họ và tên"
                 value={formData.fullName}
                 onChange={handleChange}
                 required
               />
+            </div>
+
+            {/* Phone Input */}
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Số điện thoại
+              </label>
+              <input
+                type="phone"
+                name="phone"
+                id="phone"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Nhập số điện thoại"
+                value={formData.phone}
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Date of Birth Input */}
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="dateOfBirth"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Ngày sinh
+              </label>
+              <input
+                type="date"
+                name="dateOfBirth"
+                id="dateOfBirth"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                placeholder="Nhập ngày sinh"
+                value={formData.dateOfBirth} // Set as string YYYY-MM-DD format
+                onChange={handleChange}
+                required
+              />
+            </div>
+
+            {/* Gender Select */}
+            <div className="sm:col-span-1">
+              <label
+                htmlFor="gender"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Giới tính
+              </label>
+              <select
+                name="gender"
+                id="gender"
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                value={formData.gender}
+                onChange={handleChange}
+                required
+              >
+                <option value="">Chọn giới tính</option>
+                <option value="Nam">Nam</option>
+                <option value="Nữ">Nữ</option>
+                <option value="Khác">Khác</option>
+              </select>
             </div>
           </div>
           <div className="flex justify-end">

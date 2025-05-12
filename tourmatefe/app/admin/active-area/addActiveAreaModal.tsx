@@ -204,9 +204,7 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
                     [{ header: "1" }, { header: "2" }, { font: [] }],
                     [{ list: "ordered" }, { list: "bullet" }],
                     ["bold", "italic", "underline"],
-                    [{ align: [] }],
-                    ["link", "image"],
-                    ["clean"],
+                    [{ align: [] }]
                   ],
                 }}
                 placeholder="Nhập nội dung tin tức..."

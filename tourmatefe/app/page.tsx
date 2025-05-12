@@ -8,8 +8,6 @@ import TourGuideCard from '@/components/TourGuideCard';
 import ContactPagination from '@/components/ContactPanigation';
 import Footer from '@/components/Footer';
 
-
-
 export default function Home() {
 
   return (

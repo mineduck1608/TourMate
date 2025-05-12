@@ -161,8 +161,6 @@ const AddNewsModal: React.FC<AddNewsModalProps> = ({ isOpen, onClose, onSave }) 
                     [{ list: "ordered" }, { list: "bullet" }],
                     ["bold", "italic", "underline"],
                     [{ align: [] }],
-                    ["link", "image"],
-                    ["clean"],
                   ],
                 }}
                 placeholder="Nhập nội dung tin tức..."

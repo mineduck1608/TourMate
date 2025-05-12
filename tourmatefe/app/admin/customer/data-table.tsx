@@ -21,7 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -36,7 +36,7 @@ import { toast } from "react-toastify";
 import Link from 'next/link';
 import { addCustomer, getCustomers } from "@/app/api/customer.api";
 import AddCustomerModal from "./addCustomerModal";
-import { Customer } from "@/types/customer";
+import { CreateCustomer } from "@/types/customer";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -100,7 +100,7 @@ export function DataTable<TData, TValue>({
       setIsModalOpen(false);
     };
   
-    const handleSave = (data: Customer) => {
+    const handleSave = (data: CreateCustomer) => {
         data.createdAt = new Date().toISOString();
         data.roleId = 2;
         data.status = true;
@@ -123,14 +123,14 @@ export function DataTable<TData, TValue>({
   return (
     <div>
       <div className="flex items-center pb-5">
-        <Input
+        {/* <Input
           placeholder="Tìm kiếm..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm bg-white mr-5"
-        />
+        /> */}
         <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
           Tạo khách hàng mới
         </Button>

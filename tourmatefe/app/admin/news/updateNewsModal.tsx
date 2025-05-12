@@ -157,8 +157,6 @@ const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
                     [{ list: "ordered" }, { list: "bullet" }],
                     ["bold", "italic", "underline"],
                     [{ align: [] }],
-                    ["link", "image"],
-                    ["clean"],
                   ],
                 }}
                 placeholder="Nhập nội dung tin tức..."

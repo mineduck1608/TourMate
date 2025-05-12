@@ -21,6 +21,7 @@ namespace Services
         Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
         Task<Account> GetAccountByEmail(string email);
         Task<bool> CreateAccount(Account account);
+        Task<Account> CreateAccountAdmin(Account account);
     }
 
     // Services/AuthService.cs
@@ -160,6 +161,13 @@ namespace Services
         {
             // Gọi phương thức bất đồng bộ để tạo tài khoản
             return await _repo.CreateAsync(account);
+        }
+
+
+        public async Task<Account> CreateAccountAdmin(Account account)
+        {
+            // Gọi phương thức bất đồng bộ để tạo tài khoản
+            return await _repo.CreateAdmin(account);
         }
 
         public void UpdateAccount(Account account)
