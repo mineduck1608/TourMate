@@ -18,14 +18,14 @@ export const getTourGuides = async (page: number | string, limit: number | strin
 export const getTourGuide = (id: number | string) => http.get<TourGuide>(`tour-guides/${id}`)
 
 export const addTourGuide = async (newsData: TourGuide) => {
-  const response = await http.post('/news', newsData);
+  const response = await http.post('/tour-guides', newsData);
   return response.data;  // Assuming the API returns the created news item
 };
 
 export const updateTourGuide = async (id: number, newsData: TourGuide) => {
-  const response = await http.put(`/news/${id}`, newsData);
+  const response = await http.put(`/tour-guides/${id}`, newsData);
   return response.data;  // Assuming the API returns the updated news item
 };
 
-export const deleteTourGuide = (id: number | string) => http.delete<object>(`news/${id}`)
+export const deleteTourGuide = (id: number | string) => http.delete<object>(`tour-guides/${id}`)
 
