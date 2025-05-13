@@ -20,7 +20,16 @@ export default function TourGuideProfileDetail({
     const tourGuide = data?.data
     return (
         <div className='*:my-10 bg-gray-50'>
-            <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
+            <div className='relative'>
+                <Banner imageUrl='/mountain.png' title='' height='200px' />
+                <div className='p-1 bg-white absolute top-[50%] left-[150px] rounded-full'>
+                    <img src={"/travel.jpg"}
+                        alt={'shell'}
+                        className=" max-w-[150px] rounded-full aspect-square"
+                    />
+                </div>
+                <p>ABC</p>
+            </div>
             {tourGuide &&
                 <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>
                     <img src={tourGuide.image || "/fallback.jpg"}
@@ -47,7 +56,7 @@ export default function TourGuideProfileDetail({
                         </p>
                     </div>
                 </div>}
-                
+
         </div>
     )
 }

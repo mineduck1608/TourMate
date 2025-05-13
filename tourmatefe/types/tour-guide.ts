@@ -1,4 +1,5 @@
 import { ActiveArea } from "./active-area"
+import { TourService } from "./tour-service"
 
 export type TourGuide = {
     tourGuideId: number,
@@ -12,7 +13,8 @@ export type TourGuide = {
     /**
      * 1 to 1 scaffolded as 1 to n
      */
-    tourGuideDescs: TourGuideDesc[]
+    tourGuideDescs: TourGuideDesc[],
+    tourServices: TourService[]
 }
 
 export type TourGuideDesc = {

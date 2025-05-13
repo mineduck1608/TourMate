@@ -28,4 +28,3 @@ export const updateTourService = async (id: number, newsData: TourService) => {
 };
 
 export const deleteTourService = (id: number | string) => http.delete<object>(`tour-services/${id}`)
-
