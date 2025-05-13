@@ -12,12 +12,6 @@ import "react-quill-new/dist/quill.snow.css";
 import { ActiveArea } from "@/types/active-area";
 
 
-
-
-
-
-
-
 type AddActiveAreaModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -39,28 +33,6 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
     areaType: "Miền Bắc",
     createdAt: "",
   });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
@@ -163,8 +135,8 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
               >
                 <option value="Miền Bắc">Miền Bắc</option>
                 <option value="Miền Trung">Miền Trung</option>
-
-@@ -139,92 +148,101 @@
+                <option value="Miền Nam">Miền Nam</option>
+                <option value="Miền Tây">Miền Tây</option>
               </select>
             </div>
             <div className="sm:col-span-1">
@@ -239,29 +211,6 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
                 placeholder="Nhập nội dung tin tức..."
                 className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
               />
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
             </div>
           </div>
           <div className="flex justify-end">
