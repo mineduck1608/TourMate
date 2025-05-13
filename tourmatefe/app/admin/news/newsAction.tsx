@@ -128,7 +128,7 @@ const NewsActions: React.FC<NewsActionsProps> = ({ data }) => {
         isOpen={isDeleteModalOpen}
         onClose={closeDeleteModal}
         onConfirm={handleConfirmDelete}
-        message="Are you sure you want to delete this news?"
+        message="Bạn có chắc muốn xóa tin tức này?"
       />
 
       {/* Render UpdateNewsModal only when needed */}

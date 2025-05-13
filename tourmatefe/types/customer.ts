@@ -1,9 +1,11 @@
-export type Customer = {
+import { Account } from "./account";
+
+export type HandleCustomer = {
     customerId: number;
     fullName: string;
     accountId: number;
     gender: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     phone: string;
     email: string;
     password: string;
@@ -11,4 +13,14 @@ export type Customer = {
     roleId: number;
     status: boolean;
 };
+
+export type Customer = {
+    customerId: number;
+    fullName: string;
+    accountId: number;
+    gender: string;
+    dateOfBirth: string;
+    phone: string;
+    Account: Account;
+}
 

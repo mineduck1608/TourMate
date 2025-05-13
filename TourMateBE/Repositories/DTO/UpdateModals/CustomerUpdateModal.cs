@@ -1,8 +1,8 @@
 ﻿using Repositories.Models;
 
-namespace Repositories.DTO.CreateModels
+namespace Repositories.DTO.UpdateModels
 {
-    public class CustomerCreateModel
+    public class CustomerUpdateModel
     {
         public int CustomerId { get; set; }
 
@@ -32,17 +32,18 @@ namespace Repositories.DTO.CreateModels
             AccountId = AccountId,
             Gender = Gender,
             Phone = Phone,
-            CustomerId = 0,
-            DateOfBirth = DateOfBirth,
+            CustomerId = CustomerId,
+            DateOfBirth = DateOfBirth
         };
 
         public Account ConvertAccount() => new()
         {
+            AccountId = AccountId,
             Email = Email,
             Password = Password,
             CreatedDate = CreatedAt,
             RoleId = 2,
-            Status = true
+            Status = Status
         };
     }
 }

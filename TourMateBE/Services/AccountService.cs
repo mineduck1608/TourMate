@@ -15,12 +15,13 @@ namespace Services
     {
         Account GetAccount(int id);
         IEnumerable<Account> GetAll(int pageSize, int pageIndex);
-        void UpdateAccount(Account account);
+        Task<bool> UpdateAccount(Account account);
         bool DeleteAccount(int id);
         Task<AuthResponse> LoginAsync(string email, string password);
         Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
         Task<Account> GetAccountByEmail(string email);
         Task<bool> CreateAccount(Account account);
+        Task<Account> CreateAccountAdmin(Account account);
     }
 
     // Services/AuthService.cs
@@ -162,9 +163,16 @@ namespace Services
             return await _repo.CreateAsync(account);
         }
 
-        public void UpdateAccount(Account account)
+
+        public async Task<Account> CreateAccountAdmin(Account account)
         {
-            _repo.Update(account);
+            // Gọi phương thức bất đồng bộ để tạo tài khoản
+            return await _repo.CreateAdmin(account);
+        }
+
+        public async Task<bool> UpdateAccount(Account account)
+        {
+            return await _repo.UpdateAsync(account);
         }
 
         public bool DeleteAccount(int id)

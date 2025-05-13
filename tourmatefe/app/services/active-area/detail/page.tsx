@@ -1,11 +1,11 @@
-"use client"
+"use client";
 
 import { Suspense } from "react";
 import { getActiveArea } from "@/app/api/active-area.api";
 import { useQueryString } from "@/app/utils/utils";
 import Banner from "@/components/Banner";
 import { useQuery } from "@tanstack/react-query";
-import DOMPurify from 'dompurify';
+import DOMPurify from "dompurify";
 
 const AreaDetail = () => {
   const queryString: { id?: string } = useQueryString();
@@ -37,22 +37,49 @@ const AreaDetail = () => {
     <div className="flex flex-wrap">
       {/* Left content section */}
       <Banner
-        imageUrl={data?.data?.bannerImg || "https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"}
+        imageUrl={
+          data?.data?.bannerImg ||
+          "https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"
+        }
         title={data?.data?.areaTitle || "No title available"}
         subtitle={data?.data?.areaSubtitle || "No title available"}
       />
-      <div className="w-full lg:w-3/4 text-2xl font-bold p-10">
-        <h1>{data?.data?.areaTitle}</h1>
-        <p dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(data?.data?.areaContent || "") }} />
+      <div className="w-full lg:w-3/4 text-2xl p-10">
+        <h1 className="mb-5 font-semibold">{data?.data?.areaTitle}</h1>
+        <p
+          dangerouslySetInnerHTML={{
+            __html: DOMPurify.sanitize(
+              // Thay thế các URL ảnh trong content bằng thẻ <img>
+              (data?.data?.areaContent || "").replace(
+                /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+                (match) => {
+                  return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
+                }
+              )
+            ),
+          }}
+        />
       </div>
       {/* Right sidebar */}
       <div className="w-full lg:w-1/4 p-10">
         <div className="bg-gray-100 p-4 rounded-lg">
           <h2 className="text-lg font-semibold">Related Content</h2>
           <ul>
-            <li><a href="#" className="text-blue-500">Link 1</a></li>
-            <li><a href="#" className="text-blue-500">Link 2</a></li>
-            <li><a href="#" className="text-blue-500">Link 3</a></li>
+            <li>
+              <a href="#" className="text-blue-500">
+                Link 1
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-blue-500">
+                Link 2
+              </a>
+            </li>
+            <li>
+              <a href="#" className="text-blue-500">
+                Link 3
+              </a>
+            </li>
           </ul>
         </div>
       </div>
