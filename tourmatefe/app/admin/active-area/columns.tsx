@@ -92,22 +92,31 @@ export const columns: ColumnDef<ActiveArea>[] = [
   {
     accessorKey: "areaContent",
     header: "Nội dung",
-    cell: ({ row }) => (
-      <div
-        style={{
-          maxWidth: '600px',
-          maxHeight: '400px',
-          whiteSpace: 'nowrap',  // Không cho phép xuống dòng
-          overflow: 'hidden',  // Ẩn phần tràn ra ngoài
-          textOverflow: 'ellipsis',  // Thêm "..." nếu nội dung dài quá
-          overflowWrap: 'break-word',  // Cho phép cắt từ nếu quá dài
-        }}
-        dangerouslySetInnerHTML={{
-          __html: row.getValue("areaContent") || "",  // Hiển thị HTML (cẩn thận với dữ liệu không xác thực)
-        }}
-      />
-    ),
-  },
+    cell: ({ row }) => {
+      const content = (row.getValue("areaContent") as string) || "";
+  
+      // Kiểm tra và thay thế đường dẫn ảnh trong content bằng thẻ <img>
+      const updatedContent = content.replace(/(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi, (match) => {
+        return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
+      });
+  
+      return (
+        <div
+          style={{
+            maxWidth: '400px',
+            maxHeight: '400px',
+            whiteSpace: 'nowrap',  // Không cho phép xuống dòng
+            overflow: 'hidden',  // Ẩn phần tràn ra ngoài
+            textOverflow: 'ellipsis',  // Thêm "..." nếu nội dung dài quá
+            overflowWrap: 'break-word',  // Cho phép cắt từ nếu quá dài
+          }}
+          dangerouslySetInnerHTML={{
+            __html: updatedContent,  // Hiển thị HTML (bao gồm cả ảnh)
+          }}
+        />
+      );
+    },
+  },  
   {
     accessorKey: "bannerImg",
     header: "Ảnh Nền",

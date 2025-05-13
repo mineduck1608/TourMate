@@ -1,6 +1,6 @@
 import { Account } from "./account";
 
-export type CreateCustomer = {
+export type HandleCustomer = {
     customerId: number;
     fullName: string;
     accountId: number;

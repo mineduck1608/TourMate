@@ -1,10 +1,10 @@
-import { CreateCustomer } from "@/types/customer";
+import { HandleCustomer } from "@/types/customer";
 import { useState } from "react";
 
 type AddCustomerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: CreateCustomer) => void;
+  onSave: (data: HandleCustomer) => void;
 };
 
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
@@ -12,7 +12,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<CreateCustomer>({
+  const [formData, setFormData] = useState<HandleCustomer>({
     customerId: 0,
     accountId: 0,
     fullName: "",

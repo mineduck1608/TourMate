@@ -15,7 +15,7 @@ namespace Services
     {
         Account GetAccount(int id);
         IEnumerable<Account> GetAll(int pageSize, int pageIndex);
-        void UpdateAccount(Account account);
+        Task<bool> UpdateAccount(Account account);
         bool DeleteAccount(int id);
         Task<AuthResponse> LoginAsync(string email, string password);
         Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
@@ -170,9 +170,9 @@ namespace Services
             return await _repo.CreateAdmin(account);
         }
 
-        public void UpdateAccount(Account account)
+        public async Task<bool> UpdateAccount(Account account)
         {
-            _repo.Update(account);
+            return await _repo.UpdateAsync(account);
         }
 
         public bool DeleteAccount(int id)

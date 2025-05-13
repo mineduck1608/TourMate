@@ -14,7 +14,7 @@ namespace Services
         Task<Customer> GetCustomerByAccId(int accId);
         Customer GetCustomer(int id);
         Task<bool> CreateCustomer(Customer customer);
-        void UpdateCustomer(Customer customer);
+        Task<bool> UpdateCustomer(Customer customer);
         bool DeleteCustomer(int id);
         Task<Customer> GetCustomerByPhone(string phone);
         Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string email, string phone);
@@ -53,9 +53,9 @@ namespace Services
             return await _repository.CreateAsync(customer);
         }
 
-        public void UpdateCustomer(Customer customer)
+        public async Task<bool> UpdateCustomer(Customer customer)
         {
-            _repository.Update(customer);
+           return await _repository.UpdateAsync(customer);
         }
 
         public bool DeleteCustomer(int id)
