@@ -32,6 +32,8 @@ export function SignupForm({
   const [error, setError] = useState("");
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState("");
+  const [operatingArea, setOperatingArea] = useState("");
+  const [operatingAreaOpen, setOperatingAreaOpen] = useState(false);
 
   const cities = [
     {
@@ -279,46 +281,48 @@ export function SignupForm({
             </Popover>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="address">Khu Vực Hoạt Động</Label>
-            <Popover open={open} onOpenChange={setOpen}>
+            <Label htmlFor="operating-area">Khu vực hoạt động</Label>
+            <Popover
+              open={operatingAreaOpen}
+              onOpenChange={setOperatingAreaOpen}
+            >
               <PopoverTrigger asChild>
                 <Button
                   variant="outline"
                   role="combobox"
-                  aria-expanded={open}
+                  aria-expanded={operatingAreaOpen}
                   className="w-[184px] justify-between"
                 >
-                  {value
-                    ? cities.find((city) => city.value === value)?.label
-                    : "Chọn thành phố..."}
+                  {operatingArea
+                    ? cities.find((city) => city.value === operatingArea)?.label
+                    : "Chọn khu vực..."}
                   <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="w-[200px] p-0">
                 <Command>
-                  <CommandInput
-                    placeholder="Tìm thành phố..."
-                    className="h-9"
-                  />
+                  <CommandInput placeholder="Tìm khu vực..." className="h-9" />
                   <CommandList>
-                    <CommandEmpty>Không tìm thấy thành phố.</CommandEmpty>
+                    <CommandEmpty>Không tìm thấy khu vực.</CommandEmpty>
                     <CommandGroup>
                       {cities.map((city) => (
                         <CommandItem
                           key={city.value}
                           value={city.value}
                           onSelect={(currentValue) => {
-                            setValue(
-                              currentValue === value ? "" : currentValue
+                            setOperatingArea(
+                              currentValue === operatingArea ? "" : currentValue
                             );
-                            setOpen(false);
+                            setOperatingAreaOpen(false);
                           }}
                         >
                           {city.label}
                           <Check
                             className={cn(
                               "ml-auto h-4 w-4",
-                              value === city.value ? "opacity-100" : "opacity-0"
+                              operatingArea === city.value
+                                ? "opacity-100"
+                                : "opacity-0"
                             )}
                           />
                         </CommandItem>
