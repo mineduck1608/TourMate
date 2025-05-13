@@ -1,4 +1,4 @@
-import { HandleCustomer, Customer } from "@/types/customer";
+import { Customer } from "@/types/customer";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -17,12 +17,12 @@ export const getCustomers = async (page: number | string, limit: number | string
   };
 
 
-  export const addCustomer = async (data: HandleCustomer) => {
+  export const addCustomer = async (data: Customer) => {
     const response = await http.post('/customer', data);
     return response.data;
   };
 
-  export const updateCustomer = async (id: number, data: HandleCustomer) => {
+  export const updateCustomer = async (id: number, data: Customer) => {
     const response = await http.put(`/customer/${id}`, data);
     return response.data;
   };

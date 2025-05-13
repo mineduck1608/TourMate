@@ -1,10 +1,10 @@
-import { HandleCustomer } from "@/types/customer";
+import { Customer } from "@/types/customer";
 import { useState } from "react";
 
 type AddCustomerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: HandleCustomer) => void;
+  onSave: (data: Customer) => void;
 };
 
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
@@ -12,18 +12,21 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<HandleCustomer>({
+  const [formData, setFormData] = useState<Customer>({
     customerId: 0,
     accountId: 0,
     fullName: "",
     gender: "",
     phone: "",
     dateOfBirth: "",
-    email: "",
-    password: "",
-    status: true,
-    createdAt: "",
-    roleId: 2,
+    Account: {
+      accountId: 0,
+      email: "",
+      password: "",
+      status: true,
+      createdDate: "",
+      roleId: 2,
+    },
   });
 
   const handleChange = (
@@ -42,16 +45,19 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     console.log("Form data submitted:", formData);
     setFormData({
       customerId: 0,
+    accountId: 0,
+    fullName: "",
+    gender: "",
+    phone: "",
+    dateOfBirth: "",
+    Account: {
       accountId: 0,
-      fullName: "",
-      gender: "",
-      phone: "",
-      dateOfBirth: "",
       email: "",
       password: "",
       status: true,
-      createdAt: "",
+      createdDate: "",
       roleId: 2,
+    },
     });
     onClose();
   };
@@ -110,7 +116,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
                 id="email"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Nhập email"
-                value={formData.email}
+                value={formData.Account.email}
                 onChange={handleChange}
                 required
               />
@@ -130,7 +136,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
                 id="password"
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 placeholder="Nhập password"
-                value={formData.password}
+                value={formData.Account.password}
                 onChange={handleChange}
                 required
               />
