@@ -134,12 +134,9 @@ function ActiveAreaList() {
                   </div>
                   <div className="p-6">
                     <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                      {area.areaName}
+                      {area.areaTitle}
                     </h4>
-                    <p className="text-gray-600 text-md">{area.areaTitle}</p>
-                    <p className="text-gray-600 text-sm mb-5">
-                      {area.areaType}
-                    </p>
+                    <p className="text-gray-600 text-md mb-5">{area.areaSubtitle}</p>
                     <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                       Xem ngay
                     </button>

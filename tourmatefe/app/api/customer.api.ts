@@ -7,6 +7,8 @@ export const getCustomers = async (page: number | string, limit: number | string
       params: {
         pageSize: limit,
         pageIndex: page,
+        email: '',
+        phone: ''
       },
       signal
     });

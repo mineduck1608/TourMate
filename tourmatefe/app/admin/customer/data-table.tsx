@@ -21,7 +21,7 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Input } from "@/components/ui/input";
+// import { Input } from "@/components/ui/input";
 
 import {
   Table,
@@ -101,9 +101,9 @@ export function DataTable<TData, TValue>({
     };
   
     const handleSave = (data: Customer) => {
-        data.createdAt = new Date().toISOString();
-        data.roleId = 2;
-        data.status = true;
+        data.Account.createdDate = new Date().toISOString();
+        data.Account.roleId = 2;
+        data.Account.status = true;
         addCustomerMutation.mutate(data);
     };
   
@@ -115,22 +115,21 @@ export function DataTable<TData, TValue>({
         refetch(); // Refetch dữ liệu sau khi thêm thành công
       },
       onError: (error) => {
-        toast.error('Thêm khách hàng thất bại');
-        console.error(error);
+        toast.error((error as { response?: { data?: { msg?: string } } })?.response?.data?.msg ||'Thêm khách hàng thất bại');
       },
     });
 
   return (
     <div>
       <div className="flex items-center pb-5">
-        <Input
+        {/* <Input
           placeholder="Tìm kiếm..."
           value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
           onChange={(event) =>
             table.getColumn("title")?.setFilterValue(event.target.value)
           }
           className="max-w-sm bg-white mr-5"
-        />
+        /> */}
         <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
           Tạo khách hàng mới
         </Button>

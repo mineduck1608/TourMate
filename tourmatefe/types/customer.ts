@@ -1,14 +1,12 @@
+import { Account } from "./account";
+
 export type Customer = {
     customerId: number;
     fullName: string;
     accountId: number;
     gender: string;
-    dateOfBirth: Date;
+    dateOfBirth: string;
     phone: string;
-    email: string;
-    password: string;
-    createdAt: string;
-    roleId: number;
-    status: boolean;
-};
+    Account: Account;
+}
 

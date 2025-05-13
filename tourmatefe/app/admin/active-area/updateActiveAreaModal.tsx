@@ -188,8 +188,6 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
                     [{ list: "ordered" }, { list: "bullet" }],
                     ["bold", "italic", "underline"],
                     [{ align: [] }],
-                    ["link", "image"],
-                    ["clean"],
                   ],
                 }}
                 placeholder="Nhập nội dung tin tức..."

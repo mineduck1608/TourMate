@@ -1,4 +1,5 @@
-﻿using Repositories.Models;
+﻿using Repositories.DTO;
+using Repositories.Models;
 using Repositories.Repository;
 using System;
 using System.Collections.Generic;
@@ -12,11 +13,11 @@ namespace Services
     {
         Task<Customer> GetCustomerByAccId(int accId);
         Customer GetCustomer(int id);
-        IEnumerable<Customer> GetAll(int pageSize, int pageIndex);
         Task<bool> CreateCustomer(Customer customer);
-        void UpdateCustomer(Customer customer);
+        Task<bool> UpdateCustomer(Customer customer);
         bool DeleteCustomer(int id);
         Task<Customer> GetCustomerByPhone(string phone);
+        Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string email, string phone);
     }
     public class CustomerService : ICustomerService
     {
@@ -42,9 +43,9 @@ namespace Services
             return _repository.GetById(id);
         }
 
-        public IEnumerable<Customer> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string email, string phone)
         {
-            return _repository.GetAll(pageSize, pageIndex);
+            return await _repository.FilterByEmailAndPhone(pageSize, pageIndex, email, phone);
         }
 
         public async Task<bool> CreateCustomer(Customer customer)
@@ -52,9 +53,9 @@ namespace Services
             return await _repository.CreateAsync(customer);
         }
 
-        public void UpdateCustomer(Customer customer)
+        public async Task<bool> UpdateCustomer(Customer customer)
         {
-            _repository.Update(customer);
+           return await _repository.UpdateAsync(customer);
         }
 
         public bool DeleteCustomer(int id)
