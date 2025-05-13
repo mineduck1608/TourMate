@@ -1,6 +1,6 @@
 import { Plane } from "lucide-react";
 
-import { SignupForm } from "./signup-form";
+import { SignupForm } from "../customer/signup-form";
 import Link from "next/link";
 
 export default function SignupPage() {
