@@ -36,7 +36,7 @@ import { toast } from "react-toastify";
 import Link from 'next/link';
 import { addCustomer, getCustomers } from "@/app/api/customer.api";
 import AddCustomerModal from "./addCustomerModal";
-import { HandleCustomer } from "@/types/customer";
+import { Customer } from "@/types/customer";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -100,10 +100,10 @@ export function DataTable<TData, TValue>({
       setIsModalOpen(false);
     };
   
-    const handleSave = (data: HandleCustomer) => {
-        data.createdAt = new Date().toISOString();
-        data.roleId = 2;
-        data.status = true;
+    const handleSave = (data: Customer) => {
+        data.Account.createdDate = new Date().toISOString();
+        data.Account.roleId = 2;
+        data.Account.status = true;
         addCustomerMutation.mutate(data);
     };
   
