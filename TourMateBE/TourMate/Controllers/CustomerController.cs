@@ -1,12 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
-using Repositories.DTO.CreateModels;
-using Repositories.DTO.UpdateModals;
-using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 using Services.Utils;
-using System.Numerics;
 
 namespace API.Controllers
 {
@@ -45,18 +41,18 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] CustomerCreateModel data)
+        public async Task<IActionResult> Create([FromBody] Customer data)
         {
 
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-            if (!ValidInput.IsMailFormatted(data.Email))
+            if (!ValidInput.IsMailFormatted(data.Account.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure(data.Password))
+            if (!ValidInput.IsPasswordSecure(data.Account.Password))
                 return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
 
             // Kiểm tra tài khoản đã tồn tại
-            var existingAccount = await _accountService.GetAccountByEmail(data.Email);
+            var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
             if (existingAccount != null)
                 return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
 
@@ -69,14 +65,11 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
-
-            var customer = data.ConvertCustomer();
-            var account = data.ConvertAccount();
-            var isAccountCreated = await _accountService.CreateAccountAdmin(account);
+            var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
             if (isAccountCreated != null)
             {
-                customer.AccountId = isAccountCreated.AccountId;
-                var result = await _customerService.CreateCustomer(customer);
+                data.AccountId = isAccountCreated.AccountId;
+                var result = await _customerService.CreateCustomer(data);
                 if (result == true)
                 {
                     return Ok();
@@ -94,17 +87,17 @@ namespace API.Controllers
         //}
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] CustomerUpdateModel data)
+        public async Task<IActionResult> Update([FromBody] Customer data)
         {
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-            if (!ValidInput.IsMailFormatted(data.Email))
+            if (!ValidInput.IsMailFormatted(data.Account.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure(data.Password))
+            if (!ValidInput.IsPasswordSecure(data.Account.Password))
                 return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
 
             // Kiểm tra tài khoản đã tồn tại
-            var existingAccount = await _accountService.GetAccountByEmail(data.Email);
+            var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
             if (existingAccount != null)
                 return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
 
@@ -117,11 +110,8 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
-
-            var customer = data.ConvertCustomer();
-            var account = data.ConvertAccount();
-            var updateCustomer = await _customerService.UpdateCustomer(customer);
-            var updateAccount = await _accountService.UpdateAccount(account);
+            var updateCustomer = await _customerService.UpdateCustomer(data);
+            var updateAccount = await _accountService.UpdateAccount(data.Account);
             if (updateCustomer == true && updateAccount == true)
             {
                 return Ok();
