@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -7,9 +8,10 @@ namespace Services
     {
         Blog GetBlog(int id);
         IEnumerable<Blog> GetAll(int pageSize, int pageIndex);
-        void CreateBlog(Blog blog);
-        void UpdateBlog(Blog blog);
-        bool DeleteBlog(int id);
+        Task CreateBlog(Blog blog);
+        Task UpdateBlog(Blog blog);
+        Task<bool> DeleteBlog(int id);
+        Task<PagedResult<Blog>> GetBlogsOfAccount(int id, int pageSize, int pageIndex);
     }
 
     public class BlogService : IBlogService
@@ -26,20 +28,24 @@ namespace Services
             return BlogRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateBlog(Blog blog)
+        public async Task CreateBlog(Blog blog)
         {
-            BlogRepository.Create(blog);
+            await BlogRepository.CreateAsync(blog);
         }
 
-        public void UpdateBlog(Blog blog)
+        public async Task UpdateBlog(Blog blog)
         {
-            BlogRepository.Update(blog);
+            await BlogRepository.UpdateAsync(blog);
         }
 
-        public bool DeleteBlog(int id)
+        public async Task<bool> DeleteBlog(int id)
         {
-            BlogRepository.Remove(id);
+            await BlogRepository.RemoveAsync(id);
             return true;
+        }
+        public async Task<PagedResult<Blog>> GetBlogsOfAccount(int id, int pageSize, int pageIndex)
+        {
+            return await BlogRepository.GetBlogsOfAccount(id, pageSize, pageIndex);
         }
     }
 }

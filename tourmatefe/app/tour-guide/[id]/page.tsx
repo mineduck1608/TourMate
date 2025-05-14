@@ -1,10 +1,10 @@
 'use client'
 import { getTourGuide } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
-import { TourGuide } from '@/types/tour-guide';
 import { useQuery } from '@tanstack/react-query';
+import Link from 'next/link';
 import React, { use } from 'react'
-import { FaClock, FaMapMarker, FaSuitcase } from 'react-icons/fa';
+import PostByGuide from './posts';
 export default function TourGuideProfileDetail({
     params,
 }: {
@@ -19,59 +19,34 @@ export default function TourGuideProfileDetail({
     })
     const tourGuide = data?.data
     return (
-        <div className='*:my-10 bg-gray-50'>
+        <div className='*:my-10 '>
             <div className='relative'>
                 <Banner imageUrl='/mountain.png' title='' height='200px' />
-                <div className='p-1 bg-white absolute top-[50%] left-[150px] rounded-full'>
-                    <img src={"/travel.jpg"}
-                        alt={'shell'}
-                        className=" max-w-[150px] rounded-full aspect-square"
-                    />
-                </div>
-                <p>ABC</p>
-            </div>
-            {tourGuide &&
-                <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>
-                    <img src={tourGuide.image || "/fallback.jpg"}
-                        alt={tourGuide.fullName}
-                        className="w-[30%] h-60 object-cover border-2" />
-                    <div className='w-[65%]'>
-                        <h4 className="font-semibold text-3xl text-gray-800 p-2 mb-4">
-                            {tourGuide.fullName}
-                        </h4>
-                        <table>
-                            <tbody>
-                                {
-                                    statToRender(tourGuide).map((v, i) => (
-                                        <tr key={i}>
-                                            <td className='p-2'>{v.icon}</td>
-                                            <td>{v.value}</td>
-                                        </tr>
-                                    ))
-                                }
-                            </tbody>
-                        </table>
-                        <p className='p-2'>
-                            {tourGuide.tourGuideDescs[0].description}
-                        </p>
+                <div className='absolute top-[37.5%] md:left-[250px] transform -translate-x-1/2'>
+                    <div className='p-1 rounded-full flex justify-center'>
+                        <div className='bg-white p-1 rounded-full'>
+                            <img
+                                src={"/travel.jpg"}
+                                alt={'shell'}
+                                className="w-[150px] rounded-full aspect-square"
+                            />
+                        </div>
                     </div>
-                </div>}
+                    <h4 className="font-semibold text-3xl text-gray-800  text-center w-full">
+                        {tourGuide?.fullName}
+                    </h4>
+                </div>
+                <div className='xl:ml-[30%] mt-5'>
+                    <Link href={'#'} className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'>
+                        Tạo bài đăng
+                    </Link>
+                    <div className='mt-5'>
+                        <PostByGuide id={id} />
+                    </div>                    
+                </div>
+            </div>
+
 
         </div>
     )
 }
-
-const statToRender = (t: TourGuide) => [
-    {
-        icon: <FaMapMarker />,
-        value: t.tourGuideDescs[0].area.areaName
-    },
-    {
-        icon: <FaClock />,
-        value: t.dateOfBirth
-    },
-    {
-        icon: <FaSuitcase />,
-        value: t.tourGuideDescs[0].yearOfExperience + ' năm kinh nghiệm'
-    }
-]

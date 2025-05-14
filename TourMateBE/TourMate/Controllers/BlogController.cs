@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -44,10 +45,16 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _blogService.DeleteBlog(id);
+            var result = await _blogService.DeleteBlog(id);
             return result ? NoContent() : NotFound();
+        }
+
+        [HttpGet("from-account")]
+        public async Task<ActionResult<PagedResult<Blog>>> GetBlogsOfAccount(int accountId, int pageSize = 10, int pageIndex = 1)
+        {
+            return Ok(_blogService.GetBlogsOfAccount(accountId, pageSize, pageIndex));
         }
     }
 }
