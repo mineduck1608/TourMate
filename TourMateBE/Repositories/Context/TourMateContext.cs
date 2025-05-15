@@ -27,14 +27,6 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<Bid> Bids { get; set; }
 
-    public virtual DbSet<Blog> Blogs { get; set; }
-
-    public virtual DbSet<BlogComment> BlogComments { get; set; }
-
-    public virtual DbSet<BlogCommentReply> BlogCommentReplies { get; set; }
-
-    public virtual DbSet<BlogLike> BlogLikes { get; set; }
-
     public virtual DbSet<Contact> Contacts { get; set; }
 
     public virtual DbSet<Conversation> Conversations { get; set; }
@@ -204,117 +196,6 @@ public partial class TourmateContext : DbContext
                 .HasForeignKey(d => d.TourGuideId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKBid623728");
-        });
-
-        modelBuilder.Entity<Blog>(entity =>
-        {
-            entity.HasKey(e => e.BlogId).HasName("PK__Blog__FA0AA72DF38C74C8");
-
-            entity.ToTable("Blog");
-
-            entity.Property(e => e.BlogId).HasColumnName("blogId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasColumnName("content");
-            entity.Property(e => e.CreatedDate)
-                .HasColumnType("datetime")
-                .HasColumnName("createdDate");
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.Media)
-                .IsRequired()
-                .HasColumnName("media");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updatedAt");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.Blogs)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlog316425");
-        });
-
-        modelBuilder.Entity<BlogComment>(entity =>
-        {
-            entity.HasKey(e => e.BlogCommentId).HasName("PK__BlogComm__555BBA7E02884DA3");
-
-            entity.ToTable("BlogComment");
-
-            entity.Property(e => e.BlogCommentId).HasColumnName("blogCommentId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.BlogId).HasColumnName("blogId");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("createdAt");
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updatedAt");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.BlogComments)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogCommen856142");
-
-            entity.HasOne(d => d.Blog).WithMany(p => p.BlogComments)
-                .HasForeignKey(d => d.BlogId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogCommen331450");
-        });
-
-        modelBuilder.Entity<BlogCommentReply>(entity =>
-        {
-            entity.HasKey(e => e.BlogCommentReplyId).HasName("PK__BlogComm__BE4948515F66F0A2");
-
-            entity.ToTable("BlogCommentReply");
-
-            entity.Property(e => e.BlogCommentReplyId).HasColumnName("blogCommentReplyId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.BlogCommentId).HasColumnName("blogCommentId");
-            entity.Property(e => e.Content)
-                .IsRequired()
-                .HasColumnName("content");
-            entity.Property(e => e.CreatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("createdAt");
-            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
-            entity.Property(e => e.UpdatedAt)
-                .HasColumnType("datetime")
-                .HasColumnName("updatedAt");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.BlogCommentReplies)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogCommen891262");
-
-            entity.HasOne(d => d.BlogComment).WithMany(p => p.BlogCommentReplies)
-                .HasForeignKey(d => d.BlogCommentId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogCommen494206");
-        });
-
-        modelBuilder.Entity<BlogLike>(entity =>
-        {
-            entity.HasKey(e => e.BlogLikeId).HasName("PK__BlogLike__E52253F99D4EE902");
-
-            entity.ToTable("BlogLike");
-
-            entity.Property(e => e.BlogLikeId).HasColumnName("blogLikeId");
-            entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.BlogId).HasColumnName("blogId");
-
-            entity.HasOne(d => d.Account).WithMany(p => p.BlogLikes)
-                .HasForeignKey(d => d.AccountId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogLike84009");
-
-            entity.HasOne(d => d.Blog).WithMany(p => p.BlogLikes)
-                .HasForeignKey(d => d.BlogId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKBlogLike559316");
         });
 
         modelBuilder.Entity<Contact>(entity =>
