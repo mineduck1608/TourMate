@@ -21,14 +21,6 @@ public partial class Account
 
     public virtual ICollection<AccountMembership> AccountMemberships { get; set; } = new List<AccountMembership>();
 
-    public virtual ICollection<BlogCommentReply> BlogCommentReplies { get; set; } = new List<BlogCommentReply>();
-
-    public virtual ICollection<BlogComment> BlogComments { get; set; } = new List<BlogComment>();
-
-    public virtual ICollection<BlogLike> BlogLikes { get; set; } = new List<BlogLike>();
-
-    public virtual ICollection<Blog> Blogs { get; set; } = new List<Blog>();
-
     public virtual ICollection<Conversation> ConversationAccount1s { get; set; } = new List<Conversation>();
 
     public virtual ICollection<Conversation> ConversationAccount2s { get; set; } = new List<Conversation>();
