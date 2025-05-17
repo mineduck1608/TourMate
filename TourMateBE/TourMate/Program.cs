@@ -20,18 +20,6 @@ builder.Services.AddScoped<IActiveAreaService, ActiveAreaService>();
 builder.Services.AddScoped<BidRepository>();
 builder.Services.AddScoped<IBidService, BidService>();
 
-builder.Services.AddScoped<BlogRepository>();
-builder.Services.AddScoped<IBlogService, BlogService>();
-
-builder.Services.AddScoped<BlogCommentRepository>();
-builder.Services.AddScoped<IBlogCommentService, BlogCommentService>();
-
-builder.Services.AddScoped<BlogCommentReplyRepository>();
-builder.Services.AddScoped<IBlogCommentReplyService, BlogCommentReplyService>();
-
-builder.Services.AddScoped<BlogLikeRepository>();
-builder.Services.AddScoped<IBlogLikeService, BlogLikeService>();
-
 builder.Services.AddScoped<ContactRepository>();
 builder.Services.AddScoped<IContactService, ContactService>();
 
