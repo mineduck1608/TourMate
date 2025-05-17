@@ -217,6 +217,28 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [HttpPut("lock/{id}")]
+        public async Task<IActionResult> LockAccount([FromBody] int id)
+        {
+            var result = await _accountService.LockAccount(id);
+            if(result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("unlock/{id}")]
+        public async Task<IActionResult> UnlockAccount([FromBody] int id)
+        {
+            var result = await _accountService.UnlockAccount(id);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

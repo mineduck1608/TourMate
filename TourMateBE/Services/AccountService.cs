@@ -22,6 +22,8 @@ namespace Services
         Task<Account> GetAccountByEmail(string email);
         Task<bool> CreateAccount(Account account);
         Task<Account> CreateAccountAdmin(Account account);
+        Task<bool> LockAccount(int id);
+        Task<bool> UnlockAccount(int id);
     }
 
     // Services/AuthService.cs
@@ -175,6 +177,14 @@ namespace Services
             return await _repo.UpdateAsync(account);
         }
 
+        public async Task<bool> LockAccount(int id)
+        {
+            return await _repo.LockAccount(id);
+        }
+        public async Task<bool> UnlockAccount(int id)
+        {
+            return await _repo.UnlockAccount(id);
+        }
         public bool DeleteAccount(int id)
         {
             _repo.Remove(id);
