@@ -32,14 +32,14 @@ namespace Services
         {
             return await _repository.GetByAccId(accId);
         }
-        public TourGuide GetTourGuide(int id)
+        public async Task<TourGuide> GetTourGuide(int id)
         {
-            return _repository.GetById(id);
+            return await _repository.GetById(id);
         }
 
-        public IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex)
         {
-            return _repository.GetAll(pageSize, pageIndex);
+            return await _repository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone)

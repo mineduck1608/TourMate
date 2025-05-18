@@ -84,9 +84,8 @@ const MegaMenu = () => {
             <li>
               <Link
                 href="/"
-                className={`block py-2 px-3 ${
-                  currentRoute === "/" ? "text-blue-600" : "text-gray-900"
-                } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                className={`block py-2 px-3 ${currentRoute === "/" ? "text-blue-600" : "text-gray-900"
+                  } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
                 aria-current={currentRoute === "/" ? "page" : undefined}
               >
                 Trang chủ
@@ -95,11 +94,10 @@ const MegaMenu = () => {
             <li>
               <Link
                 href="/aboutUs"
-                className={`block py-2 px-3 ${
-                  currentRoute === "/aboutUs"
+                className={`block py-2 px-3 ${currentRoute === "/aboutUs"
                     ? "text-blue-600"
                     : "text-gray-900"
-                } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                  } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Về chúng tôi
               </Link>
@@ -107,9 +105,8 @@ const MegaMenu = () => {
             <li>
               <Link
                 href="/news"
-                className={`block py-2 px-3 ${
-                  currentRoute === "/news" ? "text-blue-600" : "text-gray-900"
-                } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                className={`block py-2 px-3 ${currentRoute === "/news" ? "text-blue-600" : "text-gray-900"
+                  } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Tin tức
               </Link>
@@ -118,11 +115,10 @@ const MegaMenu = () => {
               <button
                 id="mega-menu-icons-dropdown-button"
                 onClick={toggleDropdown}
-                className={`flex items-center justify-between w-full py-2 px-3 font-medium ${
-                  currentRoute.startsWith("/services/")
+                className={`flex items-center justify-between w-full py-2 px-3 font-medium ${currentRoute.startsWith("/services/")
                     ? "text-blue-600"
                     : "text-gray-900"
-                } border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                  } border-b border-gray-100 md:w-auto hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Dịch vụ
                 <svg
@@ -143,9 +139,8 @@ const MegaMenu = () => {
               </button>
               <div
                 id="mega-menu-icons-dropdown"
-                className={`absolute z-10 grid ${
-                  isOpen ? "block" : "hidden"
-                } w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md md:grid-cols-2`}
+                className={`absolute z-10 grid ${isOpen ? "block" : "hidden"
+                  } w-auto grid-cols-2 text-sm bg-white border border-gray-100 rounded-lg shadow-md md:grid-cols-2`}
               >
                 <div className="p-4 pb-0 text-gray-900 md:pb-4">
                   <ul
@@ -174,22 +169,13 @@ const MegaMenu = () => {
                     </li>
 
                     <li>
-                      <a
-                        href="#"
-                        className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
-                      >
+                      <Link href="/services/tour-guide" className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group">
                         <span className="sr-only">Danh sách các TourGuide</span>
-                        <svg
-                          className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 20 20"
-                        >
+                        <svg className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                           <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
                         </svg>
                         Danh sách các TourGuide
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -239,11 +225,10 @@ const MegaMenu = () => {
             <li>
               <a
                 href="/user/aboutUs"
-                className={`block py-2 px-3 ${
-                  currentRoute === "/user/aboutUs"
+                className={`block py-2 px-3 ${currentRoute === "/user/aboutUs"
                     ? "text-blue-600"
                     : "text-gray-900"
-                } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                  } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Liên hệ
               </a>

@@ -21,9 +21,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TourGuide> Get(int id)
+        public async Task<ActionResult<TourGuide>> GetAsync(int id)
         {
-            return Ok(_tourguideService.GetTourGuide(id));
+            return Ok(await _tourguideService.GetTourGuide(id));
         }
 
         [HttpGet]
