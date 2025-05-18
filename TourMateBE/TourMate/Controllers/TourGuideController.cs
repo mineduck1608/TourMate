@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -22,13 +23,13 @@ namespace API.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<TourGuide>> GetAsync(int id)
         {
-            return Ok(await _tourguideService.GetTourGuideAsync(id));
+            return Ok(await _tourguideService.GetTourGuide(id));
         }
 
         [HttpGet]
         public async Task<ActionResult<PagedResult<TourGuide>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _tourguideService.GetAllAsync(pageSize, pageIndex));
+            return Ok(await _tourguideService.GetAll(pageSize, pageIndex));
         }
 
         //[HttpPost]

@@ -737,6 +737,10 @@ public partial class TourmateContext : DbContext
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("serviceName");
+            entity.Property(e => e.Title)
+                .IsRequired()
+                .HasMaxLength(50)
+                .HasColumnName("title");
             entity.Property(e => e.TourGuideId).HasColumnName("tourGuideId");
 
             entity.HasOne(d => d.TourGuide).WithMany(p => p.TourServices)

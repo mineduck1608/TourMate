@@ -4,7 +4,7 @@ import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { use } from 'react'
-import PostByGuide from './posts';
+import TourServices from './posts';
 export default function TourGuideProfileDetail({
     params,
 }: {
@@ -22,7 +22,7 @@ export default function TourGuideProfileDetail({
         <div className='*:my-10 '>
             <div className='relative'>
                 <Banner imageUrl='/mountain.png' title='' height='200px' />
-                <div className='absolute top-[37.5%] md:left-[250px] transform -translate-x-1/2'>
+                <div className='absolute top-[75px] md:left-[250px] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='bg-white p-1 rounded-full'>
                             <img
@@ -41,7 +41,7 @@ export default function TourGuideProfileDetail({
                         Tạo bài đăng
                     </Link>
                     <div className='mt-5'>
-                        <PostByGuide id={id} />
+                        {tourGuide && <TourServices services={tourGuide.tourServices} />}
                     </div>                    
                 </div>
             </div>

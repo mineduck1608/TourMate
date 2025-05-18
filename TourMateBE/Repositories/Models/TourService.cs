@@ -25,5 +25,7 @@ public partial class TourService
 
     public bool IsDeleted { get; set; }
 
+    public string Title { get; set; }
+
     public virtual TourGuide TourGuide { get; set; }
 }
