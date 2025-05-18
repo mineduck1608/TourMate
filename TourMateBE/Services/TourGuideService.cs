@@ -12,7 +12,7 @@ namespace Services
     public interface ITourGuideService
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
-        TourGuide GetTourGuide(int id);
+        Task<TourGuide> GetTourGuide(int id);
         Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourguide);

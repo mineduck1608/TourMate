@@ -16,6 +16,8 @@ export const getTourGuides = async (page: number | string, limit: number | strin
     return res.data;
   };
 
+export const getTourGuide = async (id: number | string) => http.get<TourGuide>(`tour-guide/${id}`)
+
 
   export const addTourGuide = async (data: TourGuide) => {
     const response = await http.post('/tour-guide', data);
