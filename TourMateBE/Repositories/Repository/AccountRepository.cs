@@ -36,5 +36,59 @@ namespace Repositories.Repository
                 return null;
             }
         }
+
+        public async Task<bool> LockAccount(int id)
+        {
+            try
+            {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
+                if (account == null)
+                {
+                    return false; // Không tìm thấy tài khoản
+                }
+
+                if (!account.Status)
+                {
+                    return true; // Tài khoản đã bị khóa trước đó
+                }
+
+                account.Status = false;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Ghi log nếu cần: _logger.LogError(ex, "Failed to lock account.");
+                return false;
+            }
+        }
+
+
+        public async Task<bool> UnlockAccount(int id)
+        {
+            try
+            {
+                var account = await _context.Accounts.FirstOrDefaultAsync(a => a.AccountId == id);
+                if (account == null)
+                {
+                    return false; // Không tìm thấy tài khoản
+                }
+
+                if (account.Status)
+                {
+                    return true;
+                }
+
+                account.Status = true;
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Ghi log nếu cần: _logger.LogError(ex, "Failed to lock account.");
+                return false;
+            }
+        }
+
     }
 }
