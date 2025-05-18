@@ -1,24 +1,24 @@
-import { Customer } from "@/types/customer";
+import { TourGuide } from "@/types/tourGuide";
 import { useState, useEffect } from "react";
 
-type UpdateCustomerModalProps = {
+type UpdateTourGuideModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  currentCustomer: Customer;
-  onSave: (data: Customer) => void;
+  currentTourGuide: TourGuide;
+  onSave: (data: TourGuide) => void;
 };
 
-const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
+const UpdateTourGuideModal: React.FC<UpdateTourGuideModalProps> = ({
   isOpen,
   onClose,
-  currentCustomer,
+  currentTourGuide,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<Customer>(currentCustomer);
+  const [formData, setFormData] = useState<TourGuide>(currentTourGuide);
 
   useEffect(() => {
-    setFormData(currentCustomer);
-  }, [currentCustomer]);
+    setFormData(currentTourGuide);
+  }, [currentTourGuide]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -63,7 +63,7 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
         <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Cập nhật khách hàng
+            Cập nhật huớng dẫn viên
           </h3>
           <button
             type="button"
@@ -223,4 +223,4 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
   );
 };
 
-export default UpdateCustomerModal;
+export default UpdateTourGuideModal;

@@ -69,5 +69,10 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
+
+        public async Task<TourGuide> GetByPhone(string phone)
+        {
+            return await _context.TourGuides.FirstOrDefaultAsync(x => x.Phone == phone);
+        }
     }
 }

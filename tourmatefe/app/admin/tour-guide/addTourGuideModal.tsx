@@ -1,19 +1,21 @@
-import { Customer } from "@/types/customer";
+import { TourGuide } from "@/types/tourGuide";
 import { useState } from "react";
 
-type AddCustomerModalProps = {
+type AddTourGuideModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: Customer) => void;
+  onSave: (data: TourGuide) => void;
 };
 
-const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
+const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
   isOpen,
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<Customer>({
-    customerId: 0,
+  const [formData, setFormData] = useState<TourGuide>({
+    tourGuideId: 0,
+    address: "",
+    image: "",
     accountId: 0,
     fullName: "",
     gender: "",
@@ -25,12 +27,14 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       password: "",
       status: true,
       createdDate: "",
-      roleId: 2,
+      roleId: 3,
     },
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
 
@@ -66,7 +70,9 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     console.log("Form data submitted:", dataToSave);
 
     setFormData({
-      customerId: 0,
+      tourGuideId: 0,
+      address: "",
+      image: "",
       accountId: 0,
       fullName: "",
       gender: "",
@@ -78,7 +84,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
         password: "",
         status: true,
         createdDate: "",
-        roleId: 2,
+        roleId: 3,
       },
     });
 
@@ -99,7 +105,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
         <div className="flex justify-between items-center pb-4 mb-4 border-b dark:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-            Thêm khách hàng mới
+            Thêm hướng dẫn viên mới
           </h3>
           <button
             type="button"
@@ -125,7 +131,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
           <div className="grid gap-4 mb-4 sm:grid-cols-2">
             {/* Email Input */}
             <div>
-              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="email"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Email
               </label>
               <input
@@ -142,7 +151,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
             {/* Password Input */}
             <div>
-              <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="password"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Password
               </label>
               <input
@@ -159,7 +171,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
             {/* Full Name Input */}
             <div>
-              <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="fullName"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Họ và tên
               </label>
               <input
@@ -176,7 +191,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
             {/* Phone Input */}
             <div>
-              <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="phone"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Số điện thoại
               </label>
               <input
@@ -193,7 +211,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
             {/* Date of Birth */}
             <div>
-              <label htmlFor="dateOfBirth" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="dateOfBirth"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Ngày sinh
               </label>
               <input
@@ -209,7 +230,10 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
             {/* Gender */}
             <div>
-              <label htmlFor="gender" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
+              <label
+                htmlFor="gender"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
                 Giới tính
               </label>
               <select
@@ -242,4 +266,4 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   );
 };
 
-export default AddCustomerModal;
+export default AddTourGuideModal;

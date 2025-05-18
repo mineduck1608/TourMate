@@ -1,12 +1,13 @@
 import { Account } from "./account";
 
-export type Customer = {
-    customerId: number;
+export type TourGuide = {
+    tourGuideId: number;
     fullName: string;
-    accountId: number;
     gender: string;
     dateOfBirth: string;
+    accountId: number;
+    address: string;
+    image: string;
     phone: string;
     account: Account;
-}
-
+    };

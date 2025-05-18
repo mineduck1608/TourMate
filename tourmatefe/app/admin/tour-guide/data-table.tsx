@@ -34,9 +34,10 @@ import {
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Link from 'next/link';
-import { addCustomer, getCustomers } from "@/app/api/customer.api";
-import AddCustomerModal from "./addCustomerModal";
-import { Customer } from "@/types/customer";
+import { addTourGuide, getTourGuides } from "@/app/api/tour-guide.api";
+import { TourGuide } from "@/types/tourGuide";
+import AddTourGuideModal from "./addTourGuideModal";
+
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -78,14 +79,14 @@ export function DataTable<TData, TValue>({
   });
 
     const { refetch } = useQuery({
-      queryKey: ['customer', page], // Pass page and limit as part of the query key
+      queryKey: ['tour-guide', page], // Pass page and limit as part of the query key
       queryFn: ({ queryKey }) => {
         const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
         const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-        return getCustomers(page, limit, controller.signal);
+        return getTourGuides(page, limit, controller.signal);
       },
       enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
     });
@@ -100,21 +101,23 @@ export function DataTable<TData, TValue>({
       setIsModalOpen(false);
     };
   
-    const handleSave = (data: Customer) => {
-        addCustomerMutation.mutate(data);
+    const handleSave = (data: TourGuide) => {
+        addTourGuideMutation.mutate(data);
     };
   
-    // Mutation for adding customer
-    const addCustomerMutation = useMutation({
-      mutationFn: addCustomer,
+    // Mutation for adding data
+    const addTourGuideMutation = useMutation({
+      mutationFn: addTourGuide,
       onSuccess: () => {
-        toast.success('Thêm khách hàng thành công');
+        toast.success('Thêm hướng dẫn viên thành công');
         refetch(); // Refetch dữ liệu sau khi thêm thành công
       },
       onError: (error) => {
-        toast.error((error as { response?: { data?: { msg?: string } } })?.response?.data?.msg ||'Thêm khách hàng thất bại');
+        toast.error((error as { response?: { data?: { msg?: string } } })?.response?.data?.msg ||'Thêm hướng dẫn viên thất bại');
       },
     });
+
+    console.log("DataTable data", data);
 
   return (
     <div>
@@ -128,7 +131,7 @@ export function DataTable<TData, TValue>({
           className="max-w-sm bg-white mr-5"
         /> */}
         <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
-          Tạo khách hàng mới
+          Tạo hướng dẫn viên mới
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -223,7 +226,7 @@ export function DataTable<TData, TValue>({
        </Button>
      ) : (
       <Link
-      href={`/admin/customer?page=${page - 1}`}
+      href={`/admin/tour-guide?page=${page - 1}`}
     >
       <Button
         variant="outline"
@@ -250,7 +253,7 @@ export function DataTable<TData, TValue>({
       </Button>
       ) : (
         <Link
-              href={`/admin/customer?page=${page + 1}`}
+              href={`/admin/tour-guide?page=${page + 1}`}
         >
               <Button
                 variant="outline"
@@ -261,7 +264,7 @@ export function DataTable<TData, TValue>({
             </Link>
       )}
 </div>
-      <AddCustomerModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
+      <AddTourGuideModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
     </div>
   );
 }

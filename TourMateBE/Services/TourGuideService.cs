@@ -13,10 +13,11 @@ namespace Services
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
         TourGuide GetTourGuide(int id);
-        IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex);
+        Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourguide);
         Task<bool> UpdateTourGuide(TourGuide tourguide);
+        Task<TourGuide> GetTourGuideByPhone(string phone);
     }
     public class TourGuideService : ITourGuideService
     {
@@ -60,6 +61,11 @@ namespace Services
         {
             _repository.Remove(id);
             return true;
+        }
+
+        public async Task<TourGuide> GetTourGuideByPhone(string phone)
+        {
+            return await _repository.GetByPhone(phone);
         }
     }
 }

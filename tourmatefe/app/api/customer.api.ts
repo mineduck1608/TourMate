@@ -28,11 +28,11 @@ export const getCustomers = async (page: number | string, limit: number | string
   };
   
   export const lockCustomer = async (id: number) => {
-    const response = await http.put(`/customer/lock/${id}`);
+    const response = await http.put(`/account/lock/${id}`);
     return response.data;
   };
 
   export const unlockCustomer = async (id: number) => {
-    const response = await http.put(`/customer/unlock/${id}`);
+    const response = await http.put(`/account/unlock/${id}`);
     return response.data;
   };
