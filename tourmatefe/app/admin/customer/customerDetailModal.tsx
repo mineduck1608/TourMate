@@ -87,7 +87,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
             />
           </div>
 
-                   {/* Ngày sinh */}
+          {/* Ngày sinh */}
           <div>
             <label className="block mb-1 font-medium">Ngày sinh</label>
             <input
@@ -108,8 +108,6 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
               className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900"
             />
           </div>
-
- 
 
           {/* Email */}
           <div>

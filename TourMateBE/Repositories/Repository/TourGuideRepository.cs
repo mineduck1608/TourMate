@@ -56,20 +56,14 @@ namespace Repositories.Repository
             };
         }
 
-        public async Task<PagedResult<TourGuide>> FilterByEmailAndPhone(int pageSize, int pageIndex, string email, string phone)
+        public async Task<PagedResult<TourGuide>> FilterByPhone(int pageSize, int pageIndex, string phone)
         {
             var query = _context.TourGuides.AsQueryable();
-
-            // Lọc theo email nếu có
-            if (!string.IsNullOrEmpty(email))
-            {
-                query = query.Where(c => c.Account.Email.ToLower().Contains(email.ToLower()));
-            }
 
             // Lọc theo số điện thoại nếu có
             if (!string.IsNullOrEmpty(phone))
             {
-                query = query.Where(c => c.Phone == phone);
+                query = query.Where(c => c.Phone != null && c.Phone.Contains(phone));
             }
 
             // Đếm tổng số bản ghi sau khi áp dụng bộ lọc

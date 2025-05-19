@@ -17,7 +17,7 @@ namespace Services
         Task<bool> UpdateCustomer(Customer customer);
         bool DeleteCustomer(int id);
         Task<Customer> GetCustomerByPhone(string phone);
-        Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string email, string phone);
+        Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string phone);
     }
     public class CustomerService : ICustomerService
     {
@@ -43,9 +43,9 @@ namespace Services
             return _repository.GetById(id);
         }
 
-        public async Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string email, string phone)
+        public async Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string phone)
         {
-            return await _repository.FilterByEmailAndPhone(pageSize, pageIndex, email, phone);
+            return await _repository.FilterByPhone(pageSize, pageIndex, phone);
         }
 
         public async Task<bool> CreateCustomer(Customer customer)

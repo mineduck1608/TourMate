@@ -2,13 +2,12 @@ import { Customer } from "@/types/customer";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
-export const getCustomers = async (page: number | string, limit: number | string, signal?: AbortSignal) => {
+export const getCustomers = async (page: number | string, limit: number | string, signal?: AbortSignal, phone?: string) => {
     const res = await http.get<PagedResult<Customer>>('customer', {
       params: {
         pageSize: limit,
         pageIndex: page,
-        email: '',
-        phone: ''
+        phone: phone,
       },
       signal
     });

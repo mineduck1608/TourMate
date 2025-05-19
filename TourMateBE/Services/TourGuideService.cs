@@ -13,7 +13,7 @@ namespace Services
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
         Task<TourGuide> GetTourGuide(int id);
-        Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone);
+        Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string phone);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourguide);
         Task<bool> UpdateTourGuide(TourGuide tourguide);
@@ -42,9 +42,9 @@ namespace Services
             return await _repository.GetAllPaged(pageSize, pageIndex);
         }
 
-        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone)
+        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string phone)
         {
-            return await _repository.FilterByEmailAndPhone(pageSize, pageIndex, email, phone);
+            return await _repository.FilterByPhone(pageSize, pageIndex, phone);
         }
 
         public async Task<bool> CreateTourGuide(TourGuide tourguide)

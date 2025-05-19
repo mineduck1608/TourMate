@@ -33,17 +33,17 @@ import {
 } from "@/components/ui/table";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import Link from 'next/link';
+import Link from "next/link";
 import { addCustomer, getCustomers } from "@/app/api/customer.api";
 import AddCustomerModal from "./addCustomerModal";
 import { Customer } from "@/types/customer";
-
+import { Input } from "@/components/ui/input";
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
-  totalResults: number;  // Thêm trường totalResults
-  totalPages: number;    // Thêm trường totalPages
-  page: number;         // Thêm trường page
+  totalResults: number; // Thêm trường totalResults
+  totalPages: number; // Thêm trường totalPages
+  page: number; // Thêm trường page
 }
 
 export function DataTable<TData, TValue>({
@@ -54,8 +54,11 @@ export function DataTable<TData, TValue>({
   page,
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = React.useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>([]);
-  const [columnVisibility, setColumnVisibility] = React.useState<VisibilityState>({});
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
   const table = useReactTable({
@@ -77,57 +80,71 @@ export function DataTable<TData, TValue>({
     },
   });
 
-    const { refetch } = useQuery({
-      queryKey: ['customer', page], // Pass page and limit as part of the query key
-      queryFn: ({ queryKey }) => {
-        const controller = new AbortController();
+  const { refetch } = useQuery({
+    queryKey: ["customer", page], // Pass page and limit as part of the query key
+    queryFn: ({ queryKey }) => {
+      const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
-        const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-        return getCustomers(page, limit, controller.signal);
-      },
-      enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
-    });
-  
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
-  
-    const openModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const closeModal = () => {
-      setIsModalOpen(false);
-    };
-  
-    const handleSave = (data: Customer) => {
-        addCustomerMutation.mutate(data);
-    };
-  
-    // Mutation for adding customer
-    const addCustomerMutation = useMutation({
-      mutationFn: addCustomer,
-      onSuccess: () => {
-        toast.success('Thêm khách hàng thành công');
-        refetch(); // Refetch dữ liệu sau khi thêm thành công
-      },
-      onError: (error) => {
-        toast.error((error as { response?: { data?: { msg?: string } } })?.response?.data?.msg ||'Thêm khách hàng thất bại');
-      },
-    });
+      const [, page, limit] = queryKey; // Destructure page and limit from queryKey
+      return getCustomers(page, limit, controller.signal, searchTerm);
+    },
+    enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
+  });
+
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSave = (data: Customer) => {
+    addCustomerMutation.mutate(data);
+  };
+
+  // Mutation for adding customer
+  const addCustomerMutation = useMutation({
+    mutationFn: addCustomer,
+    onSuccess: () => {
+      toast.success("Thêm khách hàng thành công");
+      refetch(); // Refetch dữ liệu sau khi thêm thành công
+    },
+    onError: (error) => {
+      toast.error(
+        (error as { response?: { data?: { msg?: string } } })?.response?.data
+          ?.msg || "Thêm khách hàng thất bại"
+      );
+    },
+  });
+
+  const [searchTerm, setSearchTerm] = React.useState("");
+
+  React.useEffect(() => {
+    refetch();
+  }, [searchTerm]);
+
 
   return (
     <div>
       <div className="flex items-center pb-5">
-        {/* <Input
-          placeholder="Tìm kiếm..."
-          value={(table.getColumn("title")?.getFilterValue() as string) ?? ""}
-          onChange={(event) =>
-            table.getColumn("title")?.setFilterValue(event.target.value)
-          }
-          className="max-w-sm bg-white mr-5"
-        /> */}
-        <Button variant="outline" className="ml-auto" onClick={() => openModal()}>
+        <Input
+          type="text"
+          placeholder="Tìm kiếm số điện thoại"
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm bg-white mr-5 p-2 border rounded"
+        />
+
+        <Button
+          variant="outline"
+          className="ml-auto"
+          onClick={() => openModal()}
+        >
           Tạo khách hàng mới
         </Button>
         <DropdownMenu>
@@ -209,59 +226,52 @@ export function DataTable<TData, TValue>({
       </div>
 
       <div className="flex items-center justify-end space-x-2 pt-5">
-  <div className="flex-1 text-sm text-muted-foreground">
-  {table.getFilteredSelectedRowModel().rows.length} trên {totalResults} dòng được chọn.
-  </div>
-    {/* Previous Button */}
-      {page === 1 ? (
-         <Button
-         variant="outline"
-         size="sm"
-         disabled
-       >
-         Trước
-       </Button>
-     ) : (
-      <Link
-      href={`/admin/customer?page=${page - 1}`}
-    >
-      <Button
-        variant="outline"
-        size="sm"
-      >
-        Trước
-      </Button>
-    </Link>
-      )}
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} trên {totalResults}{" "}
+          dòng được chọn.
+        </div>
+        {/* Previous Button */}
+        {page === 1 ? (
+          <Button variant="outline" size="sm" disabled>
+            Trước
+          </Button>
+        ) : (
+          <Link
+            href={`/admin/customer?page=${page - 1}`}
+          >
+            <Button variant="outline" size="sm">
+              Trước
+            </Button>
+          </Link>
+        )}
 
-    {/* Page Numbers */}
-    <span className="text-sm text-muted-foreground">
+        {/* Page Numbers */}
+        <span className="text-sm text-muted-foreground">
           Trang {table.getState().pagination.pageIndex + 1} trên {totalPages}
         </span>
 
-    {/* Next Button */}
-      {page === totalPages ? (
-        <Button
-        variant="outline"
-        size="sm"
-        disabled={!table.getCanNextPage()}
-      >
-        Sau
-      </Button>
-      ) : (
-        <Link
-              href={`/admin/customer?page=${page + 1}`}
-        >
-              <Button
-                variant="outline"
-                size="sm"
-              >
-                Sau
-              </Button>
-            </Link>
-      )}
-</div>
-      <AddCustomerModal isOpen={isModalOpen} onClose={closeModal} onSave={handleSave} />
+        {/* Next Button */}
+        {page === totalPages ? (
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={!table.getCanNextPage()}
+          >
+            Sau
+          </Button>
+        ) : (
+          <Link href={`/admin/customer?page=${page + 1}`}>
+            <Button variant="outline" size="sm">
+              Sau
+            </Button>
+          </Link>
+        )}
+      </div>
+      <AddCustomerModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        onSave={handleSave}
+      />
     </div>
   );
 }

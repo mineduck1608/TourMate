@@ -26,9 +26,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<Customer>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1,[FromQuery] string email = "", [FromQuery] string phone = "")
+        public async Task<ActionResult<PagedResult<Customer>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string phone = "")
         {
-            var result = await _customerService.GetAll(pageSize, pageIndex, email, phone);
+            var result = await _customerService.GetAll(pageSize, pageIndex, phone);
 
             var response = new PagedResult<Customer>
             {
