@@ -12,11 +12,12 @@ namespace Services
     public interface ITourGuideService
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
-        TourGuide GetTourGuide(int id);
-        IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex);
+        Task<TourGuide> GetTourGuide(int id);
+        Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string phone);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourguide);
         Task<bool> UpdateTourGuide(TourGuide tourguide);
+        Task<TourGuide> GetTourGuideByPhone(string phone);
     }
     public class TourGuideService : ITourGuideService
     {
@@ -31,19 +32,19 @@ namespace Services
         {
             return await _repository.GetByAccId(accId);
         }
-        public TourGuide GetTourGuide(int id)
+        public async Task<TourGuide> GetTourGuide(int id)
         {
-            return _repository.GetById(id);
+            return await _repository.GetById(id);
         }
 
-        public IEnumerable<TourGuide> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex)
         {
-            return _repository.GetAll(pageSize, pageIndex);
+            return await _repository.GetAllPaged(pageSize, pageIndex);
         }
 
-        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string email, string phone)
+        public async Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string phone)
         {
-            return await _repository.FilterByEmailAndPhone(pageSize, pageIndex, email, phone);
+            return await _repository.FilterByPhone(pageSize, pageIndex, phone);
         }
 
         public async Task<bool> CreateTourGuide(TourGuide tourguide)
@@ -60,6 +61,11 @@ namespace Services
         {
             _repository.Remove(id);
             return true;
+        }
+
+        public async Task<TourGuide> GetTourGuideByPhone(string phone)
+        {
+            return await _repository.GetByPhone(phone);
         }
     }
 }

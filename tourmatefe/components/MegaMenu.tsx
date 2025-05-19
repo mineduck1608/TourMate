@@ -174,8 +174,8 @@ const MegaMenu = () => {
                     </li>
 
                     <li>
-                      <a
-                        href="#"
+                      <Link
+                        href="/services/tour-guide"
                         className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
                       >
                         <span className="sr-only">Danh sách các TourGuide</span>
@@ -189,7 +189,7 @@ const MegaMenu = () => {
                           <path d="m17.418 3.623-.018-.008a6.713 6.713 0 0 0-2.4-.569V2h1a1 1 0 1 0 0-2h-2a1 1 0 0 0-1 1v2H9.89A6.977 6.977 0 0 1 12 8v5h-2V8A5 5 0 1 0 0 8v6a1 1 0 0 0 1 1h8v4a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1v-4h6a1 1 0 0 0 1-1V8a5 5 0 0 0-2.582-4.377ZM6 12H4a1 1 0 0 1 0-2h2a1 1 0 0 1 0 2Z" />
                         </svg>
                         Danh sách các TourGuide
-                      </a>
+                      </Link>
                     </li>
                   </ul>
                 </div>
@@ -238,12 +238,13 @@ const MegaMenu = () => {
             </li>
             <li>
               <a
-                href="/user/aboutUs"
-                className={`block py-2 px-3 ${
-                  currentRoute === "/user/aboutUs"
+                href="/contact"
+                className={`block py-2 px-3
+                    ${
+                  currentRoute === "/contact"
                     ? "text-blue-600"
                     : "text-gray-900"
-                } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
+                  } border-b border-gray-100 hover:bg-gray-50 md:hover:bg-transparent md:border-0 md:hover:text-blue-600 md:p-0`}
               >
                 Liên hệ
               </a>

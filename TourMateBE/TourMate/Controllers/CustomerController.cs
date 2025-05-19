@@ -26,9 +26,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<Customer>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1,[FromQuery] string email = "", [FromQuery] string phone = "")
+        public async Task<ActionResult<PagedResult<Customer>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1, [FromQuery] string phone = "")
         {
-            var result = await _customerService.GetAll(pageSize, pageIndex, email, phone);
+            var result = await _customerService.GetAll(pageSize, pageIndex, phone);
 
             var response = new PagedResult<Customer>
             {
@@ -54,7 +54,7 @@ namespace API.Controllers
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
             if (existingAccount != null)
-                return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
+                return Conflict(new { msg = "Tài khoản đã tồn tại!" });
 
             var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
             if (existingPhone != null)
@@ -68,7 +68,11 @@ namespace API.Controllers
             var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
             if (isAccountCreated != null)
             {
+                //Gán Id Account cho Customer
                 data.AccountId = isAccountCreated.AccountId;
+
+                // Khởi tạo null để EF Core khỏi nhầm là tạo Account mới
+                data.Account = null;
                 var result = await _customerService.CreateCustomer(data);
                 if (result == true)
                 {
@@ -98,11 +102,12 @@ namespace API.Controllers
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
-            if (existingAccount != null)
-                return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
+            if (existingAccount != null && existingAccount.AccountId != data.Account.AccountId)
+                return Conflict(new { msg = "Tài khoản đã tồn tại!" });
+
 
             var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
-            if (existingPhone != null)
+            if (existingPhone != null && existingPhone.CustomerId != data.CustomerId)
                 return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
 
             if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))

@@ -6,11 +6,12 @@ interface BannerProps {
   imageUrl: string;
   title: string;
   subtitle?: string;
+  height?: string
 }
 
-const Banner: React.FC<BannerProps> = ({ imageUrl, title, subtitle }) => {
+const Banner: React.FC<BannerProps> = ({ imageUrl, title, subtitle, height }) => {
   return (
-    <div style={{ position: 'relative', width: '100%', height: '400px' }}>
+    <div style={{ position: 'relative', width: '100%', height: height ?? '400px' }}>
       <img 
         src={imageUrl} 
         alt={title} 

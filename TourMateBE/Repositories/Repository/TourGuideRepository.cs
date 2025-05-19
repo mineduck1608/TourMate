@@ -16,20 +16,54 @@ namespace Repositories.Repository
             return await _context.TourGuides.FirstOrDefaultAsync(x => x.AccountId == accId);
         }
 
-        public async Task<PagedResult<TourGuide>> FilterByEmailAndPhone(int pageSize, int pageIndex, string email, string phone)
+        public async Task<TourGuide> GetById(int id)
+        {
+            try
+            {
+                return await _context.TourGuides
+                    .Include(x => x.TourGuideDescs)
+                    .ThenInclude(x => x.Area)
+                    .Include(x => x.TourServices)
+                    .FirstOrDefaultAsync(x => x.TourGuideId == id);
+            }
+            catch (Exception ex)
+            {
+            }
+            return null;
+        }
+
+        public async Task<PagedResult<TourGuide>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
+        {
+            var query = _context.TourGuides
+                .Include (x => x.TourGuideDescs)
+                .ThenInclude(x => x.Area)
+                .AsQueryable();
+
+            // Phân trang
+            var result = await query
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .ToListAsync();
+
+            // Lấy tổng số bản ghi
+            var totalAmount = await _context.TourGuides.CountAsync();
+
+            return new PagedResult<TourGuide>
+            {
+                Result = result,
+                TotalResult = totalAmount,
+                TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
+            };
+        }
+
+        public async Task<PagedResult<TourGuide>> FilterByPhone(int pageSize, int pageIndex, string phone)
         {
             var query = _context.TourGuides.AsQueryable();
-
-            // Lọc theo email nếu có
-            if (!string.IsNullOrEmpty(email))
-            {
-                query = query.Where(c => c.Account.Email.ToLower().Contains(email.ToLower()));
-            }
 
             // Lọc theo số điện thoại nếu có
             if (!string.IsNullOrEmpty(phone))
             {
-                query = query.Where(c => c.Phone == phone);
+                query = query.Where(c => c.Phone != null && c.Phone.Contains(phone));
             }
 
             // Đếm tổng số bản ghi sau khi áp dụng bộ lọc
@@ -68,6 +102,11 @@ namespace Repositories.Repository
                 TotalResult = totalItems,
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
+        }
+
+        public async Task<TourGuide> GetByPhone(string phone)
+        {
+            return await _context.TourGuides.FirstOrDefaultAsync(x => x.Phone == phone);
         }
     }
 }

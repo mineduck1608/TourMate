@@ -8,7 +8,7 @@ using Services.Utils;
 
 namespace API.Controllers
 {
-    [Route("api/accounts")]
+    [Route("api/account")]
     [ApiController]
     public class AccountController : ControllerBase
     {
@@ -25,7 +25,7 @@ namespace API.Controllers
             _tourGuideService = tourGuideService;
         }
 
-        [HttpPost("RegisterCustomer")]
+        [HttpPost("registercustomer")]
         public async Task<ActionResult> RegisterCustomer([FromBody] dynamic request)
         {
             var jsonElement = (JsonElement)request;
@@ -97,7 +97,7 @@ namespace API.Controllers
             return Ok(new { msg = "Register successfully." });
         }
 
-        [HttpPost("RegisterTourGuide")]
+        [HttpPost("registertourguide")]
         public async Task<ActionResult> RegisterTourGuide([FromBody] dynamic request)
         {
             var jsonElement = (JsonElement)request;
@@ -218,7 +218,7 @@ namespace API.Controllers
         }
 
         [HttpPut("lock/{id}")]
-        public async Task<IActionResult> LockAccount([FromBody] int id)
+        public async Task<IActionResult> LockAccount(int id)
         {
             var result = await _accountService.LockAccount(id);
             if(result == true)
@@ -229,7 +229,7 @@ namespace API.Controllers
         }
 
         [HttpPut("unlock/{id}")]
-        public async Task<IActionResult> UnlockAccount([FromBody] int id)
+        public async Task<IActionResult> UnlockAccount(int id)
         {
             var result = await _accountService.UnlockAccount(id);
             if (result == true)

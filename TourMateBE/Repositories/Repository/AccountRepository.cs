@@ -53,6 +53,7 @@ namespace Repositories.Repository
                 }
 
                 account.Status = false;
+                _context.Entry(account).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return true;
             }
@@ -80,6 +81,7 @@ namespace Repositories.Repository
                 }
 
                 account.Status = true;
+                _context.Entry(account).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return true;
             }

@@ -12,40 +12,39 @@ import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
-import { Customer } from "@/types/customer";
+import { TourGuide } from "@/types/tourGuide";
 import {
-  getCustomers,
-  lockCustomer,
-  unlockCustomer,
-  updateCustomer,
-} from "@/app/api/customer.api";
-import UpdateCustomerModal from "./updateCustomerModal";
-import CustomerDetailModal from "./customerDetailModal"; // hoặc đúng đường dẫn file bạn để modal chi tiết
+  getTourGuides,
+  lockTourGuide,
+  unlockTourGuide,
+  updateTourGuide,
+} from "@/app/api/tour-guide.api";
+import UpdateTourGuideModal from "./updateTourGuideModal";
+import TourGuideDetailModal from "./tourGuideDetailModal";
 
-interface CustomerActionsProps {
-  data: Customer;
+interface TourGuideActionsProps {
+  data: TourGuide;
 }
 
-const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
+const TourGuideActions: React.FC<TourGuideActionsProps> = ({ data }) => {
   const queryString: { page?: string } = useQueryString();
   const page = Number(queryString.page) || 1;
   // Modal toggle functions
   const [isModalOpen, setIsModalOpen] = React.useState(false);
-
   const [isDetailModalOpen, setIsDetailModalOpen] = React.useState(false);
 
   const openDetailModal = () => setIsDetailModalOpen(true);
   const closeDetailModal = () => setIsDetailModalOpen(false);
 
   const { refetch } = useQuery({
-    queryKey: ["customer", page], // Pass page and limit as part of the query key
+    queryKey: ["tour-guide", page], // Pass page and limit as part of the query key
     queryFn: ({ queryKey }) => {
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
       const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-      return getCustomers(page, limit, controller.signal);
+      return getTourGuides(page, limit, controller.signal);
     },
     enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
   });
@@ -58,23 +57,23 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
     setIsModalOpen(false);
   };
 
-  const handleSave = (data: Customer) => {
+  const handleSave = (data: TourGuide) => {
     data.account.roleId = 2; // Set default roleId to 2
-    updateCustomerMutation.mutate({ id: data.customerId, data: data });
+    updateTourGuideMutation.mutate({ id: data.tourGuideId, data: data });
   };
 
-  // Mutation for updating customer
-  const updateCustomerMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Customer }) =>
-      updateCustomer(id, data),
+  // Mutation for updating
+  const updateTourGuideMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: TourGuide }) =>
+      updateTourGuide(id, data),
     onSuccess: () => {
-      toast.success("Cập nhật khách hàng thành công");
+      toast.success("Cập nhật hướng dẫn viên thành công");
       refetch(); // Refetch dữ liệu sau khi cập nhật thành công
     },
     onError: (error) => {
       toast.error(
         (error as { response?: { data?: { msg?: string } } })?.response?.data
-          ?.msg || "Cập nhật khách hàng thất bại"
+          ?.msg || "Cập nhật hướng dẫn viên thất bại"
       );
     },
   });
@@ -82,24 +81,24 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
   const toggleStatusMutation = useMutation({
     mutationFn: async () => {
       if (data.account.status) {
-        return lockCustomer(data.account.accountId);
+        return lockTourGuide(data.account.accountId);
       } else {
-        return unlockCustomer(data.account.accountId);
+        return unlockTourGuide(data.account.accountId);
       }
     },
     onSuccess: () => {
       toast.success(
         data.account.status
-          ? "Khóa khách hàng thành công"
-          : "Mở khóa khách hàng thành công"
+          ? "Khóa hướng dẫn viên thành công"
+          : "Mở khóa hướng dẫn viên thành công"
       );
       refetch();
     },
     onError: () => {
       toast.error(
         data.account.status
-          ? "Khóa khách hàng thất bại"
-          : "Mở khóa khách hàng thất bại"
+          ? "Khóa hướng dẫn viên thất bại"
+          : "Mở khóa hướng dẫn viên thất bại"
       );
     },
   });
@@ -128,23 +127,23 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
 
       {/* Render UpdateNewsModal only when needed */}
       {isModalOpen && (
-        <UpdateCustomerModal
+        <UpdateTourGuideModal
           isOpen={isModalOpen}
           onClose={closeModal}
-          currentCustomer={data}
+          currentTourGuide={data}
           onSave={handleSave}
         />
       )}
 
       {isDetailModalOpen && (
-        <CustomerDetailModal
+        <TourGuideDetailModal
           isOpen={isDetailModalOpen}
           onClose={closeDetailModal}
-          currentCustomer={data}
+          currentTourGuide={data} // data là object TourGuide bạn truyền vào component này
         />
       )}
     </div>
   );
 };
 
-export default CustomerActions;
+export default TourGuideActions;
