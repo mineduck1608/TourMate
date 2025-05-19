@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -5,41 +6,46 @@ namespace Services
 {
     public interface ITourServicesService
     {
-        TourService GetTourServices(int id);
-        IEnumerable<TourService> GetAll(int pageSize, int pageIndex);
-        void CreateTourServices(TourService tourservices);
-        void UpdateTourServices(TourService tourservices);
-        bool DeleteTourServices(int id);
+        Task<TourService> GetTourServices(int id);
+        Task<PagedResult<TourService>> GetAll(int pageSize, int pageIndex);
+        Task CreateTourServices(TourService tourservices);
+        Task UpdateTourServices(TourService tourservices);
+        Task<bool> DeleteTourServices(int id);
+        Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex);
     }
 
     public class TourServicesService : ITourServicesService
     {
         private TourServicesRepository TourServicesRepository { get; set; } = new();
 
-        public TourService GetTourServices(int id)
+        public async Task<TourService> GetTourServices(int id)
         {
-            return TourServicesRepository.GetById(id);
+            return await TourServicesRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<TourService> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourService>> GetAll(int pageSize, int pageIndex)
         {
-            return TourServicesRepository.GetAll(pageSize, pageIndex);
+            return await TourServicesRepository.GetAllPaged(pageSize, pageIndex, "CreatedDate");
         }
 
-        public void CreateTourServices(TourService tourservices)
+        public async Task CreateTourServices(TourService tourservices)
         {
-            TourServicesRepository.Create(tourservices);
+            await TourServicesRepository.CreateAsync(tourservices);
         }
 
-        public void UpdateTourServices(TourService tourservices)
+        public async Task UpdateTourServices(TourService tourservices)
         {
-            TourServicesRepository.Update(tourservices);
+            await TourServicesRepository.UpdateAsync(tourservices);
         }
 
-        public bool DeleteTourServices(int id)
+        public async Task<bool> DeleteTourServices(int id)
         {
-            TourServicesRepository.Remove(id);
-            return true;
+            return await TourServicesRepository.RemoveAsync(id);
+        }
+
+        public async Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex)
+        {
+            return await TourServicesRepository.GetTourServicesOf(tourGuideId, pageSize, pageIndex);
         }
     }
 }

@@ -60,7 +60,7 @@ export const columns: ColumnDef<Customer>[] = [
     ),
   },
   {
-    accessorKey: "email",
+    accessorKey: "account.email",
     header: "Email"
   },
   {
@@ -70,11 +70,28 @@ export const columns: ColumnDef<Customer>[] = [
   {
     accessorKey: "dateOfBirth",
     header: "Ngày sinh",
+    cell: (info) => {
+      const date = new Date(info.getValue() as string | Date);
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Tháng bắt đầu từ 0
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    },
   },
   {
-    accessorKey: "status",
+    accessorKey: "account.status",
     header: "Trạng thái",
-  },
+    cell: (info) => {
+      const status = info.getValue();
+      const label = status ? "Hoạt động" : "Đã khóa";
+      const color = status ? "green" : "red"; // Xanh cho hoạt động, đỏ cho khóa
+      return (
+        <span style={{ color: color, fontWeight: 'bold' }}>
+          {label}
+        </span>
+      );
+    },
+  },  
   {
     id: "actions",
     cell: ({ row }) => {

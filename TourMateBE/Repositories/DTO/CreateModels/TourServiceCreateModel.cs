@@ -21,6 +21,7 @@ namespace Repositories.DTO.CreateModels
         public DateOnly CreatedDate { get; set; }
 
         public bool IsDeleted { get; set; }
+        public string Title { get; set; }
         public TourService Convert() => new()
         {
             TourGuideId = TourGuideId,
@@ -30,7 +31,8 @@ namespace Repositories.DTO.CreateModels
             Duration = Duration,
             Image = Image,
             Price = Price,
-            ServiceId = ServiceId ?? 0
+            ServiceId = ServiceId ?? 0,
+            Title = Title
         };
     }
 }

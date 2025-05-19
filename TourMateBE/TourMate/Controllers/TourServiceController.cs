@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -17,37 +18,42 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TourService> Get(int id)
+        public async Task<ActionResult<TourService>> GetAsync(int id)
         {
-            return Ok(_tourserviceService.GetTourServices(id));
+            return Ok(await _tourserviceService.GetTourServices(id));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TourService>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourService>>> GetAllAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_tourserviceService.GetAll(pageSize, pageIndex));
+            return Ok(await _tourserviceService.GetAll(pageSize, pageIndex));
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TourServiceCreateModel data)
+        public async Task<IActionResult> CreateAsync([FromBody] TourServiceCreateModel data)
         {
             var tourservice = data.Convert();
-            _tourserviceService.CreateTourServices(tourservice);
-            return CreatedAtAction(nameof(Get), new { id = tourservice.ServiceId }, tourservice);
+            await _tourserviceService.CreateTourServices(tourservice);
+            return CreatedAtAction(nameof(GetAsync), new { id = tourservice.ServiceId }, tourservice);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] TourServiceCreateModel tourservice)
+        public async Task<IActionResult> UpdateAsync([FromBody] TourServiceCreateModel tourservice)
         {
-            _tourserviceService.UpdateTourServices(tourservice.Convert());
+            await _tourserviceService.UpdateTourServices(tourservice.Convert());
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _tourserviceService.DeleteTourServices(id);
+            var result = await _tourserviceService.DeleteTourServices(id);
             return result ? NoContent() : NotFound();
+        }
+        [HttpGet("services-of")]
+        public async Task<ActionResult<PagedResult<TourService>>> TourServicesOf(int tourGuideId, int pageSize = 3, int pageIndex = 1)
+        {
+            return Ok(await _tourserviceService.GetTourServicesOf(tourGuideId, pageSize, pageIndex));
         }
     }
 }

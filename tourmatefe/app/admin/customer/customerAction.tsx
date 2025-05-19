@@ -8,32 +8,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import React, { useState } from "react";
-import DeleteModal from "@/components/DeleteModal";
+import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
 import { Customer } from "@/types/customer";
-import { getCustomers, lockCustomer, updateCustomer } from "@/app/api/customer.api";
+import {
+  getCustomers,
+  lockCustomer,
+  unlockCustomer,
+  updateCustomer,
+} from "@/app/api/customer.api";
 import UpdateCustomerModal from "./updateCustomerModal";
+import CustomerDetailModal from "./customerDetailModal"; // hoặc đúng đường dẫn file bạn để modal chi tiết
 
 interface CustomerActionsProps {
   data: Customer;
 }
 
 const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
-  const [isDeleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [itemToDelete, setItemToDelete] = useState<number | null>(null); // Store item to delete
-  const queryString: { page?: string } = useQueryString()
-  const page = Number(queryString.page) || 1
-
+  const queryString: { page?: string } = useQueryString();
+  const page = Number(queryString.page) || 1;
   // Modal toggle functions
-  const openDeleteModal = () => setDeleteModalOpen(true);
-  const closeDeleteModal = () => setDeleteModalOpen(false);
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
+  const [isDetailModalOpen, setIsDetailModalOpen] = React.useState(false);
+
+  const openDetailModal = () => setIsDetailModalOpen(true);
+  const closeDetailModal = () => setIsDetailModalOpen(false);
+
   const { refetch } = useQuery({
-    queryKey: ['customer', page], // Pass page and limit as part of the query key
+    queryKey: ["customer", page], // Pass page and limit as part of the query key
     queryFn: ({ queryKey }) => {
       const controller = new AbortController();
       setTimeout(() => {
@@ -45,45 +50,58 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
     enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
   });
 
-   const openModal = () => {
-        setIsModalOpen(true);
-      };
-    
-      const closeModal = () => {
-        setIsModalOpen(false);
-      };
-    
-      const handleSave = (data: Customer) => {
-          updateCustomerMutation.mutate({ id: data.customerId, data: data });
-      };
-
-    // Mutation for updating customer
-    const updateCustomerMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: Customer }) => updateCustomer(id, data),
-        onSuccess: () => {
-          toast.success('Cập nhật khách hàng thành công');
-          refetch(); // Refetch dữ liệu sau khi cập nhật thành công
-        },
-        onError: (error) => {
-          toast.error('Cập nhật khách hàng thất bại');
-          console.error(error);
-        },
-      });
-
-  // Handle delete confirmation (directly inside this component)
-  const handleConfirmDelete = async () => {
-    if (itemToDelete) {
-        deleteMutation.mutate(itemToDelete)
-    }
-    closeDeleteModal();
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
-  const deleteMutation = useMutation({
-    mutationFn: (id: number) => lockCustomer(id),
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleSave = (data: Customer) => {
+    data.account.roleId = 2; // Set default roleId to 2
+    updateCustomerMutation.mutate({ id: data.customerId, data: data });
+  };
+
+  // Mutation for updating customer
+  const updateCustomerMutation = useMutation({
+    mutationFn: ({ id, data }: { id: number; data: Customer }) =>
+      updateCustomer(id, data),
     onSuccess: () => {
-      toast.success(`Khóa khách hàng thành công`)
+      toast.success("Cập nhật khách hàng thành công");
+      refetch(); // Refetch dữ liệu sau khi cập nhật thành công
+    },
+    onError: (error) => {
+      toast.error(
+        (error as { response?: { data?: { msg?: string } } })?.response?.data
+          ?.msg || "Cập nhật khách hàng thất bại"
+      );
+    },
+  });
+
+  const toggleStatusMutation = useMutation({
+    mutationFn: async () => {
+      if (data.account.status) {
+        return lockCustomer(data.account.accountId);
+      } else {
+        return unlockCustomer(data.account.accountId);
+      }
+    },
+    onSuccess: () => {
+      toast.success(
+        data.account.status
+          ? "Khóa khách hàng thành công"
+          : "Mở khóa khách hàng thành công"
+      );
       refetch();
-    }
+    },
+    onError: () => {
+      toast.error(
+        data.account.status
+          ? "Khóa khách hàng thất bại"
+          : "Mở khóa khách hàng thất bại"
+      );
+    },
   });
 
   return (
@@ -97,28 +115,16 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem
-            onClick={() => navigator.clipboard.writeText(data.customerId.toString())}
-          >
-            Copy payment ID
+          <DropdownMenuItem onClick={openDetailModal}>
+            Xem chi tiết
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem  onClick={openModal}>Cập nhật</DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={() => { setItemToDelete(data.customerId); openDeleteModal(); }}
-          >
-            Khóa
+          <DropdownMenuItem onClick={openModal}>Cập nhật</DropdownMenuItem>
+          <DropdownMenuItem onClick={() => toggleStatusMutation.mutate()}>
+            {data.account.status ? "Khóa" : "Mở khóa"}
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* Delete Confirmation Modal */}
-      <DeleteModal
-        isOpen={isDeleteModalOpen}
-        onClose={closeDeleteModal}
-        onConfirm={handleConfirmDelete}
-        message="Bạn có chắc muốn tạm khóa khách hàng này?"
-      />
 
       {/* Render UpdateNewsModal only when needed */}
       {isModalOpen && (
@@ -127,6 +133,14 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
           onClose={closeModal}
           currentCustomer={data}
           onSave={handleSave}
+        />
+      )}
+
+      {isDetailModalOpen && (
+        <CustomerDetailModal
+          isOpen={isDetailModalOpen}
+          onClose={closeDetailModal}
+          currentCustomer={data}
         />
       )}
     </div>

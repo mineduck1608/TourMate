@@ -4,6 +4,7 @@ using Repositories.Context;
 using Services;
 using System;
 using Services.Utils;
+using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,18 +20,6 @@ builder.Services.AddScoped<IActiveAreaService, ActiveAreaService>();
 
 builder.Services.AddScoped<BidRepository>();
 builder.Services.AddScoped<IBidService, BidService>();
-
-builder.Services.AddScoped<BlogRepository>();
-builder.Services.AddScoped<IBlogService, BlogService>();
-
-builder.Services.AddScoped<BlogCommentRepository>();
-builder.Services.AddScoped<IBlogCommentService, BlogCommentService>();
-
-builder.Services.AddScoped<BlogCommentReplyRepository>();
-builder.Services.AddScoped<IBlogCommentReplyService, BlogCommentReplyService>();
-
-builder.Services.AddScoped<BlogLikeRepository>();
-builder.Services.AddScoped<IBlogLikeService, BlogLikeService>();
 
 builder.Services.AddScoped<ContactRepository>();
 builder.Services.AddScoped<IContactService, ContactService>();
@@ -96,7 +85,12 @@ builder.Services.AddCors(options =>
                     )
                 );
 
-builder.Services.AddControllers();
+builder.Services.AddControllers().AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
+});
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

@@ -2,6 +2,7 @@ import dynamic from "next/dynamic";
 import { useState } from "react";
 import ImageUpload from "@/components/image-upload";
 
+
 // Dynamically import ReactQuill with no SSR (Server-Side Rendering)
 const ReactQuill = dynamic(() => import("react-quill-new"), {
   ssr: false, // Disable SSR for this component
@@ -9,6 +10,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 
 import "react-quill-new/dist/quill.snow.css";
 import { ActiveArea } from "@/types/active-area";
+
 
 type AddActiveAreaModalProps = {
   isOpen: boolean;
@@ -31,7 +33,6 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
     areaType: "Miền Bắc",
     createdAt: "",
   });
-
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {

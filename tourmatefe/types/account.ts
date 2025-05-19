@@ -3,6 +3,6 @@ export type Account = {
   email: string;
   password: string;
   createdDate: string;
-  roldId: number;
+  roleId: number;
   status: boolean;
 }

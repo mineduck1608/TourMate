@@ -198,7 +198,7 @@ export default function AboutUsHero({
             animate="visible"
           >
             <button className="px-8 py-3 bg-gradient-to-r from-teal-500 to-cyan-500 rounded-full text-white font-medium hover:shadow-lg hover:from-teal-600 hover:to-cyan-600 transition-all duration-300 cursor-pointer">
-              Explore more
+              Khám phá ngay
             </button>
           </motion.div>
         </div>

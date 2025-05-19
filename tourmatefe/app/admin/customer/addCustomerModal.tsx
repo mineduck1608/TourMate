@@ -1,10 +1,10 @@
-import { CreateCustomer } from "@/types/customer";
+import { Customer } from "@/types/customer";
 import { useState } from "react";
 
 type AddCustomerModalProps = {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: CreateCustomer) => void;
+  onSave: (data: Customer) => void;
 };
 
 const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
@@ -12,34 +12,59 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<CreateCustomer>({
+  const [formData, setFormData] = useState<Customer>({
     customerId: 0,
     accountId: 0,
     fullName: "",
     gender: "",
     phone: "",
     dateOfBirth: "",
-    email: "",
-    password: "",
-    status: true,
-    createdAt: "",
-    roleId: 2,
+    account: {
+      accountId: 0,
+      email: "",
+      password: "",
+      status: true,
+      createdDate: "",
+      roleId: 2,
+    },
   });
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: name === "dateOfBirth" ? value : value, // Keep it as string format
-    }));
+
+    if (name === "email" || name === "password") {
+      setFormData((prev) => ({
+        ...prev,
+        account: {
+          ...prev.account,
+          [name]: value,
+        },
+      }));
+    } else {
+      setFormData((prev) => ({
+        ...prev,
+        [name]: value,
+      }));
+    }
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
-    console.log("Form data submitted:", formData);
+
+    const dataToSave = {
+      ...formData,
+      account: {
+        ...formData.account,
+        createdDate: new Date().toISOString(),
+        status: true,
+      },
+    };
+
+    onSave(dataToSave);
+    console.log("Form data submitted:", dataToSave);
+
     setFormData({
       customerId: 0,
       accountId: 0,
@@ -47,12 +72,16 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       gender: "",
       phone: "",
       dateOfBirth: "",
-      email: "",
-      password: "",
-      status: true,
-      createdAt: "",
-      roleId: 2,
+      account: {
+        accountId: 0,
+        email: "",
+        password: "",
+        status: true,
+        createdDate: "",
+        roleId: 2,
+      },
     });
+
     onClose();
   };
 
@@ -63,20 +92,18 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       }`}
     >
       <div
-        className={`absolute inset-0 bg-black opacity-50 ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className="absolute inset-0 bg-black opacity-50"
         onClick={onClose}
       ></div>
 
       <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
-        <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
+        <div className="flex justify-between items-center pb-4 mb-4 border-b dark:border-gray-600">
           <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
             Thêm khách hàng mới
           </h3>
           <button
             type="button"
-            className="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+            className="text-gray-400 hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
             onClick={onClose}
           >
             <svg
@@ -97,120 +124,101 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
         <form onSubmit={handleSubmit}>
           <div className="grid gap-4 mb-4 sm:grid-cols-2">
             {/* Email Input */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="email"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div>
+              <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Email
               </label>
               <input
                 type="email"
                 name="email"
                 id="email"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập email"
-                value={formData.email}
+                value={formData.account.email}
                 onChange={handleChange}
+                placeholder="Nhập email"
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
             {/* Password Input */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="password"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div>
+              <label htmlFor="password" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Password
               </label>
               <input
                 type="password"
                 name="password"
                 id="password"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập password"
-                value={formData.password}
+                value={formData.account.password}
                 onChange={handleChange}
+                placeholder="Nhập password"
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
             {/* Full Name Input */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="fullName"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div>
+              <label htmlFor="fullName" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Họ và tên
               </label>
               <input
                 type="text"
                 name="fullName"
                 id="fullName"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập họ và tên"
                 value={formData.fullName}
                 onChange={handleChange}
+                placeholder="Nhập họ và tên"
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
             {/* Phone Input */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="phone"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            <div>
+              <label htmlFor="phone" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Số điện thoại
               </label>
               <input
-                type="phone"
+                type="text"
                 name="phone"
                 id="phone"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập số điện thoại"
                 value={formData.phone}
                 onChange={handleChange}
+                placeholder="Nhập số điện thoại"
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
-            {/* Date of Birth Input */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="dateOfBirth"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            {/* Date of Birth */}
+            <div>
+              <label htmlFor="dateOfBirth" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Ngày sinh
               </label>
               <input
                 type="date"
                 name="dateOfBirth"
                 id="dateOfBirth"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                placeholder="Nhập ngày sinh"
-                value={formData.dateOfBirth} // Set as string YYYY-MM-DD format
+                value={formData.dateOfBirth}
                 onChange={handleChange}
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               />
             </div>
 
-            {/* Gender Select */}
-            <div className="sm:col-span-1">
-              <label
-                htmlFor="gender"
-                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
-              >
+            {/* Gender */}
+            <div>
+              <label htmlFor="gender" className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
                 Giới tính
               </label>
               <select
                 name="gender"
                 id="gender"
-                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                 value={formData.gender}
                 onChange={handleChange}
                 required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               >
                 <option value="">Chọn giới tính</option>
                 <option value="Nam">Nam</option>
@@ -219,10 +227,11 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
               </select>
             </div>
           </div>
+
           <div className="flex justify-end">
             <button
               type="submit"
-              className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+              className="text-white bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
               Thêm khách hàng
             </button>
