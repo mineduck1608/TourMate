@@ -65,42 +65,42 @@ export function SignupForm({
       label: "Đà Lạt",
     },
     {
-      value: "quang-ninh",
+      value: "Quảng Ninh",
       label: "Quảng Ninh",
     },
     {
-      value: "quang-binh",
+      value: "Quảng Bình",
       label: "Quảng Bình",
     },
     {
-      value: "thua-thien-hue",
+      value: "Thừa Thiên Huế",
       label: "Thừa Thiên Huế",
     },
     {
-      value: "phu-quoc",
+      value: "Phúc Quốc",
       label: "Phú Quốc",
     },
     {
-      value: "vung-tau",
+      value: "Vũng Tàu",
       label: "Vũng Tàu",
     },
     {
-      value: "ha-giang",
+      value: "Hà Giang",
       label: "Hà Giang",
     },
     {
-      value: "sapa",
+      value: "Sa Pa",
       label: "Sa Pa",
     },
     {
-      value: "phong-nha",
+      value: "Phong Nha",
       label: "Phong Nha",
     },
   ];
 
   useEffect(() => {
     if (confirmPassword && password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Passwords không trùng");
     } else {
       setError("");
     }
@@ -109,7 +109,7 @@ export function SignupForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Passwords không trùng");
       return;
     }
   };
