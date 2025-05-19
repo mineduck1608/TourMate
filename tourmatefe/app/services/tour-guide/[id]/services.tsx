@@ -1,11 +1,22 @@
-import { TourService } from '@/types/tour-service'
+'use client'
+import { getTourServicesOf } from '@/app/api/tour-service.api'
+import PaginateList from '@/app/news/paginate-list'
+import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-export default function TourServices(params: { services: TourService[] }) {
-    const [page] = useState(1)
+export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
+    const [page, setPage] = useState(1)
+    const pageSize = 6
+    const { data } = useQuery({
+        queryKey: ['tour-services-of', tourGuideId, pageSize, page],
+        queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize),
+        staleTime: 24 * 3600 * 1000,
+    })
+    const services = data?.result ?? []
+    const maxPage = data?.totalPage ?? 0
     return (
         <motion.div className='w-full'>
             <h2 className="text-blue-800 text-3xl inter mb-5">Dịch vụ du lịch</h2>
@@ -18,7 +29,7 @@ export default function TourServices(params: { services: TourService[] }) {
                     transition={{ duration: 0.8 }}
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
-                    {params.services.map((item) => (
+                    {services.map((item) => (
                         <motion.div
                             key={item.serviceId}
                             whileHover={{
@@ -51,6 +62,13 @@ export default function TourServices(params: { services: TourService[] }) {
                     ))}
                 </motion.div>
             </AnimatePresence>
+            <div className="mt-10 place-self-center">
+                <PaginateList current={page} maxPage={maxPage}
+                    onClick={(p) => {
+                        setPage(p)
+                    }}
+                />
+            </div>
         </motion.div>
     )
 }

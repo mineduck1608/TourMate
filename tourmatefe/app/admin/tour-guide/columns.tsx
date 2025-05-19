@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
-import { TourGuide } from "@/types/tourGuide";
+import { TourGuide } from "@/types/tour-guide";
 import TourGuideActions from "./tourGuideAction";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
