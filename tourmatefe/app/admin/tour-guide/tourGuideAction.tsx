@@ -12,7 +12,7 @@ import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
-import { TourGuide } from "@/types/tourGuide";
+import { TourGuide } from "@/types/tour-guide";
 import {
   getTourGuides,
   lockTourGuide,

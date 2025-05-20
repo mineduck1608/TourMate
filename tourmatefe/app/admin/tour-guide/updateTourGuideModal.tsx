@@ -1,4 +1,4 @@
-import { TourGuide } from "@/types/tourGuide";
+import { TourGuide } from "@/types/tour-guide";
 import { useState, useEffect } from "react";
 
 type UpdateTourGuideModalProps = {

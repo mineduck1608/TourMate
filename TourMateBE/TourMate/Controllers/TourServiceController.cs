@@ -50,5 +50,10 @@ namespace API.Controllers
             var result = await _tourserviceService.DeleteTourServices(id);
             return result ? NoContent() : NotFound();
         }
+        [HttpGet("services-of")]
+        public async Task<ActionResult<PagedResult<TourService>>> TourServicesOf(int tourGuideId, int pageSize = 3, int pageIndex = 1)
+        {
+            return Ok(await _tourserviceService.GetTourServicesOf(tourGuideId, pageSize, pageIndex));
+        }
     }
 }

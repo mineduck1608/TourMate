@@ -1,11 +1,11 @@
 'use client'
 import { getTourGuide } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
-import { TourGuide } from '@/types/tour-guide';
 import { useQuery } from '@tanstack/react-query';
 import React, { use } from 'react'
 import { FaClock, FaMapMarker, FaSuitcase } from 'react-icons/fa';
 import TourServices from './services';
+import { TourGuide } from '@/types/tour-guide';
 export default function TourGuideDetail({
     params,
 }: {
@@ -45,12 +45,12 @@ export default function TourGuideDetail({
                         </tbody>
                     </table>}
                     <p className='p-2'>
-                        {tourGuide?.tourGuideDescs[0].description}
+                        {tourGuide?.tourGuideDescs?.[0].description}
                     </p>
                 </div>
             </div>
             <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>
-                <TourServices services={tourGuide?.tourServices ?? []} />
+                {id && <TourServices tourGuideId={id} />}
             </div>
         </div>
     )
@@ -59,7 +59,7 @@ export default function TourGuideDetail({
 const statToRender = (t: TourGuide) => [
     {
         icon: <FaMapMarker />,
-        value: t.tourGuideDescs[0].area.areaName
+        value: t.tourGuideDescs?.[0].area.areaName
     },
     {
         icon: <FaClock />,
@@ -67,6 +67,6 @@ const statToRender = (t: TourGuide) => [
     },
     {
         icon: <FaSuitcase />,
-        value: t.tourGuideDescs[0].yearOfExperience + ' năm kinh nghiệm'
+        value: t.tourGuideDescs?.[0].yearOfExperience + ' năm kinh nghiệm'
     }
 ]

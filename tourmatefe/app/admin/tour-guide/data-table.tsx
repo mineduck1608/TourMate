@@ -35,7 +35,7 @@ import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Link from "next/link";
 import { addTourGuide, getTourGuides } from "@/app/api/tour-guide.api";
-import { TourGuide } from "@/types/tourGuide";
+import { TourGuide } from "@/types/tour-guide";
 import AddTourGuideModal from "./addTourGuideModal";
 import { Input } from "@/components/ui/input";
 
