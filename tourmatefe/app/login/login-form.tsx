@@ -1,15 +1,21 @@
+"use client";
+
 import type React from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
@@ -90,9 +96,13 @@ export function LoginForm({
               </Button>
               <div className="text-center text-sm">
                 Không có tài khoản?{" "}
-                <Link href="/signUp" className="underline underline-offset-4">
+                <Button
+                  onClick={() => setIsModalOpen(true)}
+                  variant="link"
+                  className="underline underline-offset-4 hover:text-primary p-0 cursor-pointer"
+                >
                   Đăng Ký
-                </Link>
+                </Button>
               </div>
             </div>
           </form>
@@ -107,9 +117,13 @@ export function LoginForm({
       </Card>
       <div className="text-balance text-center text-xs text-white [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
         Bằng cách nhấn Tiếp tục, bạn đồng ý với{" "}
-        <Link href="#">Điều khoản Dịch vụ</Link> và <Link href="#">Chính sách Bảo mật</Link>{" "}
-        của chúng tôi.
+        <Link href="#">Điều khoản Dịch vụ</Link> và{" "}
+        <Link href="#">Chính sách Bảo mật</Link> của chúng tôi.
       </div>
+      <RoleSelectionModal
+        isOpen={isModalOpen}
+        onClose={() => setIsModalOpen(false)}
+      />
     </div>
   );
 }

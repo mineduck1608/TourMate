@@ -41,7 +41,7 @@ export default function TourGuideProfileDetail({
                         Tạo bài đăng
                     </Link>
                     <div className='mt-5'>
-                        {tourGuide && <TourServices services={tourGuide.tourServices} />}
+                        {tourGuide && <TourServices tourGuideId={tourGuide.tourGuideId} />}
                     </div>                    
                 </div>
             </div>
