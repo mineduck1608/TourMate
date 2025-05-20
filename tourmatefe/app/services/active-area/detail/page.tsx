@@ -51,7 +51,7 @@ const AreaDetail = () => {
             __html: DOMPurify.sanitize(
               // Thay thế các URL ảnh trong content bằng thẻ <img>
               (data?.data?.areaContent || "").replace(
-                /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+                /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi, 
                 (match) => {
                   return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
                 }

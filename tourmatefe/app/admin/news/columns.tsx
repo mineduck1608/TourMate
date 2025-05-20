@@ -14,7 +14,7 @@ const formatDate = (dateString: string) => {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+
   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 };
 
@@ -72,12 +72,12 @@ export const columns: ColumnDef<News>[] = [
     header: "Nội dung",
     cell: ({ row }) => {
       const content = row.getValue("content") || "";
-  
+
       // Kiểm tra và thay thế đường dẫn ảnh trong content bằng thẻ <img>
-      const updatedContent = (content as string).replace(/(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi, (match) => {
+      const updatedContent = (content as string).replace(  /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi, (match) => {
         return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
       });
-  
+
       return (
         <div
           style={{
@@ -94,7 +94,7 @@ export const columns: ColumnDef<News>[] = [
         />
       );
     },
-  },  
+  },
   {
     accessorKey: "bannerImg",
     header: "Ảnh",
@@ -111,9 +111,9 @@ export const columns: ColumnDef<News>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img 
-              src={imageUrl} 
-              alt="Banner" 
+            <img
+              src={imageUrl}
+              alt="Banner"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh
             />
           ) : (

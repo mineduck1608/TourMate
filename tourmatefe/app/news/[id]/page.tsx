@@ -38,7 +38,7 @@ export default function NewsDetailPage({
           dangerouslySetInnerHTML={{
             __html: data?.data?.content
               ? data?.data?.content.replace(
-                  /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+                    /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi, 
                   (match) => {
                     return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
                   }
