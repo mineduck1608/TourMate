@@ -92,10 +92,7 @@ function TourGuideMain() {
                                         </h4>
                                         <p className="text-gray-600 text-sm mb-2">
                                             {dayjs(v.dateOfBirth).format('DD/MM/YYYY')}
-                                        </p>
-                                        <p className="text-gray-600 text-sm mb-5">
-                                            Khu vực hoạt động: {v.tourGuideDescs[0].area.areaName}
-                                        </p>
+                                        </p>                                        
                                         <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                                             Xem ngay
                                         </button>

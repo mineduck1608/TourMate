@@ -1,4 +1,4 @@
-import { TourGuide } from "@/types/tourGuide";
+import { TourGuide } from "@/types/tour-guide";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 

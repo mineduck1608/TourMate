@@ -1,13 +1,33 @@
+'use client'
+import { getTourServicesOf } from '@/app/api/tour-service.api'
+import PaginateList from '@/app/news/paginate-list'
 import { TourService } from '@/types/tour-service'
+import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
-import React from 'react'
+import React, { useState } from 'react'
 
-export default function TourServices({ services }: { services: TourService[] }) {
+export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
+    const [page, setPage] = useState(1)
+    const pageSize = 3
+    const { data } = useQuery({
+        queryKey: ['tour-services-of', tourGuideId, pageSize, page],
+        queryFn: () => getTourServicesOf(tourGuideId, page, pageSize),
+        staleTime: 24 * 3600 * 1000,
+    })
+    const services = data?.result ?? []
+    const maxPage = data?.totalPage ?? 0
     return (
         <div>
             {
                 services.map(v => <Service service={v} key={v.serviceId} />)
             }
+            <div className="mt-10 place-self-center">
+                <PaginateList current={page} maxPage={maxPage}
+                    onClick={(p) => {
+                        setPage(p)
+                    }}
+                />
+            </div>
         </div>
     )
 }
