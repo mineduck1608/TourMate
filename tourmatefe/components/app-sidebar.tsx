@@ -5,7 +5,6 @@ import {
   BookOpen,
   Bot,
   LifeBuoy,
-  Map,
   PieChart,
   Send,
   Settings2,
