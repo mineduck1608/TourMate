@@ -1,7 +1,12 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import AOS from "aos";
+import "aos/dist/aos.css";
 import { Contact } from "@/types/contact";
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { toast } from "react-toastify";
+import { addContact } from "../api/contact.api";
 
 export default function ContactForm() {
   const [form, setForm] = useState<Contact>({
@@ -17,21 +22,59 @@ export default function ContactForm() {
 
   const [submitted, setSubmitted] = useState(false);
 
+  useEffect(() => {
+    AOS.init({
+      offset: 0,
+      delay: 200,
+      duration: 1200,
+      once: true,
+    });
+  }, []);
+
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
-    setForm((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
+
+  const addContactMutation = useMutation({
+    mutationFn: addContact,
+    onSuccess: () => {
+      toast.success('Chúng tôi đã nhận được thông tin của bạn');
+      setSubmitted(true);
+      setForm({
+        contactId: 0,
+        fullName: "",
+        phone: "",
+        email: "",
+        title: "",
+        content: "",
+        createdAt: new Date().toISOString(),
+        isProcessed: 0,
+      });
+    },
+    onError: (error) => {
+      toast.error('Tạo liên hệ thất bại');
+      console.error(error);
+    },
+  });
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    // Gọi API hoặc xử lý dữ liệu ở đây
-    console.log("Form submitted:", form);
-    setSubmitted(true);
+    addContactMutation.mutate(form); // gọi mutation với data form
   };
 
   return (
-    <div className="flex max-w-6xl h-[850px] mx-auto mt-10 rounded-lg shadow-lg overflow-hidden border border-gray-300">
+    <div
+      className="flex max-w-6xl h-[850px] mx-auto my-20 rounded-lg shadow-lg overflow-hidden border border-gray-300"
+      data-aos="zoom-in-up"
+      data-aos-duration="1000"
+      data-aos-delay="400"
+    >
       {/* Bên trái: ảnh full chiều cao và cover hết nửa bên trái */}
       <div className="w-1/2 relative">
         <img
@@ -67,8 +110,8 @@ export default function ContactForm() {
                 value={form.fullName}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập họ và tên"
+                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -80,14 +123,14 @@ export default function ContactForm() {
                 Số điện thoại
               </label>
               <input
-                type="tel"
+                type="phone"
                 id="phone"
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập số điện thoại"
+                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -105,8 +148,8 @@ export default function ContactForm() {
                 value={form.email}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập email"
+                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -124,8 +167,8 @@ export default function ContactForm() {
                 value={form.title}
                 onChange={handleChange}
                 required
-                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập tiêu đề"
+                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
@@ -143,8 +186,8 @@ export default function ContactForm() {
                 onChange={handleChange}
                 required
                 rows={5}
-                className="w-full border border-gray-300 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
                 placeholder="Nhập nội dung"
+                className="w-full border border-gray-300 rounded-md px-4 py-3 resize-none focus:outline-none focus:ring-2 focus:ring-blue-500"
               />
             </div>
 
