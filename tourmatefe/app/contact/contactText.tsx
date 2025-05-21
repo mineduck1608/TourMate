@@ -51,7 +51,7 @@ export default function ContactText() {
                 </CarouselItem>
                 <CarouselItem>
                   <img
-                    src="https://travelguide.org.vn/img/images/6-1568600280322.jpg"
+                    src="https://images2.thanhnien.vn/528068263637045248/2024/8/31/base64-17251183007861064965466.jpeg"
                     alt="Travel 2"
                     className="rounded-lg object-cover w-full h-96 sm:h-[400px]"
                   />

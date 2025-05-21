@@ -17,8 +17,11 @@ export default function ContactForm() {
     title: "",
     content: "",
     createdAt: new Date().toISOString(),
-    isProcessed: 0,
+    isProcessed: false,
   });
+
+  // Lưu lỗi cho từng trường
+  const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
   const [submitted, setSubmitted] = useState(false);
 
@@ -31,7 +34,7 @@ export default function ContactForm() {
     });
   }, []);
 
-  const handleChange = (
+   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
@@ -39,6 +42,33 @@ export default function ContactForm() {
       ...prev,
       [name]: value,
     }));
+
+    // Xóa lỗi khi người dùng sửa lại
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+
+  const validate = () => {
+    const newErrors: { [key: string]: string } = {};
+
+    // Kiểm tra số điện thoại (Ví dụ: số điện thoại Việt Nam, 10-11 số, bắt đầu 0)
+    if (!form.phone) {
+      newErrors.phone = "Số điện thoại không được để trống";
+    } else {
+      const phoneRegex = /^(0\d{9,10})$/;
+      if (!phoneRegex.test(form.phone)) {
+        newErrors.phone = "Số điện thoại không hợp lệ";
+      }
+    }
+
+    // Có thể thêm kiểm tra các trường khác nếu muốn
+
+    setErrors(newErrors);
+
+    // Trả về true nếu không có lỗi
+    return Object.keys(newErrors).length === 0;
   };
 
   const addContactMutation = useMutation({
@@ -54,7 +84,7 @@ export default function ContactForm() {
         title: "",
         content: "",
         createdAt: new Date().toISOString(),
-        isProcessed: 0,
+        isProcessed: false,
       });
     },
     onError: (error) => {
@@ -65,7 +95,12 @@ export default function ContactForm() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    addContactMutation.mutate(form); // gọi mutation với data form
+
+    // Chỉ submit nếu dữ liệu hợp lệ
+    if (validate()) {
+      addContactMutation.mutate(form);
+      console.log(form);
+    }
   };
 
   return (
@@ -123,15 +158,20 @@ export default function ContactForm() {
                 Số điện thoại
               </label>
               <input
-                type="phone"
+                type="text"
                 id="phone"
                 name="phone"
                 value={form.phone}
                 onChange={handleChange}
-                required
                 placeholder="Nhập số điện thoại"
-                className="w-full border border-gray-300 rounded-md px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className={`w-full border rounded-md px-4 py-3 focus:outline-none focus:ring-2 ${errors.phone
+                    ? "border-red-500 focus:ring-red-500"
+                    : "border-gray-300 focus:ring-blue-500"
+                  }`}
               />
+              {errors.phone && (
+                <p className="text-red-500 text-sm mt-1">{errors.phone}</p>
+              )}
             </div>
 
             <div>

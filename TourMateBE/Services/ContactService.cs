@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -5,10 +6,10 @@ namespace Services
 {
     public interface IContactService
     {
-        Contact GetContact(int id);
-        IEnumerable<Contact> GetAll(int pageSize, int pageIndex);
-        void CreateContact(Contact contact);
-        void UpdateContact(Contact contact);
+        Task<Contact> GetContact(int id);
+        Task<PagedResult<Contact>> GetAll(int pageSize, int pageIndex);
+        Task<bool> CreateContact(Contact contact);
+        Task<bool> UpdateContact(Contact contact);
         bool DeleteContact(int id);
     }
 
@@ -16,24 +17,24 @@ namespace Services
     {
         private ContactRepository ContactRepository { get; set; } = new();
 
-        public Contact GetContact(int id)
+        public async Task<Contact> GetContact(int id)
         {
-            return ContactRepository.GetById(id);
+            return await ContactRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Contact> GetAll(int pageSize, int pageIndex)
+        public Task<PagedResult<Contact>> GetAll(int pageSize, int pageIndex)
         {
-            return ContactRepository.GetAll(pageSize, pageIndex);
+            return ContactRepository.GetAllPaged(pageSize, pageIndex);
         }
 
-        public void CreateContact(Contact contact)
+        public async Task<bool> CreateContact(Contact contact)
         {
-            ContactRepository.Create(contact);
+            return await ContactRepository.CreateAsync(contact);
         }
 
-        public void UpdateContact(Contact contact)
+        public async Task<bool> UpdateContact(Contact contact)
         {
-            ContactRepository.Update(contact);
+            return await ContactRepository.UpdateAsync(contact);
         }
 
         public bool DeleteContact(int id)
