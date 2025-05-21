@@ -16,3 +16,23 @@
   font-weight: 400;
   font-style: normal;
 }
+
+.ql-align-center {
+  text-align: center;
+}
+.ql-align-right {
+  text-align: right;
+}
+.ql-align-left {
+  text-align: left;
+}
+
+.quill-content img {
+  margin: 20px auto;
+  display: block;
+  max-width: 100%;
+}
+
+
+
+

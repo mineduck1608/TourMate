@@ -4,6 +4,7 @@ import "./globals.css";
 import Providers from "./providers"; // đường dẫn có thể thay đổi tùy vị trí file providers.tsx
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'; // import the CSS for the Toastify component
+import '@/styles/globals.css';
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -18,7 +18,7 @@ export default function NewsCategories() {
                 <table>
                     <tbody>
                         {tags.map((tag) => (
-                            <tr key={tag} className='*:px-3 *:p-1 hover:text-gray-600'>
+                            <tr key={tag} className='*:px-3 *:p-1 hover:text-gray-500 cursor-pointer transition-colors duration-200'>
                                 <td>
                                     <FaArrowRight />
                                 </td>
