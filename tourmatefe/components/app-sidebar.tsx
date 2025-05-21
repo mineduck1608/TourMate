@@ -4,7 +4,6 @@ import * as React from "react"
 import {
   BookOpen,
   Bot,
-  Frame,
   LifeBuoy,
   Map,
   PieChart,
@@ -38,18 +37,33 @@ const data = {
   },
   navMain: [
     {
-      title: "User",
+      title: "Người dùng",
       url: "#",
       icon: ContactRound,
       isActive: true,
       items: [
         {
-          title: "Customer",
+          title: "Khách hàng",
           url: "/admin/customer",
         },
         {
-          title: "TourGuide",
+          title: "Hướng dẫn viên",
           url: "/admin/tour-guide",
+        }
+      ],
+    },
+    {
+      title: "Bài đăng",
+      url: "#",
+      icon: BookOpen,
+      items: [
+        {
+          title: "Tin tức",
+          url: "/admin/news",
+        },
+        {
+          title: "Địa điểm hoạt động",
+          url: "/admin/active-area",
         }
       ],
     },
@@ -72,29 +86,7 @@ const data = {
         },
       ],
     },
-    {
-      title: "Documentation",
-      url: "#",
-      icon: BookOpen,
-      items: [
-        {
-          title: "Introduction",
-          url: "#",
-        },
-        {
-          title: "Get Started",
-          url: "#",
-        },
-        {
-          title: "Tutorials",
-          url: "#",
-        },
-        {
-          title: "Changelog",
-          url: "#",
-        },
-      ],
-    },
+
     {
       title: "Settings",
       url: "#",
@@ -121,31 +113,21 @@ const data = {
   ],
   navSecondary: [
     {
-      title: "Support",
+      title: "Hỗ trợ",
       url: "#",
       icon: LifeBuoy,
     },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send,
-    },
   ],
   projects: [
-    {
-      name: "Tin tức",
-      url: "/admin/news",
-      icon: Frame,
-    },
     {
       name: "Dashboard",
       url: "/admin/dashboard",
       icon: PieChart,
     },
     {
-      name: "Địa điểm hoạt động",
-      url: "/admin/active-area",
-      icon: Map,
+      name: "Liên hệ",
+      url: "/admin/contact",
+      icon: Send,
     },
   ],
 }
@@ -177,8 +159,8 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
       </SidebarHeader>
       <SidebarContent>
-        <NavMain items={data.navMain} />
         <NavProjects projects={data.projects} />
+        <NavMain items={data.navMain} />
         <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
       <SidebarFooter>

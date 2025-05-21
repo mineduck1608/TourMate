@@ -6,5 +6,5 @@ export type Contact = {
   title: string;
   content: string;
   createdAt: string;
-  isProcessed: number;
+  isProcessed: boolean;
 };

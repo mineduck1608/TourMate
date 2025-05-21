@@ -1,11 +1,13 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
-    [Route("api/contacts")]
+    [Route("api/contact")]
     [ApiController]
     public class ContactController : ControllerBase
     {
@@ -23,17 +25,30 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Contact>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+
+        public async Task<ActionResult<PagedResult<Contact>>> GetAll(int pageSize = 10, int pageIndex = 1)
         {
-            return Ok(_contactService.GetAll(pageSize, pageIndex));
+            var result = await _contactService.GetAll(pageSize, pageIndex);
+            var response = new PagedResult<Contact>
+            {
+                Result = result.Result, // Tin tức đã bọc trong "Data"
+                TotalResult = result.TotalResult, // Tổng số kết quả
+                TotalPage = result.TotalPage // Tổng số trang
+            };
+            return Ok(result);
         }
 
+
         [HttpPost]
-        public IActionResult Create([FromBody] ContactCreateModel data)
+        public async Task<IActionResult> Create([FromBody] ContactCreateModel data)
         {
             var contact = data.Convert();
-            _contactService.CreateContact(contact);
-            return CreatedAtAction(nameof(Get), new { id = contact.ContactId }, contact);
+            var result = await _contactService.CreateContact(contact);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpPut]
@@ -41,6 +56,24 @@ namespace API.Controllers
         {
             _contactService.UpdateContact(contact.Convert());
             return NoContent();
+        }
+
+        [HttpPut("confirm/{id}")]
+        public async Task<IActionResult> ConfirmContact(int id)
+        {
+            var contact = await _contactService.GetContact(id);
+            if(contact.IsProcessed == true)
+            {
+                return BadRequest(new { msg = "Liên hệ này đã được xác nhận!" });
+            }
+            contact.IsProcessed = true;
+            var result = await _contactService.UpdateContact(contact);
+            if(result == false)
+            {
+                return BadRequest(new { msg = "Xác nhận liên hệ không thành công!" });
+
+            }
+            return Ok();
         }
 
         [HttpDelete("{id}")]
