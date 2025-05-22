@@ -10,7 +10,6 @@ namespace Repositories.DTO.CreateModels
 
         public string MessageText { get; set; }
 
-        public string MessageType { get; set; }
 
         public DateTime SendAt { get; set; }
 
@@ -24,7 +23,6 @@ namespace Repositories.DTO.CreateModels
             ConversationId = ConversationId,
             SenderId = SenderId,
             MessageText = MessageText,
-            MessageType = MessageType,
             SendAt = SendAt,
             IsRead = IsRead,
             IsEdited = IsEdited,
