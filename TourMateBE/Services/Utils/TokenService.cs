@@ -59,6 +59,7 @@ namespace Services.Utils
 
             var tokenModel = new RefreshToken
             {
+                Id = Guid.NewGuid(),
                 Token = refreshToken,
                 ExpireAt = DateTime.UtcNow.AddDays(7),
                 IsRevoked = false,
@@ -84,6 +85,7 @@ namespace Services.Utils
 
 
             var newAccessToken = GenerateAccessToken(userId, username, roleName);
+            await _refreshTokenRepo.RemoveToken(oldRefreshToken);
             var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(userId);
 
             return (newAccessToken, newRefreshToken);

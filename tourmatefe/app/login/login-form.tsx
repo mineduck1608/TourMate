@@ -9,18 +9,54 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
+import { login } from "../api/authenticate.api";
+import axios, { AxiosError } from "axios";
 
 export function LoginForm({
   className,
   ...props
 }: React.ComponentProps<"div">) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
+
+    const formData = new FormData(e.currentTarget);
+    const email = formData.get("email") as string;
+    const password = formData.get("password") as string;
+
+    try {
+      await login({ email, password });
+      window.location.href = "/";
+    } catch (err) {
+      // Xử lý lỗi không dùng any
+      let message = "Đăng nhập thất bại";
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data && typeof err.response.data === "object" && "msg" in err.response.data) {
+          message = (err.response.data as { msg: string }).msg;
+        } else if (err.message) {
+          message = err.message;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
+      setError(message);
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <div className={cn("flex flex-col gap-6", className)} {...props}>
       <Card className="overflow-hidden">
         <CardContent className="grid p-0 md:grid-cols-2">
-          <form className="p-6 md:p-8">
+          <form className="p-6 md:p-8" onSubmit={handleLogin}>
             <div className="flex flex-col gap-6">
               <div className="flex flex-col items-center text-center">
                 <div className="mb-[-4] w-40 mt-[-15]">
@@ -43,9 +79,11 @@ export function LoginForm({
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
+                  name="email"
                   type="email"
                   placeholder="m@example.com"
                   required
+                  disabled={loading}
                 />
               </div>
               <div className="grid gap-2">
@@ -58,17 +96,31 @@ export function LoginForm({
                     Quên mật khẩu?
                   </Link>
                 </div>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  name="password"
+                  type="password"
+                  required
+                  disabled={loading}
+                />
               </div>
-              <Button type="submit" className="w-full">
-                Đăng Nhập
+
+              {error && (
+                <p className="text-sm text-red-500 text-center">{error}</p>
+              )}
+
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Đang đăng nhập..." : "Đăng Nhập"}
               </Button>
+
+              {/* Các phần nút đăng nhập khác như Google, đăng ký giữ nguyên */}
               <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
                 <span className="relative z-10 bg-background px-2 text-muted-foreground">
                   Hoặc tiếp tục với
                 </span>
               </div>
-              <Button variant="outline" className="w-full">
+              <Button variant="outline" className="w-full" disabled={loading}>
+                {/* SVG Google icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   viewBox="0 0 24 24"
@@ -100,6 +152,7 @@ export function LoginForm({
                   onClick={() => setIsModalOpen(true)}
                   variant="link"
                   className="underline underline-offset-4 hover:text-primary p-0 cursor-pointer"
+                  disabled={loading}
                 >
                   Đăng Ký
                 </Button>

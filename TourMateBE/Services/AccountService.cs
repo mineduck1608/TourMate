@@ -13,14 +13,14 @@ namespace Services
 {
     public interface IAccountService
     {
-        Account GetAccount(int id);
+        Task<Account> GetAccount(int id);
         IEnumerable<Account> GetAll(int pageSize, int pageIndex);
         Task<bool> UpdateAccount(Account account);
         bool DeleteAccount(int id);
         Task<AuthResponse> LoginAsync(string email, string password);
         Task<AuthResponse> RefreshNewTokenAsync(string refreshToken);
         Task<Account> GetAccountByEmail(string email);
-        Task<bool> CreateAccount(Account account);
+        Task<Account> CreateAccount(Account account);
         Task<Account> CreateAccountAdmin(Account account);
         Task<bool> LockAccount(int id);
         Task<bool> UnlockAccount(int id);
@@ -149,9 +149,9 @@ namespace Services
         }
 
 
-        public Account GetAccount(int id)
+        public async Task<Account> GetAccount(int id)
         {
-            return _repo.GetById(id);
+            return await _repo.GetByIdAsync(id);
         }
 
         public IEnumerable<Account> GetAll(int pageSize, int pageIndex)
@@ -159,10 +159,10 @@ namespace Services
             return _repo.GetAll(pageSize, pageIndex);
         }
 
-        public async Task<bool> CreateAccount(Account account)
+        public async Task<Account> CreateAccount(Account account)
         {
             // Gọi phương thức bất đồng bộ để tạo tài khoản
-            return await _repo.CreateAsync(account);
+            return await _repo.CreateAndReturnAsync(account);
         }
 
 
