@@ -14,7 +14,7 @@ namespace Repositories.DTO.CreateModels
         public TourGuideRevenue Convert() => new()
         {
             TourGuideId = TourGuideId,
-            TourGuideRevenue1 = TourGuideRevenue1 ?? 0,
+            TourGuideRevenueId = TourGuideRevenue1 ?? 0,
             Value = Value,
             PaymentId = PaymentId
         };

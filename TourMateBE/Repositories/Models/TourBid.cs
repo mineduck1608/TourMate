@@ -5,7 +5,7 @@ namespace Repositories.Models;
 
 public partial class TourBid
 {
-    public int TourBid1 { get; set; }
+    public int TourBidId { get; set; }
 
     public int AccountId { get; set; }
 

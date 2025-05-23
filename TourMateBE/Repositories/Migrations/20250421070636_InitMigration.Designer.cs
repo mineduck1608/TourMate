@@ -1097,12 +1097,12 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Models.TourBid", b =>
                 {
-                    b.Property<int>("TourBid1")
+                    b.Property<int>("TourBidId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("tourBid");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TourBid1"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TourBidId"));
 
                     b.Property<int>("AccountId")
                         .HasColumnType("int")
@@ -1139,7 +1139,7 @@ namespace Repositories.Migrations
                         .HasColumnType("datetime")
                         .HasColumnName("updatedAt");
 
-                    b.HasKey("TourBid1")
+                    b.HasKey("TourBidId")
                         .HasName("PK__TourBid__6359293A7C00C65F");
 
                     b.HasIndex("AccountId");
@@ -1251,12 +1251,12 @@ namespace Repositories.Migrations
 
             modelBuilder.Entity("Repositories.Models.TourGuideRevenue", b =>
                 {
-                    b.Property<int>("TourGuideRevenue1")
+                    b.Property<int>("TourGuideRevenueId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasColumnName("tourGuideRevenue");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TourGuideRevenue1"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("TourGuideRevenueId"));
 
                     b.Property<int>("PaymentId")
                         .HasColumnType("int")
@@ -1270,7 +1270,7 @@ namespace Repositories.Migrations
                         .HasColumnType("real")
                         .HasColumnName("value");
 
-                    b.HasKey("TourGuideRevenue1")
+                    b.HasKey("TourGuideRevenueId")
                         .HasName("PK__TourGuid__049615064CBEB05C");
 
                     b.HasIndex("PaymentId");

@@ -33,7 +33,7 @@ namespace API.Controllers
         {
             var tourbid = data.Convert();
             _tourbidService.CreateTourBid(tourbid);
-            return CreatedAtAction(nameof(Get), new { id = tourbid.TourBid1 }, tourbid);
+            return CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid);
         }
 
         [HttpPut]
