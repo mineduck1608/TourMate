@@ -7,18 +7,33 @@ namespace Services
     {
         Message GetMessages(int id);
         IEnumerable<Message> GetAll(int pageSize, int pageIndex);
-        void CreateMessages(Message messages);
+        Task<Message> CreateMessages(Message messages);
         void UpdateMessages(Message messages);
         bool DeleteMessages(int id);
+        Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize);
     }
 
     public class MessagesService : IMessagesService
     {
-        private MessagesRepository MessagesRepository { get; set; } = new();
+        private MessagesRepository MessagesRepository;
+
+        public MessagesService(MessagesRepository messagesRepository)
+        {
+            MessagesRepository = messagesRepository;
+        }
 
         public Message GetMessages(int id)
         {
             return MessagesRepository.GetById(id);
+        }
+
+        public async Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize)
+        {
+            var messages = await MessagesRepository.GetMessagesAsync(conversationId, page, pageSize);
+            var hasMore = messages.Count == pageSize &&
+                          await MessagesRepository.AnyMoreMessagesAsync(conversationId, messages.LastOrDefault()?.SendAt ?? DateTime.MinValue);
+
+            return (messages, hasMore);
         }
 
         public IEnumerable<Message> GetAll(int pageSize, int pageIndex)
@@ -26,9 +41,9 @@ namespace Services
             return MessagesRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateMessages(Message messages)
+        public async Task<Message> CreateMessages(Message messages)
         {
-            MessagesRepository.Create(messages);
+            return await MessagesRepository.CreateAndReturnAsync(messages);
         }
 
         public void UpdateMessages(Message messages)

@@ -13,7 +13,7 @@ namespace Services
 {
     public interface IAccountService
     {
-        Account GetAccount(int id);
+        Task<Account> GetAccount(int id);
         IEnumerable<Account> GetAll(int pageSize, int pageIndex);
         Task<bool> UpdateAccount(Account account);
         bool DeleteAccount(int id);
@@ -149,9 +149,9 @@ namespace Services
         }
 
 
-        public Account GetAccount(int id)
+        public async Task<Account> GetAccount(int id)
         {
-            return _repo.GetById(id);
+            return await _repo.GetByIdAsync(id);
         }
 
         public IEnumerable<Account> GetAll(int pageSize, int pageIndex)

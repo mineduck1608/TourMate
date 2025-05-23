@@ -16,6 +16,18 @@ namespace API.Controllers
             _messageService = messageService;
         }
 
+        [HttpGet("{conversationId}")]
+        public async Task<IActionResult> GetMessages(int conversationId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+            var (messages, hasMore) = await _messageService.GetMessagesAsync(conversationId, page, pageSize);
+
+            return Ok(new
+            {
+                messages,
+                hasMore
+            });
+        }
+
         [HttpGet("{id}")]
         public ActionResult<Message> Get(int id)
         {
@@ -29,7 +41,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] MessageCreateModel data)
+        public async Task<IActionResult> CreateMessage([FromBody] MessageCreateModel data)
         {
             var message = data.Convert();
             _messageService.CreateMessages(message);

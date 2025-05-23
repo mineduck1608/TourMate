@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -14,6 +14,45 @@ namespace API.Controllers
         public ConversationController(IConversationService conversationService)
         {
             _conversationService = conversationService;
+        }
+
+        // Lấy thông tin cuộc trò chuyện
+        [HttpGet("{conversationId}")]
+        public async Task<IActionResult> GetConversation(int conversationId)
+        {
+            var conversation = await _conversationService.GetConversationAsync(conversationId);
+            if (conversation == null)
+            {
+                return NotFound("Conversation not found.");
+            }
+
+            return Ok(conversation);
+        }
+
+        // Lấy thông tin cuộc trò chuyện giữa hai tài khoản
+        [HttpGet("between/{account1Id}/{account2Id}")]
+        public async Task<IActionResult> GetConversationByAccounts(int account1Id, int account2Id)
+        {
+            var conversation = await _conversationService.GetConversationByAccountsAsync(account1Id, account2Id);
+            if (conversation == null)
+            {
+                return NotFound("Conversation not found.");
+            }
+
+            return Ok(conversation);
+        }
+
+        // Lấy tin nhắn theo ConversationId với phân trang
+        [HttpGet("{conversationId}/messages")]
+        public async Task<IActionResult> GetMessages(int conversationId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        {
+            var (messages, hasMore) = await _conversationService.GetMessagesAsync(conversationId, page, pageSize);
+
+            return Ok(new
+            {
+                messages,
+                hasMore
+            });
         }
 
         [HttpGet("{id}")]
