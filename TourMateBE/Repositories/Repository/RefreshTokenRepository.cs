@@ -1,4 +1,4 @@
-using Repositories.Models;
+﻿using Repositories.Models;
 using Repositories.GenericRepository;
 using System;
 using Repositories.Context;
@@ -30,6 +30,16 @@ namespace Repositories.Repository
         {
             token.IsRevoked = true;
             await _context.SaveChangesAsync();
+        }
+
+        public async Task RemoveToken(string token)
+        {
+            var result = await _context.RefreshTokens.FirstOrDefaultAsync(t => t.Token == token);
+            if (result != null)
+            {
+                _context.RefreshTokens.Remove(result);  // xóa entity khỏi DbSet
+                await _context.SaveChangesAsync();
+            }
         }
     }
 }

@@ -74,20 +74,22 @@ namespace API.Controllers
                 CreatedDate  = DateTime.Now,
             };
 
+            // Lưu tài khoản
+            var isAccountCreated = await _accountService.CreateAccount(account);
+            if (isAccountCreated == null)
+                return StatusCode(500, "An error occurred while registering the account.");
+
             // Tạo đối tượng khách hàng
             var customer = new Customer
             {
-                AccountId = account.AccountId,
+                AccountId = isAccountCreated.AccountId,
                 FullName = fullName,
                 Gender = gender,
                 Phone = phone,
                 DateOfBirth = dateOfBirth,
             };
 
-            // Lưu tài khoản
-            var isAccountCreated = await _accountService.CreateAccount(account);
-            if (!isAccountCreated)
-                return StatusCode(500, "An error occurred while registering the account.");
+            
 
             // Lưu khách hàng
             var isCustomerCreated = await _customerService.CreateCustomer(customer);
@@ -150,11 +152,15 @@ namespace API.Controllers
                 Status = true,
                 CreatedDate = DateTime.Now,
             };
+            // Lưu tài khoản
+            var isAccountCreated = await _accountService.CreateAccount(account);
+            if (isAccountCreated == null)
+                return StatusCode(500, "An error occurred while registering the account.");
 
             // Tạo đối tượng hướng dẫn viên
             var tourGuide = new TourGuide
             {
-                AccountId = account.AccountId,
+                AccountId = isAccountCreated.AccountId,
                 FullName = fullName,
                 Gender = gender,
                 Phone = phone,
@@ -163,10 +169,7 @@ namespace API.Controllers
                 Image = image
             };
 
-            // Lưu tài khoản
-            var isAccountCreated = await _accountService.CreateAccount(account);
-            if (!isAccountCreated)
-                return StatusCode(500, "An error occurred while registering the account.");
+        
 
             // Lưu khách hàng
             var isTourGuideCreated = await _tourGuideService.CreateTourGuide(tourGuide);

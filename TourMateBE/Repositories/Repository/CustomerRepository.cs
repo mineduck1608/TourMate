@@ -57,7 +57,8 @@ namespace Repositories.Repository
                         Email = c.Account.Email,
                         Password = c.Account.Password,
                         CreatedDate = c.Account.CreatedDate,
-                        Status = c.Account.Status
+                        Status = c.Account.Status,
+                        Role = c.Account.Role
                     }
                 })
                 .ToListAsync();

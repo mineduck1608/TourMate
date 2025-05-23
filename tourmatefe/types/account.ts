@@ -1,3 +1,5 @@
+import { Role } from "./role";
+
 export type Account = {
   accountId: number;
   email: string;
@@ -5,4 +7,5 @@ export type Account = {
   createdDate: string;
   roleId: number;
   status: boolean;
+  role: Role
 }

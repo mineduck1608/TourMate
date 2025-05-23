@@ -19,7 +19,6 @@ export type TourGuide = {
     account: Account
     email: string,
     password: string,
-
 }
 
 export type TourGuideDesc = {

@@ -20,13 +20,19 @@ public class ChatHub : Hub
     }
 
 
-    public async Task SendMessage(int conversationId, string messageText, int senderId, int messageTypeId)
+    public async Task SendMessage(int conversationId, string messageText, int senderId)
     {
-        var message = await SaveMessageToDb(conversationId, messageText, senderId, messageTypeId);
+        var message = await SaveMessageToDb(conversationId, messageText, senderId);
 
-        // Gửi tin nhắn cho tất cả client trong conversation (nhóm)
+        if (message == null)
+        {
+            // Có thể throw lỗi rõ ràng hoặc chỉ return
+            throw new HubException("Failed to save message");
+        }
+
         await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
     }
+
 
     public override async Task OnConnectedAsync()
     {
@@ -41,9 +47,9 @@ public class ChatHub : Hub
         await base.OnConnectedAsync();
     }
 
-    private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId, int messageTypeId)
+    private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId)
     {
-        var result = await _messageService.CreateMessages(new Message
+        var message = new Message
         {
             ConversationId = conversationId,
             SenderId = senderId,
@@ -52,8 +58,8 @@ public class ChatHub : Hub
             IsRead = false,
             IsDeleted = false,
             IsEdited = false,
-            MessageTypeId = messageTypeId
-        });
+        };
+        var result = await _messageService.CreateMessages(message);
         if(result != null)
         {
             var account = await _accountService.GetAccount(senderId);
