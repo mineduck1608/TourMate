@@ -83,12 +83,12 @@ builder.Services.AddDbContext<TourmateContext>(options =>
 
 builder.Services.AddCors(options =>
 {
-    options.AddDefaultPolicy(policy =>
+    options.AddPolicy("AllowReactApp", policy =>
     {
         policy.WithOrigins("http://localhost:3000")
               .AllowAnyHeader()
               .AllowAnyMethod()
-              .AllowCredentials(); // cực kỳ quan trọng cho SignalR
+              .AllowCredentials();
     });
 });
 
@@ -104,9 +104,7 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseCors();
-
-app.MapHub<ChatHub>("/chatHub");
+app.UseCors("AllowReactApp");
 
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
@@ -122,5 +120,6 @@ app.UseAuthorization();
 app.MapControllers();
 
 
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();

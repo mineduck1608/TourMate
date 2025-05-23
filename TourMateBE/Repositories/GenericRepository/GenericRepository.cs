@@ -94,6 +94,20 @@ namespace Repositories.GenericRepository
             }
         }
 
+        public async Task<T> CreateAndReturnAsync(T entity)
+        {
+            try
+            {
+                _context.Add(entity);
+                await _context.SaveChangesAsync();
+                return entity;
+            }
+            catch
+            {
+                return entity;
+            }
+        }
+
         public void Update(T entity)
         {
             var tracker = _context.Attach(entity);
