@@ -90,33 +90,36 @@ export const columns: ColumnDef<ActiveArea>[] = [
     ),
   },
   {
-    accessorKey: "areaContent",
-    header: "Nội dung",
-    cell: ({ row }) => {
-      const content = (row.getValue("areaContent") as string) || "";
-  
-      // Kiểm tra và thay thế đường dẫn ảnh trong content bằng thẻ <img>
-      const updatedContent = content.replace(/(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi, (match) => {
-        return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
-      });
-  
-      return (
-        <div
-          style={{
-            maxWidth: '400px',
-            maxHeight: '400px',
-            whiteSpace: 'nowrap',  // Không cho phép xuống dòng
-            overflow: 'hidden',  // Ẩn phần tràn ra ngoài
-            textOverflow: 'ellipsis',  // Thêm "..." nếu nội dung dài quá
-            overflowWrap: 'break-word',  // Cho phép cắt từ nếu quá dài
-          }}
-          dangerouslySetInnerHTML={{
-            __html: updatedContent,  // Hiển thị HTML (bao gồm cả ảnh)
-          }}
-        />
-      );
-    },
-  },  
+  accessorKey: "areaContent",
+  header: "Nội dung",
+  cell: ({ row }) => {
+    const content = (row.getValue("areaContent") as string) || "";
+
+    // Thay thế tất cả URL ảnh trong nội dung bằng thẻ <img>
+    const updatedContent = content.replace(
+        /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,  // Biểu thức chính quy tìm tất cả các URL ảnh
+      (match) => {
+        return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+      }
+    );
+    console.log("Updated Content:", updatedContent); // In ra nội dung đã cập nhật
+
+    return (
+      <div
+        style={{
+          maxWidth: '400px',
+          maxHeight: '400px',
+          whiteSpace: 'normal',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          overflowWrap: 'break-word',
+        }}
+        dangerouslySetInnerHTML={{ __html: updatedContent }}  // Hiển thị HTML với ảnh
+      />
+    );
+  },
+}
+,
   {
     accessorKey: "bannerImg",
     header: "Ảnh Nền",
@@ -133,9 +136,9 @@ export const columns: ColumnDef<ActiveArea>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img 
-              src={imageUrl} 
-              alt="Banner" 
+            <img
+              src={imageUrl}
+              alt="Banner"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh
             />
           ) : (

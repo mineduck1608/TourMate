@@ -1,5 +1,5 @@
 "use client";
-import React, { use } from "react";
+import React, { use, useEffect } from "react";
 import Header from "@/components/MegaMenu";
 import Footer from "@/components/Footer";
 import Banner from "@/components/Banner";
@@ -9,6 +9,7 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getOneNews } from "@/app/api/news.api";
+import DOMPurify from "dompurify";
 
 export default function NewsDetailPage({
   params,
@@ -24,6 +25,18 @@ export default function NewsDetailPage({
   });
   const news = data?.data;
 
+  useEffect(() => {
+    if (news?.content) {
+      console.log("🔥 Raw HTML content:", news.content);
+      const tempDiv = document.createElement("div");
+      tempDiv.innerHTML = news.content;
+      const aligned = tempDiv.querySelectorAll(".ql-align-center");
+      console.log("✅ Số phần tử có class .ql-align-center:", aligned.length);
+      aligned.forEach((el, i) => console.log(`Element ${i + 1}:`, el.outerHTML));
+    }
+  }, [news?.content]);
+
+
   return (
     <div className="admin-layout">
       <Header />
@@ -34,16 +47,16 @@ export default function NewsDetailPage({
       </div>
       <div className="flex justify-between py-10 px-10">
         <div
-          className="w-[65%] p-2"
+          className="w-[65%] p-2 quill-content text-justify"
           dangerouslySetInnerHTML={{
-            __html: data?.data?.content
-              ? data?.data?.content.replace(
-                  /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
-                  (match) => {
-                    return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
-                  }
-                )
-              : "",
+            __html: DOMPurify.sanitize(
+              (data?.data?.content || "").replace(
+                /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,  // Biểu thức chính quy tìm tất cả các URL ảnh
+                (match) => {
+                  return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+                }
+              )
+            ),
           }}
         />
         <div className="w-[30%] p-2 *:mb-10">

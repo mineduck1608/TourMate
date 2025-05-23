@@ -33,7 +33,7 @@ namespace API.Controllers
         {
             var conversation = data.Convert();
             _conversationService.CreateConversation(conversation);
-            return CreatedAtAction(nameof(Get), new { id = conversation.ConersationId }, conversation);
+            return CreatedAtAction(nameof(Get), new { id = conversation.ConversationId }, conversation);
         }
 
         [HttpPut]

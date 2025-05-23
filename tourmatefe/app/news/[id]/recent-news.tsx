@@ -34,8 +34,11 @@ export default function RecentNews(params: { currentId?: number | string }) {
                     <tbody>
                         {
                             news.map((v) => (
-                                <tr key={v.newsId} className='border-b-2 h-max '>
-                                    <td className=''>
+                                <tr
+                                    key={v.newsId}
+                                    className='border-b-2 h-max hover:bg-gray-200 transition-colors duration-200 cursor-pointer'
+                                >
+                                    <td>
                                         <img src={v.bannerImg} className='max-w-[150px]' />
                                     </td>
                                     <td className='p-2 h-[105px] flex flex-col justify-between'>
@@ -49,6 +52,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
                             ))
                         }
                     </tbody>
+
                 </table>
             </ScrollArea>
         </div>
