@@ -1,17 +1,18 @@
 'use client'
 import React, { Suspense } from 'react'
 import Profile from './profile'
+import Bids from './bids'
 
 function BidPage() {
     return (
         <div className='flex justify-between'>
-            <div className='w-[20%] px-5 py-5'>
+            <div className='w-[25%] px-5 py-5'>
                 <Profile />
             </div>
-            <div className='w-[55%] bg-blue-50'>
-                B
+            <div className='w-[40%] px-5 py-5'>
+                <Bids />
             </div>
-            <div className='w-[20%] bg-green-50'>
+            <div className='w-[25%] bg-green-50'>
                 C
             </div>
         </div>
