@@ -2,24 +2,25 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import axios from "axios";
 import InfiniteScroll from "react-infinite-scroll-component";
 import {
   HubConnection,
   HubConnectionBuilder,
   LogLevel,
 } from "@microsoft/signalr";
+import http from "../utils/http";
 
 const PAGE_SIZE = 20;
-const conversationId = 1; // Thay bằng id thực tế
+const conversationId = 4; // Thay bằng id thực tế
 
 // Kiểu Message
 type Message = {
   messageId: number;
   senderId: number;
-  senderName?: string;
+  senderName: string;
   messageText: string;
   sendAt: string;
+  conservationId: string;
   // Thêm trường nếu cần
 };
 
@@ -66,8 +67,8 @@ export default function Chat() {
   } = useInfiniteQuery<ApiResponse>({
     queryKey: ["messages", conversationId],
     queryFn: ({ pageParam = 1 }) =>
-      axios
-        .get<ApiResponse>(`/api/messages/${conversationId}/messages`, {
+      http
+        .get<ApiResponse>(`/conversation/${conversationId}/messages`, {
           params: { page: pageParam, pageSize: PAGE_SIZE },
         })
         .then((res) => res.data),
@@ -96,7 +97,7 @@ export default function Chat() {
     if (!connection || !text.trim()) return;
     try {
       // Gửi conversationId, text, senderId (ví dụ senderId = 123)
-      await connection.invoke("SendMessage", conversationId, text.trim(), 123);
+      await connection.invoke("SendMessage", conversationId, text.trim(), 1);
     } catch (error) {
       console.error("Send message error:", error);
     }
@@ -136,7 +137,7 @@ function MessageItem({ message }: { message: Message }) {
   return (
     <div className="bg-gray-100 p-3 rounded-lg mb-3 max-w-[80%]">
       <div className="font-semibold text-blue-600">
-        {message.senderName || `User ${message.senderId}`}
+        {message.senderName || `Người dùng ${message.senderId}`}
       </div>
       <div>{message.messageText}</div>
       <div className="text-xs text-gray-500 mt-1">

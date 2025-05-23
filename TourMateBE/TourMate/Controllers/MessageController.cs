@@ -16,17 +16,17 @@ namespace API.Controllers
             _messageService = messageService;
         }
 
-        [HttpGet("{conversationId}")]
-        public async Task<IActionResult> GetMessages(int conversationId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
-        {
-            var (messages, hasMore) = await _messageService.GetMessagesAsync(conversationId, page, pageSize);
+        //[HttpGet("{conversationId}")]
+        //public async Task<IActionResult> GetMessages(int conversationId, [FromQuery] int page = 1, [FromQuery] int pageSize = 20)
+        //{
+        //    var (messages, hasMore) = await _messageService.GetMessagesAsync(conversationId, page, pageSize);
 
-            return Ok(new
-            {
-                messages,
-                hasMore
-            });
-        }
+        //    return Ok(new
+        //    {
+        //        messages,
+        //        hasMore
+        //    });
+        //}
 
         [HttpGet("{id}")]
         public ActionResult<Message> Get(int id)

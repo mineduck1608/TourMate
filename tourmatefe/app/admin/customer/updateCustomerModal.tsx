@@ -43,6 +43,7 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    console.log(formData)
     onSave(formData);
     onClose();
   };
