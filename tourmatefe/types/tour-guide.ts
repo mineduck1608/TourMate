@@ -17,6 +17,9 @@ export type TourGuide = {
     tourGuideDescs?: TourGuideDesc[],
     tourServices?: TourService[],
     account: Account
+    email: string,
+    password: string,
+
 }
 
 export type TourGuideDesc = {

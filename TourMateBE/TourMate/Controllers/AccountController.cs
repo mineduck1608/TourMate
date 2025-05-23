@@ -116,7 +116,11 @@ namespace API.Controllers
             DateOnly dateOfBirth = DateOnly.FromDateTime(dob);
 
             // Kiểm tra dữ liệu nhập
-            if (string.IsNullOrEmpty(image) || string.IsNullOrEmpty(address) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(dateOfBirth.ToString()))
+            if (string.IsNullOrEmpty(image) || string.IsNullOrEmpty(address) || 
+                string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || 
+                string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || 
+                string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(email) || 
+                string.IsNullOrEmpty(dateOfBirth.ToString()))
                 return BadRequest("Account details are incomplete.");
 
             if (!ValidInput.IsPhoneFormatted(phone.Trim()))
