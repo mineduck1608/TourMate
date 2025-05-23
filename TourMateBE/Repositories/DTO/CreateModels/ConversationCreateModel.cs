@@ -15,7 +15,7 @@ namespace Repositories.DTO.CreateModels
             Account1Id = Account1Id,
             Account2Id = Account2Id,
             CreatedAt = CreatedAt,
-            ConersationId = 0,
+            ConversationId = 0,
         };
     }
 }
