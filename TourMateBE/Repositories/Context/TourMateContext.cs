@@ -602,7 +602,7 @@ public partial class TourmateContext : DbContext
 
         modelBuilder.Entity<TourBid>(entity =>
         {
-            entity.HasKey(e => e.TourBid1).HasName("PK__TourBid__6359293A7C00C65F");
+            entity.HasKey(e => e.TourBidId).HasName("PK__TourBid__6359293A7C00C65F");
 
             entity.ToTable("TourBid");
 
@@ -610,7 +610,7 @@ public partial class TourmateContext : DbContext
 
             entity.HasIndex(e => e.PlaceRequested, "IX_TourBid_placeRequested");
 
-            entity.Property(e => e.TourBid1).HasColumnName("tourBid");
+            entity.Property(e => e.TourBidId).HasColumnName("tourBid");
             entity.Property(e => e.AccountId).HasColumnName("accountId");
             entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.CreatedAt)
@@ -705,7 +705,7 @@ public partial class TourmateContext : DbContext
 
         modelBuilder.Entity<TourGuideRevenue>(entity =>
         {
-            entity.HasKey(e => e.TourGuideRevenue1).HasName("PK__TourGuid__049615064CBEB05C");
+            entity.HasKey(e => e.TourGuideRevenueId).HasName("PK__TourGuid__049615064CBEB05C");
 
             entity.ToTable("TourGuideRevenue");
 
@@ -713,7 +713,7 @@ public partial class TourmateContext : DbContext
 
             entity.HasIndex(e => e.TourGuideId, "IX_TourGuideRevenue_tourGuideId");
 
-            entity.Property(e => e.TourGuideRevenue1).HasColumnName("tourGuideRevenue");
+            entity.Property(e => e.TourGuideRevenueId).HasColumnName("tourGuideRevenue");
             entity.Property(e => e.PaymentId).HasColumnName("paymentId");
             entity.Property(e => e.TourGuideId).HasColumnName("tourGuideId");
             entity.Property(e => e.Value).HasColumnName("value");

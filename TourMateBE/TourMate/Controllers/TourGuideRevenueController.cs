@@ -33,7 +33,7 @@ namespace API.Controllers
         {
             var tourguiderevenue = data.Convert();
             _tourguiderevenueService.CreateTourGuideRevenue(tourguiderevenue);
-            return CreatedAtAction(nameof(Get), new { id = tourguiderevenue.TourGuideRevenue1 }, tourguiderevenue);
+            return CreatedAtAction(nameof(Get), new { id = tourguiderevenue.TourGuideRevenueId }, tourguiderevenue);
         }
 
         [HttpPut]

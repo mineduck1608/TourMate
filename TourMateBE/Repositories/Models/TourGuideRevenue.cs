@@ -5,7 +5,7 @@ namespace Repositories.Models;
 
 public partial class TourGuideRevenue
 {
-    public int TourGuideRevenue1 { get; set; }
+    public int TourGuideRevenueId { get; set; }
 
     public int PaymentId { get; set; }
 
