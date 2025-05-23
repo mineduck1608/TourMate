@@ -76,7 +76,7 @@ namespace API.Controllers
 
             // Lưu tài khoản
             var isAccountCreated = await _accountService.CreateAccount(account);
-            if (isAccountCreated != null)
+            if (isAccountCreated == null)
                 return StatusCode(500, "An error occurred while registering the account.");
 
             // Tạo đối tượng khách hàng
@@ -150,7 +150,7 @@ namespace API.Controllers
             };
             // Lưu tài khoản
             var isAccountCreated = await _accountService.CreateAccount(account);
-            if (isAccountCreated != null)
+            if (isAccountCreated == null)
                 return StatusCode(500, "An error occurred while registering the account.");
 
             // Tạo đối tượng hướng dẫn viên
