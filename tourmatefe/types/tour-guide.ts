@@ -1,4 +1,3 @@
-import { Account } from "./account"
 import { ActiveArea } from "./active-area"
 import { TourService } from "./tour-service"
 
