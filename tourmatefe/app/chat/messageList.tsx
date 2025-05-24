@@ -81,6 +81,7 @@ export default function MessageList({ conversationId, onNewMessage }: Props) {
 
     newConnection.on("ReceiveMessage", (message: Message) => {
       if (message.conversationId === conversationId) {
+        console.log(message);
         setMessages((prev) => [message, ...prev]);
         if (onNewMessage) {
           onNewMessage();
