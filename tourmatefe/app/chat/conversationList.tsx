@@ -1,37 +1,33 @@
 "use client";
 
 import React, { useState, useEffect, useCallback, useRef } from "react";
-import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { ConversationResponse } from "@/types/conversation";
 import { fetchConversations } from "../api/conversation.api";
 import { Search } from "lucide-react";
-import { HubConnectionBuilder, HubConnection, LogLevel } from "@microsoft/signalr";
-import { Message } from "@/types/message";
-import { GetToken } from "@/components/getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
+import { GetToken } from "@/components/getToken";
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void;
   selectedId?: number;
+  refresh: boolean; // Nhận prop refresh để trigger refetch
 };
 
 const PAGE_SIZE = 20;
 
-export default function ConversationList({ onSelect, selectedId }: Props) {
+export default function ConversationList({ onSelect, selectedId, refresh }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
-  const [connection, setConnection] = useState<HubConnection | null>(null);
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
 
   const token = GetToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const currentAccountId = decoded?.AccountId;
 
-  const queryClient = useQueryClient();
-
-  // Refs để giữ giá trị mới nhất cho event handler SignalR
+  // Refs để giữ giá trị mới nhất cho event handler hoặc callback
   const debouncedTermRef = useRef(debouncedTerm);
   useEffect(() => {
     debouncedTermRef.current = debouncedTerm;
@@ -41,14 +37,14 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
   useEffect(() => {
     currentAccountIdRef.current = currentAccountId;
   }, [currentAccountId]);
-  console.log(connection)
-  // React Query fetch dữ liệu phân trang
+
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
+    refetch, // Lấy hàm refetch từ react-query
   } = useInfiniteQuery<
     { conversations: ConversationResponse[]; hasMore: boolean },
     unknown
@@ -61,6 +57,13 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
     initialPageParam: 1,
     enabled: !!currentAccountId,
   });
+
+  // Khi prop refresh thay đổi, gọi refetch để lấy dữ liệu mới
+  useEffect(() => {
+    if (refresh) {
+      refetch();
+    }
+  }, [refresh, refetch]);
 
   // Đồng bộ dữ liệu từ React Query vào localConversations mỗi khi data thay đổi
   useEffect(() => {
@@ -87,65 +90,6 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
   useEffect(() => {
     debounceSearch(searchTerm);
   }, [searchTerm, debounceSearch]);
-
-  // Setup SignalR connection - chỉ tạo 1 lần khi currentAccountId thay đổi và tồn tại
-  useEffect(() => {
-    if (!currentAccountId) return;
-
-    const conn = new HubConnectionBuilder()
-      .withUrl(`https://localhost:7147/chatHub`)
-      .configureLogging(LogLevel.Information)
-      .withAutomaticReconnect()
-      .build();
-
-    setConnection(conn);
-
-    conn.start()
-      .then(() => {
-        console.log("SignalR connected in ConversationList");
-        conn.on("ReceiveMessage", (message: Message) => {
-          console.log("Message received:", message);
-
-          const curDebouncedTerm = debouncedTermRef.current;
-          const curAccountId = currentAccountIdRef.current;
-
-          setLocalConversations((prev) => {
-            const index = prev.findIndex(
-              (c) => c.conversation.conversationId === message.conversationId
-            );
-            if (index === -1) {
-              // Nếu conversation chưa có trong list, invalidate query để fetch lại từ server
-              queryClient.invalidateQueries({ queryKey: ["conversations", curDebouncedTerm] });
-              return prev;
-            }
-
-            // Cập nhật latestMessage và isRead
-            const updatedConversation = {
-              ...prev[index],
-              latestMessage: message,
-              isRead: message.senderId === curAccountId,
-            };
-
-            // Đẩy conversation mới lên đầu danh sách
-            const newList = [updatedConversation, ...prev.slice(0, index), ...prev.slice(index + 1)];
-
-            // Sắp xếp lại để chắc chắn thứ tự đúng
-            newList.sort((a, b) => {
-              const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
-              const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
-              return timeB - timeA;
-            });
-
-            return newList;
-          });
-        });
-      })
-      .catch((err) => console.error("SignalR connection error:", err));
-
-    return () => {
-      conn.stop();
-    };
-  }, [currentAccountId, queryClient]);
 
   // Xử lý scroll lấy trang tiếp theo
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -229,15 +173,17 @@ function ConversationItem({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer p-3 border-b hover:bg-gray-100 ${selected ? "bg-blue-100 font-semibold" : ""
-        }`}
+      className={`cursor-pointer p-3 border-b hover:bg-gray-100 ${
+        selected ? "bg-blue-100 font-semibold" : ""
+      }`}
     >
       <div>{conversation.accountName2}</div>
       <div
-        className={`text-xs truncate ${conversation.isRead
+        className={`text-xs truncate ${
+          conversation.isRead
             ? "text-gray-500 font-normal"
             : "text-black font-semibold"
-          }`}
+        }`}
       >
         {conversation.latestMessage?.messageText}
       </div>

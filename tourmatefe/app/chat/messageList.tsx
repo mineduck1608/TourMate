@@ -1,4 +1,3 @@
-// MessageList.tsx
 "use client";
 
 import React, { useEffect, useState } from "react";
@@ -7,17 +6,18 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { fetchMessages } from "../api/message.api";
 import { Message } from "@/types/message";
-import { GetToken } from "@/components/getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
+import { GetToken } from "@/components/getToken";
 
 const PAGE_SIZE = 20;
 
 type Props = {
   conversationId: number;
+  onNewMessage?: () => void;
 };
 
-export default function MessageList({ conversationId }: Props) {
+export default function MessageList({ conversationId, onNewMessage }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -31,6 +31,8 @@ export default function MessageList({ conversationId }: Props) {
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
+    isLoading,
+    isFetching,
     refetch,
   } = useInfiniteQuery<
     { messages: Message[]; hasMore: boolean },
@@ -39,20 +41,19 @@ export default function MessageList({ conversationId }: Props) {
     queryKey: ["messages", conversationId],
     queryFn: ({ pageParam = 1 }) => fetchMessages(conversationId, pageParam, PAGE_SIZE),
     getNextPageParam: (
-      lastPage: { messages: Message[]; hasMore: boolean },
-      allPages: { messages: Message[]; hasMore: boolean }[]
+      lastPage,
+      allPages
     ) => (lastPage.hasMore ? allPages.length + 1 : undefined),
     enabled: !!conversationId,
     initialPageParam: 1,
+    staleTime: 0,
   });
 
-  // Khi conversationId đổi, reset danh sách tin nhắn
   useEffect(() => {
-    setMessages([]);
-    refetch();
+    setMessages([]);  // Xoá tin nhắn cũ khi chuyển conversation
+    refetch();        // Lấy tin nhắn mới
   }, [conversationId, refetch]);
 
-  // Khi data mới fetch về, gộp tin nhắn
   useEffect(() => {
     if (data) {
       const allMessages = data.pages.flatMap((page) => page.messages) ?? [];
@@ -78,16 +79,18 @@ export default function MessageList({ conversationId }: Props) {
       .catch((e) => console.log("SignalR connection failed: ", e));
 
     newConnection.on("ReceiveMessage", (message: Message) => {
-      // Chỉ thêm tin nhắn đúng conversation đang mở
       if (message.conversationId === conversationId) {
         setMessages((prev) => [message, ...prev]);
+        if (onNewMessage) {
+          onNewMessage();
+        }
       }
     });
 
     return () => {
       newConnection.stop();
     };
-  }, [conversationId]);
+  }, [conversationId, onNewMessage]);
 
   // Load thêm tin nhắn khi scroll đến đầu
   const loadMoreMessages = () => {
@@ -98,21 +101,29 @@ export default function MessageList({ conversationId }: Props) {
 
   // Gửi tin nhắn qua SignalR
   const sendMessage = async (text: string) => {
-  if (!connection || !text.trim()) return;
+    if (!connection || !text.trim()) return;
 
-  const currentAccountIdNumber = Number(currentAccountId);
-  if (isNaN(currentAccountIdNumber)) {
-    console.error("Invalid currentAccountId:", currentAccountId);
-    return;
+    const currentAccountIdNumber = Number(currentAccountId);
+    if (isNaN(currentAccountIdNumber)) {
+      console.error("Invalid currentAccountId:", currentAccountId);
+      return;
+    }
+
+    try {
+      await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber);
+    } catch (error) {
+      console.error("Send message error:", error);
+    }
+  };
+
+  // Hiển thị loading khi đang fetch tin nhắn và chưa có dữ liệu
+  if ((isFetching || isLoading) && messages.length === 0) {
+    return (
+      <div className="flex-1 flex items-center justify-center text-gray-500">
+        Đang tải tin nhắn...
+      </div>
+    );
   }
-
-  try {
-    await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber);
-  } catch (error) {
-    console.error("Send message error:", error);
-  }
-};
-
 
   return (
     <div className="flex flex-col h-full">
@@ -139,7 +150,7 @@ export default function MessageList({ conversationId }: Props) {
           style={{ display: "flex", flexDirection: "column-reverse" }}
         >
           {messages.map((msg, index) => {
-            const nextMsg = messages[index - 1]; // Vì đang dùng column-reverse
+            const nextMsg = messages[index - 1];
             const isLastFromSender = !nextMsg || nextMsg.senderId !== msg.senderId;
 
             return (
@@ -170,52 +181,39 @@ function MessageItem({
   const isSender = currentAccountId == message.senderId;
 
   return (
-  <div
-    className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
-  >
-    <div
-      className={`flex items-end gap-2 ${
-        isSender ? "flex-row-reverse" : "flex-row"
-      }`}
-    >
-      {showAvatar ? (
-        <img
-          src={
-            message.senderAvatarUrl ||
-            "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
-          }
-          alt="avatar"
-          className="w-10 h-10 rounded-full"
-        />
-      ) : (
-        <div className="w-10 h-10" />
-      )}
-
-      <div
-        className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-          isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-        }`}
-        style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
-      >
-        <div>{message.messageText}</div>
+    <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
+      <div className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"}`}>
+        {showAvatar ? (
+          <img
+            src={
+              message.senderAvatarUrl ||
+              "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
+            }
+            alt="avatar"
+            className="w-10 h-10 rounded-full"
+          />
+        ) : (
+          <div className="w-10 h-10" />
+        )}
         <div
-          className={`text-xs mt-1 ${
-            isSender ? "text-white text-right" : "text-gray-500 text-left"
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
+            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
           }`}
+          style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
-          {new Date(message.sendAt).toLocaleTimeString()}
+          <div>{message.messageText}</div>
+          <div
+            className={`text-xs mt-1 ${
+              isSender ? "text-white text-right" : "text-gray-500 text-left"
+            }`}
+          >
+            {new Date(message.sendAt).toLocaleTimeString()}
+          </div>
         </div>
       </div>
     </div>
-  </div>
-);
-
-
+  );
 }
-
-
-
-
 
 function MessageInput({ onSend }: { onSend: (text: string) => void }) {
   const [text, setText] = React.useState("");
