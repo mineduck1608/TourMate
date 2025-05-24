@@ -85,7 +85,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", policy =>
     {
-        policy.WithOrigins("http://localhost:3000")
+        policy.WithOrigins(
+            "http://localhost:3000",          // localhost
+            "https://tourmate-phi.vercel.app" // domain production
+        )
               .AllowAnyHeader()
               .AllowAnyMethod()
               .AllowCredentials();
