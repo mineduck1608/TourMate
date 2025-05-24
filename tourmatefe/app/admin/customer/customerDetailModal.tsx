@@ -29,9 +29,8 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
       aria-modal="true"
       role="dialog"
       aria-labelledby="modal-title"
@@ -39,9 +38,8 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
     >
       {/* Overlay */}
       <div
-        className={`absolute inset-0 bg-black opacity-50 ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"
+          }`}
         onClick={onClose}
       ></div>
 
@@ -77,17 +75,17 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
         {/* Form content */}
         <section id="modal-description" className="space-y-5 text-gray-800">
 
-           {/* Ảnh đại diện */}
-        {formData.image && (
-          <div className="mb-6 flex justify-center">
-            <img
-              src={formData.image}
-              alt="Ảnh hướng dẫn viên"
-              className="w-32 h-32 rounded-full object-cover border border-gray-300"
-            />
-          </div>
-        )}
-        
+          {/* Ảnh đại diện */}
+          {formData.image && (
+            <div className="mb-6 flex justify-center">
+              <img
+                src={formData.image}
+                alt="Ảnh hướng dẫn viên"
+                className="w-32 h-32 rounded-full object-cover border border-gray-300"
+              />
+            </div>
+          )}
+
           {/* Họ và tên */}
           <div>
             <label className="block mb-1 font-medium">Họ và tên</label>
