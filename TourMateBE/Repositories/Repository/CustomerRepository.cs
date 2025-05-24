@@ -50,6 +50,7 @@ namespace Repositories.Repository
                     Gender = c.Gender,
                     DateOfBirth = c.DateOfBirth,
                     Phone = c.Phone,
+                    Image = c.Image,
                     // Chỉ lấy các trường cần thiết từ Account
                     Account = new Account
                     {

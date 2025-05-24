@@ -66,6 +66,7 @@ namespace API.Controllers
             }
 
             data.Account.Password = HashString.ToHashString(data.Account.Password);
+            data.Account.RoleId = 2;
 
             var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
             if (isAccountCreated != null)

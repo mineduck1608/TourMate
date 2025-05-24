@@ -19,6 +19,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     gender: "",
     phone: "",
     dateOfBirth: "",
+    image: "",
     account: {
       role: {
         roleId: 2,
@@ -76,6 +77,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       gender: "",
       phone: "",
       dateOfBirth: "",
+      image: "",
       account: {
         role: {
           roleId: 2,

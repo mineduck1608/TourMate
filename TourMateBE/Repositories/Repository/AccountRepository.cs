@@ -63,6 +63,7 @@ namespace Repositories.Repository
         {
             try
             {
+                entity.Role = null;
                 _context.Add(entity);
 
                 await _context.SaveChangesAsync();

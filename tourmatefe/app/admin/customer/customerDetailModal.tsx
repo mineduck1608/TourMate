@@ -76,6 +76,18 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
 
         {/* Form content */}
         <section id="modal-description" className="space-y-5 text-gray-800">
+
+           {/* Ảnh đại diện */}
+        {formData.image && (
+          <div className="mb-6 flex justify-center">
+            <img
+              src={formData.image}
+              alt="Ảnh hướng dẫn viên"
+              className="w-32 h-32 rounded-full object-cover border border-gray-300"
+            />
+          </div>
+        )}
+        
           {/* Họ và tên */}
           <div>
             <label className="block mb-1 font-medium">Họ và tên</label>

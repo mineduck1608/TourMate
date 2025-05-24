@@ -127,8 +127,8 @@ console.log(connection)
     <div className="flex flex-col border-r h-full w-80">
       <h1 className="p-3 text-3xl font-bold">Trò chuyện</h1>
 
-      <div className="relative p-3">
-        <span className="absolute left-5 top-2/5 transform -translate-y-1/2 text-gray-500">
+      <div className="relative px-3">
+        <span className="absolute left-5 top-1/3 transform -translate-y-1/2 text-gray-500">
           <Search />
         </span>
         <input
