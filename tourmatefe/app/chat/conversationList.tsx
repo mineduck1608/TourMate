@@ -41,7 +41,7 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
   useEffect(() => {
     currentAccountIdRef.current = currentAccountId;
   }, [currentAccountId]);
-
+  console.log(connection)
   // React Query fetch dữ liệu phân trang
   const {
     data,
