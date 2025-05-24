@@ -23,6 +23,7 @@ namespace Repositories.Repository
                 return await _context.TourGuides
                     .Include(x => x.TourGuideDescs)
                     .ThenInclude(x => x.Area)
+                    .Include(x => x.Account)
                     .FirstOrDefaultAsync(x => x.TourGuideId == id);
             }
             catch (Exception ex)

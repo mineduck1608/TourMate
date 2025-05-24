@@ -83,33 +83,34 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] TourGuide data)
+        public async Task<IActionResult> Update([FromBody] TourGuideUpdateModel data)
         {
-            if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
+            var tourGuide = data.Convert();
+            if (!ValidInput.IsPhoneFormatted(tourGuide.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-            if (!ValidInput.IsMailFormatted(data.Account.Email))
+            if (!ValidInput.IsMailFormatted(tourGuide.Account.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure(data.Account.Password))
+            if (!ValidInput.IsPasswordSecure(tourGuide.Account.Password))
                 return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
 
             // Kiểm tra tài khoản đã tồn tại
-            var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
-            if (existingAccount != null && existingAccount.AccountId != data.Account.AccountId)
+            var existingAccount = await _accountService.GetAccountByEmail(tourGuide.Account.Email);
+            if (existingAccount != null && existingAccount.AccountId != tourGuide.Account.AccountId)
                 return Conflict(new { msg = "Tài khoản đã tồn tại!" });
 
 
-            var existingPhone = await _tourguideService.GetTourGuideByPhone(data.Phone);
-            if (existingPhone != null && existingPhone.TourGuideId != data.TourGuideId)
+            var existingPhone = await _tourguideService.GetTourGuideByPhone(tourGuide.Phone);
+            if (existingPhone != null && existingPhone.TourGuideId != tourGuide.TourGuideId)
                 return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
 
-            if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
+            if (tourGuide.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
             {
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
-            data.Account.Password = HashString.ToHashString(data.Account.Password);
-            var updateTourGuide = await _tourguideService.UpdateTourGuide(data);
-            var updateAccount = await _accountService.UpdateAccount(data.Account);
+            tourGuide.Account.Password = HashString.ToHashString(tourGuide.Account.Password);
+            var updateTourGuide = await _tourguideService.UpdateTourGuide(tourGuide);
+            var updateAccount = await _accountService.UpdateAccount(tourGuide.Account);
             if (updateTourGuide == true && updateAccount == true)
             {
                 return Ok();
