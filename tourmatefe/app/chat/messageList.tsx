@@ -98,13 +98,21 @@ export default function MessageList({ conversationId }: Props) {
 
   // Gửi tin nhắn qua SignalR
   const sendMessage = async (text: string) => {
-    if (!connection || !text.trim()) return;
-    try {
-      await connection.invoke("SendMessage", conversationId, text.trim(), 3);
-    } catch (error) {
-      console.error("Send message error:", error);
-    }
-  };
+  if (!connection || !text.trim()) return;
+
+  const currentAccountIdNumber = Number(currentAccountId);
+  if (isNaN(currentAccountIdNumber)) {
+    console.error("Invalid currentAccountId:", currentAccountId);
+    return;
+  }
+
+  try {
+    await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber);
+  } catch (error) {
+    console.error("Send message error:", error);
+  }
+};
+
 
   return (
     <div className="flex flex-col h-full">
@@ -162,36 +170,47 @@ function MessageItem({
   const isSender = currentAccountId == message.senderId;
 
   return (
-    <div className={`flex ${isSender ? "justify-start" : "justify-end"} mb-2`}
-      style={{
-        paddingLeft: !isSender && !showAvatar ? "2.5rem" : undefined, // 2.5rem ~ 40px bằng với kích thước avatar
-        paddingRight: isSender && !showAvatar ? "2.5rem" : undefined,
-      }}>
-      <div className={`flex items-end ${isSender ? "flex-row" : "flex-row-reverse"} gap-2`}>
-        {/* Avatar hiển thị nếu có, nếu không vẫn giữ chỗ trống */}
-        {showAvatar ? (
-          <img
-            src={message.senderAvatarUrl || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
-            alt="avatar"
-            className="w-10 h-10 rounded-full"
-          />
-        ) : (
-          <div className="w-10 h-10" /> // giữ chỗ trống
-        )}
+  <div
+    className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}
+  >
+    <div
+      className={`flex items-end gap-2 ${
+        isSender ? "flex-row-reverse" : "flex-row"
+      }`}
+    >
+      {showAvatar ? (
+        <img
+          src={
+            message.senderAvatarUrl ||
+            "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
+          }
+          alt="avatar"
+          className="w-10 h-10 rounded-full"
+        />
+      ) : (
+        <div className="w-10 h-10" />
+      )}
 
+      <div
+        className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
+          isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+        }`}
+        style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
+      >
+        <div>{message.messageText}</div>
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap
-            ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"}`}
-          style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
+          className={`text-xs mt-1 ${
+            isSender ? "text-white text-right" : "text-gray-500 text-left"
+          }`}
         >
-          <div>{message.messageText}</div>
-          <div className={`text-xs mt-1 text-right ${isSender ? "text-white" : "text-gray-500"}`}>
-            {new Date(message.sendAt).toLocaleTimeString()}
-          </div>
+          {new Date(message.sendAt).toLocaleTimeString()}
         </div>
       </div>
     </div>
-  );
+  </div>
+);
+
+
 }
 
 

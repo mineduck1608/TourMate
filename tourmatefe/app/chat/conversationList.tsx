@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import { useInfiniteQuery, useQueryClient } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { ConversationResponse } from "@/types/conversation";
@@ -8,6 +8,9 @@ import { fetchConversations } from "../api/conversation.api";
 import { Search } from "lucide-react";
 import { HubConnectionBuilder, HubConnection, LogLevel } from "@microsoft/signalr";
 import { Message } from "@/types/message";
+import { GetToken } from "@/components/getToken";
+import { MyJwtPayload } from "@/types/JwtPayload";
+import { jwtDecode } from "jwt-decode";
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void;
@@ -15,7 +18,6 @@ type Props = {
 };
 
 const PAGE_SIZE = 20;
-const selfId = 1; // bạn nên lấy ID này từ auth hoặc props thực tế
 
 export default function ConversationList({ onSelect, selectedId }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,8 +25,23 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
 
+  const token = GetToken("accessToken");
+  const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
+  const currentAccountId = decoded?.AccountId;
+
   const queryClient = useQueryClient();
-console.log(connection)
+
+  // Refs để giữ giá trị mới nhất cho event handler SignalR
+  const debouncedTermRef = useRef(debouncedTerm);
+  useEffect(() => {
+    debouncedTermRef.current = debouncedTerm;
+  }, [debouncedTerm]);
+
+  const currentAccountIdRef = useRef(currentAccountId);
+  useEffect(() => {
+    currentAccountIdRef.current = currentAccountId;
+  }, [currentAccountId]);
+
   // React Query fetch dữ liệu phân trang
   const {
     data,
@@ -36,18 +53,27 @@ console.log(connection)
     { conversations: ConversationResponse[]; hasMore: boolean },
     unknown
   >({
-    queryKey: ["conversations", debouncedTerm],
+    queryKey: ["conversations", debouncedTerm, currentAccountId],
     queryFn: ({ pageParam = 1 }) =>
-      fetchConversations(pageParam, PAGE_SIZE, selfId, debouncedTerm),
+      fetchConversations(pageParam, PAGE_SIZE, currentAccountId as number, debouncedTerm),
     getNextPageParam: (lastPage, allPages) =>
       lastPage.hasMore ? allPages.length + 1 : undefined,
     initialPageParam: 1,
+    enabled: !!currentAccountId,
   });
 
   // Đồng bộ dữ liệu từ React Query vào localConversations mỗi khi data thay đổi
   useEffect(() => {
     if (data?.pages) {
       const allConversations = data.pages.flatMap(page => page.conversations);
+
+      // Sắp xếp giảm dần theo latestMessage.sendAt
+      allConversations.sort((a, b) => {
+        const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
+        const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
+        return timeB - timeA;
+      });
+
       setLocalConversations(allConversations);
     }
   }, [data]);
@@ -62,32 +88,34 @@ console.log(connection)
     debounceSearch(searchTerm);
   }, [searchTerm, debounceSearch]);
 
-  // Setup SignalR connection
+  // Setup SignalR connection - chỉ tạo 1 lần khi currentAccountId thay đổi và tồn tại
   useEffect(() => {
+    if (!currentAccountId) return;
+
     const conn = new HubConnectionBuilder()
-      .withUrl(`https://localhost:7147/chatHub?conversationId=0`)
+      .withUrl(`https://localhost:7147/chatHub`)
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build();
 
     setConnection(conn);
 
-    conn
-      .start()
+    conn.start()
       .then(() => {
         console.log("SignalR connected in ConversationList");
-
         conn.on("ReceiveMessage", (message: Message) => {
           console.log("Message received:", message);
-          console.log("conversationId:", message.conversationId);
-          console.log("senderId:", message.senderId);
+
+          const curDebouncedTerm = debouncedTermRef.current;
+          const curAccountId = currentAccountIdRef.current;
+
           setLocalConversations((prev) => {
             const index = prev.findIndex(
               (c) => c.conversation.conversationId === message.conversationId
             );
             if (index === -1) {
-              // Nếu conversation chưa có trong list, invalid query để fetch lại data từ server
-              queryClient.invalidateQueries({ queryKey: ["conversations", debouncedTerm] });
+              // Nếu conversation chưa có trong list, invalidate query để fetch lại từ server
+              queryClient.invalidateQueries({ queryKey: ["conversations", curDebouncedTerm] });
               return prev;
             }
 
@@ -95,11 +123,19 @@ console.log(connection)
             const updatedConversation = {
               ...prev[index],
               latestMessage: message,
-              isRead: message.senderId === selfId,
+              isRead: message.senderId === curAccountId,
             };
 
             // Đẩy conversation mới lên đầu danh sách
-            const newList = [updatedConversation, ...prev.filter((_, i) => i !== index)];
+            const newList = [updatedConversation, ...prev.slice(0, index), ...prev.slice(index + 1)];
+
+            // Sắp xếp lại để chắc chắn thứ tự đúng
+            newList.sort((a, b) => {
+              const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
+              const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
+              return timeB - timeA;
+            });
+
             return newList;
           });
         });
@@ -109,7 +145,7 @@ console.log(connection)
     return () => {
       conn.stop();
     };
-  }, [queryClient, debouncedTerm]);
+  }, [currentAccountId, queryClient]);
 
   // Xử lý scroll lấy trang tiếp theo
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
@@ -123,16 +159,28 @@ console.log(connection)
     }
   };
 
+  // Memo sắp xếp lại localConversations trước render (phòng trường hợp setLocalConversations không đảm bảo thứ tự)
+  const sortedConversations = React.useMemo(() => {
+    return [...localConversations].sort((a, b) => {
+      const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
+      const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
+      return timeB - timeA;
+    });
+  }, [localConversations]);
+
   return (
     <div className="flex flex-col border-r h-full w-80">
       <h1 className="p-3 text-3xl font-bold">Trò chuyện</h1>
 
       <div className="relative px-3">
-        <span className="absolute left-5 top-1/3 transform -translate-y-1/2 text-gray-500">
+        <span className="absolute left-5 top-1/3 transform -translate-y-1/2 text-gray-500 pointer-events-none">
           <Search />
         </span>
         <input
-          className="w-full p-2 pl-10 mb-5 rounded border rounded-full bg-gray-200"
+          type="search"
+          className="w-full p-2 pl-10 mb-5 rounded-full border bg-gray-200
+               text-sm sm:text-base
+               focus:outline-none focus:ring-2 focus:ring-blue-500"
           placeholder="Tìm kiếm cuộc trò chuyện"
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
@@ -143,11 +191,11 @@ console.log(connection)
         {isLoading && (
           <div className="p-4 text-center text-gray-500">Đang tải...</div>
         )}
-        {!isLoading && localConversations.length === 0 && (
+        {!isLoading && sortedConversations.length === 0 && (
           <div className="p-4 text-gray-500">Không có cuộc trò chuyện</div>
         )}
 
-        {localConversations.map((conversation) => (
+        {sortedConversations.map((conversation) => (
           <ConversationItem
             key={conversation.conversation.conversationId}
             conversation={conversation}

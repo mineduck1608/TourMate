@@ -37,7 +37,16 @@ namespace Repositories.Repository
             searchTerm = searchTerm?.Trim().ToLower() ?? "";
 
             var query = _context.Conversations
-                .Where(c => c.Account1Id == userId || c.Account2Id == userId);
+    .Where(c => c.Account1Id == userId || c.Account2Id == userId);
+
+            // Lấy latest SendAt cho từng conversation
+            var latestSendAts = _context.Messages
+                .GroupBy(m => m.ConversationId)
+                .Select(g => new
+                {
+                    ConversationId = g.Key,
+                    LatestSendAt = g.Max(m => m.SendAt)
+                });
 
             var conversationWithDetails = from c in query
                                           join a1 in _context.Accounts on c.Account1Id equals a1.AccountId
@@ -52,32 +61,39 @@ namespace Repositories.Repository
                                           join guide2 in _context.TourGuides on a2.AccountId equals guide2.AccountId into guideGroup2
                                           from guide2 in guideGroup2.DefaultIfEmpty()
 
+                                          join latest in latestSendAts on c.ConversationId equals latest.ConversationId into latestGroup
+                                          from latest in latestGroup.DefaultIfEmpty() // Trường hợp conversation chưa có tin nhắn
+
                                           let name1 = a1.RoleId == 2 ? cust1.FullName :
                                                       (a1.RoleId == 3 ? guide1.FullName : "")
                                           let name2 = a2.RoleId == 2 ? cust2.FullName :
                                                       (a2.RoleId == 3 ? guide2.FullName : "")
                                           where string.IsNullOrEmpty(searchTerm) ||
-       ((c.Account1Id == userId && name2.ToLower().Contains(searchTerm)) ||
-        (c.Account2Id == userId && name1.ToLower().Contains(searchTerm)))
-
+                      ((c.Account1Id == userId && name2.ToLower().Contains(searchTerm)) ||
+                       (c.Account2Id == userId && name1.ToLower().Contains(searchTerm)))
 
                                           select new
                                           {
                                               Conversation = c,
                                               AccountName1 = name1,
-                                              AccountName2 = name2
+                                              AccountName2 = name2,
+                                              LatestSendAt = latest != null ? latest.LatestSendAt : (DateTime?)null
                                           };
 
-            int totalCount = await conversationWithDetails.CountAsync();
+            // Sắp xếp theo thời gian gửi tin nhắn mới nhất (hoặc CreatedAt nếu null)
+            var orderedConversations = conversationWithDetails
+                .OrderByDescending(c => c.LatestSendAt ?? c.Conversation.CreatedAt);
 
-            // Lấy danh sách conversation theo phân trang
-            var pagedConversations = await conversationWithDetails
-                .OrderByDescending(x => x.Conversation.CreatedAt)
+            // Tổng số
+            int totalCount = await orderedConversations.CountAsync();
+
+            // Phân trang
+            var pagedConversations = await orderedConversations
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
-            // Lấy message mới nhất cho từng conversation (có thể tối ưu query sau nếu cần)
+            // Lấy message mới nhất cho từng conversation trong trang hiện tại
             var conversationIds = pagedConversations.Select(c => c.Conversation.ConversationId).ToList();
 
             var latestMessages = await _context.Messages
@@ -86,7 +102,7 @@ namespace Repositories.Repository
                 .Select(g => g.OrderByDescending(m => m.SendAt).FirstOrDefault())
                 .ToListAsync();
 
-            // Ghép kết quả vào DTO ConversationResponse
+            // Tạo kết quả cuối
             var result = pagedConversations.Select(c =>
             {
                 var latestMessage = latestMessages.FirstOrDefault(m => m.ConversationId == c.Conversation.ConversationId);
@@ -94,15 +110,15 @@ namespace Repositories.Repository
                 bool isRead;
                 if (latestMessage == null)
                 {
-                    isRead = true; // Không có tin nhắn => coi là đã đọc
+                    isRead = true;
                 }
                 else if (latestMessage.SenderId == userId)
                 {
-                    isRead = true; // Tin nhắn do chính user gửi => luôn là đã đọc
+                    isRead = true;
                 }
                 else
                 {
-                    isRead = latestMessage.IsRead; // Lấy trạng thái từ database
+                    isRead = latestMessage.IsRead;
                 }
 
                 return new ConversationResponse
@@ -114,7 +130,6 @@ namespace Repositories.Repository
                     IsRead = isRead
                 };
             }).ToList();
-
 
             return (result, totalCount);
         }

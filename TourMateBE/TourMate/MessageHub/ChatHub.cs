@@ -22,16 +22,25 @@ public class ChatHub : Hub
 
     public async Task SendMessage(int conversationId, string messageText, int senderId)
     {
-        var message = await SaveMessageToDb(conversationId, messageText, senderId);
-
-        if (message == null)
+        try
         {
-            // Có thể throw lỗi rõ ràng hoặc chỉ return
-            throw new HubException("Failed to save message");
-        }
+            var message = await SaveMessageToDb(conversationId, messageText, senderId);
 
-        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
+            if (message == null)
+            {
+                throw new HubException("Failed to save message");
+            }
+
+            await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
+        }
+        catch (Exception ex)
+        {
+            // Log lỗi hoặc Console.WriteLine(ex) để xem lỗi
+            Console.WriteLine($"SendMessage error: {ex}");
+            throw new HubException($"SendMessage error: {ex.Message}");
+        }
     }
+
 
 
     public override async Task OnConnectedAsync()
@@ -43,17 +52,6 @@ public class ChatHub : Hub
         if (!string.IsNullOrEmpty(conversationId))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, conversationId);
-        }
-
-        // Nếu có truyền conversationIds (conversation list)
-        var conversationIds = httpContext.Request.Query["conversationIds"];
-        if (!string.IsNullOrEmpty(conversationIds))
-        {
-            var ids = conversationIds.ToString().Split(',');
-            foreach (var id in ids)
-            {
-                await Groups.AddToGroupAsync(Context.ConnectionId, id);
-            }
         }
 
         await base.OnConnectedAsync();
