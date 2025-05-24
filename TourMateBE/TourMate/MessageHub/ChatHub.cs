@@ -96,7 +96,7 @@ public class ChatHub : Hub
                 MessageId = result.MessageId,
                 ConversationId = conversationId,
                 MessageText = text,
-                SendAt = DateTime.UtcNow,
+                SendAt = DateTime.Now,
                 SenderId = senderId,
                 SenderName = name,
                 SenderAvatarUrl = avatar

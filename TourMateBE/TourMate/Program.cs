@@ -107,6 +107,8 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseRouting();
+
 app.UseCors("AllowReactApp");
 
 // Configure the HTTP request pipeline.
