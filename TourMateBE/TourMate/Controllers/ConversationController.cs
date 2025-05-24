@@ -22,30 +22,26 @@ namespace API.Controllers
             _tourGuideService = tourGuideService;
         }
 
-        // Lấy thông tin cuộc trò chuyện
-        [HttpGet("{conversationId}")]
-        public async Task<IActionResult> GetConversation(int conversationId)
+        [HttpGet]
+        public async Task<IActionResult> GetConversations(
+       [FromQuery] int userId,
+       [FromQuery] string? searchTerm,
+       [FromQuery] int page = 1,
+       [FromQuery] int pageSize = 20)
         {
-            var conversation = await _conversationService.GetConversationAsync(conversationId);
-            if (conversation == null)
+            if (userId <= 0)
+                return BadRequest("Invalid userId");
+            if (page <= 0 || pageSize <= 0)
+                return BadRequest("Page and pageSize must be positive");
+
+            var result = await _conversationService.GetConversationsAsync(userId, searchTerm ?? "", page, pageSize);
+
+            return Ok(new
             {
-                return NotFound("Conversation not found.");
-            }
-
-            return Ok(conversation);
-        }
-
-        // Lấy thông tin cuộc trò chuyện giữa hai tài khoản
-        [HttpGet("between/{account1Id}/{account2Id}")]
-        public async Task<IActionResult> GetConversationByAccounts(int account1Id, int account2Id)
-        {
-            var conversation = await _conversationService.GetConversationByAccountsAsync(account1Id, account2Id);
-            if (conversation == null)
-            {
-                return NotFound("Conversation not found.");
-            }
-
-            return Ok(conversation);
+                conversations = result.Conversations,
+                totalCount = result.TotalCount,
+                hasMore = result.HasMore
+            });
         }
 
         // Lấy tin nhắn theo ConversationId với phân trang
@@ -94,41 +90,6 @@ namespace API.Controllers
                 messages = messagesWithSenderName,
                 hasMore
             });
-        }
-
-
-        [HttpGet("{id}")]
-        public ActionResult<Conversation> Get(int id)
-        {
-            return Ok(_conversationService.GetConversation(id));
-        }
-
-        [HttpGet]
-        public ActionResult<IEnumerable<Conversation>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
-        {
-            return Ok(_conversationService.GetAll(pageSize, pageIndex));
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromBody] ConversationCreateModel data)
-        {
-            var conversation = data.Convert();
-            _conversationService.CreateConversation(conversation);
-            return CreatedAtAction(nameof(Get), new { id = conversation.ConversationId }, conversation);
-        }
-
-        [HttpPut]
-        public IActionResult Update([FromBody] Conversation conversation)
-        {
-            _conversationService.UpdateConversation(conversation);
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var result = _conversationService.DeleteConversation(id);
-            return result ? NoContent() : NotFound();
         }
     }
 }

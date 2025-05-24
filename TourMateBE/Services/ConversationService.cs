@@ -1,4 +1,5 @@
-using Repositories.Models;
+﻿using Repositories.Models;
+using Repositories.DTO;
 using Repositories.Repository;
 
 namespace Services
@@ -10,23 +11,32 @@ namespace Services
         void CreateConversation(Conversation conversation);
         void UpdateConversation(Conversation conversation);
         bool DeleteConversation(int id);
-        Task<Conversation?> GetConversationAsync(int conversationId);
-        Task<Conversation?> GetConversationByAccountsAsync(int account1Id, int account2Id);
+        Task<ConversationListResult> GetConversationsAsync(int userId, string searchTerm, int page, int pageSize);
         Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize);
     }
 
     public class ConversationService : IConversationService
     {
-        private ConversationRepository ConversationRepository { get; set; } = new();
+        private readonly ConversationRepository ConversationRepository;
+        private readonly AccountRepository _accountRepo;
 
-        public async Task<Conversation?> GetConversationAsync(int conversationId)
+        public ConversationService(ConversationRepository conversationRepo, AccountRepository accountRepo)
         {
-            return await ConversationRepository.GetConversationAsync(conversationId);
+            ConversationRepository = conversationRepo;
+            _accountRepo = accountRepo;
         }
 
-        public async Task<Conversation?> GetConversationByAccountsAsync(int account1Id, int account2Id)
+
+        public async Task<ConversationListResult> GetConversationsAsync(int userId, string searchTerm, int page, int pageSize)
         {
-            return await ConversationRepository.GetConversationByAccountsAsync(account1Id, account2Id);
+            var (conversations, totalCount) = await ConversationRepository.GetConversationsByUserIdAsync(userId, searchTerm, page, pageSize);
+
+            return new ConversationListResult
+            {
+                Conversations = conversations,
+                TotalCount = totalCount,
+                HasMore = totalCount > page * pageSize
+            };
         }
 
         public async Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize)
