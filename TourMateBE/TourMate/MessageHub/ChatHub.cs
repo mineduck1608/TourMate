@@ -37,15 +37,28 @@ public class ChatHub : Hub
     public override async Task OnConnectedAsync()
     {
         var httpContext = Context.GetHttpContext();
-        var conversationId = httpContext.Request.Query["conversationId"];
 
+        // Nếu có truyền conversationId (message)
+        var conversationId = httpContext.Request.Query["conversationId"];
         if (!string.IsNullOrEmpty(conversationId))
         {
             await Groups.AddToGroupAsync(Context.ConnectionId, conversationId);
         }
 
+        // Nếu có truyền conversationIds (conversation list)
+        var conversationIds = httpContext.Request.Query["conversationIds"];
+        if (!string.IsNullOrEmpty(conversationIds))
+        {
+            var ids = conversationIds.ToString().Split(',');
+            foreach (var id in ids)
+            {
+                await Groups.AddToGroupAsync(Context.ConnectionId, id);
+            }
+        }
+
         await base.OnConnectedAsync();
     }
+
 
     private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId)
     {
@@ -64,15 +77,20 @@ public class ChatHub : Hub
         {
             var account = await _accountService.GetAccount(senderId);
             var name = "Người dùng";
+            var avatar = "";
             if(account.RoleId == 2)
             {
                 var customer = await _customerService.GetCustomerByAccId(senderId);
                 name = customer.FullName;
+                avatar = customer.Image;
+
             }
             if (account.RoleId == 3)
             {
                 var tourGuide = await _tourGuideService.GetTourGuideByAccId(senderId);
                 name = tourGuide.FullName;
+                avatar = tourGuide.Image;
+
             }
             // TODO: Lưu tin nhắn vào database, trả về DTO Message
             return new MessageDto
@@ -82,7 +100,8 @@ public class ChatHub : Hub
                 MessageText = text,
                 SendAt = DateTime.UtcNow,
                 SenderId = senderId,
-                SenderName = name
+                SenderName = name,
+                SenderAvatarUrl = avatar
             };
         }
         return null;
@@ -98,4 +117,6 @@ public class MessageDto
     public DateTime SendAt { get; set; }
     public int SenderId { get; set; }
     public string SenderName { get; set; }
+    public string SenderAvatarUrl { get; set; }
+
 }

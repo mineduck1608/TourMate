@@ -3,12 +3,16 @@
 import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
+import MegaMenu from "@/components/MegaMenu";
+import Footer from "@/components/Footer";
 
 export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
 
   return (
-    <div className="flex h-[90vh] max-w-7xl mx-auto border rounded shadow">
+    <>
+    <MegaMenu />
+    <div className="flex h-[100vh] mx-auto border rounded shadow">
       <ConversationList
         onSelect={(conv) => setSelectedConversation(conv.conversation.conversationId)}
         selectedId={selectedConversation ?? undefined}
@@ -23,5 +27,6 @@ export default function ChatPage() {
         )}
       </div>
     </div>
+    </>
   );
 }

@@ -52,11 +52,20 @@ namespace Repositories.Repository
                                           join guide2 in _context.TourGuides on a2.AccountId equals guide2.AccountId into guideGroup2
                                           from guide2 in guideGroup2.DefaultIfEmpty()
 
+                                          let name1 = a1.RoleId == 2 ? cust1.FullName :
+                                                      (a1.RoleId == 3 ? guide1.FullName : "")
+                                          let name2 = a2.RoleId == 2 ? cust2.FullName :
+                                                      (a2.RoleId == 3 ? guide2.FullName : "")
+                                          where string.IsNullOrEmpty(searchTerm) ||
+       ((c.Account1Id == userId && name2.ToLower().Contains(searchTerm)) ||
+        (c.Account2Id == userId && name1.ToLower().Contains(searchTerm)))
+
+
                                           select new
                                           {
                                               Conversation = c,
-                                              AccountName1 = a1.RoleId == 2 ? cust1.FullName : (a1.RoleId == 3 ? guide1.FullName : ""),
-                                              AccountName2 = a2.RoleId == 2 ? cust2.FullName : (a2.RoleId == 3 ? guide2.FullName : ""),
+                                              AccountName1 = name1,
+                                              AccountName2 = name2
                                           };
 
             int totalCount = await conversationWithDetails.CountAsync();

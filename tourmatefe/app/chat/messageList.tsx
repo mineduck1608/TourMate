@@ -8,6 +8,8 @@ import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signal
 import { fetchMessages } from "../api/message.api";
 import { Message } from "@/types/message";
 import { getToken } from "@/components/getToken";
+import { MyJwtPayload } from "@/types/JwtPayload";
+import { jwtDecode } from "jwt-decode";
 
 const PAGE_SIZE = 20;
 
@@ -18,6 +20,11 @@ type Props = {
 export default function MessageList({ conversationId }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+
+  // Lấy token và decode AccountId
+  const token = getToken("accessToken");
+  const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
+  const currentAccountId = decoded?.AccountId;
 
   const {
     data,
@@ -44,9 +51,6 @@ export default function MessageList({ conversationId }: Props) {
     setMessages([]);
     refetch();
   }, [conversationId, refetch]);
-
-var token = getToken("accessToken");
-console.log(token);
 
   // Khi data mới fetch về, gộp tin nhắn
   useEffect(() => {
@@ -126,9 +130,19 @@ console.log(token);
           scrollableTarget="scrollableDiv"
           style={{ display: "flex", flexDirection: "column-reverse" }}
         >
-          {messages.map((msg) => (
-            <MessageItem key={msg.messageId} message={msg} />
-          ))}
+          {messages.map((msg, index) => {
+            const nextMsg = messages[index - 1]; // Vì đang dùng column-reverse
+            const isLastFromSender = !nextMsg || nextMsg.senderId !== msg.senderId;
+
+            return (
+              <MessageItem
+                key={msg.messageId}
+                message={msg}
+                currentAccountId={currentAccountId}
+                showAvatar={isLastFromSender}
+              />
+            );
+          })}
         </InfiniteScroll>
       </div>
       <MessageInput onSend={sendMessage} />
@@ -136,19 +150,53 @@ console.log(token);
   );
 }
 
-function MessageItem({ message }: { message: Message }) {
+function MessageItem({
+  message,
+  currentAccountId,
+  showAvatar,
+}: {
+  message: Message;
+  currentAccountId?: number;
+  showAvatar: boolean;
+}) {
+  const isSender = currentAccountId == message.senderId;
+
   return (
-    <div className="bg-gray-100 p-3 rounded-lg mb-3 max-w-[80%]">
-      <div className="font-semibold text-blue-600">
-        {message.senderName || `Người dùng ${message.senderId}`}
-      </div>
-      <div>{message.messageText}</div>
-      <div className="text-xs text-gray-500 mt-1">
-        {new Date(message.sendAt).toLocaleTimeString()}
+    <div className={`flex ${isSender ? "justify-start" : "justify-end"} mb-2`}
+      style={{
+        paddingLeft: !isSender && !showAvatar ? "2.5rem" : undefined, // 2.5rem ~ 40px bằng với kích thước avatar
+        paddingRight: isSender && !showAvatar ? "2.5rem" : undefined,
+      }}>
+      <div className={`flex items-end ${isSender ? "flex-row" : "flex-row-reverse"} gap-2`}>
+        {/* Avatar hiển thị nếu có, nếu không vẫn giữ chỗ trống */}
+        {showAvatar ? (
+          <img
+            src={message.senderAvatarUrl || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
+            alt="avatar"
+            className="w-10 h-10 rounded-full"
+          />
+        ) : (
+          <div className="w-10 h-10" /> // giữ chỗ trống
+        )}
+
+        <div
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap
+            ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"}`}
+          style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
+        >
+          <div>{message.messageText}</div>
+          <div className={`text-xs mt-1 text-right ${isSender ? "text-white" : "text-gray-500"}`}>
+            {new Date(message.sendAt).toLocaleTimeString()}
+          </div>
+        </div>
       </div>
     </div>
   );
 }
+
+
+
+
 
 function MessageInput({ onSend }: { onSend: (text: string) => void }) {
   const [text, setText] = React.useState("");
