@@ -29,7 +29,7 @@ export default function ContactText() {
       data-aos="fade-in"
       data-aos-delay="400"
     >
-      <div className="max-w-6xl mx-auto py-10 px-8 mt-10"> {/* max-w tăng lên, padding cũng tăng */}
+      <div className="max-w-6xl mx-auto py-10 px-8"> {/* max-w tăng lên, padding cũng tăng */}
         <div className="flex flex-col space-y-16"> {/* khoảng cách lớn hơn */}
 
           {/* Carousel */}
@@ -79,7 +79,7 @@ export default function ContactText() {
             </p>
             <div className="flex flex-col sm:flex-row sm:space-x-6 space-y-6 sm:space-y-0 justify-center">
               <a
-                href="#"
+                href="/contact"
                 className="inline-flex justify-center items-center py-4 px-7 text-lg font-semibold text-white rounded-lg bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-900"
               >
                 Bắt đầu ngay
@@ -100,7 +100,7 @@ export default function ContactText() {
                 </svg>
               </a>
               <a
-                href="#"
+                href="/contact"
                 className="py-4 px-7 text-base font-medium text-gray-900 bg-white rounded-lg border border-gray-200 hover:bg-gray-100 hover:text-blue-700 focus:outline-none focus:ring-4 focus:ring-gray-100 dark:focus:ring-gray-700 dark:bg-gray-800 dark:text-gray-400 dark:border-gray-600 dark:hover:text-white dark:hover:bg-gray-700"
               >
                 Liên hệ với chúng tôi

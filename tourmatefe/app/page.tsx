@@ -1,3 +1,4 @@
+"use client"
 import 'flowbite';
 import HeroSection from '@/components/HeroSection';
 import AboutSunday from '@/components/AboutSunday';
@@ -7,6 +8,7 @@ import FeedbackSection from '@/components/FeedbackSection';
 import TourGuideCard from '@/components/TourGuideCard';
 import ContactPagination from '@/components/ContactPanigation';
 import Footer from '@/components/Footer';
+import ContactText from './contact/contactText';
 
 
 export default function Home() {
@@ -15,8 +17,9 @@ export default function Home() {
     <div>
       <MegaMenu />
       <HeroSection />
-      <TourGuideCard />
       <AboutSunday />
+      <TourGuideCard />
+      <ContactText />
       <FeedbackSection />
       <ContactPagination />
       <HomeNews />

@@ -66,6 +66,7 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
+            data.Account.Password = HashString.ToHashString(data.Account.Password);
             var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
             if (isAccountCreated != null)
             {
@@ -106,6 +107,7 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
+            data.Account.Password = HashString.ToHashString(data.Account.Password);
             var updateTourGuide = await _tourguideService.UpdateTourGuide(data);
             var updateAccount = await _accountService.UpdateAccount(data.Account);
             if (updateTourGuide == true && updateAccount == true)

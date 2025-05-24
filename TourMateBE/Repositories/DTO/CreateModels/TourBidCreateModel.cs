@@ -26,7 +26,7 @@ namespace Repositories.DTO.CreateModels
             UpdatedAt = UpdatedAt,
             IsDeleted = IsDeleted,
             PlaceRequested = PlaceRequested,
-            TourBid1 = 0
+            TourBidId = 0
         };
     }
 }

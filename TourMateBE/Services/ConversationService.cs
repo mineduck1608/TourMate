@@ -1,4 +1,5 @@
-using Repositories.Models;
+﻿using Repositories.Models;
+using Repositories.DTO;
 using Repositories.Repository;
 
 namespace Services
@@ -10,11 +11,42 @@ namespace Services
         void CreateConversation(Conversation conversation);
         void UpdateConversation(Conversation conversation);
         bool DeleteConversation(int id);
+        Task<ConversationListResult> GetConversationsAsync(int userId, string searchTerm, int page, int pageSize);
+        Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize);
     }
 
     public class ConversationService : IConversationService
     {
-        private ConversationRepository ConversationRepository { get; set; } = new();
+        private readonly ConversationRepository ConversationRepository;
+        private readonly AccountRepository _accountRepo;
+
+        public ConversationService(ConversationRepository conversationRepo, AccountRepository accountRepo)
+        {
+            ConversationRepository = conversationRepo;
+            _accountRepo = accountRepo;
+        }
+
+
+        public async Task<ConversationListResult> GetConversationsAsync(int userId, string searchTerm, int page, int pageSize)
+        {
+            var (conversations, totalCount) = await ConversationRepository.GetConversationsByUserIdAsync(userId, searchTerm, page, pageSize);
+
+            return new ConversationListResult
+            {
+                Conversations = conversations,
+                TotalCount = totalCount,
+                HasMore = totalCount > page * pageSize
+            };
+        }
+
+        public async Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize)
+        {
+            var messages = await ConversationRepository.GetMessagesByConversationAsync(conversationId, page, pageSize);
+            var hasMore = messages.Count == pageSize &&
+                          await ConversationRepository.AnyMoreMessagesAsync(conversationId, messages.LastOrDefault()?.SendAt ?? DateTime.MinValue);
+
+            return (messages, hasMore);
+        }
 
         public Conversation GetConversation(int id)
         {

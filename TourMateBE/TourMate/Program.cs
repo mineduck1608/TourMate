@@ -1,12 +1,14 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repositories.Repository;
 using Repositories.Context;
+using Repositories.Repository;
 using Services;
-using System;
 using Services.Utils;
+using System;
 using System.Text.Json.Serialization;
+using TourMate.MessageHub;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddSignalR();
 
 // Add this to your Program.cs file in the Web API project
 builder.Services.AddScoped<AccountRepository>();
@@ -80,10 +82,15 @@ builder.Services.AddDbContext<TourmateContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddCors(options =>
-                options.AddDefaultPolicy(policy =>
-                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod()
-                    )
-                );
+{
+    options.AddPolicy("AllowReactApp", policy =>
+    {
+        policy.WithOrigins("http://localhost:3000")
+              .AllowAnyHeader()
+              .AllowAnyMethod()
+              .AllowCredentials();
+    });
+});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -97,10 +104,12 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+app.UseCors("AllowReactApp");
+
 // Configure the HTTP request pipeline.
 //if (app.Environment.IsDevelopment())
 //{
-    app.UseSwagger();
+app.UseSwagger();
     app.UseSwaggerUI();
 //}
 
@@ -110,6 +119,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseCors();
+
+app.MapHub<ChatHub>("/chatHub");
 
 app.Run();
