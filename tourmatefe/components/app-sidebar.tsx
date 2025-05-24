@@ -55,6 +55,7 @@ const data = {
       title: "Bài đăng",
       url: "#",
       icon: BookOpen,
+      isActive: true,
       items: [
         {
           title: "Tin tức",
