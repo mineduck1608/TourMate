@@ -6,30 +6,32 @@ type AddTourGuideModalProps = {
   onClose: () => void;
   onSave: (data: TourGuide) => void;
 };
-
+const defaultData = {
+  tourGuideId: 0,
+  address: "",
+  image: "",
+  accountId: 0,
+  fullName: "",
+  gender: "",
+  phone: "",
+  dateOfBirth: "",
+  account: {
+    accountId: 0,
+    email: "",
+    password: "",
+    status: true,
+    createdDate: "",
+    roleId: 3,
+  },
+  tourGuideDescs: [],
+  tourServices: []
+}
 const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
   isOpen,
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<TourGuide>({
-    tourGuideId: 0,
-    address: "",
-    image: "",
-    accountId: 0,
-    fullName: "",
-    gender: "",
-    phone: "",
-    dateOfBirth: "",
-    account: {
-      accountId: 0,
-      email: "",
-      password: "",
-      status: true,
-      createdDate: "",
-      roleId: 3,
-    },
-  });
+  const [formData, setFormData] = useState<TourGuide>(defaultData);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -39,10 +41,11 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
     const { name, value } = e.target;
 
     if (name === "email" || name === "password") {
+      const account = formData.account ?? defaultData.account
       setFormData((prev) => ({
         ...prev,
         account: {
-          ...prev.account,
+          ...account,
           [name]: value,
         },
       }));
@@ -56,11 +59,11 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
+    const account = formData.account ?? defaultData.account
     const dataToSave = {
       ...formData,
       account: {
-        ...formData.account,
+        ...account,
         createdDate: new Date().toISOString(),
         status: true,
       },
@@ -69,33 +72,15 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
     onSave(dataToSave);
     console.log("Form data submitted:", dataToSave);
 
-    setFormData({
-      tourGuideId: 0,
-      address: "",
-      image: "",
-      accountId: 0,
-      fullName: "",
-      gender: "",
-      phone: "",
-      dateOfBirth: "",
-      account: {
-        accountId: 0,
-        email: "",
-        password: "",
-        status: true,
-        createdDate: "",
-        roleId: 3,
-      },
-    });
+    setFormData(defaultData);
 
     onClose();
   };
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div
         className="absolute inset-0 bg-black opacity-50"
@@ -141,7 +126,7 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
                 type="email"
                 name="email"
                 id="email"
-                value={formData.account.email}
+                value={formData.account?.email}
                 onChange={handleChange}
                 placeholder="Nhập email"
                 required
@@ -161,7 +146,7 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
                 type="password"
                 name="password"
                 id="password"
-                value={formData.account.password}
+                value={formData.account?.password}
                 onChange={handleChange}
                 placeholder="Nhập password"
                 required

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
  * 
  * @param key khóa lưu token trong sessionStorage, mặc định 'accessToken'
  */
-export function getToken(key: string = "accessToken") {
+export function useToken(key: string = "accessToken") {
   const [token, setToken] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);

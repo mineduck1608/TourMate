@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { fetchMessages } from "../api/message.api";
 import { Message } from "@/types/message";
-import { getToken } from "@/components/getToken";
+import { useToken } from "@/components/getToken";
 
 const PAGE_SIZE = 20;
 
@@ -45,7 +45,7 @@ export default function MessageList({ conversationId }: Props) {
     refetch();
   }, [conversationId, refetch]);
 
-var token = getToken("accessToken");
+const token = useToken("accessToken");
 console.log(token);
 
   // Khi data mới fetch về, gộp tin nhắn
