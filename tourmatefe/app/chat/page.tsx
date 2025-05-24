@@ -4,7 +4,6 @@ import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
 import MegaMenu from "@/components/MegaMenu";
-import Footer from "@/components/Footer";
 
 export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);

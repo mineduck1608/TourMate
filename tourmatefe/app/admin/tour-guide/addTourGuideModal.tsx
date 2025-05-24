@@ -22,6 +22,10 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
     phone: "",
     dateOfBirth: "",
     account: {
+       role: {
+        roleId: 3,
+        roleName: "TourGuide"
+      },
       accountId: 0,
       email: "",
       password: "",
@@ -79,6 +83,10 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
       phone: "",
       dateOfBirth: "",
       account: {
+         role: {
+        roleId: 3,
+        roleName: "TourGuide"
+      },
         accountId: 0,
         email: "",
         password: "",

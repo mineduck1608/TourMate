@@ -7,7 +7,7 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
 import { fetchMessages } from "../api/message.api";
 import { Message } from "@/types/message";
-import { getToken } from "@/components/getToken";
+import { GetToken } from "@/components/getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 
@@ -22,7 +22,7 @@ export default function MessageList({ conversationId }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
 
   // Lấy token và decode AccountId
-  const token = getToken("accessToken");
+  const token = GetToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const currentAccountId = decoded?.AccountId;
 

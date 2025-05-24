@@ -11,9 +11,7 @@ export type TourGuide = {
     address: string,
     image: string,
     phone: string,
-    /**
-     * 1 to 1 scaffolded as 1 to n
-     */
+    account: Account
     tourGuideDescs?: TourGuideDesc[],
     tourServices?: TourService[],
 }

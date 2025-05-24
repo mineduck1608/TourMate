@@ -24,7 +24,7 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
 
   const queryClient = useQueryClient();
-
+console.log(connection)
   // React Query fetch dữ liệu phân trang
   const {
     data,
