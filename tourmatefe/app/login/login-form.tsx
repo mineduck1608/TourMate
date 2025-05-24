@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 import { login } from "../api/authenticate.api";
+import axios, { AxiosError } from "axios";
 
 export function LoginForm({
   className,
@@ -19,7 +20,6 @@ export function LoginForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // Hàm xử lý submit form đăng nhập
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError(null);
@@ -29,14 +29,24 @@ export function LoginForm({
     const email = formData.get("email") as string;
     const password = formData.get("password") as string;
 
-     try {
-      // Gọi hàm login từ API
+    try {
       await login({ email, password });
-
-      // Nếu thành công, chuyển trang
       window.location.href = "/";
-    } catch (err: any) {
-      setError(err.message);
+    } catch (err) {
+      // Xử lý lỗi không dùng any
+      let message = "Đăng nhập thất bại";
+
+      if (axios.isAxiosError(err)) {
+        if (err.response?.data && typeof err.response.data === "object" && "msg" in err.response.data) {
+          message = (err.response.data as { msg: string }).msg;
+        } else if (err.message) {
+          message = err.message;
+        }
+      } else if (err instanceof Error) {
+        message = err.message;
+      }
+
+      setError(message);
     } finally {
       setLoading(false);
     }
