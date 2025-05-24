@@ -1,4 +1,5 @@
 ﻿using Repositories.Models;
+using Repositories.DTO;
 using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,6 +9,44 @@ namespace Repositories.Repository
     {
         public AccountRepository()
         {
+        }
+
+        public async Task<List<AccountSearchResult>> SearchAccountsByNameAsync(string searchTerm, int excludeUserId)
+        {
+            searchTerm = searchTerm?.ToLower() ?? "";
+
+            // Query Customers có tên phù hợp
+            var customersQuery = from a in _context.Accounts
+                                 join c in _context.Customers on a.AccountId equals c.AccountId
+                                 where a.AccountId != excludeUserId
+                                       && a.RoleId == 2
+                                       && c.FullName.ToLower().Contains(searchTerm)
+                                 select new AccountSearchResult
+                                 {
+                                     AccountId = a.AccountId,
+                                     FullName = c.FullName,
+                                     RoleId = a.RoleId
+                                 };
+
+            // Query TourGuides có tên phù hợp
+            var guidesQuery = from a in _context.Accounts
+                              join g in _context.TourGuides on a.AccountId equals g.AccountId
+                              where a.AccountId != excludeUserId
+                                    && a.RoleId == 3
+                                    && g.FullName.ToLower().Contains(searchTerm)
+                              select new AccountSearchResult
+                              {
+                                  AccountId = a.AccountId,
+                                  FullName = g.FullName,
+                                  RoleId = a.RoleId
+                              };
+
+            // Union kết quả 2 bảng
+            var result = await customersQuery
+                .Union(guidesQuery)
+                .ToListAsync();
+
+            return result;
         }
 
         public async Task<Account> GetAccountByLogin(string email, string password)
