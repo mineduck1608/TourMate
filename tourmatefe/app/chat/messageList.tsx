@@ -9,6 +9,7 @@ import { Message } from "@/types/message";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { GetToken } from "@/components/getToken";
+import { apiHub } from "@/types/constants";
 
 const PAGE_SIZE = 20;
 
@@ -66,7 +67,7 @@ export default function MessageList({ conversationId, onNewMessage }: Props) {
     if (!conversationId) return;
 
     const newConnection = new HubConnectionBuilder()
-      .withUrl(`https://localhost:7147/chatHub?conversationId=${conversationId}`)
+      .withUrl(`${apiHub}/chatHub?conversationId=${conversationId}`)
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build();
