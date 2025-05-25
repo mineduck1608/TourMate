@@ -50,16 +50,8 @@ namespace API.Controllers
 
         // POST: api/messages/{conversationId}/mark-read
         [HttpPost("{conversationId}/mark-read")]
-        public async Task<IActionResult> MarkRead(int conversationId)
+        public async Task<IActionResult> MarkRead(int conversationId, [FromBody] int userId)
         {
-            // Lấy userId từ token (claim)
-            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "AccountId");
-            if (userIdClaim == null)
-            {
-                return Unauthorized();
-            }
-            int userId = int.Parse(userIdClaim.Value);
-
             await _messageService.MarkConversationAsRead(conversationId, userId);
 
             return Ok(new { message = "Đã đánh dấu đọc" });

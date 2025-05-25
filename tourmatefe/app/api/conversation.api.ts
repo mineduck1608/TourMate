@@ -19,11 +19,12 @@ export const fetchConversations = async (
   return res.data;
 };
 
-export const fetchMarkRead = async (id: number, accessToken?: string) => {
-  const config = accessToken
-    ? { headers: { Authorization: `Bearer ${accessToken}` } }
-    : {};
+export const fetchMarkRead = async (id: number, userId: number) => {
 
-  const response = await http.post(`/messages/${id}/mark-read`, null, config);
+  const response = await http.post(`/messages/${id}/mark-read`, {
+    params: {
+      userId,
+    },
+  });
   return response.data;
 };

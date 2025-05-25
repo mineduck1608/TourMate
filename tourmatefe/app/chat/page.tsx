@@ -5,13 +5,10 @@ import MessageList from "./messageList";
 import MegaMenu from "@/components/MegaMenu";
 import { ConversationResponse } from "@/types/conversation";
 import { fetchMarkRead } from "../api/conversation.api";
-import { GetToken } from "@/components/getToken";
 
 export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null);
   const [refreshConversationList, setRefreshConversationList] = useState(false);
-
-  const token = GetToken("accessToken");
 
   // Khi messageList nhận tin nhắn mới, báo ConversationList refetch
   const handleNewMessage = () => {
@@ -23,7 +20,7 @@ export default function ChatPage() {
     setSelectedConversation(conv);
 
     try {
-      await fetchMarkRead(conv.conversation.conversationId, token ?? undefined);
+      await fetchMarkRead(conv.conversation.conversationId, conv.conversation.account2Id);
       setRefreshConversationList(prev => !prev); // Trigger refetch để cập nhật trạng thái đã đọc
     } catch (error) {
       console.error("Lỗi đánh dấu đã đọc:", error);
