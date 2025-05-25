@@ -19,7 +19,12 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     gender: "",
     phone: "",
     dateOfBirth: "",
+    image: "",
     account: {
+      role: {
+        roleId: 2,
+        roleName: "Customer"
+      },
       accountId: 0,
       email: "",
       password: "",
@@ -72,7 +77,12 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       gender: "",
       phone: "",
       dateOfBirth: "",
+      image: "",
       account: {
+        role: {
+          roleId: 2,
+          roleName: "Customer"
+        },
         accountId: 0,
         email: "",
         password: "",
@@ -87,9 +97,8 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div
         className="absolute inset-0 bg-black opacity-50"

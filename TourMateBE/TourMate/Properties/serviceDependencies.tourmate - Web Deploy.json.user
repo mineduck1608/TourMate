@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "signalr1": {
+      "restored": true,
+      "restoreTime": "2025-05-24T16:44:26.884131Z"
+    }
+  },
+  "parameters": {
+    "signalr1.serviceConnectorResourceGroupName": {
+      "Name": "signalr1.serviceConnectorResourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "tourmate"
+    },
+    "signalr1.resourceGroupName": {
+      "Name": "signalr1.resourceGroupName",
+      "Type": "resourceGroup",
+      "Value": "tourmate"
+    },
+    "signalr1.subscriptionId": {
+      "Name": "signalr1.subscriptionId",
+      "Type": "subscription",
+      "Value": "7245fa7a-640b-4dd1-9fa5-1a0171eb212d"
+    }
+  }
+}

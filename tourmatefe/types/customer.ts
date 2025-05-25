@@ -7,6 +7,7 @@ export type Customer = {
     gender: string;
     dateOfBirth: string;
     phone: string;
+    image: string;
     account: Account;
 }
 

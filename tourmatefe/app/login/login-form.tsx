@@ -10,7 +10,7 @@ import { Label } from "@/components/ui/label";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 import { login } from "../api/authenticate.api";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export function LoginForm({
   className,

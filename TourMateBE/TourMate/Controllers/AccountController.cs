@@ -252,5 +252,32 @@ namespace API.Controllers
             var result = _accountService.DeleteAccount(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpPost("request-reset-password")]
+        public async Task<IActionResult> RequestResetPassword([FromBody] RequestResetPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest("Email is required.");
+
+            var result = await _accountService.RequestPasswordResetAsync(dto.Email);
+            if (!result) return BadRequest("Email not found.");
+
+            return Ok("Please check your email for reset instructions.");
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Token) || string.IsNullOrWhiteSpace(dto.NewPassword))
+                return BadRequest("Token and new password are required.");
+
+            var result = await _accountService.ResetPasswordAsync(dto.Token, dto.NewPassword);
+            if (!result) return BadRequest("Invalid or expired token.");
+
+            return Ok("Password has been reset successfully.");
+        }
     }
 }
+
+public record RequestResetPasswordDto(string Email);
+public record ResetPasswordDto(string Token, string NewPassword);

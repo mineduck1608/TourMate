@@ -8,7 +8,7 @@ namespace Services
         Message GetMessages(int id);
         IEnumerable<Message> GetAll(int pageSize, int pageIndex);
         Task<Message> CreateMessages(Message messages);
-        void UpdateMessages(Message messages);
+        Task MarkConversationAsRead(int conversationId, int userId);
         bool DeleteMessages(int id);
         Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize);
     }
@@ -46,9 +46,9 @@ namespace Services
             return await MessagesRepository.CreateAndReturnAsync(messages);
         }
 
-        public void UpdateMessages(Message messages)
+        public async Task MarkConversationAsRead(int conversationId, int userId)
         {
-            MessagesRepository.Update(messages);
+            await MessagesRepository.MarkMessagesAsReadAsync(conversationId, userId);
         }
 
         public bool DeleteMessages(int id)

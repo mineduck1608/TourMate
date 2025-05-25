@@ -1,7 +1,7 @@
 import { LoginPayload, LoginResponse } from "@/types/authenticate";
 import http from "../utils/http";
 
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   try {

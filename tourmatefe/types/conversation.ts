@@ -6,6 +6,7 @@ export type ConversationResponse = {
     accountName2: string,
     latestMessage: Message,
     isRead: boolean
+    account2Img: string
 }
 
 export type ConversationListResult = {

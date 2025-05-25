@@ -101,8 +101,7 @@ export const columns: ColumnDef<TourGuide>[] = [
         <div
           style={{
             maxWidth: '200px',
-            whiteSpace: 'normal', // Cho phép ảnh xuống dòng nếu cần
-            overflowWrap: 'break-word',
+
           }}
         >
           {/* Hiển thị ảnh nếu có URL */}

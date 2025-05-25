@@ -18,3 +18,12 @@ export const fetchConversations = async (
   console.log(res.data)
   return res.data;
 };
+
+export const fetchMarkRead = async (id: number, userId: number) => {
+  const response = await http.post(`/messages/${id}/mark-read`, null, {
+    params: {
+      userId,
+    },
+  });
+  return response.data;
+};

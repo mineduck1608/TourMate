@@ -37,7 +37,7 @@ namespace Services.Utils
             {
                 new Claim("AccountId", accountId.ToString()),
                 new Claim("FullName", fullName),
-                new Claim(ClaimTypes.Role, roleName),
+                new Claim("Role", roleName),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
@@ -89,6 +89,59 @@ namespace Services.Utils
             var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(userId);
 
             return (newAccessToken, newRefreshToken);
+        }
+
+        public string GenerateResetPasswordToken(Account user)
+        {
+            var key = _config["Jwt:ResetPasswordSecret"];
+            if (string.IsNullOrEmpty(key))
+                throw new InvalidOperationException("Jwt:Key is missing.");
+            var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
+            var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+            var claims = new[]
+            {
+            new Claim("AccountId", user.AccountId.ToString()),
+            new Claim("Email", user.Email),
+        };
+
+            var token = new JwtSecurityToken(
+                issuer: null,
+                audience: null,
+                claims: claims,
+                expires: DateTime.Now.AddHours(1),
+                signingCredentials: creds
+            );
+
+            return new JwtSecurityTokenHandler().WriteToken(token);
+        }
+
+        public ClaimsPrincipal? ValidateResetPasswordToken(string token)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = _config["Jwt:ResetPasswordSecret"];
+            if (string.IsNullOrEmpty(key))
+                throw new InvalidOperationException("Jwt:Key is missing.");
+            var encodedKey = Encoding.UTF8.GetBytes(key);
+
+            try
+            {
+                var principal = tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ValidateLifetime = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(encodedKey),
+                    ValidateIssuerSigningKey = true,
+                    ClockSkew = TimeSpan.Zero,
+                }, out SecurityToken validatedToken);
+
+                return principal;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

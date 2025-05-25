@@ -22,30 +22,59 @@ public class ChatHub : Hub
 
     public async Task SendMessage(int conversationId, string messageText, int senderId)
     {
-        var message = await SaveMessageToDb(conversationId, messageText, senderId);
-
-        if (message == null)
+        try
         {
-            // Có thể throw lỗi rõ ràng hoặc chỉ return
-            throw new HubException("Failed to save message");
-        }
+            var message = await SaveMessageToDb(conversationId, messageText, senderId);
 
-        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
+            if (message == null)
+            {
+                throw new HubException("Failed to save message");
+            }
+
+            await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
+        }
+        catch (Exception ex)
+        {
+            // Log lỗi hoặc Console.WriteLine(ex) để xem lỗi
+            Console.WriteLine($"SendMessage error: {ex}");
+            throw new HubException($"SendMessage error: {ex.Message}");
+        }
     }
+
 
 
     public override async Task OnConnectedAsync()
     {
+        var connectionId = Context.ConnectionId;
+        Console.WriteLine($"Client connected: {connectionId}");
+
         var httpContext = Context.GetHttpContext();
         var conversationId = httpContext.Request.Query["conversationId"];
 
         if (!string.IsNullOrEmpty(conversationId))
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, conversationId);
+            await Groups.AddToGroupAsync(connectionId, conversationId);
+            Console.WriteLine($"Added connection {connectionId} to group {conversationId}");
         }
 
         await base.OnConnectedAsync();
     }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        var connectionId = Context.ConnectionId;
+        if (exception != null)
+        {
+            Console.WriteLine($"Client disconnected with error: {connectionId}, Exception: {exception.Message}");
+        }
+        else
+        {
+            Console.WriteLine($"Client disconnected gracefully: {connectionId}");
+        }
+        await base.OnDisconnectedAsync(exception);
+    }
+
+
 
     private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId)
     {
@@ -64,15 +93,20 @@ public class ChatHub : Hub
         {
             var account = await _accountService.GetAccount(senderId);
             var name = "Người dùng";
+            var avatar = "";
             if(account.RoleId == 2)
             {
                 var customer = await _customerService.GetCustomerByAccId(senderId);
                 name = customer.FullName;
+                avatar = customer.Image;
+
             }
             if (account.RoleId == 3)
             {
                 var tourGuide = await _tourGuideService.GetTourGuideByAccId(senderId);
                 name = tourGuide.FullName;
+                avatar = tourGuide.Image;
+
             }
             // TODO: Lưu tin nhắn vào database, trả về DTO Message
             return new MessageDto
@@ -80,9 +114,10 @@ public class ChatHub : Hub
                 MessageId = result.MessageId,
                 ConversationId = conversationId,
                 MessageText = text,
-                SendAt = DateTime.UtcNow,
+                SendAt = DateTime.Now,
                 SenderId = senderId,
-                SenderName = name
+                SenderName = name,
+                SenderAvatarUrl = avatar
             };
         }
         return null;
@@ -98,4 +133,6 @@ public class MessageDto
     public DateTime SendAt { get; set; }
     public int SenderId { get; set; }
     public string SenderName { get; set; }
+    public string SenderAvatarUrl { get; set; }
+
 }
