@@ -2,101 +2,80 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
-import { Check, ChevronsUpDown } from "lucide-react";
-import {
-  Command,
-  CommandEmpty,
-  CommandGroup,
-  CommandInput,
-  CommandItem,
-  CommandList,
-} from "@/components/ui/command";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import Axios from "axios";
+import { TourGuide } from "@/types/tour-guide";
+import ImageUpload from "@/components/image-upload";
+
+// Add this before the SignupForm component
+const registerTourGuide = async (data: Partial<TourGuide>) => {
+  const response = await Axios.post(
+    "https://localhost:7147/api/account/registertourguide",
+    data
+  );
+  return response.data;
+};
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    fullName: "",
+    gender: "",
+    phone: "",
+    address: "",
+    image: "",
+    dateOfBirth: "",
+  });
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
-  const [open, setOpen] = useState(false);
-  const [value, setValue] = useState("");
-  const [operatingArea, setOperatingArea] = useState("");
-  const [operatingAreaOpen, setOperatingAreaOpen] = useState(false);
 
-  const cities = [
-    {
-      value: "Hà Nội",
-      label: "Hà Nội",
+  const mutation = useMutation({
+    mutationFn: registerTourGuide,
+    onSuccess: (data) => {
+      // Handle successful registration
+      router.push("/login"); // Redirect to login page
     },
-    {
-      value: "Hồ Chí Minh",
-      label: "Hồ Chí Minh",
+    onError: (error: any) => {
+      // Handle registration error
+      setError(error.response?.data?.msg || "Registration failed");
     },
-    {
-      value: "Đà Nẵng",
-      label: "Đà Nẵng",
-    },
-    {
-      value: "Hải Phòng",
-      label: "Hải Phòng",
-    },
-    {
-      value: "Cần Thơ",
-      label: "Cần Thơ",
-    },
-    {
-      value: "Nha Trang",
-      label: "Nha Trang",
-    },
-    {
-      value: "Đà Lạt",
-      label: "Đà Lạt",
-    },
-    {
-      value: "Quảng Ninh",
-      label: "Quảng Ninh",
-    },
-    {
-      value: "Quảng Bình",
-      label: "Quảng Bình",
-    },
-    {
-      value: "Thừa Thiên Huế",
-      label: "Thừa Thiên Huế",
-    },
-    {
-      value: "Phúc Quốc",
-      label: "Phú Quốc",
-    },
-    {
-      value: "Vũng Tàu",
-      label: "Vũng Tàu",
-    },
-    {
-      value: "Hà Giang",
-      label: "Hà Giang",
-    },
-    {
-      value: "Sa Pa",
-      label: "Sa Pa",
-    },
-    {
-      value: "Phong Nha",
-      label: "Phong Nha",
-    },
-  ];
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      setError("Passwords không trùng");
+      return;
+    }
+
+    // Submit form data
+    mutation.mutate({
+      ...formData,
+      password: password,
+    });
+  };
+
+  // Add handleChange function to update form data
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
 
   useEffect(() => {
     if (confirmPassword && password !== confirmPassword) {
@@ -105,14 +84,6 @@ export function SignupForm({
       setError("");
     }
   }, [password, confirmPassword]);
-
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords không trùng");
-      return;
-    }
-  };
 
   return (
     <form
@@ -138,7 +109,13 @@ export function SignupForm({
       <div className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            required
+            onChange={handleChange}
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
@@ -160,16 +137,16 @@ export function SignupForm({
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="full_name">Họ Tên</Label>
+            <Label htmlFor="fullName">Họ Tên</Label>
             <Input
-              id="first_name"
+              id="fullName"
               type="text"
               placeholder="John"
               className="w-full"
               required
+              onChange={handleChange}
             />
           </div>
 
@@ -194,6 +171,7 @@ export function SignupForm({
                 placeholder="(+84) 123-456-7890"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
+                onChange={handleChange}
               />
             </div>
           </div>
@@ -204,6 +182,7 @@ export function SignupForm({
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
               defaultValue=""
+              onChange={handleChange}
             >
               <option value="" disabled>
                 Chọn giới tính
@@ -213,7 +192,19 @@ export function SignupForm({
             </select>
           </div>
           <div className="grid gap-2">
-            <Label htmlFor="birthdate">Ngày sinh</Label>
+            <Label htmlFor="address">Địa chỉ</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="123 Main St"
+              className="w-full"
+              required
+              onChange={handleChange}
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                 <svg
@@ -226,114 +217,25 @@ export function SignupForm({
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
-              <Input id="birthdate" type="date" className="ps-10" required />
+              <Input
+                id="dateOfBirth"
+                type="date"
+                className="ps-10"
+                required
+                onChange={handleChange}
+              />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="address">Nơi ở</Label>
-            <Popover open={open} onOpenChange={setOpen}>
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={open}
-                  className="w-[184px] justify-between"
-                >
-                  {value
-                    ? cities.find((city) => city.value === value)?.label
-                    : "Chọn thành phố..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput
-                    placeholder="Tìm thành phố..."
-                    className="h-9"
-                  />
-                  <CommandList>
-                    <CommandEmpty>Không tìm thấy thành phố.</CommandEmpty>
-                    <CommandGroup>
-                      {cities.map((city) => (
-                        <CommandItem
-                          key={city.value}
-                          value={city.value}
-                          onSelect={(currentValue) => {
-                            setValue(
-                              currentValue === value ? "" : currentValue
-                            );
-                            setOpen(false);
-                          }}
-                        >
-                          {city.label}
-                          <Check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              value === city.value ? "opacity-100" : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="operating-area">Khu vực hoạt động</Label>
-            <Popover
-              open={operatingAreaOpen}
-              onOpenChange={setOperatingAreaOpen}
-            >
-              <PopoverTrigger asChild>
-                <Button
-                  variant="outline"
-                  role="combobox"
-                  aria-expanded={operatingAreaOpen}
-                  className="w-[184px] justify-between"
-                >
-                  {operatingArea
-                    ? cities.find((city) => city.value === operatingArea)?.label
-                    : "Chọn khu vực..."}
-                  <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                </Button>
-              </PopoverTrigger>
-              <PopoverContent className="w-[200px] p-0">
-                <Command>
-                  <CommandInput placeholder="Tìm khu vực..." className="h-9" />
-                  <CommandList>
-                    <CommandEmpty>Không tìm thấy khu vực.</CommandEmpty>
-                    <CommandGroup>
-                      {cities.map((city) => (
-                        <CommandItem
-                          key={city.value}
-                          value={city.value}
-                          onSelect={(currentValue) => {
-                            setOperatingArea(
-                              currentValue === operatingArea ? "" : currentValue
-                            );
-                            setOperatingAreaOpen(false);
-                          }}
-                        >
-                          {city.label}
-                          <Check
-                            className={cn(
-                              "ml-auto h-4 w-4",
-                              operatingArea === city.value
-                                ? "opacity-100"
-                                : "opacity-0"
-                            )}
-                          />
-                        </CommandItem>
-                      ))}
-                    </CommandGroup>
-                  </CommandList>
-                </Command>
-              </PopoverContent>
-            </Popover>
-          </div>
         </div>
+        <div className="grid gap-2">
+          <Label>Hình Đại Diện</Label>
+          <ImageUpload
+            onImageUpload={(url: string) =>
+              setFormData((prev) => ({ ...prev, image: url }))
+            }
+          />
+        </div>
+        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
             <input

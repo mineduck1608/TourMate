@@ -169,7 +169,7 @@ namespace API.Controllers
 
             // Lưu khách hàng
             var isTourGuideCreated = await _tourGuideService.CreateTourGuide(tourGuide);
-            if (!isTourGuideCreated)
+            if (isTourGuideCreated)
                 return StatusCode(500, "An error occurred while registering the tourguide.");
 
             return Ok(new { msg = "Register successfully." });

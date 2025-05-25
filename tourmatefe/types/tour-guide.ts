@@ -6,6 +6,7 @@ export type TourGuide = {
     tourGuideId: number,
     fullName: string,
     gender: string,
+    password: string,
     dateOfBirth: string,
     accountId: number,
     address: string,
