@@ -62,9 +62,17 @@ export function SignupForm({
 
     // Submit form data
     mutation.mutate({
-      ...formData,
-      password: password,
-    });
+      fullName: formData.fullName,
+      gender: formData.gender,
+      dateOfBirth: formData.dateOfBirth,
+      address: formData.address,
+      image: formData.image,
+      phone: formData.phone,
+      account: {
+        email: formData.email,
+        password: password,
+      },
+    } as Partial<TourGuide>);
   };
 
   // Add handleChange function to update form data
