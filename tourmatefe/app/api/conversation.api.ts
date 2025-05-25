@@ -18,3 +18,12 @@ export const fetchConversations = async (
   console.log(res.data)
   return res.data;
 };
+
+export const fetchMarkRead = async (id: number, accessToken?: string) => {
+  const config = accessToken
+    ? { headers: { Authorization: `Bearer ${accessToken}` } }
+    : {};
+
+  const response = await http.post(`/conversations/${id}/mark-read`, null, config);
+  return response.data;
+};

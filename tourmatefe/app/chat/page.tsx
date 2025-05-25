@@ -1,17 +1,32 @@
-"use client";
-
 import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
 import MegaMenu from "@/components/MegaMenu";
+import { ConversationResponse } from "@/types/conversation";
+import { fetchMarkRead } from "../api/conversation.api";
+import { GetToken } from "@/components/getToken";
 
 export default function ChatPage() {
-  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null);
   const [refreshConversationList, setRefreshConversationList] = useState(false);
 
-  // Khi messageList nhận tin nhắn mới, gọi hàm này để báo ConversationList refetch
+  const token = GetToken("accessToken");
+
+  // Khi messageList nhận tin nhắn mới, báo ConversationList refetch
   const handleNewMessage = () => {
-    setRefreshConversationList(prev => !prev); // Đổi state để trigger refetch
+    setRefreshConversationList(prev => !prev);
+  };
+
+  // Khi chọn conversation
+  const handleSelectConversation = async (conv: ConversationResponse) => {
+    setSelectedConversation(conv);
+
+    try {
+      await fetchMarkRead(conv.conversation.conversationId, token ?? undefined);
+      setRefreshConversationList(prev => !prev); // Trigger refetch để cập nhật trạng thái đã đọc
+    } catch (error) {
+      console.error("Lỗi đánh dấu đã đọc:", error);
+    }
   };
 
   return (
@@ -19,15 +34,15 @@ export default function ChatPage() {
       <MegaMenu />
       <div className="flex h-[100vh] mx-auto border rounded shadow">
         <ConversationList
-          onSelect={(conv) => setSelectedConversation(conv.conversation.conversationId)}
-          selectedId={selectedConversation ?? undefined}
-          refresh={refreshConversationList} // truyền prop để refetch
+          onSelect={handleSelectConversation}
+          selectedId={selectedConversation?.conversation.conversationId}
+          refresh={refreshConversationList}
         />
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
             <MessageList
-              conversationId={selectedConversation}
-              onNewMessage={handleNewMessage} // truyền callback
+              conversationId={selectedConversation.conversation.conversationId}
+              onNewMessage={handleNewMessage}
             />
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400">

@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -48,11 +48,21 @@ namespace API.Controllers
             return CreatedAtAction(nameof(Get), new { id = message.MessageId }, message);
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] MessageCreateModel message)
+        // POST: api/conversations/{conversationId}/mark-read
+        [HttpPost("{conversationId}/mark-read")]
+        public async Task<IActionResult> MarkRead(int conversationId)
         {
-            _messageService.UpdateMessages(message.Convert());
-            return NoContent();
+            // Lấy userId từ token (claim)
+            var userIdClaim = User.Claims.FirstOrDefault(c => c.Type == "AccountId");
+            if (userIdClaim == null)
+            {
+                return Unauthorized();
+            }
+            int userId = int.Parse(userIdClaim.Value);
+
+            await _messageService.MarkConversationAsRead(conversationId, userId);
+
+            return Ok(new { message = "Đã đánh dấu đọc" });
         }
 
         [HttpDelete("{id}")]

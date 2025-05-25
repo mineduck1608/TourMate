@@ -45,17 +45,35 @@ public class ChatHub : Hub
 
     public override async Task OnConnectedAsync()
     {
-        var httpContext = Context.GetHttpContext();
+        var connectionId = Context.ConnectionId;
+        Console.WriteLine($"Client connected: {connectionId}");
 
-        // Nếu có truyền conversationId (message)
+        var httpContext = Context.GetHttpContext();
         var conversationId = httpContext.Request.Query["conversationId"];
+
         if (!string.IsNullOrEmpty(conversationId))
         {
-            await Groups.AddToGroupAsync(Context.ConnectionId, conversationId);
+            await Groups.AddToGroupAsync(connectionId, conversationId);
+            Console.WriteLine($"Added connection {connectionId} to group {conversationId}");
         }
 
         await base.OnConnectedAsync();
     }
+
+    public override async Task OnDisconnectedAsync(Exception exception)
+    {
+        var connectionId = Context.ConnectionId;
+        if (exception != null)
+        {
+            Console.WriteLine($"Client disconnected with error: {connectionId}, Exception: {exception.Message}");
+        }
+        else
+        {
+            Console.WriteLine($"Client disconnected gracefully: {connectionId}");
+        }
+        await base.OnDisconnectedAsync(exception);
+    }
+
 
 
     private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId)
