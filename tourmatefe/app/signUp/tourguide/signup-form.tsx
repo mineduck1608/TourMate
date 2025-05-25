@@ -43,7 +43,7 @@ export function SignupForm({
 
   const mutation = useMutation({
     mutationFn: registerTourGuide,
-    onSuccess: (data) => {
+    onSuccess: () => {
       // Handle successful registration
       router.push("/login"); // Redirect to login page
     },
