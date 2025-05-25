@@ -44,12 +44,12 @@ export function SignupForm({
   const mutation = useMutation({
     mutationFn: registerTourGuide,
     onSuccess: () => {
-      // Handle successful registration
       router.push("/login"); // Redirect to login page
     },
-    onError: (error: any) => {
-      // Handle registration error
-      setError(error.response?.data?.msg || "Registration failed");
+    onError: (error: Error | unknown) => {
+      const errorMessage =
+        error instanceof Error ? error.message : "Registration failed";
+      setError(errorMessage);
     },
   });
 
