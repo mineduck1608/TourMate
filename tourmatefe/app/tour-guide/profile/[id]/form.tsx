@@ -4,7 +4,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
-import { Account } from "@/types/account";
 import { TourGuide, TourGuideDesc } from "@/types/tour-guide";
 import { useQuery } from "@tanstack/react-query";
 import { FormEvent, useState } from "react";
@@ -28,18 +27,6 @@ const dummyDesc: TourGuideDesc = {
         createdAt: ""
     }
 }
-const dummyAcc: Account = {
-    accountId: 0,
-    email: "",
-    password: "",
-    createdDate: "",
-    roleId: 0,
-    status: false,
-    role: {
-        roleId: "",
-        roleName: ""
-    }
-}
 export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGuide, updateFn: (tourGuide: TourGuide) => void }) {
     const [formData, setFormData] = useState(tourGuide)
     const handleChange = (
@@ -48,17 +35,13 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
     };
-    function handleDescChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
+    function handleDescChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, isNumber?: boolean) {
         const { name, value } = e.target
         const t = formData.tourGuideDescs?.[0] ?? dummyDesc
-        const added = ({ ...t, [name]: value })
+        const added = ({ ...t, [name]: isNumber ? Number(value): value })
+        console.log(added);
+        
         setFormData((prev) => ({ ...prev, tourGuideDescs: [added] }))
-    }
-    function handleAccChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) {
-        const { name, value } = e.target
-        const t = formData.account ?? dummyAcc
-        const added = ({ ...t, [name]: value })
-        setFormData((prev) => ({ ...prev, account: added }))
     }
     const simplifiedAreaQuery = useQuery({
         queryKey: ['simplified-area'],
@@ -79,22 +62,6 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
                         name="fullName"
                         value={formData.fullName}
                         onChange={(e) => handleChange(e)}
-                        required />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email"
-                        name="email"
-                        value={formData.account?.email}
-                        onChange={(e) => handleAccChange(e)}
-                        required />
-                </div>
-                <div className="grid gap-2">
-                    <Label htmlFor="password">Password</Label>
-                    <Input id="password" type="password"
-                        name="password"
-                        value={formData.account?.password}
-                        onChange={(e) => handleAccChange(e)}
                         required />
                 </div>
                 <div className="grid gap-2">
@@ -197,7 +164,7 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
                     <Input id="yearOfExperience" type="number"
                         name="yearOfExperience"
                         value={formData.tourGuideDescs?.[0].yearOfExperience}
-                        onChange={(e) => handleDescChange(e)}
+                        onChange={(e) => handleDescChange(e, true)}
                     />
                 </div>
                 <div className="grid gap-2">

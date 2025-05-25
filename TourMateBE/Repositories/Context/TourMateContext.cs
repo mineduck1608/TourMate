@@ -668,6 +668,9 @@ public partial class TourmateContext : DbContext
                 .IsUnicode(false)
                 .HasColumnName("phone");
 
+            entity.Property(e => e.BannerImage)
+            .HasColumnName("bannerImage");
+
             entity.HasOne(d => d.Account).WithMany(p => p.TourGuides)
                 .HasForeignKey(d => d.AccountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)

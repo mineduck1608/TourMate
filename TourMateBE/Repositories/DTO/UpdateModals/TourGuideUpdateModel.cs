@@ -10,8 +10,6 @@ namespace Repositories.DTO.CreateModels
         public string Gender { get; set; }
 
         public DateOnly DateOfBirth { get; set; }
-        public string Email { get; set; }
-        public string Password { get; set; }
 
         public string Address { get; set; }
 
@@ -23,28 +21,26 @@ namespace Repositories.DTO.CreateModels
         public int AreaId { get; set; }
         public string Company { get; set; }
         public int AccountId { get; set; }
+        public string BannerImage { get; set; }
         public TourGuide Convert() => new()
         {
+            TourGuideId = TourGuideId,
             FullName = FullName,
             Gender = Gender,
             DateOfBirth = DateOfBirth,
             Address = Address,
             Image = Image,
             Phone = Phone,
-            TourGuideId = TourGuideId,
-            Account = new()
-            {
-                Email = Email,
-                Password = Password,
-                AccountId = AccountId,
-            },
+            AccountId = AccountId,
+            BannerImage = BannerImage,
             TourGuideDescs = [
                 new(){
                     AreaId = AreaId,
                     Company = Company,
                     Description = Description,
                     YearOfExperience = YearOfExperience,
-                }
+                    TourGuideId = TourGuideId,
+                    }
                 ]
         };
     }

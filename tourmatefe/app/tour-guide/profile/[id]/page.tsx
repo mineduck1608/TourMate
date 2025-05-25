@@ -1,5 +1,5 @@
 'use client'
-import { getTourGuide, updateTourGuide } from '@/app/api/tour-guide.api';
+import { getTourGuide, updateTourGuideClient } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { use } from 'react'
@@ -20,8 +20,8 @@ export default function TourGuideProfileEdit({
     })
 
     const updateTourGuideMutation = useMutation({
-        mutationFn: ({ id, data }: { id: number; data: TourGuide }) =>
-            updateTourGuide(id, data),
+        mutationFn: ({ data }: { id: number; data: TourGuide }) =>
+            updateTourGuideClient(data),
         onSuccess: () => {
             toast.success("Cập thành công");
             refetch()
@@ -38,7 +38,7 @@ export default function TourGuideProfileEdit({
     return (
         <div className='*:my-10 '>
             <div className='relative'>
-                <Banner imageUrl='/mountain.png' title='' height='200px' />
+                <Banner imageUrl={tourGuide?.bannerImage ?? '/mountain.png'} title='' height='200px' />
                 <div className='absolute top-[75px] md:left-[250px] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='bg-white p-1 rounded-full'>
@@ -54,8 +54,6 @@ export default function TourGuideProfileEdit({
                     {tourGuide && <ProfileForm tourGuide={tourGuide} updateFn={(v) => update(v)} />}
                 </div>
             </div>
-
-
         </div>
     )
 }

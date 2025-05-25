@@ -11,10 +11,10 @@ export type TourGuide = {
     address: string,
     image: string,
     phone: string,
-    account: Account
     tourGuideDescs?: TourGuideDesc[],
     tourServices?: TourService[],
-    account: Account
+    account: Account,
+    bannerImage: string
 }
 
 export type TourGuideDesc = {
@@ -40,8 +40,6 @@ export type TourGuideUpdateModel = {
     description: string,
     areaId: number,
     company: string,
-    email: string;
-    password: string;
 }
 
 export function convertToUpdateModel(tourGuide: TourGuide) {
@@ -51,8 +49,10 @@ export function convertToUpdateModel(tourGuide: TourGuide) {
         description: desc?.description ?? '',
         areaId: desc?.areaId ?? 0,
         company: desc?.company ?? '',
-        email: tourGuide.account?.email ?? '',
-        password: tourGuide.account?.password ?? ''
+        yearOfExperience: desc?.yearOfExperience
     }
+    console.log();
+    console.log(result);
+    
     return result
 }

@@ -86,42 +86,64 @@ namespace API.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] TourGuideUpdateModel data)
+        public async Task<IActionResult> Update([FromBody] TourGuide data)
         {
-            var tourGuide = data.Convert();
-            if (!ValidInput.IsPhoneFormatted(tourGuide.Phone.Trim()))
+            if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-            if (!ValidInput.IsMailFormatted(tourGuide.Account.Email))
-                return BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure(tourGuide.Account.Password))
-                return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+            if (!ValidInput.IsMailFormatted((string)data.Account.Email))
+                return base.BadRequest(new { msg = "Email không đúng định dạng!" });
+            if (!ValidInput.IsPasswordSecure((string?)data.Account.Password))
+                return base.BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
 
             // Kiểm tra tài khoản đã tồn tại
-            var existingAccount = await _accountService.GetAccountByEmail(tourGuide.Account.Email);
-            if (existingAccount != null && existingAccount.AccountId != tourGuide.Account.AccountId)
+            var existingAccount = await _accountService.GetAccountByEmail((string)data.Account.Email);
+            if (existingAccount != null && existingAccount.AccountId != data.Account.AccountId)
                 return Conflict(new { msg = "Tài khoản đã tồn tại!" });
 
 
-            var existingPhone = await _tourguideService.GetTourGuideByPhone(tourGuide.Phone);
-            if (existingPhone != null && existingPhone.TourGuideId != tourGuide.TourGuideId)
+            var existingPhone = await _tourguideService.GetTourGuideByPhone((string)data.Phone);
+            if (existingPhone != null && existingPhone.TourGuideId != data.TourGuideId)
                 return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
 
-            if (tourGuide.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
+            if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
             {
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
 
-            tourGuide.Account.Password = HashString.ToHashString(tourGuide.Account.Password);
-            var updateTourGuide = await _tourguideService.UpdateTourGuide(tourGuide);
-            var updateAccount = await _accountService.UpdateAccount(tourGuide.Account);
+            data.Account.Password = HashString.ToHashString((string)data.Account.Password);
+            var updateTourGuide = await _tourguideService.UpdateTourGuide((TourGuide)data);
+            var updateAccount = await _accountService.UpdateAccount((Account)data.Account);
             if (updateTourGuide == true && updateAccount == true)
             {
                 return Ok();
             }
             return BadRequest();
         }
-
-
+        [HttpPut("update-from-client")]
+        public async Task<IActionResult> UpdateFromClient(TourGuideUpdateModel data)
+        {
+            var tourGuide = data.Convert();
+            var errorList = new List<string>();
+            if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
+                errorList.Add("Số điện thoại không đúng định dạng");
+            var existingPhone = await _tourguideService.GetTourGuideByPhone(data.Phone);
+            if (existingPhone != null && existingPhone.TourGuideId != tourGuide.TourGuideId)
+                errorList.Add("Số điện thoại đã được sử dụng!");
+            if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
+            {
+                errorList.Add("Ngày sinh không đúng!");
+            }
+            if (errorList.Count > 0)
+            {
+                return BadRequest(new { msg = errorList });
+            }
+            var updateTourGuide = await _tourguideService.UpdateTourGuideClient(tourGuide);
+            if (updateTourGuide)
+            {
+                return Ok();
+            }
+            return BadRequest(new {msg = "Cập nhật thất bại"});
+        }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

@@ -108,5 +108,25 @@ namespace Repositories.Repository
         {
             return await _context.TourGuides.FirstOrDefaultAsync(x => x.Phone == phone);
         }
+
+        public new async Task<bool> UpdateProfile(TourGuide tourGuide)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == tourGuide.TourGuideId);
+                var d = c.TourGuideDescs.First();
+                var newDesc = tourGuide.TourGuideDescs.First();
+                newDesc.TourGuideDescId = d.TourGuideDescId;
+                tourGuide.TourGuideDescs = [newDesc];
+                _context.Entry(c).CurrentValues.SetValues(tourGuide);
+                _context.Entry(d).CurrentValues.SetValues(newDesc);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
     }
 }
