@@ -20,8 +20,7 @@ export const fetchConversations = async (
 };
 
 export const fetchMarkRead = async (id: number, userId: number) => {
-
-  const response = await http.post(`/messages/${id}/mark-read`, {
+  const response = await http.post(`/messages/${id}/mark-read`, null, {
     params: {
       userId,
     },
