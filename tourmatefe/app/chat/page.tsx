@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
