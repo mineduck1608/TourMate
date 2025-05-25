@@ -6,6 +6,7 @@ export type Message = {
     messageText: string;
     sendAt: string;
     conversationId: number;
+    senderAvatarUrl: string;
 }
 
 export type ApiResponse = {

@@ -1,16 +1,37 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿
+// Add this to your Program.cs file in the Web API project
+using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
 using Repositories.Repository;
 using Services;
 using Services.Utils;
-using System;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
 
-var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddSignalR();
 
-// Add this to your Program.cs file in the Web API project
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Đăng ký CORS
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", builder =>
+    {
+        builder.WithOrigins(
+            "http://localhost:3000",
+            "https://tourmate-phi.vercel.app"
+        )
+        .AllowAnyHeader()
+        .AllowAnyMethod()
+        .AllowCredentials();
+    });
+});
+
+// Đăng ký Azure SignalR Service
+builder.Services.AddSignalR()
+    .AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 
@@ -78,19 +99,9 @@ builder.Services.AddScoped<TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
+// Đăng ký DbContext
 builder.Services.AddDbContext<TourmateContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
-
-builder.Services.AddCors(options =>
-{
-    options.AddPolicy("AllowReactApp", policy =>
-    {
-        policy.WithOrigins("http://localhost:3000")
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
-    });
-});
 
 builder.Services.AddControllers().AddJsonOptions(options =>
 {
@@ -98,28 +109,27 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
+// Bật CORS trước khi routing
 app.UseCors("AllowReactApp");
 
-// Configure the HTTP request pipeline.
-//if (app.Environment.IsDevelopment())
-//{
-app.UseSwagger();
-    app.UseSwaggerUI();
-//}
-
-app.UseHttpsRedirection();
+app.UseRouting();
 
 app.UseAuthorization();
+
+app.UseAzureSignalR(routes =>
+{
+    routes.MapHub<ChatHub>("/chatHub");
+});
 
 app.MapControllers();
 
 
-app.MapHub<ChatHub>("/chatHub");
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.Run();

@@ -20,7 +20,7 @@ import TourGuidePage from "./tourGuidePage";
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<div></div>}>
     <SidebarProvider>
       <AppSidebar />
       <SidebarInset>

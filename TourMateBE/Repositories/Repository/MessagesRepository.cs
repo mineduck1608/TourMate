@@ -54,15 +54,20 @@ namespace Repositories.Repository
         }
 
         // Cập nhật trạng thái tin nhắn (ví dụ: đánh dấu đã đọc)
-        public async Task UpdateMessageStatusAsync(int messageId, bool isRead)
+        public async Task MarkMessagesAsReadAsync(int conversationId, int userId)
         {
-            var message = await _context.Messages.FindAsync(messageId);
-            if (message != null)
+            var messages = await _context.Messages
+                .Where(m => m.ConversationId == conversationId && m.SenderId == userId && !m.IsRead)
+                .ToListAsync();
+
+            if (!messages.Any()) return;
+
+            foreach (var message in messages)
             {
-                message.IsRead = isRead;
-                _context.Messages.Update(message);
-                await _context.SaveChangesAsync();
+                message.IsRead = true;
             }
+
+            await _context.SaveChangesAsync();
         }
 
         // Xóa tin nhắn (soft delete)

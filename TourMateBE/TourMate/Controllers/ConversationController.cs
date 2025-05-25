@@ -56,6 +56,7 @@ namespace API.Controllers
             foreach (var message in messages)
             {
                 string senderName = "Người dùng";
+                string senderAvatarUrl = "";
                 var account = await _accountService.GetAccount(message.SenderId);
 
                 if (account != null)
@@ -65,12 +66,15 @@ namespace API.Controllers
                         var customer = await _customerService.GetCustomerByAccId(message.SenderId);
                         if (customer != null)
                             senderName = customer.FullName;
+                        senderAvatarUrl = customer.Image;
                     }
                     else if (account.RoleId == 3)
                     {
                         var tourGuide = await _tourGuideService.GetTourGuideByAccId(message.SenderId);
                         if (tourGuide != null)
                             senderName = tourGuide.FullName;
+                        senderAvatarUrl = tourGuide.Image;
+
                     }
                 }
 
@@ -81,7 +85,8 @@ namespace API.Controllers
                     message.MessageText,
                     message.SendAt,
                     message.SenderId,
-                    senderName
+                    senderName,
+                    senderAvatarUrl
                 });
             }
 

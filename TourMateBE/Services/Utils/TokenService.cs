@@ -37,7 +37,7 @@ namespace Services.Utils
             {
                 new Claim("AccountId", accountId.ToString()),
                 new Claim("FullName", fullName),
-                new Claim(ClaimTypes.Role, roleName),
+                new Claim("Role", roleName),
             };
 
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));

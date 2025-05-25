@@ -93,6 +93,32 @@ export const columns: ColumnDef<Customer>[] = [
     },
   },  
   {
+    accessorKey: "image",
+    header: "Hình ảnh",
+    cell: ({ row }) => {
+      const imageUrl = row.getValue('image') as string;
+      return (
+        <div
+          style={{
+            maxWidth: '200px',
+          }}
+        >
+          {/* Hiển thị ảnh nếu có URL */}
+          {imageUrl ? (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img 
+              src={imageUrl} 
+              alt="Banner" 
+              style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh
+            />
+          ) : (
+            <span>Không có ảnh</span>
+          )}
+        </div>
+      );
+    }
+  },
+  {
     id: "actions",
     cell: ({ row }) => {
       const data = row.original;
