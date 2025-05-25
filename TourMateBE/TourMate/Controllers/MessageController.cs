@@ -48,7 +48,7 @@ namespace API.Controllers
             return CreatedAtAction(nameof(Get), new { id = message.MessageId }, message);
         }
 
-        // POST: api/conversations/{conversationId}/mark-read
+        // POST: api/messages/{conversationId}/mark-read
         [HttpPost("{conversationId}/mark-read")]
         public async Task<IActionResult> MarkRead(int conversationId)
         {

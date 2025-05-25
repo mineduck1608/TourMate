@@ -24,6 +24,6 @@ export const fetchMarkRead = async (id: number, accessToken?: string) => {
     ? { headers: { Authorization: `Bearer ${accessToken}` } }
     : {};
 
-  const response = await http.post(`/conversations/${id}/mark-read`, null, config);
+  const response = await http.post(`/messages/${id}/mark-read`, null, config);
   return response.data;
 };
