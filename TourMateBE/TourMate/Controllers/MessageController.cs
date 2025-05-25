@@ -50,7 +50,7 @@ namespace API.Controllers
 
         // POST: api/messages/{conversationId}/mark-read
         [HttpPost("{conversationId}/mark-read")]
-        public async Task<IActionResult> MarkRead(int conversationId, [FromBody] int userId)
+        public async Task<IActionResult> MarkRead(int conversationId, int userId)
         {
             await _messageService.MarkConversationAsRead(conversationId, userId);
 
