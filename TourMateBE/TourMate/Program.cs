@@ -99,6 +99,9 @@ builder.Services.AddScoped<TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
+builder.Services.AddScoped<IEmailSender, EmailSender>();
+
+
 // Đăng ký DbContext
 builder.Services.AddDbContext<TourmateContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
