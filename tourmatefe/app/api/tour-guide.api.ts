@@ -46,6 +46,12 @@ export const updateTourGuideClient = async (data: TourGuide) => {
   const response = await http.put(`/tour-guide/update-from-client`, convertToUpdateModel(data));
   return response.data;
 };
+export const changePicture = async (id: | string, fieldToChange: string, newValue: string) => {
+  const response = await http.put(`/tour-guide/change-picture/${id}`, newValue, {
+    params: { fieldToChange },
+  });
+  return response.data;
+};
 export const lockTourGuide = async (id: number) => {
   const response = await http.put(`/account/lock/${id}`);
   return response.data;

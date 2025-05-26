@@ -142,7 +142,13 @@ namespace API.Controllers
             {
                 return Ok();
             }
-            return BadRequest(new {msg = "Cập nhật thất bại"});
+            return BadRequest(new { msg = "Cập nhật thất bại" });
+        }
+        [HttpPut("change-picture/{id}")]
+        public async Task<IActionResult> ChangePicture(int id, string fieldToChange, [FromBody] string newValue)
+        {
+            var update = await _tourguideService.ChangePicture(id, fieldToChange, newValue);
+            return update ? Ok() : BadRequest();
         }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)

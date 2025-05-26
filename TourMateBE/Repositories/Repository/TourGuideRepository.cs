@@ -36,7 +36,7 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourGuide>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
         {
             var query = _context.TourGuides
-                .Include (x => x.TourGuideDescs)
+                .Include(x => x.TourGuideDescs)
                 .ThenInclude(x => x.Area)
                 .AsQueryable();
 
@@ -135,7 +135,7 @@ namespace Repositories.Repository
             name = name != null ? name.ToLower() : "";
             var query = _context.TourGuides
                 .Include(x => x.TourGuideDescs)
-                .Where(x => 
+                .Where(x =>
                 (string.IsNullOrEmpty(name) || x.FullName.ToLower().Contains(name))
                 && (areaId == null || x.TourGuideDescs.First().AreaId == areaId));
             var result = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
@@ -146,6 +146,32 @@ namespace Repositories.Repository
                 TotalResult = totalResult,
                 TotalPage = (int)Math.Ceiling((double)totalResult / pageSize)
             };
+        }
+
+        public async Task<bool> ChangePicture(int id, string fieldToChange, string newValue)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
+                switch(fieldToChange)
+                {
+                    case "Image":
+                        c.Image = newValue;
+                        break;
+                    case "BannerImage":
+                        c.BannerImage = newValue;
+                        break;
+                    default:
+                        return false; // Trường không hợp lệ
+                };
+                _context.Entry(c).CurrentValues.SetValues(c);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
         }
     }
 }

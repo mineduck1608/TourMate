@@ -6,7 +6,12 @@ import { Label } from "@/components/ui/label";
 import { cn } from "@/lib/utils";
 import { TourGuide, TourGuideDesc } from "@/types/tour-guide";
 import { useQuery } from "@tanstack/react-query";
+import dynamic from "next/dynamic";
 import { FormEvent, useState } from "react";
+import "react-quill-new/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+    ssr: false,  // Disable SSR for this component
+});
 /**
  * This is used so that tourGuideDesc is not undefined
  */
@@ -38,9 +43,7 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
     function handleDescChange(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>, isNumber?: boolean) {
         const { name, value } = e.target
         const t = formData.tourGuideDescs?.[0] ?? dummyDesc
-        const added = ({ ...t, [name]: isNumber ? Number(value): value })
-        console.log(added);
-        
+        const added = ({ ...t, [name]: isNumber ? Number(value) : value })
         setFormData((prev) => ({ ...prev, tourGuideDescs: [added] }))
     }
     const simplifiedAreaQuery = useQuery({
@@ -51,6 +54,11 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
     function submit(e: FormEvent) {
         e.preventDefault()
         updateFn(formData)
+    }
+    function handleEditorChange(value: string) {
+        const t = formData.tourGuideDescs?.[0] ?? dummyDesc
+        const added = ({ ...t, description: value })
+        setFormData((prev) => ({ ...prev, tourGuideDescs: [added] }))
     }
     const simplifiedAreas = simplifiedAreaQuery.data?.data ?? []
     return (
@@ -139,17 +147,6 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
                     </div>
                 </div>
             </div>
-            <div className="grid gap-2">
-                <Label htmlFor="description">Mô tả</Label>
-                <Input
-                    id="description"
-                    name="description"
-                    type="text"
-                    value={formData.tourGuideDescs?.[0].description}
-                    onChange={(e) => handleDescChange(e)}
-                    required
-                />
-            </div>
             <div className="grid grid-cols-3 gap-4">
                 <div className="grid gap-2">
                     <Label htmlFor="company">Công ty</Label>
@@ -168,12 +165,13 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
                     />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="gender">Khu vực hoạt động</Label>
+                    <Label htmlFor="areaId">Khu vực hoạt động</Label>
                     <select
-                        id="gender"
+                        id="areaId"
+                        name="areaId"
                         className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                         required
-                        onChange={(e) => handleChange(e)}
+                        onChange={(e) => handleDescChange(e, true)}
                         value={formData.tourGuideDescs?.[0].areaId}
                     >
                         <option value="" disabled>
@@ -181,12 +179,33 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
                         </option>
                         {
                             simplifiedAreas.map((v, i) =>
-                                <option value={v.areaId} key={'area' + i}
-                                >{v.areaName}</option>
+                                <option value={v.areaId} key={'area' + i}>{v.areaName}</option>
                             )
                         }
                     </select>
                 </div>
+            </div>
+            <div className="sm:col-span-2">
+                <label
+                    htmlFor="areaContent"
+                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                >
+                    Mô tả
+                </label>
+                <ReactQuill
+                    value={formData.tourGuideDescs?.[0].description}
+                    onChange={handleEditorChange}
+                    theme="snow"
+                    modules={{
+                        toolbar: [
+                            [{ header: "1" }, { header: "2" }, { header: "3" }, { font: [] }],
+                            [{ list: "ordered" }, { list: "bullet" }],
+                            ["bold", "italic", "underline"],
+                            [{ align: [] }],
+                        ],
+                    }}
+                    placeholder="Nhập nội dung tin tức..."
+                />
             </div>
             <Button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'>
                 Cập nhật thông tin
