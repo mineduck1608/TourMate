@@ -65,11 +65,16 @@ export default function ResetPasswordForm() {
       setConfirmPassword("")
       // Bạn có thể redirect về login sau vài giây nếu muốn:
       router.push("/login")
-    } catch (error: any) {
-      setError(
-        error.response?.msg ||
-        (error.message ?? "Đã xảy ra lỗi, vui lòng thử lại")
-      )
+    } catch (error) {
+      let message = "Đã xảy ra lỗi, vui lòng thử lại";
+      if (typeof error === "object" && error !== null) {
+        if ("response" in error && typeof error.response === "object" && error.response !== null && "msg" in error.response) {
+          message = (error.response as { msg?: string }).msg || message;
+        } else if ("message" in error && typeof (error as { message?: string }).message === "string") {
+          message = (error as { message?: string }).message || message;
+        }
+      }
+      setError(message);
     } finally {
       setLoading(false)
     }
