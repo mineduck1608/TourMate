@@ -7,7 +7,7 @@ namespace Services
     {
         Cvapplication GetCvapplication(int id);
         IEnumerable<Cvapplication> GetAll(int pageSize, int pageIndex);
-        void CreateCvapplication(Cvapplication cvapplication);
+        Task<bool> CreateCvapplication(Cvapplication cvapplication);
         void UpdateCvapplication(Cvapplication cvapplication);
         bool DeleteCvapplication(int id);
     }
@@ -26,9 +26,9 @@ namespace Services
             return CvapplicationRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateCvapplication(Cvapplication cvapplication)
+        public async Task<bool> CreateCvapplication(Cvapplication cvapplication)
         {
-            CvapplicationRepository.Create(cvapplication);
+            return await CvapplicationRepository.CreateAsync(cvapplication);
         }
 
         public void UpdateCvapplication(Cvapplication cvapplication)

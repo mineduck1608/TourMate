@@ -34,3 +34,35 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     throw new Error(message);
   }
 }
+
+export const RequestResetPassword = async (email: string) => {
+  try{
+    const response = await http.post(`/account/request-reset-password`,{ email });
+    return response.data.msg;
+    }catch(error){
+      let message = "Yêu cầu thất bại!";
+
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data && typeof error.response.data === "object" && "msg" in error.response.data) {
+        message = (error.response.data as { msg: string }).msg;
+      }
+    }
+    throw new Error(message);
+    }
+  };
+
+  export const ResetPassword = async (token: string, newPassword: string) => {
+  try{
+    const response = await http.post(`/account/reset-password`,{ token, newPassword });
+    return response.data.msg;
+    }catch(error){
+      let message = "Yêu cầu thất bại!";
+
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data && typeof error.response.data === "object" && "msg" in error.response.data) {
+        message = (error.response.data as { msg: string }).msg;
+      }
+    }
+    throw new Error(message);
+    }
+  };

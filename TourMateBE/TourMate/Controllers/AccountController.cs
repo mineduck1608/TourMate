@@ -169,7 +169,7 @@ namespace API.Controllers
 
             // Lưu khách hàng
             var isTourGuideCreated = await _tourGuideService.CreateTourGuide(tourGuide);
-            if (!isTourGuideCreated)
+            if (isTourGuideCreated)
                 return StatusCode(500, "An error occurred while registering the tourguide.");
 
             return Ok(new { msg = "Register successfully." });
@@ -248,5 +248,32 @@ namespace API.Controllers
             var result = _accountService.DeleteAccount(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpPost("request-reset-password")]
+        public async Task<IActionResult> RequestResetPassword([FromBody] RequestResetPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Email))
+                return BadRequest(new { msg = "Vui lòng nhập email!" });
+
+            var result = await _accountService.RequestPasswordResetAsync(dto.Email);
+            if (!result) return BadRequest(new { msg = "Email không tồn tại!" });
+
+            return Ok(new { msg = "Hãy check email của bạn để reset mật khẩu." });
+        }
+
+        [HttpPost("reset-password")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        {
+            if (string.IsNullOrWhiteSpace(dto.Token) || string.IsNullOrWhiteSpace(dto.NewPassword))
+                return BadRequest(new { msg = "Thiếu thông tin xử lý!" });
+
+            var result = await _accountService.ResetPasswordAsync(dto.Token, dto.NewPassword);
+            if (!result) return BadRequest(new { msg = "Token không hợp lệ hoặc đã hết hạn!" });
+
+            return Ok(new { msg = "Đặt lại mật khẩu thành công." });
+        }
     }
 }
+
+public record RequestResetPasswordDto(string Email);
+public record ResetPasswordDto(string Token, string NewPassword);
