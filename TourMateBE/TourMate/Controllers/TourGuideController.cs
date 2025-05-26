@@ -4,6 +4,7 @@ using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 using Services.Utils;
+using System.Numerics;
 
 namespace API.Controllers
 {
@@ -31,14 +32,13 @@ namespace API.Controllers
         {
             var result = await _tourguideService.GetAll(pageSize, pageIndex, phone);
 
-            var response = new PagedResult<TourGuide>
-            {
-                Result = result.Result,
-                TotalResult = result.TotalResult,  // Tổng số kết quả
-                TotalPage = result.TotalPage  // Tổng số trang
-            };
-
-            return Ok(response);
+            return Ok(result);
+        }
+        [HttpGet("get-list")]
+        public async Task<ActionResult<PagedResult<TourGuide>>> GetFromClient(int? areaId, string? name = "", int pageSize = 10, int pageIndex = 1)
+        {
+            var result = await _tourguideService.GetList(pageSize, pageIndex, name, areaId);
+            return Ok(result);
         }
 
         [HttpPost]

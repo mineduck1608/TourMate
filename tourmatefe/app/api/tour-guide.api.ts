@@ -15,6 +15,21 @@ export const getTourGuides = async (page: number | string, limit: number | strin
   return res.data;
 };
 
+export const getList = async (name: string, areaId: string | number | undefined, page: number | string, limit: number | string, signal?: AbortSignal) => {
+  const num = Number(areaId)
+  const res = await http.get<PagedResult<TourGuide>>('tour-guide/get-list', {
+    params: {
+      pageSize: limit,
+      pageIndex: page,
+      name: name,
+      areaId: num > 0 ? num : undefined
+    },
+    signal
+  });
+
+  return res.data;
+};
+
 export const getTourGuide = async (id: number | string) => http.get<TourGuide>(`tour-guide/${id}`)
 
 

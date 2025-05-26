@@ -1,7 +1,8 @@
-﻿using Repositories.Models;
-using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.DTO;
+using Repositories.GenericRepository;
+using Repositories.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository
 {
@@ -127,6 +128,24 @@ namespace Repositories.Repository
             {
                 return false;
             }
+        }
+
+        public async Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId)
+        {
+            name = name != null ? name.ToLower() : "";
+            var query = _context.TourGuides
+                .Include(x => x.TourGuideDescs)
+                .Where(x => 
+                (string.IsNullOrEmpty(name) || x.FullName.ToLower().Contains(name))
+                && (areaId == null || x.TourGuideDescs.First().AreaId == areaId));
+            var result = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            var totalResult = await result.CountAsync();
+            return new PagedResult<TourGuide>
+            {
+                Result = result.ToList(),
+                TotalResult = totalResult,
+                TotalPage = (int)Math.Ceiling((double)totalResult / pageSize)
+            };
         }
     }
 }

@@ -19,6 +19,7 @@ namespace Services
         Task<bool> UpdateTourGuide(TourGuide tourguide);
         Task<TourGuide> GetTourGuideByPhone(string phone);
         Task<bool> UpdateTourGuideClient(TourGuide tourGuide);
+        Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId);
     }
     public class TourGuideService : ITourGuideService
     {
@@ -72,6 +73,11 @@ namespace Services
         public async Task<bool> UpdateTourGuideClient(TourGuide tourGuide)
         {
             return await _repository.UpdateProfile(tourGuide);
+        }
+
+        public async Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId)
+        {
+            return await _repository.GetList(pageSize, pageIndex, name, areaId);
         }
     }
 }
