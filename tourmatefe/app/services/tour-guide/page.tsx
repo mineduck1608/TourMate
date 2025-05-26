@@ -61,7 +61,7 @@ function TourGuideMain() {
                         type="text"
                         value={searchTerm}
                         onChange={handleSearchChange}
-                        placeholder="Tìm kiếm HDV..."
+                        placeholder="Tìm kiếm hướng dẫn viên..."
                         className="w-full mb-4 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
                     

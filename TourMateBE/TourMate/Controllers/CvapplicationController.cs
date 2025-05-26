@@ -1,7 +1,9 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using Services.Utils;
+using System.Numerics;
 
 namespace API.Controllers
 {
@@ -10,10 +12,14 @@ namespace API.Controllers
     public class CvapplicationController : ControllerBase
     {
         private readonly ICvapplicationService _cvapplicationService;
+        private readonly IAccountService _accountService;
+        private readonly ICustomerService _customerService;
 
-        public CvapplicationController(ICvapplicationService cvapplicationService)
+        public CvapplicationController(ICvapplicationService cvapplicationService, IAccountService accountService, ICustomerService customerService)
         {
             _cvapplicationService = cvapplicationService;
+            _accountService = accountService;
+            _customerService = customerService;
         }
 
         [HttpGet("{id}")]
@@ -29,11 +35,27 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] CvapplicationsCreateModel data)
+        public async Task<IActionResult> Create([FromBody] CvapplicationsCreateModel data)
         {
+            if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
+                return BadRequest(new { msg = "Số điện thoại không đúng!" });
+
+            if (!ValidInput.IsMailFormatted(data.Email))
+                return BadRequest(new { msg = "Email không đúng định dạng!" });
+
+            // Kiểm tra tài khoản đã tồn tại
+            var existingAccount = await _accountService.GetAccountByEmail(data.Email);
+            if (existingAccount != null)
+                return Conflict("Email này đã được sử dụng!");
+
+            var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
+            if (existingPhone != null)
+                return Conflict("Số điện thoại này đã được sử dụng!");
+
             var cvapplication = data.Convert();
-            _cvapplicationService.CreateCvapplication(cvapplication);
-            return CreatedAtAction(nameof(Get), new { id = cvapplication.CvApplicationId }, cvapplication);
+            var result = await _cvapplicationService.CreateCvapplication(cvapplication);
+            if (!result) return BadRequest(new { msg = "Tạo hồ sơ ứng tuyển thất bại." });
+            return Ok(new { msg = "Tạo hồ sơ ứng tuyển thành công, bạn sẽ nhận được thông tin phản hồi trong thời gian sớm nhất." });
         }
 
         [HttpPut]

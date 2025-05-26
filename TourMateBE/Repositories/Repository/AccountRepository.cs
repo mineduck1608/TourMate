@@ -59,6 +59,9 @@ namespace Repositories.Repository
             return await _context.Accounts.Include(a => a.Role).FirstOrDefaultAsync(a => a.Email == email);
         }
 
+        //public async Task<Account> GetByIdAsync(int id) => await _context.Accounts.FindAsync(id);
+
+
         public async Task<Account> CreateAdmin(Account entity)
         {
             try
