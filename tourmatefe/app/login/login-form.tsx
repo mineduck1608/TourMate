@@ -149,9 +149,10 @@ export function LoginForm({
               <div className="text-center text-sm">
                 Không có tài khoản?{" "}
                 <Button
+                  type="button"
                   onClick={() => setIsModalOpen(true)}
                   variant="link"
-                  className="underline underline-offset-4 hover:text-primary p-0 cursor-pointer"
+                  className="underline underline-offset-4 hover:text-gray-600 p-0 cursor-pointer"
                   disabled={loading}
                 >
                   Đăng Ký
@@ -169,7 +170,7 @@ export function LoginForm({
         </CardContent>
       </Card>
       <div className="text-balance text-center text-xs text-white [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-primary">
-        Bằng cách nhấn Tiếp tục, bạn đồng ý với{" "}
+        Bằng cách nhấn Đăng nhập, bạn đồng ý với các{" "}
         <Link href="#">Điều khoản Dịch vụ</Link> và{" "}
         <Link href="#">Chính sách Bảo mật</Link> của chúng tôi.
       </div>

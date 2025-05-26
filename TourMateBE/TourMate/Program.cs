@@ -124,10 +124,10 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseAzureSignalR(routes =>
-{
-    routes.MapHub<ChatHub>("/chatHub");
-});
+//app.UseAzureSignalR(routes =>
+//{
+//    routes.MapHub<ChatHub>("/chatHub");
+//});
 
 app.MapControllers();
 
