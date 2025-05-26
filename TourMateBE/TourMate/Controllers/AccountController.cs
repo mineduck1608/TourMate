@@ -253,24 +253,24 @@ namespace API.Controllers
         public async Task<IActionResult> RequestResetPassword([FromBody] RequestResetPasswordDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
-                return BadRequest("Email is required.");
+                return BadRequest(new { msg = "Vui lòng nhập email!" });
 
             var result = await _accountService.RequestPasswordResetAsync(dto.Email);
-            if (!result) return BadRequest("Email not found.");
+            if (!result) return BadRequest(new { msg = "Email không tồn tại!" });
 
-            return Ok("Please check your email for reset instructions.");
+            return Ok(new { msg = "Hãy check email của bạn để reset mật khẩu." });
         }
 
         [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Token) || string.IsNullOrWhiteSpace(dto.NewPassword))
-                return BadRequest("Token and new password are required.");
+                return BadRequest(new { msg = "Thiếu thông tin xử lý!" });
 
             var result = await _accountService.ResetPasswordAsync(dto.Token, dto.NewPassword);
-            if (!result) return BadRequest("Invalid or expired token.");
+            if (!result) return BadRequest(new { msg = "Token không hợp lệ hoặc đã hết hạn!" });
 
-            return Ok("Password has been reset successfully.");
+            return Ok(new { msg = "Đặt lại mật khẩu thành công." });
         }
     }
 }

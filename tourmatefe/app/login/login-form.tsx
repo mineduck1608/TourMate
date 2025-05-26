@@ -9,7 +9,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
-import { login } from "../api/authenticate.api";
+import { login } from "../api/account.api";
 import axios from "axios";
 
 export function LoginForm({

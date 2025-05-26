@@ -34,7 +34,7 @@ namespace Services.Utils
             emailMessage.Subject = subject;
 
             // Bạn có thể set body dạng plain text hoặc html
-            emailMessage.Body = new TextPart("plain") { Text = body };
+            emailMessage.Body = new TextPart("html") { Text = body };
 
             using var client = new SmtpClient();
 
