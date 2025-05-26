@@ -1,6 +1,5 @@
 ﻿
 // Add this to your Program.cs file in the Web API project
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
 using Repositories.Repository;
@@ -124,13 +123,11 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-app.UseAzureSignalR(routes =>
+app.UseEndpoints(endpoints =>
 {
-    routes.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapControllers();
 });
-
-app.MapControllers();
-
 
 app.UseSwagger();
 app.UseSwaggerUI();
