@@ -1,45 +1,54 @@
+using Microsoft.Identity.Client;
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
+using System.Threading.Tasks;
 
 namespace Services
 {
     public interface ITourBidService
     {
-        TourBid GetTourBid(int id);
-        IEnumerable<TourBid> GetAll(int pageSize, int pageIndex);
-        void CreateTourBid(TourBid tourbid);
-        void UpdateTourBid(TourBid tourbid);
-        bool DeleteTourBid(int id);
+        Task<TourBid> GetTourBid(int id);
+        Task<PagedResult<TourBid>> GetBidsOf(int accountId, int pageSize, int pageIndex);
+        Task CreateTourBid(TourBid tourbid);
+        Task UpdateTourBid(TourBid tourbid);
+        Task<bool> DeleteTourBid(int id);
+        Task<PagedResult<TourBid>> GetBids(int pageSize, int pageIndex);
     }
 
     public class TourBidService : ITourBidService
     {
         private TourBidRepository TourBidRepository { get; set; } = new();
 
-        public TourBid GetTourBid(int id)
+        public async Task<TourBid> GetTourBid(int id)
         {
-            return TourBidRepository.GetById(id);
+            return await TourBidRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<TourBid> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourBid>> GetBidsOf(int accountId, int pageSize, int pageIndex)
         {
-            return TourBidRepository.GetAll(pageSize, pageIndex);
+            return await TourBidRepository.GetBidsOf(accountId, pageSize, pageIndex);
         }
 
-        public void CreateTourBid(TourBid tourbid)
+        public async Task CreateTourBid(TourBid tourbid)
         {
-            TourBidRepository.Create(tourbid);
+            await TourBidRepository.CreateAsync(tourbid);
         }
 
-        public void UpdateTourBid(TourBid tourbid)
+        public async Task UpdateTourBid(TourBid tourbid)
         {
-            TourBidRepository.Update(tourbid);
+            await TourBidRepository.UpdateAsync(tourbid);
         }
 
-        public bool DeleteTourBid(int id)
+        public async Task<bool> DeleteTourBid(int id)
         {
-            TourBidRepository.Remove(id);
+            await TourBidRepository.RemoveAsync(id);
             return true;
+        }
+
+        public async Task<PagedResult<TourBid>> GetBids(int pageSize, int pageIndex)
+        {
+            return await TourBidRepository.GetBids(pageSize, pageIndex);
         }
     }
 }

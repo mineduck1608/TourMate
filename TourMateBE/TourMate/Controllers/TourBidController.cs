@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -17,36 +19,42 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<TourBid> Get(int id)
+        public async Task<ActionResult<TourBid>> Get(int id)
         {
-            return Ok(_tourbidService.GetTourBid(id));
+            return Ok(await _tourbidService.GetTourBid(id));
+        }
+
+        [HttpGet("bids-of")]
+        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsOfAsync(int id, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        {
+            return Ok(await _tourbidService.GetBidsOf(id, pageSize, pageIndex));
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<TourBid>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_tourbidService.GetAll(pageSize, pageIndex));
+            return Ok(await _tourbidService.GetBids(pageSize, pageIndex));
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] TourBidCreateModel data)
+        public async Task<IActionResult> CreateAsync([FromBody] TourBidCreateModel data)
         {
             var tourbid = data.Convert();
-            _tourbidService.CreateTourBid(tourbid);
+            await _tourbidService.CreateTourBid(tourbid);
             return CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] TourBidCreateModel tourbid)
+        public async Task<IActionResult> UpdateAsync([FromBody] TourBidCreateModel tourbid)
         {
-            _tourbidService.UpdateTourBid(tourbid.Convert());
+            await _tourbidService.UpdateTourBid(tourbid.Convert());
             return NoContent();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _tourbidService.DeleteTourBid(id);
+            var result = await _tourbidService.DeleteTourBid(id);
             return result ? NoContent() : NotFound();
         }
     }

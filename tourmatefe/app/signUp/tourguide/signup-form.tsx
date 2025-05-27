@@ -57,7 +57,6 @@ export function SignupForm({
     });
   };
 
-  // Hàm xử lý submit form
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
