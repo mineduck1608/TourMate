@@ -6,6 +6,7 @@ export const apiUrl = 'https://tourmate-avbjemhvezgqa4en.southeastasia-01.azurew
 export const apiHub = 'https://tourmate-avbjemhvezgqa4en.southeastasia-01.azurewebsites.net'
 
 
+
 export const getToken = () => {
   return sessionStorage.getItem('token')
 }
