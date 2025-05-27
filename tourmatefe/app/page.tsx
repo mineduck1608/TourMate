@@ -1,13 +1,13 @@
 "use client"
 import 'flowbite';
-import HeroSection from '@/components/HeroSection';
-import AboutSunday from '@/components/AboutSunday';
-import MegaMenu from '@/components/MegaMenu';
-import HomeNews from '@/components/HomeNews';
-import FeedbackSection from '@/components/FeedbackSection';
-import TourGuideCard from '@/components/TourGuideCard';
-import ContactPagination from '@/components/ContactPanigation';
-import Footer from '@/components/Footer';
+import HeroSection from '@/components/hero-section';
+import AboutSunday from '@/components/about-sunday';
+import MegaMenu from '@/components/mega-menu';
+import HomeNews from '@/components/home-news';
+import FeedbackSection from '@/components/feedback-section';
+import TourGuideCard from '@/components/tour-guide-card';
+import ContactPagination from '@/components/contact-panigation';
+import Footer from '@/components/footer';
 import ContactText from './contact/contactText';
 
 
@@ -18,8 +18,8 @@ export default function Home() {
       <MegaMenu />
       <HeroSection />
       <AboutSunday />
-      <TourGuideCard />
       <ContactText />
+      <TourGuideCard />
       <FeedbackSection />
       <ContactPagination />
       <HomeNews />

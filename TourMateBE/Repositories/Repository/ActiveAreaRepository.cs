@@ -36,5 +36,27 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / limit)
             };
         }
+
+        public async Task<IEnumerable<SimplifiedAreaListResult>> GetSimplifiedActiveAreas()
+        {
+            return _context.ActiveAreas.Select(x => new SimplifiedAreaListResult()
+            {
+                AreaId = x.AreaId,
+                AreaName = x.AreaName,
+            });
+        }
+
+        public async Task<List<ActiveArea>> GetRandomActiveAreaAsync(int size)
+        {
+            var query = _context.ActiveAreas
+                                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                                .AsQueryable();
+
+            var result = await query
+                .Take(size)  // Giới hạn số lượng kết quả theo pageSize
+                .ToListAsync();
+
+            return result;
+        }
     }
 }

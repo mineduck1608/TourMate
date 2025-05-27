@@ -25,5 +25,7 @@ public partial class TourService
 
     public string Title { get; set; } = null!;
 
+    public string TourDesc { get; set; } = null!;
+
     public virtual TourGuide TourGuide { get; set; } = null!;
 }

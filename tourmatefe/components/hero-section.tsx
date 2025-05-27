@@ -41,7 +41,7 @@ const HeroSection = () => {
           Hãy kết nối ngay với các hướng dẫn viên địa phương để có hành
           trình đáng nhớ!
         </p>
-        <a href="#" className="text-xs underline hover:text-gray-200">
+        <a href="/services/active-area" className="text-xs underline hover:text-gray-200">
           XEM THÊM
         </a>
       </div>
@@ -65,7 +65,7 @@ const HeroSection = () => {
             Trải nghiệm du lịch theo cách chân thực bằng cách kết nối với
             hướng dẫn viên địa phương am hiểu văn hóa.
           </p>
-          <a href="#" className="text-xs underline hover:text-gray-200">
+          <a href="/services/active-area" className="text-xs underline hover:text-gray-200">
             XEM THÊM
           </a>
         </div>
@@ -86,7 +86,7 @@ const HeroSection = () => {
             Du lịch không chỉ là khám phá mà còn là cách để tìm lại sự cân
             bằng trong tâm hồn.
           </p>
-          <a href="#" className="text-xs underline hover:text-gray-200">
+          <a href="/services/active-area" className="text-xs underline hover:text-gray-200">
             XEM THÊM
           </a>
         </div>

@@ -36,6 +36,11 @@ namespace API.Controllers
             };
             return Ok(result);
         }
+        [HttpGet("simplified")]
+        public async Task<ActionResult<IEnumerable<SimplifiedAreaListResult>>> GetSimplifiedArea()
+        {
+            return Ok(await _activeareaService.GetSimplifiedAreas());
+        }
 
         [HttpGet("filtered-area")]
         public async Task<ActionResult<PagedResult<ActiveArea>>> GetActiveAreas(
@@ -83,10 +88,24 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _activeareaService.DeleteActiveArea(id);
+            var result = await _activeareaService.DeleteActiveArea(id);
             return result ? NoContent() : NotFound();
+        }
+
+        [HttpGet("random")]
+        public async Task<IActionResult> GetOtherTourServices([FromQuery] int size)
+        {
+            try
+            {
+                var result = await _activeareaService.GetRandomActiveAreaAsync(size);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
         }
     }
 }

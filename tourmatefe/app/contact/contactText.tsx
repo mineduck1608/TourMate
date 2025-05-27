@@ -25,7 +25,7 @@ export default function ContactText() {
 
   return (
     <section
-      className="bg-white dark:bg-gray-900"
+      className="bg-gray-100 dark:bg-gray-900"
       data-aos="fade-in"
       data-aos-delay="400"
     >

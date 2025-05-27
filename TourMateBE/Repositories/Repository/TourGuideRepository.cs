@@ -1,7 +1,8 @@
-﻿using Repositories.Models;
-using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.DTO;
+using Repositories.GenericRepository;
+using Repositories.Models;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Repositories.Repository
 {
@@ -23,6 +24,7 @@ namespace Repositories.Repository
                 return await _context.TourGuides
                     .Include(x => x.TourGuideDescs)
                     .ThenInclude(x => x.Area)
+                    .Include(x => x.Account)
                     .FirstOrDefaultAsync(x => x.TourGuideId == id);
             }
             catch (Exception ex)
@@ -34,7 +36,7 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourGuide>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
         {
             var query = _context.TourGuides
-                .Include (x => x.TourGuideDescs)
+                .Include(x => x.TourGuideDescs)
                 .ThenInclude(x => x.Area)
                 .AsQueryable();
 
@@ -106,6 +108,100 @@ namespace Repositories.Repository
         public async Task<TourGuide> GetByPhone(string phone)
         {
             return await _context.TourGuides.FirstOrDefaultAsync(x => x.Phone == phone);
+        }
+
+        public new async Task<bool> UpdateProfile(TourGuide tourGuide)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == tourGuide.TourGuideId);
+                var d = c.TourGuideDescs.First();
+                var newDesc = tourGuide.TourGuideDescs.First();
+                newDesc.TourGuideDescId = d.TourGuideDescId;
+                tourGuide.TourGuideDescs = [newDesc];
+                _context.Entry(c).CurrentValues.SetValues(tourGuide);
+                _context.Entry(d).CurrentValues.SetValues(newDesc);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId)
+        {
+            name = name != null ? name.ToLower() : "";
+            var query = _context.TourGuides
+                .Include(x => x.TourGuideDescs)
+                .Where(x =>
+                (string.IsNullOrEmpty(name) || x.FullName.ToLower().Contains(name))
+                && (areaId == null || x.TourGuideDescs.First().AreaId == areaId));
+            var result = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
+            var totalResult = await result.CountAsync();
+            return new PagedResult<TourGuide>
+            {
+                Result = result.ToList(),
+                TotalResult = totalResult,
+                TotalPage = (int)Math.Ceiling((double)totalResult / pageSize)
+            };
+        }
+
+        public async Task<bool> ChangePicture(int id, string fieldToChange, string newValue)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
+                switch (fieldToChange)
+                {
+                    case "Image":
+                        c.Image = newValue;
+                        break;
+                    case "BannerImage":
+                        c.BannerImage = newValue;
+                        break;
+                    default:
+                        return false; // Trường không hợp lệ
+                }
+                ;
+                _context.Entry(c).CurrentValues.SetValues(c);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ChangePassword(int id, string password)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
+                
+                _context.Entry(c).CurrentValues.SetValues(c);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
+        {
+            var result = await _context.TourGuides
+    .Where(x => x.TourGuideId != tourGuideId)
+    .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+    .Include(td => td.TourGuideDescs)  // Đảm bảo TourGuideDescs được tải ra
+    .Take(pageSize)  // Giới hạn số lượng kết quả theo pageSize
+    .ToListAsync();
+
+
+            return result;
         }
     }
 }

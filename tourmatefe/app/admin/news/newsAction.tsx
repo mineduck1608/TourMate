@@ -10,7 +10,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { News } from "@/types/news";
 import React, { useState } from "react";
-import DeleteModal from "@/components/DeleteModal";
+import DeleteModal from "@/components/delete-modal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { deleteNews, getNews, updateNews } from "@/app/api/news.api";
 import { toast } from "react-toastify";

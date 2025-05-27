@@ -1,27 +1,44 @@
 'use client'
 
-import { getTourGuides } from '@/app/api/tour-guide.api';
+import { getSimplifiedArea } from '@/app/api/active-area.api';
+import { getList} from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
-import Banner from '@/components/Banner'
+import Banner from '@/components/banner'
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react'
 const LIMIT = 12
+type SearchTerm = {
+    name: string,
+    areaId?: number,
+    rating?: number
+}
 function TourGuideMain() {
     const queryString: { page?: string } = useQueryString();
     const router = useRouter();
     const page = Number(queryString.page) || 1;
-    const [searchTerm, setSearchTerm] = useState("");
+    const [searchTerm, setSearchTerm] = useState<SearchTerm>({
+        name: '',
+        areaId: 0
+    });
+    const simplifiedAreaQuery = useQuery({
+        queryKey: ['simplified-area'],
+        queryFn: () => getSimplifiedArea(),
+        staleTime: 24 * 3600 * 1000
+    })
+    const areas = simplifiedAreaQuery.data?.data ?? []
     const { data } = useQuery({
-        queryKey: ["tour-guide", LIMIT, page],
+        queryKey: ["tour-guide", LIMIT, page, searchTerm],
         queryFn: () => {
             const controller = new AbortController();
             setTimeout(() => {
                 controller.abort();
             }, 5000);
-            return getTourGuides(
+            return getList(
+                searchTerm.name,
+                searchTerm.areaId,
                 page,
                 LIMIT,
                 controller.signal
@@ -32,8 +49,9 @@ function TourGuideMain() {
         staleTime: 24 * 3600 * 1000,
     });
 
-    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setSearchTerm(event.target.value);
+    const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const {name, value} = event.target
+        setSearchTerm({...searchTerm, [name]: value});
     };
 
     const handlePageChange = (a: number) => {
@@ -59,12 +77,31 @@ function TourGuideMain() {
                     <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
                     <input
                         type="text"
-                        value={searchTerm}
+                        value={searchTerm.name}
+                        name='name'
                         onChange={handleSearchChange}
                         placeholder="Tìm kiếm hướng dẫn viên..."
                         className="w-full mb-4 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                     />
-                    
+                    <select
+                        id="areaId"
+                        name='areaId'
+                        title='area'
+                        className="w-full mb-4 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                        required
+                        onChange={handleSearchChange}
+                        value={searchTerm.areaId}
+                    >
+                        <option value={'0'}>
+                            Chọn khu vực
+                        </option>
+                        {
+                            areas.map((v, i) =>
+                                <option value={v.areaId} key={'area' + i}
+                                >{v.areaName}</option>
+                            )
+                        }
+                    </select>
                 </div>
 
                 <div data-aos="fade-left" className="md:w-2/3 w-full ml-15">
@@ -92,7 +129,7 @@ function TourGuideMain() {
                                         </h4>
                                         <p className="text-gray-600 text-sm mb-2">
                                             {dayjs(v.dateOfBirth).format('DD/MM/YYYY')}
-                                        </p>                                        
+                                        </p>
                                         <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                                             Xem ngay
                                         </button>
