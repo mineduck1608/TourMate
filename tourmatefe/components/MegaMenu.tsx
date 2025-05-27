@@ -43,13 +43,13 @@ const MegaMenu = () => {
             href="/login"
             className="text-gray-800 hover:bg-gray-50 focus:ring-4 focus:ring-gray-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none"
           >
-            Login
+            Đăng nhập
           </Link>
           <Button
             onClick={() => setIsModalOpen(true)}
             className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer"
           >
-            Sign up
+            Đăng ký
           </Button>
           <button
             data-collapse-toggle="mega-menu-icons"

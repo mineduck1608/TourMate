@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -37,9 +37,10 @@ export function SignupForm({
     image: "",
     dateOfBirth: "",
   });
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+
   const [error, setError] = useState("");
+
+
 
   const mutation = useMutation({
     mutationFn: registerTourGuide,
@@ -55,10 +56,7 @@ export function SignupForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords không trùng");
-      return;
-    }
+    
 
     // Submit form data
     mutation.mutate({
@@ -70,8 +68,7 @@ export function SignupForm({
       phone: formData.phone,
       account: {
         email: formData.email,
-        password: password,
-      },
+        },
     } as Partial<TourGuide>);
   };
 
@@ -85,13 +82,7 @@ export function SignupForm({
     });
   };
 
-  useEffect(() => {
-    if (confirmPassword && password !== confirmPassword) {
-      setError("Passwords không trùng");
-    } else {
-      setError("");
-    }
-  }, [password, confirmPassword]);
+ 
 
   return (
     <form

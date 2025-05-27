@@ -8,13 +8,13 @@ import TourServices from './posts';
 export default function TourGuideProfileDetail({
     params,
 }: {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
 
     const { data } = useQuery({
         queryKey: ['tour-guide', id],
-        queryFn: () => getTourGuide(Number(id)),
+        queryFn: () => getTourGuide(id),
         staleTime: 24 * 3600 * 1000,
     })
     const tourGuide = data?.data

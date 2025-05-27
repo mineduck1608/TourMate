@@ -11,13 +11,13 @@ import dayjs from 'dayjs';
 export default function TourGuideDetail({
     params,
 }: {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
 
     const tourGuideData = useQuery({
         queryKey: ['tour-guide', id],
-        queryFn: () => getTourGuide(Number(id)),
+        queryFn: () => getTourGuide(id),
         staleTime: 24 * 3600 * 1000,
     })
     const tourGuide = tourGuideData.data?.data
