@@ -8,7 +8,7 @@ import TourServices from './posts';
 export default function TourGuideProfileDetail({
     params,
 }: {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
 

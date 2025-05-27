@@ -30,7 +30,7 @@ export const getList = async (name: string, areaId: string | number | undefined,
   return res.data;
 };
 
-export const getTourGuide = async (id: number | string) => http.get<TourGuide>(`tour-guide/${id}`)
+export const getTourGuide = async (id: number) => http.get<TourGuide>(`tour-guide/${id}`)
 
 
 export const addTourGuide = async (data: TourGuide) => {
@@ -51,7 +51,7 @@ export const updateTourGuideClient = async (data: TourGuide) => {
   const response = await http.put(`/tour-guide/update-from-client`, convertToUpdateModel(data));
   return response.data;
 };
-export const changePicture = async (id: | string, fieldToChange: string, newValue: string) => {
+export const changePicture = async (id: number, fieldToChange: string, newValue: string) => {
   const response = await http.put(`/tour-guide/change-picture/${id}`, newValue, {
     params: { fieldToChange },
   });

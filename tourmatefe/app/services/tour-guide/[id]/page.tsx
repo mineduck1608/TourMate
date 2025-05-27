@@ -11,7 +11,7 @@ import dayjs from 'dayjs';
 export default function TourGuideDetail({
     params,
 }: {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
 

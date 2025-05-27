@@ -19,7 +19,7 @@ const targetType = {
 export default function TourGuideProfileEdit({
     params,
 }: {
-    params: Promise<{ id: string }>;
+    params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
     const [toggleMode, setToggleMode] = useState({
