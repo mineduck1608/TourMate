@@ -6,7 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import React, { useState } from 'react'
 
-export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
+export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
     const pageSize = 3
     const { data } = useQuery({

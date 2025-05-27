@@ -23,10 +23,9 @@ public partial class Message
 
     public int? MessageTypeId { get; set; }
 
-
     public virtual Conversation Conversation { get; set; } = null!;
 
-    public virtual MessageType MessageType { get; set; }
+    public virtual MessageType? MessageType { get; set; }
 
     public virtual Account Sender { get; set; } = null!;
 }

@@ -8,5 +8,6 @@ export type TourService = {
     tourGuideId: number,
     createdDate: string,
     isDeleted: boolean,
-    title: string
+    title: string,
+    tourDesc: string
 }

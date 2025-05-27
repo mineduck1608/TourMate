@@ -7,5 +7,5 @@ export type Account = {
   createdDate: string;
   roleId: number;
   status: boolean;
-  role: Role
+  role?: Role
 }

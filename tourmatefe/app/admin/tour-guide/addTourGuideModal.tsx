@@ -33,6 +33,7 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
       createdDate: "",
       roleId: 3,
     },
+    bannerImage: ''
   });
 
   const handleChange = (
@@ -94,6 +95,7 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
         createdDate: "",
         roleId: 3,
       },
+      bannerImage: ''
     });
 
     onClose();

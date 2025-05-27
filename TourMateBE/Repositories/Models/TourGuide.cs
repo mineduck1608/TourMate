@@ -20,6 +20,9 @@ public partial class TourGuide
     public string Image { get; set; } = null!;
 
     public string Phone { get; set; } = null!;
+    public string BannerImage { get; set; } = null!;
+
+    public string BannerImage { get; set; } = null!;
 
     public virtual Account Account { get; set; } = null!;
 
