@@ -91,6 +91,7 @@ namespace Services
         public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
         {
             return await _repository.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+        }
         public async Task<bool> ChangePassword(int id, string password)
         {
             return await _repository.ChangePassword(id, password);
