@@ -1,6 +1,6 @@
 'use client'
 import { changePicture as changeTourGuidePicture, getTourGuide, updateTourGuideClient } from '@/app/api/tour-guide.api';
-import Banner from '@/components/banner';
+import Banner from '@/components/Banner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { use, useState } from 'react'
 import ProfileForm from './form';

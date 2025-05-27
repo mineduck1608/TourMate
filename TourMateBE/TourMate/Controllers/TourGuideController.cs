@@ -5,6 +5,7 @@ using Repositories.Models;
 using Services;
 using Services.Utils;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace API.Controllers
 {
@@ -148,6 +149,14 @@ namespace API.Controllers
         public async Task<IActionResult> ChangePicture(int id, string fieldToChange, [FromBody] string newValue)
         {
             var update = await _tourguideService.ChangePicture(id, fieldToChange, newValue);
+            return update ? Ok() : BadRequest();
+        }
+        [HttpPut("change-password/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] string password)
+        {
+            if (!ValidInput.IsPasswordSecure(password))
+                return base.BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+            var update = await _tourguideService.ChangePassword(id, HashString.ToHashString(password));
             return update ? Ok() : BadRequest();
         }
         [HttpDelete("{id}")]

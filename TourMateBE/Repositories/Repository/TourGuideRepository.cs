@@ -153,7 +153,7 @@ namespace Repositories.Repository
             try
             {
                 var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
-                switch(fieldToChange)
+                switch (fieldToChange)
                 {
                     case "Image":
                         c.Image = newValue;
@@ -163,7 +163,24 @@ namespace Repositories.Repository
                         break;
                     default:
                         return false; // Trường không hợp lệ
-                };
+                }
+                ;
+                _context.Entry(c).CurrentValues.SetValues(c);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> ChangePassword(int id, string password)
+        {
+            try
+            {
+                var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
+                
                 _context.Entry(c).CurrentValues.SetValues(c);
                 await _context.SaveChangesAsync();
                 return true;

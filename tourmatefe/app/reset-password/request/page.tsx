@@ -1,4 +1,4 @@
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import MegaMenu from "@/components/mega-menu";
 import { RequestResetPasswordForm } from "@/components/request-reset-password-form";
 
