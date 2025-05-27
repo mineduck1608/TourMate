@@ -121,7 +121,6 @@ namespace Repositories.GenericRepository
             //}
             //_context.SaveChanges();
         }
-
         public async Task<bool> UpdateAsync(T entity)
         {
             //var trackerEntity = _context.Set<T>().Local.FirstOrDefault(e => e == entity);

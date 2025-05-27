@@ -36,5 +36,14 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / limit)
             };
         }
+
+        public async Task<IEnumerable<SimplifiedAreaListResult>> GetSimplifiedActiveAreas()
+        {
+            return _context.ActiveAreas.Select(x => new SimplifiedAreaListResult()
+            {
+                AreaId = x.AreaId,
+                AreaName = x.AreaName,
+            });
+        }
     }
 }

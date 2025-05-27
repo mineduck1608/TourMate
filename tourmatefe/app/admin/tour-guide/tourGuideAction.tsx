@@ -17,7 +17,7 @@ import {
   getTourGuides,
   lockTourGuide,
   unlockTourGuide,
-  updateTourGuide,
+  updateTourGuideAdmin,
 } from "@/app/api/tour-guide.api";
 import UpdateTourGuideModal from "./updateTourGuideModal";
 import TourGuideDetailModal from "./tourGuideDetailModal";
@@ -65,7 +65,7 @@ const TourGuideActions: React.FC<TourGuideActionsProps> = ({ data }) => {
   // Mutation for updating
   const updateTourGuideMutation = useMutation({
     mutationFn: ({ id, data }: { id: number; data: TourGuide }) =>
-      updateTourGuide(id, data),
+      updateTourGuideAdmin(id, data),
     onSuccess: () => {
       toast.success("Cập nhật hướng dẫn viên thành công");
       refetch(); // Refetch dữ liệu sau khi cập nhật thành công

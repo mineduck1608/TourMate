@@ -8,3 +8,8 @@ export type ActiveArea = {
     areaType: string;
     createdAt: string;
 };
+
+export type SimplifiedActiveArea = {
+    areaId: number,
+    areaName: string
+}
