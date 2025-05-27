@@ -1,3 +1,4 @@
+import { Customer } from "./customer";
 import { Role } from "./role";
 
 export type Account = {
@@ -7,5 +8,6 @@ export type Account = {
   createdDate: string;
   roleId: number;
   status: boolean;
-  role?: Role
+  role?: Role,
+  customers?: Customer[]
 }
