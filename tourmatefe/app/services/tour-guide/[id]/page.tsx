@@ -1,6 +1,6 @@
 'use client'
 import { getTourGuide } from '@/app/api/tour-guide.api';
-import Banner from '@/components/Banner';
+import Banner from '@/components/banner';
 import { useQuery } from '@tanstack/react-query';
 import React, { use, useState } from 'react'
 import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaRegMap, FaRegUser, FaSuitcaseRolling } from 'react-icons/fa';

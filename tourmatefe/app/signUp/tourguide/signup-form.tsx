@@ -12,7 +12,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import ImageUpload from "@/components/image-upload";
-import dynamic from "next/dynamic";
 
 export function SignupForm({
   className,
@@ -57,13 +56,6 @@ export function SignupForm({
       ...formData,
       [e.target.id]: e.target.value,
     });
-  };
-
-  const handleDescriptionChange = (value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      description: value,
-    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {

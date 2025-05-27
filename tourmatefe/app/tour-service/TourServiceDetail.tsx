@@ -1,7 +1,7 @@
 "use client";
 
 import { useQueryString } from "@/app/utils/utils";
-import Banner from "@/components/Banner";
+import Banner from "@/components/banner";
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { getTourService } from "../api/tour-service.api";

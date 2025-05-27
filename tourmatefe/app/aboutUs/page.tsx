@@ -4,7 +4,7 @@ import AboutUsHero from "./aboutHeroSection";
 import AboutCarousel from "./about-carousel";
 import OurSight from "./our-sight";
 import CustomerTestimonials from "./testimonial-carousel";
-import Footer from "@/components/Footer";
+import Footer from "@/components/footer";
 import MegaMenu from "@/components/mega-menu";
 
 export default function Page() {

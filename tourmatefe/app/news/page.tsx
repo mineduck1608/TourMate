@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react'
 import Header from '@/components/mega-menu';
-import Footer from '@/components/Footer';
-import Banner from '@/components/Banner';
+import Footer from '@/components/footer';
+import Banner from '@/components/banner';
 import NewsList from './NewsList';
 
 function NewsListPage() {
