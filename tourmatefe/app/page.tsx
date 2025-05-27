@@ -7,7 +7,7 @@ import HomeNews from '@/components/home-news';
 import FeedbackSection from '@/components/feedback-section';
 import TourGuideCard from '@/components/tour-guide-card';
 import ContactPagination from '@/components/contact-panigation';
-import Footer from '@/components/footer';
+import Footer from '@/components/Footer';
 import ContactText from './contact/contactText';
 
 
