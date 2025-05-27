@@ -12,6 +12,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import ImageUpload from "@/components/image-upload";
+import dynamic from "next/dynamic";
 
 export function SignupForm({
   className,
@@ -47,9 +48,10 @@ export function SignupForm({
     },
   });
 
-  // Hàm để xử lý thay đổi form data
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setFormData({
       ...formData,
@@ -57,7 +59,13 @@ export function SignupForm({
     });
   };
 
-  // Hàm xử lý submit form
+  const handleDescriptionChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: value,
+    }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
@@ -190,6 +198,10 @@ export function SignupForm({
               setFormData((prev) => ({ ...prev, image: url }))
             }
           />
+        </div>
+        <div className="grid gap-2">
+            <Label htmlFor="description">Mô tả bản thân</Label>
+            
         </div>
 
         {error && <p className="text-sm text-red-500 mt-1">{error}</p>}

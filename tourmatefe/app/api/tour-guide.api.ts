@@ -79,3 +79,12 @@ export const getOtherTourGuides = async (tourGuideId: number | string, pageSize:
   return res.data;
 };
 
+export const changePassword = async (id: number, newPassword: string) => {
+  try {
+    const response = await http.put(`/tour-guide/change-password/${id}`, newPassword);
+    return response.data;
+  }
+  catch (err) {
+    throw err
+  }
+}

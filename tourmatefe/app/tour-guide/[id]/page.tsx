@@ -1,6 +1,6 @@
 'use client'
 import { getTourGuide } from '@/app/api/tour-guide.api';
-import Banner from '@/components/banner';
+import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { use } from 'react'
