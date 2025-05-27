@@ -68,3 +68,23 @@ export const unlockTourGuide = async (id: number) => {
   return response.data;
 };
 
+export const getOtherTourGuides = async (tourGuideId: number | string, pageSize: number, signal?: AbortSignal) => {
+  const res = await http.get<TourGuide>('tour-guide/other', {
+    params: {
+      pageSize: pageSize,
+      tourGuideId: tourGuideId,
+    },
+    signal
+  });
+  return res.data;
+};
+
+export const changePassword = async (id: number, newPassword: string) => {
+  try {
+    const response = await http.put(`/tour-guide/change-password/${id}`, newPassword);
+    return response.data;
+  }
+  catch (err) {
+    throw err
+  }
+}

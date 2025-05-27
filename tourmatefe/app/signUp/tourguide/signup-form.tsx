@@ -13,7 +13,7 @@ import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
-import { Upload, Globe, Plane } from "lucide-react";
+import { Upload } from "lucide-react";
 
 // Dynamically import ReactQuill with no SSR (Server-Side Rendering)
 const ReactQuill = dynamic(() => import("react-quill-new"), {
@@ -21,7 +21,6 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 import "react-quill-new/dist/quill.snow.css";
-import { ActiveArea } from "@/types/active-area";
 
 export function SignupForm({
   className,

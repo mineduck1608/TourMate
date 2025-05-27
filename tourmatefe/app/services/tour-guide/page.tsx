@@ -3,7 +3,7 @@
 import { getSimplifiedArea } from '@/app/api/active-area.api';
 import { getList} from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
-import Banner from '@/components/banner'
+import Banner from '@/components/Banner'
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -86,6 +86,7 @@ function TourGuideMain() {
                     <select
                         id="areaId"
                         name='areaId'
+                        title='area'
                         className="w-full mb-4 p-3 border rounded-lg border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                         required
                         onChange={handleSearchChange}

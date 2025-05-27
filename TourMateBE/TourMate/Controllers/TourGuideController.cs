@@ -5,6 +5,7 @@ using Repositories.Models;
 using Services;
 using Services.Utils;
 using System.Numerics;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace API.Controllers
 {
@@ -150,11 +151,33 @@ namespace API.Controllers
             var update = await _tourguideService.ChangePicture(id, fieldToChange, newValue);
             return update ? Ok() : BadRequest();
         }
+        [HttpPut("change-password/{id}")]
+        public async Task<IActionResult> ChangePassword(int id, [FromBody] string password)
+        {
+            if (!ValidInput.IsPasswordSecure(password))
+                return base.BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+            var update = await _tourguideService.ChangePassword(id, HashString.ToHashString(password));
+            return update ? Ok() : BadRequest();
+        }
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {
             var result = _tourguideService.DeleteTourGuide(id);
             return result ? NoContent() : NotFound();
+        }
+
+        [HttpGet("other")]
+        public async Task<IActionResult> GetOtherTourGuide([FromQuery] int tourGuideId, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var result = await _tourguideService.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
         }
     }
 }

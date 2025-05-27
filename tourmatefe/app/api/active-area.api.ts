@@ -44,3 +44,13 @@ export const updateActiveArea = async (id: number, data: ActiveArea) => {
 export const deleteActiveArea = async (id: number | string) => await http.delete<object>(`active-area/${id}`)
 
 export const getSimplifiedArea = async () => await http.get<SimplifiedActiveArea[]>('active-area/simplified')
+
+export const getRandomActiveArea = async (size: number, signal?: AbortSignal) => {
+  const res = await http.get<ActiveArea>('active-area/random', {
+    params: {
+      size: size,
+    },
+    signal
+  });
+  return res.data;
+};

@@ -21,6 +21,8 @@ namespace Services
         Task<bool> UpdateTourGuideClient(TourGuide tourGuide);
         Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId);
         Task<bool> ChangePicture(int id, string fieldToChange, string newValue);
+        Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize);
+        Task<bool> ChangePassword(int id, string password);
     }
     public class TourGuideService : ITourGuideService
     {
@@ -84,6 +86,15 @@ namespace Services
         public async Task<bool> ChangePicture(int id, string fieldToChange, string newValue)
         {
             return await _repository.ChangePicture(id, fieldToChange, newValue);
+        }
+
+        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
+        {
+            return await _repository.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+        }
+        public async Task<bool> ChangePassword(int id, string password)
+        {
+            return await _repository.ChangePassword(id, password);
         }
     }
 }
