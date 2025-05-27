@@ -14,7 +14,7 @@ export default function TourGuideProfileDetail({
 
     const { data } = useQuery({
         queryKey: ['tour-guide', id],
-        queryFn: () => getTourGuide(id),
+        queryFn: () => getTourGuide(Number(id)),
         staleTime: 24 * 3600 * 1000,
     })
     const tourGuide = data?.data

@@ -15,7 +15,7 @@ export default function TourGuideDetail({
 
     const tourGuideData = useQuery({
         queryKey: ['tour-guide', id],
-        queryFn: () => getTourGuide(id),
+        queryFn: () => getTourGuide(Number(id)),
         staleTime: 24 * 3600 * 1000,
     })
     const tourGuide = tourGuideData.data?.data
@@ -44,9 +44,10 @@ export default function TourGuideDetail({
                             }
                         </tbody>
                     </table>}
-                    <p className='p-2'>
-                        {tourGuide?.tourGuideDescs?.[0].description}
-                    </p>
+                    <p
+                        className='p-2'
+                        dangerouslySetInnerHTML={{ __html: tourGuide?.tourGuideDescs?.[0].description || '' }}
+                    ></p>
                 </div>
             </div>
             <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>

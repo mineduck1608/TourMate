@@ -8,6 +8,7 @@ import DOMPurify from "dompurify";
 import { getTourService } from "../api/tour-service.api";
 import MegaMenu from "@/components/MegaMenu";
 import Footer from "@/components/Footer";
+import { getTourGuide } from "../api/tour-guide.api";
 
 
 
@@ -29,12 +30,35 @@ const TourServiceDetail = () => {
     staleTime: 24 * 3600 * 1000,
   });
 
+  const tourGuidId = data?.data?.tourGuideId;
+
+  const {
+    data: tourGuideData,
+    error: tourGuideError,
+    isLoading: isTourGuideLoading,
+  } = useQuery({
+    queryKey: ["tour-guide-info", tourGuidId],
+    queryFn: () => getTourGuide(tourGuidId as number),
+    enabled: !!tourGuidId,
+    retry: 0,
+    refetchOnWindowFocus: false,
+    staleTime: 24 * 3600 * 1000,
+  });
+
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading tour service...</div>;
   }
 
   if (error) {
-    return <div>Error loading data!</div>;
+    return <div>Error loading tour service!</div>;
+  }
+
+  if (isTourGuideLoading) {
+    return <div>Loading tour guide...</div>;
+  }
+
+  if (tourGuideError) {
+    return <div>Error loading tour guide!</div>;
   }
 
   return (
@@ -75,11 +99,32 @@ const TourServiceDetail = () => {
           />
         </div>
 
-        {/* SIDEBAR */}
-        <div className="w-[30%] p-2 *:mb-10">
-          <div className="bg-gray-100 p-4 rounded-lg">
-            <h2 className="text-lg font-semibold text-center">THÔNG TIN</h2>
-            <p>{data?.data?.tourDesc}</p>
+        <div className="w-[30%] p-2">
+          {/* Div 1 */}
+          <div className="bg-gray-100 p-4 rounded-lg space-y-4">
+            <h2 className="text-xl font-semibold text-center">THÔNG TIN</h2>
+            <p className="text-center text-lg">{data?.data.serviceName}</p>
+            <p className="text-center">{data?.data?.tourDesc}</p>
+          </div>
+
+          {/* Div 2 - Tour guide info */}
+          <div className="relative bg-gray-100 p-6 rounded-lg space-y-4 pt-15 mt-30">
+            <div className="absolute left-1/2 -top-10 -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+              <img
+                src={tourGuideData?.data?.image || "/default-avatar.png"}
+                alt={tourGuideData?.data?.fullName || "Tour Guide"}
+                className="w-full h-full object-cover"
+              />
+            </div>
+
+            <h2 className="text-xl font-semibold text-center mt-6">HƯỚNG DẪN VIÊN</h2>
+            <p className="text-center text-lg font-semibold">{tourGuideData?.data?.fullName || "Tên không có"}</p>
+            <p
+              className="text-sm text-gray-600"
+              dangerouslySetInnerHTML={{
+                __html: tourGuideData?.data?.tourGuideDescs?.[0].description || "Không có mô tả",
+              }}
+            />
           </div>
         </div>
       </div>
