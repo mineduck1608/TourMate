@@ -7,6 +7,9 @@ import DOMPurify from "dompurify";
 import { getTourService } from "../api/tour-service.api";
 import { getTourGuide } from "../api/tour-guide.api";
 import OtherServices from "./otherService";
+import OtherAreas from "./otherArea";
+import HotAreas from "./hotArea";
+import OtherTourGuides from "./otherTourGuide";
 
 
 
@@ -143,7 +146,6 @@ export function TourServiceDetail() {
             >
               CHI TIẾT
             </a>
-
           </div>
         </div>
       </div>
@@ -152,7 +154,17 @@ export function TourServiceDetail() {
         <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
         <OtherServices tourGuideId={tourGuidId as number} serviceId={tourServiceId} />
       </div>
-      <div className="p-15">
+      <div className="px-15 py-15 w-full min-w-full max-w-md mx-auto text-center">
+        <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
+        <OtherAreas />
+      </div>
+       <div className="px-15 w-full min-w-full max-w-md mx-auto text-center">
+        <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
+        <OtherTourGuides tourGuideId={tourGuidId as number} />
+      </div>
+      <div className="px-15 py-15 w-full min-w-full max-w-md mx-auto text-center">
+        <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
+        <HotAreas />
       </div>
     </div>
   );

@@ -156,5 +156,19 @@ namespace API.Controllers
             var result = _tourguideService.DeleteTourGuide(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpGet("other")]
+        public async Task<IActionResult> GetOtherTourGuide([FromQuery] int tourGuideId, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var result = await _tourguideService.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
+        }
     }
 }

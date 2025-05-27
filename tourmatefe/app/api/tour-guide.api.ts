@@ -68,3 +68,14 @@ export const unlockTourGuide = async (id: number) => {
   return response.data;
 };
 
+export const getOtherTourGuides = async (tourGuideId: number | string, pageSize: number, signal?: AbortSignal) => {
+  const res = await http.get<TourGuide>('tour-guide/other', {
+    params: {
+      pageSize: pageSize,
+      tourGuideId: tourGuideId,
+    },
+    signal
+  });
+  return res.data;
+};
+
