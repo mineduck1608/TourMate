@@ -127,26 +127,6 @@ export function SignupForm({
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
-            <Label htmlFor="password">Mật Khẩu</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirm-password">Xác Nhận Mật Khẩu</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-          </div>
-          <div className="grid gap-2">
             <Label htmlFor="fullName">Họ Tên</Label>
             <Input
               id="fullName"
@@ -157,7 +137,45 @@ export function SignupForm({
               onChange={handleChange}
             />
           </div>
-
+          <div className="grid gap-2">
+            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+            <div className="relative">
+              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
+                <svg
+                  className="w-4 h-4 text-muted-foreground"
+                  aria-hidden="true"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
+                  <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
+                </svg>
+              </div>
+              <Input
+                id="dateOfBirth"
+                type="date"
+                className="ps-10"
+                required
+                onChange={handleChange}
+              />
+            </div>
+          </div>
+          <div className="grid gap-2">
+            <Label htmlFor="gender">Giới tính</Label>
+            <select
+              id="gender"
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              required
+              defaultValue=""
+              onChange={handleChange}
+            >
+              <option value="" disabled>
+                Chọn giới tính
+              </option>
+              <option value="male">Nam</option>
+              <option value="female">Nữ</option>
+            </select>
+          </div>
           <div className="grid gap-2">
             <Label htmlFor="phone">Số điện thoại</Label>
             <div className="relative">
@@ -183,22 +201,7 @@ export function SignupForm({
               />
             </div>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="gender">Giới tính</Label>
-            <select
-              id="gender"
-              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
-              required
-              defaultValue=""
-              onChange={handleChange}
-            >
-              <option value="" disabled>
-                Chọn giới tính
-              </option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
-            </select>
-          </div>
+
           <div className="grid gap-2">
             <Label htmlFor="address">Địa chỉ</Label>
             <Input
@@ -209,30 +212,6 @@ export function SignupForm({
               required
               onChange={handleChange}
             />
-          </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="dateOfBirth">Ngày sinh</Label>
-            <div className="relative">
-              <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
-                <svg
-                  className="w-4 h-4 text-muted-foreground"
-                  aria-hidden="true"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="currentColor"
-                  viewBox="0 0 20 20"
-                >
-                  <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
-                </svg>
-              </div>
-              <Input
-                id="dateOfBirth"
-                type="date"
-                className="ps-10"
-                required
-                onChange={handleChange}
-              />
-            </div>
           </div>
         </div>
         <div className="grid gap-2">
@@ -272,8 +251,7 @@ export function SignupForm({
             Đăng Nhập
           </Link>
         </div>
- <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-        </div>
+        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"></div>
         <div className="text-balance text-center text-xs text-black [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-gray-600">
           Bằng cách nhấn Đăng ký, bạn đồng ý với các{" "}
           <Link href="#">Điều khoản Dịch vụ</Link> và{" "}
