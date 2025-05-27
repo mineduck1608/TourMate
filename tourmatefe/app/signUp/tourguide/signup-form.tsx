@@ -177,6 +177,17 @@ export function SignupForm({
             </select>
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="address">Địa chỉ</Label>
+            <Input
+              id="address"
+              type="text"
+              placeholder="123 Main St"
+              className="w-full"
+              required
+              onChange={handleChange}
+            />
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="phone">Số điện thoại</Label>
             <div className="relative">
               <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
@@ -201,18 +212,6 @@ export function SignupForm({
               />
             </div>
           </div>
-
-          <div className="grid gap-2">
-            <Label htmlFor="address">Địa chỉ</Label>
-            <Input
-              id="address"
-              type="text"
-              placeholder="123 Main St"
-              className="w-full"
-              required
-              onChange={handleChange}
-            />
-          </div>
         </div>
         <div className="grid gap-2">
           <Label>Hình Đại Diện</Label>
@@ -222,6 +221,7 @@ export function SignupForm({
             }
           />
         </div>
+
         {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
