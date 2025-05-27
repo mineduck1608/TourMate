@@ -1,4 +1,4 @@
-import Footer from '@/components/footer';
+import Footer from '@/components/Footer';
 import { ReactNode } from 'react';
 import MegaMenu from '@/components/mega-menu';
 
