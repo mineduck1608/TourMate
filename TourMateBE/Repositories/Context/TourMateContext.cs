@@ -77,7 +77,6 @@ public partial class TourmateContext : DbContext
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
 
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -457,7 +456,6 @@ public partial class TourmateContext : DbContext
 
             entity.HasOne(d => d.MessageType).WithMany(p => p.Messages)
                 .HasForeignKey(d => d.MessageTypeId)
-                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK_Message_MessageType");
 
             entity.HasOne(d => d.Sender).WithMany(p => p.Messages)
@@ -611,7 +609,7 @@ public partial class TourmateContext : DbContext
 
             entity.HasIndex(e => e.PlaceRequested, "IX_TourBid_placeRequested");
 
-            entity.Property(e => e.TourBidId).HasColumnName("tourBid");
+            entity.Property(e => e.TourBidId).HasColumnName("tourBidId");
             entity.Property(e => e.AccountId).HasColumnName("accountId");
             entity.Property(e => e.Content).HasColumnName("content");
             entity.Property(e => e.CreatedAt)
@@ -653,6 +651,9 @@ public partial class TourmateContext : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
                 .HasColumnName("address");
+            entity.Property(e => e.BannerImage)
+                .HasDefaultValue(" ")
+                .HasColumnName("bannerImage");
             entity.Property(e => e.DateOfBirth).HasColumnName("dateOfBirth");
             entity.Property(e => e.FullName)
                 .HasMaxLength(50)
@@ -714,7 +715,7 @@ public partial class TourmateContext : DbContext
 
             entity.HasIndex(e => e.TourGuideId, "IX_TourGuideRevenue_tourGuideId");
 
-            entity.Property(e => e.TourGuideRevenueId).HasColumnName("tourGuideRevenue");
+            entity.Property(e => e.TourGuideRevenueId).HasColumnName("tourGuideRevenueId");
             entity.Property(e => e.PaymentId).HasColumnName("paymentId");
             entity.Property(e => e.TourGuideId).HasColumnName("tourGuideId");
             entity.Property(e => e.Value).HasColumnName("value");
@@ -754,6 +755,7 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(50)
                 .HasDefaultValue("")
                 .HasColumnName("title");
+            entity.Property(e => e.TourDesc).HasColumnName("tourDesc");
             entity.Property(e => e.TourGuideId).HasColumnName("tourGuideId");
 
             entity.HasOne(d => d.TourGuide).WithMany(p => p.TourServices)
