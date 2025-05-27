@@ -31,7 +31,7 @@ export default function TourGuideDetail({
                         alt={tourGuide?.fullName}
                         className="w-[30%] h-60 object-cover border-2" />
                     <div className='w-[65%]'>
-                        <h4 className="font-semibold text-3xl text-gray-800 p-2 mb-4">
+                        <h4 className="font-bold text-4xl text-gray-800 p-2 mb-4">
                             {tourGuide?.fullName}
                         </h4>
                         {tourGuide && <table>
@@ -40,7 +40,7 @@ export default function TourGuideDetail({
                                     statToRender(tourGuide).map((v, i) => (
                                         <tr key={i}>
                                             <td className='p-2'>
-                                                <span className='flex gap-5 font-bold'>{v.icon}{v.name}</span>
+                                                <span className='flex gap-5 font-semibold'>{v.icon}{v.name}:</span>
                                             </td>
                                             <td>{v.value}</td>
                                         </tr>
@@ -52,7 +52,7 @@ export default function TourGuideDetail({
                 </div>
                 <div className='pt-2 px-5'>
                     <div className='flex justify-between'>
-                        <p className='text-2xl font-bold'>Mô tả</p>
+                        <p className='text-2xl font-bold'>Giới thiệu</p>
                         <Button
                             onClick={() => setDisplayDesc(p => !p)}
                             className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'>

@@ -75,7 +75,7 @@ const AboutSunday = () => {
               đi là bước khởi đầu cho những trải nghiệm tuyệt vời.
             </p>
             <a
-              href="#"
+              href="/aboutUs"
               className="text-xs underline hover:text-gray-200 block"
             >
               XEM THÊM
@@ -108,7 +108,7 @@ const AboutSunday = () => {
                 khách du lịch và những người bạn TourGuide đồng hành,...
               </p>
               <a
-                href="#"
+                href="/aboutUs"
                 className="inline-block text-sm mt-6 underline text-gray-600 hover:text-gray-500"
               >
                 THÔNG TIN THÊM VỀ SUNDAY

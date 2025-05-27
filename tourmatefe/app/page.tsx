@@ -18,8 +18,8 @@ export default function Home() {
       <MegaMenu />
       <HeroSection />
       <AboutSunday />
-      <TourGuideCard />
       <ContactText />
+      <TourGuideCard />
       <FeedbackSection />
       <ContactPagination />
       <HomeNews />
