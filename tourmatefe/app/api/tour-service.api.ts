@@ -40,3 +40,15 @@ export const getTourServicesOf = async (tourGuideId: number | string, page: numb
   });
   return res.data;
 };
+
+export const getOtherTourServicesOf = async (tourGuideId: number | string, serviceId: number, pageSize: number, signal?: AbortSignal) => {
+  const res = await http.get<TourService>('tour-services/other-services-of', {
+    params: {
+      pageSize: pageSize,
+      tourGuideId: tourGuideId,
+      serviceId: serviceId
+    },
+    signal
+  });
+  return res.data;
+};

@@ -1,6 +1,6 @@
-import Footer from '@/components/Footer';
+import Footer from '@/components/footer';
 import { ReactNode } from 'react';
-import MegaMenu from '@/components/MegaMenu';
+import MegaMenu from '@/components/mega-menu';
 
 export default function ServiceLayout({ children }: { children: ReactNode }) {
   return (

@@ -12,6 +12,7 @@ namespace Services
         Task UpdateTourServices(TourService tourservices);
         Task<bool> DeleteTourServices(int id);
         Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex);
+        Task<List<TourService>> GetOtherTourServicesAsync(int tourGuideId, int serviceId, int pageSize);
     }
 
     public class TourServicesService : ITourServicesService
@@ -46,6 +47,11 @@ namespace Services
         public async Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex)
         {
             return await TourServicesRepository.GetTourServicesOf(tourGuideId, pageSize, pageIndex);
+        }
+
+        public async Task<List<TourService>> GetOtherTourServicesAsync(int tourGuideId, int serviceId, int pageSize)
+        {
+            return await TourServicesRepository.GetOtherTourServicesAsync(tourGuideId, serviceId, pageSize);
         }
     }
 }

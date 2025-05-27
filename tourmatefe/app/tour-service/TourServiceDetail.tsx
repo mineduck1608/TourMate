@@ -1,11 +1,12 @@
 "use client";
 
 import { useQueryString } from "@/app/utils/utils";
-import Banner from "@/components/Banner";
+import Banner from "@/components/banner";
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 import { getTourService } from "../api/tour-service.api";
 import { getTourGuide } from "../api/tour-guide.api";
+import OtherServices from "./otherService";
 
 
 
@@ -94,18 +95,18 @@ export function TourServiceDetail() {
               ),
             }}
           />
-          <div className="flex justify-between px-25 py-5">
+          <div className="flex justify-between px-25 py-5 bg-[#F2F8FB] rounded-lg mt-5">
             <a
               href="https://www.example.com"
               className="px-10 py-2 text-lg bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 block font-semibold text-xl"
             >
-              Giá cả: {data?.data?.price || "Liên hệ"}    
+              Giá cả: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data?.data?.price || 0)}
             </a>
             <a
               href="https://www.example.com"
               className="px-10 py-2 text-lg bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 block font-semibold text-xl"
             >
-              ĐẶT NGAY
+              Đặt lịch
             </a>
           </div>
         </div>
@@ -142,8 +143,16 @@ export function TourServiceDetail() {
             >
               CHI TIẾT
             </a>
+
           </div>
         </div>
+      </div>
+
+      <div className="px-15 w-full min-w-full max-w-md mx-auto text-center">
+        <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
+        <OtherServices tourGuideId={tourGuidId as number} serviceId={tourServiceId} />
+      </div>
+      <div className="p-15">
       </div>
     </div>
   );

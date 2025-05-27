@@ -3,7 +3,7 @@
 import { getSimplifiedArea } from '@/app/api/active-area.api';
 import { getList} from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
-import Banner from '@/components/Banner'
+import Banner from '@/components/banner'
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';

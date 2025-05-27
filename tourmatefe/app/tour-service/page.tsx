@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import { TourServiceDetail } from "./TourServiceDetail";
-import MegaMenu from "@/components/MegaMenu";
-import Footer from "@/components/Footer";
+import MegaMenu from "@/components/mega-menu";
+import Footer from "@/components/footer";
+import { TourServiceDetail } from "./tourServiceDetail";
 
 
 export default function Page() {
@@ -10,6 +10,6 @@ export default function Page() {
       <MegaMenu />
       <TourServiceDetail />
       <Footer />
-    </Suspense>
+    </Suspense>   
   );
 }

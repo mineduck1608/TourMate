@@ -1,8 +1,8 @@
 "use client";
 
-import Banner from "@/components/Banner";
-import Footer from "@/components/Footer";
-import MegaMenu from "@/components/MegaMenu";
+import Banner from "@/components/banner";
+import Footer from "@/components/footer";
+import MegaMenu from "@/components/mega-menu";
 import ContactForm from "./contactForm";
 import AddressPage from "./address";
 import ContactText from "./contactText";

@@ -55,5 +55,19 @@ namespace API.Controllers
         {
             return Ok(await _tourserviceService.GetTourServicesOf(tourGuideId, pageSize, pageIndex));
         }
+
+        [HttpGet("other-services-of")]
+        public async Task<IActionResult> GetOtherTourServices([FromQuery] int tourGuideId, [FromQuery] int serviceId, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var result = await _tourserviceService.GetOtherTourServicesAsync(tourGuideId, serviceId, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
+        }
     }
 }

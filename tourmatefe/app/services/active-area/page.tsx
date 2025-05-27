@@ -1,6 +1,6 @@
 "use client";
 
-import Banner from "@/components/Banner";
+import Banner from "@/components/banner";
 import { Suspense, useEffect, useState } from "react";
 import "aos/dist/aos.css";
 import AOS from "aos";

@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
-import MegaMenu from "@/components/MegaMenu";
+import MegaMenu from "@/components/mega-menu";
 import { ConversationResponse } from "@/types/conversation";
 import { fetchMarkRead } from "../api/conversation.api";
 

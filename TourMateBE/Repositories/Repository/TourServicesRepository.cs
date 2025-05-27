@@ -27,5 +27,20 @@ namespace Repositories.Repository
                 TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
             };
         }
+
+        public async Task<List<TourService>> GetOtherTourServicesAsync(int tourGuideId, int serviceId, int pageSize)
+        {
+            // Truy vấn dữ liệu từ cơ sở dữ liệu, loại bỏ serviceId hiện tại và lấy dữ liệu ngẫu nhiên
+            var query = _context.TourServices
+                                .Where(x => x.TourGuideId == tourGuideId && x.ServiceId != serviceId)
+                                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                                .AsQueryable();
+
+            var result = await query
+                .Take(pageSize)  // Giới hạn số lượng kết quả theo pageSize
+                .ToListAsync();
+
+            return result;
+        }
     }
 }
