@@ -7,7 +7,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
+export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
     const [page, setPage] = useState(1)
     const pageSize = 6
     const { data } = useQuery({
@@ -52,7 +52,7 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                                 </div>
                                 <div className="relative content-center">
                                     <Link
-                                        href={'/news/' + item.serviceId}
+                                        href={'/tour-service/?id=' + item.serviceId}
                                         className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
                                         Xem ngay
                                     </Link>

@@ -13,10 +13,6 @@ import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import ImageUpload from "@/components/image-upload";
 import dynamic from "next/dynamic";
-const ReactQuill = dynamic(() => import("react-quill-new"), {
-  ssr: false, // Disable SSR for this component
-});
-import "react-quill-new/dist/quill.snow.css";
 
 export function SignupForm({
   className,
@@ -205,13 +201,6 @@ export function SignupForm({
         </div>
         <div className="grid gap-2">
             <Label htmlFor="description">Mô tả bản thân</Label>
-            <ReactQuill
-              id="description"
-              theme="snow"
-              value={formData.description}
-              onChange={handleDescriptionChange}
-              placeholder="Nhập mô tả về bạn..."
-            />
             
         </div>
 

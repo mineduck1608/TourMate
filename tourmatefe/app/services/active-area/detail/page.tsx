@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import { getActiveArea } from "@/app/api/active-area.api";
 import { useQueryString } from "@/app/utils/utils";
-import Banner from "@/components/Banner";
+import Banner from "@/components/banner";
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
 

@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import React, { useState } from "react";
-import DeleteModal from "@/components/DeleteModal";
+import DeleteModal from "@/components/delete-modal";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
