@@ -22,8 +22,6 @@ public partial class TourGuide
     public string Phone { get; set; } = null!;
     public string BannerImage { get; set; } = null!;
 
-    public string BannerImage { get; set; } = null!;
-
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();

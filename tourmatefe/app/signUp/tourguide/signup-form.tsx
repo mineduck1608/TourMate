@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
@@ -10,18 +10,9 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
-import Axios from "axios";
-import { TourGuide } from "@/types/tour-guide";
+import { createCVApplication } from "@/app/api/cv-application.api";
 import ImageUpload from "@/components/image-upload";
-
-// Add this before the SignupForm component
-const registerTourGuide = async (data: Partial<TourGuide>) => {
-  const response = await Axios.post(
-    "https://localhost:7147/api/account/registertourguide",
-    data
-  );
-  return response.data;
-};
+import { create } from "lodash";
 
 export function SignupForm({
   className,
@@ -29,69 +20,49 @@ export function SignupForm({
 }: React.ComponentPropsWithoutRef<"form">) {
   const router = useRouter();
   const [formData, setFormData] = useState({
-    email: "",
     fullName: "",
-    gender: "",
-    phone: "",
-    address: "",
-    image: "",
     dateOfBirth: "",
+    gender: "",
+    address: "",
+    email: "",
+    phone: "",
+    link: "",
+    image: "",
+    description: "",
+    status: "false",
   });
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [error, setError] = useState("");
 
   const mutation = useMutation({
-    mutationFn: registerTourGuide,
+    mutationFn: createCVApplication,
     onSuccess: () => {
       router.push("/login"); // Redirect to login page
     },
     onError: (error: Error | unknown) => {
       const errorMessage =
-        error instanceof Error ? error.message : "Registration failed";
+        error instanceof Error
+          ? error.message
+          : "Application submission failed";
       setError(errorMessage);
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Passwords không trùng");
-      return;
-    }
-
-    // Submit form data
-    mutation.mutate({
-      fullName: formData.fullName,
-      gender: formData.gender,
-      dateOfBirth: formData.dateOfBirth,
-      address: formData.address,
-      image: formData.image,
-      phone: formData.phone,
-      account: {
-        email: formData.email,
-        password: password,
-      },
-    } as Partial<TourGuide>);
+    mutation.mutate(formData);
   };
 
   // Add handleChange function to update form data
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
+    >
   ) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
     });
   };
-
-  useEffect(() => {
-    if (confirmPassword && password !== confirmPassword) {
-      setError("Passwords không trùng");
-    } else {
-      setError("");
-    }
-  }, [password, confirmPassword]);
 
   return (
     <form
