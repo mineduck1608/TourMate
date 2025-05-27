@@ -9,11 +9,11 @@ function BidPage() {
             <div className='w-[25%] px-5 py-5'>
                 <Profile />
             </div>
-            <div className='w-[40%] px-5 py-5'>
+            <div className='w-[45%] px-5 py-5'>
                 <Bids />
             </div>
-            <div className='w-[25%] bg-green-50'>
-                C
+            <div className='w-[20%]'>
+                
             </div>
         </div>
     )
