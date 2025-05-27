@@ -2,7 +2,7 @@
 
 import { Suspense } from "react";
 
-import Footer from "@/components/footer";
+import Footer from "@/components/Footer";
 import MegaMenu from "@/components/mega-menu";
 import ResetPasswordForm from "@/components/reset-password-form";
 

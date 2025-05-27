@@ -1,8 +1,8 @@
 "use client";
 import React, { use, useEffect } from "react";
 import Header from "@/components/mega-menu";
-import Footer from "@/components/footer";
-import Banner from "@/components/banner";
+import Footer from "@/components/Footer";
+import Banner from "@/components/Banner";
 import RecentNews from "./recent-news";
 import NewsCategories from "./categories";
 import { ScrollArea } from "@/components/ui/scroll-area";
