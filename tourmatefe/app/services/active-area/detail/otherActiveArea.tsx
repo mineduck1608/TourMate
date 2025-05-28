@@ -1,12 +1,17 @@
-'use client'
-import { useQuery } from '@tanstack/react-query'
-import { AnimatePresence, motion } from 'framer-motion'
-import Link from 'next/link'
-import React from 'react'
-import { ActiveArea } from '@/types/active-area'
-import { getRandomActiveArea } from '../api/active-area.api'
+'use client';
+import { useQuery } from '@tanstack/react-query';
+import { AnimatePresence, motion } from 'framer-motion';
+import Link from 'next/link';
+import React from 'react';
+import { ActiveArea } from '@/types/active-area';
+import { getOtherActiveArea } from '@/app/api/active-area.api';
 
-const HotAreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
+interface OtherAreasProps {
+    activeAreaId: number;
+    size: number;
+}
+
+const OtherAreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
     return (
         <Link href={`/services/active-area/detail?id=${item.areaId}`} passHref>
             <motion.div
@@ -28,17 +33,16 @@ const HotAreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
                 </div>
             </motion.div>
         </Link>
-    )
+    );
+};
 
-}
-
-const HotAreas: React.FC = () => {
-    const size = 2
+const OtherArea: React.FC<OtherAreasProps> = ({ activeAreaId, size }) => {
     const { data } = useQuery({
-        queryKey: ['hot-active-area'],
-        queryFn: () => getRandomActiveArea(size),
-        staleTime: 24 * 3600 * 1000,
-    })
+        queryKey: ['other-active-area', activeAreaId, size],
+        queryFn: () => getOtherActiveArea(activeAreaId, size),
+        staleTime: 24 * 3600 * 1000, // 1 day
+    });
+
 
     return (
         <motion.div
@@ -46,21 +50,23 @@ const HotAreas: React.FC = () => {
             style={{ fontFamily: "'Playfair Display', serif" }}
         >
             <h1 className="italic text-3xl md:text-4xl font-normal text-[#3e72b9] text-center mb-10">
-                Những địa điểm nổi bật
+                Những địa điểm khác
             </h1>
             <AnimatePresence mode="wait">
                 {Array.isArray(data) && data.length === 0 ? (
                     <div className="text-center py-4">Không có địa điểm nào</div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        {(Array.isArray(data) ? data : []).map((item) => (
-                            <HotAreaCard key={item.areaId} item={item} />
-                        ))}
+                        {Array.isArray(data)
+                            ? data.map((item) => (
+                                <OtherAreaCard key={item.areaId} item={item} />
+                            ))
+                            : null}
                     </div>
                 )}
             </AnimatePresence>
         </motion.div>
-    )
-}
+    );
+};
 
-export default HotAreas
+export default OtherArea;

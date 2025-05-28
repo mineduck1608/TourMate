@@ -95,11 +95,25 @@ namespace API.Controllers
         }
 
         [HttpGet("random")]
-        public async Task<IActionResult> GetOtherTourServices([FromQuery] int size)
+        public async Task<IActionResult> GetRandomActiveAreas([FromQuery] int size)
         {
             try
             {
                 var result = await _activeareaService.GetRandomActiveAreaAsync(size);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
+        }
+
+        [HttpGet("other")]
+        public async Task<IActionResult> GetOtherActiveArea([FromQuery] int currentActiveAreaId, [FromQuery] int size)
+        {
+            try
+            {
+                var result = await _activeareaService.GetOtherActiveAreaAsync(currentActiveAreaId, size);
                 return Ok(result);
             }
             catch (Exception ex)
