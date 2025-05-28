@@ -2,14 +2,14 @@
 import React, { Suspense } from 'react'
 import Profile from './profile'
 import Bids from './bids'
-import { getSimplifiedArea } from '@/app/api/active-area.api'
+import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 
 function BidPage() {
     const simplifiedAreaQuery = useQuery({
-        queryKey: ['simplified-area'],
-        queryFn: () => getSimplifiedArea(),
+        queryKey: ['most-popular-area'],
+        queryFn: () => getMostPopularAreas(),
         staleTime: 24 * 3600 * 1000
     })
     const areas = simplifiedAreaQuery.data?.data ?? []
@@ -26,8 +26,10 @@ function BidPage() {
                     <input className='p-1 w-full mb-2 border-2' placeholder='Tìm kiếm...' />
                     <h4 className="text-xl font-medium leading-none">Địa điểm nổi tiếng</h4>
                     {
-                        areas.slice(0, 5).map((v) => 
-                        <Link href={'#'} key={v.areaId} className='block text-blue-500 my-1'>{v.areaName}</Link>
+                        areas.slice(0, 5).map((v) =>
+                            <p key={v.areaId}>
+                                <Link href={'#'} className='text-blue-500 my-2'>{v.areaName}</Link>({v.tourBidCount} bài đăng)
+                            </p>
                         )
                     }
                 </div>
