@@ -50,15 +50,20 @@ export function SignupForm({
     onSuccess: (response) => {
       alert(response.msg);
       setTimeout(() => {
-        router.push("/");
+        window.location.href = "/";
       }, 800);
     },
     onError: (error) => {
-      const errorMessage =
-        error.message ||
-        "Đăng ký thất bại. Vui lòng thử lại sau.";
-      setError(errorMessage);
-      alert(errorMessage);
+      let message = "Đăng ký thất bại. Vui lòng thử lại sau.";
+      if (typeof error === "object" && error !== null) {
+        if ("response" in error && typeof error.response === "object" && error.response !== null && "msg" in error.response) {
+          message = (error.response as { msg?: string }).msg || message;
+        } else if ("message" in error && typeof (error as { message?: string }).message === "string") {
+          message = (error as { message?: string }).message || message;
+        }
+      }
+      setError(message);
+      alert(message);
     },
   });
 
