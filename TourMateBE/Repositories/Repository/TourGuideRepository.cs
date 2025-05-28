@@ -36,14 +36,14 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourGuide>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
         {
             var query = _context.TourGuides
-                .Include(x => x.TourGuideDescs)
-                .ThenInclude(x => x.Area)
                 .AsQueryable();
 
             // Phân trang
             var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
+                .Include(x => x.TourGuideDescs)
+                .ThenInclude(x => x.Area)
                 .ToListAsync();
 
             // Lấy tổng số bản ghi

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -48,6 +49,12 @@ namespace API.Controllers
         {
             var result = _bidService.DeleteBid(id);
             return result ? NoContent() : NotFound();
+        }
+        [HttpGet("tour/{tourBid}")]
+        public async Task<ActionResult<PagedResult<Bid>>> GetBidsOfTourBid(int tourBid, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        {
+            var result = await _bidService.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
+            return Ok(result);
         }
     }
 }

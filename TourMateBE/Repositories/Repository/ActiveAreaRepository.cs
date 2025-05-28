@@ -46,6 +46,21 @@ namespace Repositories.Repository
             });
         }
 
+
+        public async Task<IEnumerable<MostPopularArea>> GetMostPopularAreas()
+        {
+            return _context.ActiveAreas
+                .Include(x => x.TourBids)
+                .OrderByDescending(x => x.TourBids.Count)
+                .Select(x => new MostPopularArea()
+                {
+                    AreaId = x.AreaId,
+                    AreaName = x.AreaName,
+                    TourBidCount = x.TourBids.Count
+                })
+                .Where(x => x.TourBidCount != 0);
+        }
+
         public async Task<List<ActiveArea>> GetRandomActiveAreaAsync(int size)
         {
             var query = _context.ActiveAreas
