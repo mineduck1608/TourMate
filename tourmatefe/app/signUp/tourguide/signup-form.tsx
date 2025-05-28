@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +27,6 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -47,12 +45,12 @@ export function SignupForm({
 
   const mutation = useMutation({
     mutationFn: createCVApplication,
-    onSuccess: (response: any) => {
+    onSuccess: (response) => {
       alert(response.msg);
     },
-    onError: (error: any) => {
+    onError: (error) => {
       const errorMessage =
-        error.response?.data?.message ||
+        error.message ||
         "Đăng ký thất bại. Vui lòng thử lại sau.";
       setError(errorMessage);
       alert(errorMessage);
