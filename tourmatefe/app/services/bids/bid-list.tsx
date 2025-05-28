@@ -1,9 +1,11 @@
 import { getTourBids } from "@/app/api/tour-bid.api";
+import { formatNumber } from "@/types/other";
 import { TourBid } from "@/types/tour-bid";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React, { useState } from "react";
-function Bid({ tourBid }: { tourBid: TourBid }) {
+function TourBidRender({ tourBid }: { tourBid: TourBid }) {
+  const bids = tourBid.bids ?? []
   return (
     <div className="shadow-lg p-5 rounded-lg">
       <div className="flex h-min">
@@ -23,6 +25,20 @@ function Bid({ tourBid }: { tourBid: TourBid }) {
       <div className="border-2" />
       <div className="mt-5">
         <h3 className="font-semibold text-lg">Bảng đấu giá</h3>
+        <div className="">
+          {
+            bids.map((v) => (
+              <div key={v.bidId} className="bg-[#F8FAFC] flex p-3 my-2 rounded-sm items-center justify-between">
+                <div className="flex items-center">
+                  <img src={v.tourGuide?.image ?? 'a'} alt="pfp" className="w-[75px] h-[75px] rounded-full" />
+                  <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
+
+                </div>
+                <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
+              </div>
+            ))
+          }
+        </div>
       </div>
     </div>
   );
@@ -44,7 +60,7 @@ function BidList() {
     <div>
       <div className="*:my-5">
         {data.map((v, i) => (
-          <Bid tourBid={v} key={i} />
+          <TourBidRender tourBid={v} key={i} />
         ))}
       </div>
       <div className="flex justify-center items-center mt-10 space-x-6">

@@ -15,6 +15,7 @@ namespace Repositories.Repository
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Customers)
                 .Include(x => x.Bids)
+                .ThenInclude(x => x.TourGuide)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             var result = await query
@@ -35,6 +36,7 @@ namespace Repositories.Repository
                 .Where(x => x.AccountId == accountId)
                 .OrderByDescending(x => x.CreatedAt)
                 .Include(x => x.Bids)
+                .ThenInclude(x => x.TourGuide)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             var result = await query
