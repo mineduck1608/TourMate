@@ -68,7 +68,7 @@ export default function TourGuideDetail({
                         </Button>
                     </div>
                     <div
-                        className={`text-justify ${displayDesc ? 'block' : 'hidden'}`}
+                        className={`text-justify ${displayDesc ? 'block mb-10' : 'hidden'}`}
                         dangerouslySetInnerHTML={{
                             __html: tourGuide?.tourGuideDescs?.[0]?.description
                                 ? tourGuide?.tourGuideDescs?.[0]?.description.replace(
