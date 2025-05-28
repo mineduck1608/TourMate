@@ -22,13 +22,13 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 import "react-quill-new/dist/quill.snow.css";
-import { useRouter } from "next/router";
+// import { useRouter } from "next/router";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const router = useRouter()
+  // const router = useRouter()
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
