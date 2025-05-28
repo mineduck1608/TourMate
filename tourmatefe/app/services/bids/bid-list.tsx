@@ -1,11 +1,18 @@
+import { getBidsOfTourBid } from "@/app/api/bid.api";
 import { getTourBids } from "@/app/api/tour-bid.api";
 import { formatNumber } from "@/types/other";
 import { TourBid } from "@/types/tour-bid";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import React, { useState } from "react";
+import { FaMapMarkerAlt } from "react-icons/fa";
 function TourBidRender({ tourBid }: { tourBid: TourBid }) {
-  const bids = tourBid.bids ?? []
+  const [pageSize,] = useState(10)
+  const bidData = useQuery({
+    queryKey: ['bids-of', tourBid.tourBidId, 1, pageSize],
+    queryFn: () => getBidsOfTourBid(tourBid.tourBidId, 1, pageSize)
+  })
+  const bids = bidData.data?.result ?? []
   return (
     <div className="shadow-lg p-5 rounded-lg">
       <div className="flex h-min">
@@ -19,6 +26,7 @@ function TourBidRender({ tourBid }: { tourBid: TourBid }) {
             {tourBid.account?.customers?.[0].fullName}
           </h3>
           <p>{dayjs(tourBid.createdAt).format("DD/MM/YYYY")}</p>
+          <p className=""><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
         </div>
       </div>
       <div className="my-5">{tourBid.content}</div>
