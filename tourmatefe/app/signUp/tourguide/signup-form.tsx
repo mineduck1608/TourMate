@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -28,7 +27,6 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const router = useRouter();
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
@@ -50,11 +48,11 @@ export function SignupForm({
     onSuccess: (response) => {
       alert(response.msg);
       setTimeout(() => {
-        router.push("/");
+        window.location.href = "/";
       }, 800);
     },
     onError: (error) => {
-       let message = "Đăng ký thất bại. Vui lòng thử lại sau.";
+      let message = "Đăng ký thất bại. Vui lòng thử lại sau.";
       if (typeof error === "object" && error !== null) {
         if ("response" in error && typeof error.response === "object" && error.response !== null && "msg" in error.response) {
           message = (error.response as { msg?: string }).msg || message;

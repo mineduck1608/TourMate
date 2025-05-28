@@ -12,14 +12,14 @@ namespace Repositories.Repository
         {
             var query = _context.TourBids
                 .OrderByDescending(x => x.CreatedAt)
-                .Include(x => x.Account)
-                .ThenInclude(x => x.Customers)
-                .Include(x => x.Bids)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.Customers)
+                .Include(x => x.PlaceRequestedNavigation)
                 .ToListAsync();
             return new PagedResult<TourBid>
             {
@@ -34,12 +34,12 @@ namespace Repositories.Repository
             var query = _context.TourBids
                 .Where(x => x.AccountId == accountId)
                 .OrderByDescending(x => x.CreatedAt)
-                .Include(x => x.Bids)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
+                .Include(x => x.PlaceRequestedNavigation)
                 .ToListAsync();
             return new PagedResult<TourBid>
             {

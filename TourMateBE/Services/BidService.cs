@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -10,6 +11,7 @@ namespace Services
         void CreateBid(Bid bid);
         void UpdateBid(Bid bid);
         bool DeleteBid(int id);
+        Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex);
     }
 
     public class BidService : IBidService
@@ -40,6 +42,10 @@ namespace Services
         {
             BidRepository.Remove(id);
             return true;
+        }
+        public async Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
+        {
+            return await BidRepository.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
         }
     }
 }

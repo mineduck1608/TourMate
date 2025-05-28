@@ -1,3 +1,5 @@
+import { TourGuide } from "./tour-guide"
+
 export type Bid = {
     bidId: number,
     tourBidId: number,
@@ -6,4 +8,5 @@ export type Bid = {
     createdAt: string,
     comment?: string,
     status: string,
+    tourGuide?: TourGuide
 }
