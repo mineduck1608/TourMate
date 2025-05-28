@@ -63,6 +63,10 @@ export function SignupForm({
       const reader = new FileReader();
       reader.onload = (e) => {
         setProfileImage(e.target?.result as string);
+        setFormData((prev) => ({
+          ...prev,
+          image: e.target?.result as string,
+        }));
       };
       reader.readAsDataURL(file);
     }
@@ -150,6 +154,7 @@ export function SignupForm({
               placeholder="John"
               className="w-full"
               required
+              value={formData.fullName}
               onChange={handleChange}
             />
           </div>
@@ -172,6 +177,7 @@ export function SignupForm({
                 type="date"
                 className="ps-10"
                 required
+                value={formData.dateOfBirth}
                 onChange={handleChange}
               />
             </div>
@@ -182,7 +188,7 @@ export function SignupForm({
               id="gender"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
-              defaultValue=""
+              value={formData.gender}
               onChange={handleChange}
             >
               <option value="" disabled>
@@ -214,6 +220,7 @@ export function SignupForm({
                 placeholder="(+84) 123-456-7890"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
+                value={formData.phone}
                 onChange={handleChange}
               />
             </div>
@@ -228,12 +235,25 @@ export function SignupForm({
 
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         <div className="grid gap-4">
           <Label htmlFor="address">Địa chỉ</Label>
-          <Input id="address" placeholder="123 Main St" />
+          <Input
+            id="address"
+            placeholder="123 Main St"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
         </div>
       </div>
 
