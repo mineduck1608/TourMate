@@ -15,6 +15,7 @@ export default function Page() {
         imageUrl="https://investvietnam.vn/uploads/HOME/Footer/LivingInVietnam/banner.jpg"
         title="Liên hệ" />
       <ContactForm />
+      <hr className="my-6 border-gray-200 sm:mx-auto lg:my-8" />
       <ContactText />
       <AddressPage />
       <Footer />

@@ -1,5 +1,4 @@
 import { Customer } from "@/types/customer";
-import Image from "next/image";
 import React, { useState, useEffect } from "react";
 
 type CustomerDetailModalProps = {
@@ -79,7 +78,7 @@ const CustomerDetailModal: React.FC<CustomerDetailModalProps> = ({
           {/* Ảnh đại diện */}
           {formData.image && (
             <div className="mb-6 flex justify-center">
-              <Image
+              <img
                 src={formData.image}
                 alt="Ảnh hướng dẫn viên"
                 className="w-32 h-32 rounded-full object-cover border border-gray-300"

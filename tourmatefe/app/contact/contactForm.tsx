@@ -7,7 +7,6 @@ import { Contact } from "@/types/contact";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { addContact } from "../api/contact.api";
-import Image from "next/image";
 
 export default function ContactForm() {
   const [form, setForm] = useState<Contact>({
@@ -113,7 +112,7 @@ export default function ContactForm() {
     >
       {/* Bên trái: ảnh full chiều cao và cover hết nửa bên trái */}
       <div className="w-1/2 relative">
-        <Image
+        <img
           src="https://nld.mediacdn.vn/2019/8/7/giai-i-thac-ban-gioc-nguyen-tan-tuan-tphcm-15652395771991428511775.jpg"
           alt="Contact us"
           className="absolute inset-0 w-full h-full object-cover"

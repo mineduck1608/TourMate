@@ -1,5 +1,4 @@
 import { News } from "@/types/news";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 
 type NewsDetailsModalProps = {
@@ -96,7 +95,7 @@ const NewsDetailModal: React.FC<NewsDetailsModalProps> = ({
             </label>
             <div className="h-48 w-full overflow-hidden">
               {formData.bannerImg && (
-                <Image
+                <img
                   src={formData.bannerImg}
                   alt="Banner"
                   className="object-cover w-full h-full"

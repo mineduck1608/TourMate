@@ -117,7 +117,7 @@ export function SignupForm({
         <div className="relative">
           <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden">
             {profileImage ? (
-              <Image
+              <img
                 src={profileImage || "/placeholder.svg"}
                 alt="Profile"
                 className="w-full h-full object-cover"

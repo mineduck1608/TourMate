@@ -1,6 +1,5 @@
 import { storage } from "@/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import Image from "next/image";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 
@@ -135,7 +134,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   </div>
 ) : imagePreview ? (
   // Hiển thị ảnh sau khi tải lên
-  <Image
+  <img
     src={imagePreview}
     alt="Preview"
     style={{

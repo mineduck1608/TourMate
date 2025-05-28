@@ -57,7 +57,7 @@ const AreaDetail = () => {
           (data?.data?.areaContent || "").replace(
             /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
             (match) => {
-              return `<Image src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
+              return `<img src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
             }
           )
         ),

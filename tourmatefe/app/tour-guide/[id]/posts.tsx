@@ -48,7 +48,7 @@ function Service({ service }: { service: TourService }) {
                         ? service.content.replace(
                             /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
                             (match) => {
-                                return `<Image src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
+                                return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
                             }
                         )
                         : "",

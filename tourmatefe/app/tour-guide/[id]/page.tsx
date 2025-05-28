@@ -4,7 +4,6 @@ import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { use } from 'react'
-import Image from 'next/image';
 import TourServices from './posts';
 export default function TourGuideProfileDetail({
     params,
@@ -26,7 +25,7 @@ export default function TourGuideProfileDetail({
                 <div className='absolute top-[75px] md:left-[250px] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='bg-white p-1 rounded-full'>
-                            <Image
+                            <img
                                 src={"/travel.jpg"}
                                 alt={'shell'}
                                 className="w-[150px] rounded-full aspect-square"

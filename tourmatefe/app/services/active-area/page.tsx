@@ -9,7 +9,6 @@ import { useQuery } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getFilteredActiveAreas } from "@/app/api/active-area.api";
-import Image from "next/image";
 
 const LIMIT = 8;
 
@@ -127,7 +126,7 @@ function ActiveAreaList() {
               >
                 <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform cursor-pointer">
                   <div className="overflow-hidden">
-                    <Image
+                    <img
                       src={area.bannerImg || "/fallback.jpg"}
                       alt={area.areaName}
                       className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"

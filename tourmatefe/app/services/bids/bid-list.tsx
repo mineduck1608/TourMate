@@ -2,14 +2,13 @@ import { getTourBids } from "@/app/api/tour-bid.api";
 import { TourBid } from "@/types/tour-bid";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import Image from "next/image";
 import React, { useState } from "react";
 function Bid({ tourBid }: { tourBid: TourBid }) {
   return (
     <div className="shadow-lg p-5 rounded-lg">
       <div className="flex h-min">
-        <Image
-          src={tourBid.account?.customers?.[0].image ?? "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
+        <img
+          src={tourBid.account?.customers?.[0].image}
           className="w-[75px] rounded-full h-[75px]"
           alt={"profile"}
         />

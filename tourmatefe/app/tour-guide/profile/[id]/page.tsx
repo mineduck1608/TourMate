@@ -11,7 +11,6 @@ import PictureView from './profile-pic';
 import EditPic from './edit-pic';
 import { Button } from '@/components/ui/button';
 import TourServices from './services';
-import Image from 'next/image';
 
 const targetType = {
     profilePic: 'Image',
@@ -102,7 +101,7 @@ export default function TourGuideProfileEdit({
                 <div className='absolute top-[75px] md:left-[250px] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='p-1 rounded-full *:hover:cursor-pointer relative' >
-                            {tourGuide?.image && <Image
+                            {tourGuide?.image && <img
                                 src={tourGuide.image}
                                 // src={'/mountain.png'}
                                 alt={'shell'}

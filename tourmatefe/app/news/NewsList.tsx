@@ -8,7 +8,6 @@ import dayjs from 'dayjs'
 import { getNews } from "../api/news.api";
 import PaginateList from "./paginate-list";
 import { useQueryString } from "../utils/utils";
-import Image from "next/image";
 
 export default function NewsList() {
   const queryString: { category?: string } = useQueryString();
@@ -60,7 +59,7 @@ export default function NewsList() {
               className="bg-white rounded-xl overflow-hidden shadow-md cursor-pointer transform transition-all"
             >
               <Link href={'/news/' + item.newsId}>
-                <Image
+                <img
                   src={item.bannerImg}
                   alt={item.title}
                   className="w-full h-70 object-cover"

@@ -11,7 +11,6 @@ import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 import { login } from "../api/account.api";
 import axios from "axios";
-import Image from "next/image";
 
 export function LoginForm({
   className,
@@ -62,7 +61,7 @@ export function LoginForm({
               <div className="flex flex-col items-center text-center">
                 <div className="mb-[-4] w-40 mt-[-15]">
                   <Link href="/">
-                    <Image
+                    <img
                       src="/Logo.png"
                       alt="TourMate Logo"
                       className="w-full h-auto"
@@ -162,7 +161,7 @@ export function LoginForm({
             </div>
           </form>
           <div className="relative hidden bg-muted md:block">
-            <Image
+            <img
               src="/vietnam-scene.jpg"
               alt="Image"
               className="absolute inset-0 h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"

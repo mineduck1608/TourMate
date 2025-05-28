@@ -5,7 +5,6 @@ import Link from 'next/link'
 import React from 'react'
 import { getOtherTourServicesOf } from '../api/tour-service.api'
 import { TourService } from '@/types/tour-service'
-import Image from 'next/image'
 
 interface OtherServicesProps {
     tourGuideId: number
@@ -23,7 +22,7 @@ const ServiceCard: React.FC<{ item: TourService }> = ({ item }) => {
                 className="bg-white shadow hover:shadow-md transition overflow-hidden cursor-pointer"
             >
                 <div className="h-60 overflow-hidden">
-                    <Image
+                    <img
                         src={item.image} // Replace with real image
                         alt={item.serviceName}
                         className="w-full h-full object-cover"

@@ -1,6 +1,5 @@
 "use client";
 
-import Image from 'next/image';
 import React from 'react';
 
 interface BannerProps {
@@ -13,7 +12,7 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ imageUrl, title, subtitle, height }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: height ?? '400px' }}>
-      <Image
+      <img 
         src={imageUrl} 
         alt={title} 
         style={{

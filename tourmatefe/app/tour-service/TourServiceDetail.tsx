@@ -10,7 +10,6 @@ import OtherServices from "./otherService";
 import OtherAreas from "./otherArea";
 import HotAreas from "./hotArea";
 import OtherTourGuides from "./otherTourGuide";
-import Image from "next/image";
 
 
 
@@ -93,7 +92,7 @@ export function TourServiceDetail() {
                 (data?.data?.content || "").replace(
                   /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
                   (match) => {
-                    return `<Image src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
+                    return `<img src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
                   }
                 )
               ),
@@ -126,7 +125,7 @@ export function TourServiceDetail() {
           {/* Div 2 - Tour guide info */}
           <div className="relative bg-[#F2F8FB] p-6 rounded-lg space-y-4 pt-15 mt-30">
             <div className="absolute left-1/2 -top-10 -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-              <Image
+              <img
                 src={tourGuideData?.data?.image || "/default-avatar.png"}
                 alt={tourGuideData?.data?.fullName || "Tour Guide"}
                 className="w-full h-full object-cover"

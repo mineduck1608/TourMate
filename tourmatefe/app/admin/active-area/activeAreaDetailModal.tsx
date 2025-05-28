@@ -1,5 +1,4 @@
 import { ActiveArea } from "@/types/active-area";
-import Image from "next/image";
 import { useState, useEffect } from "react";
 
 type ActiveAreaDetailsModalProps = {
@@ -119,7 +118,7 @@ const ActiveAreaDetailModal: React.FC< ActiveAreaDetailsModalProps> = ({
             </label>
             <div className="h-48 w-full overflow-hidden">
               {formData.bannerImg && (
-                <Image
+                <img
                   src={formData.bannerImg}
                   alt="Banner"
                   className="object-cover w-full h-full"

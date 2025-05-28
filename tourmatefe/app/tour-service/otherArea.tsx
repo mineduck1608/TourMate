@@ -5,7 +5,6 @@ import Link from 'next/link'
 import React from 'react'
 import { ActiveArea } from '@/types/active-area'
 import { getRandomActiveArea } from '../api/active-area.api'
-import Image from 'next/image'
 
 
 
@@ -19,7 +18,7 @@ const AreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
                 className="bg-white shadow hover:shadow-md transition overflow-hidden cursor-pointer"
             >
                 <div className="h-60 overflow-hidden">
-                    <Image
+                    <img
                         src={item.bannerImg} // Replace with real image
                         alt={item.areaName}
                         className="w-full h-full object-cover"

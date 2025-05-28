@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Customer } from "@/types/customer";
 import CustomerActions from "./customerAction";
-import Image from "next/image";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
 // const formatDate = (dateString: string) => {
@@ -107,7 +106,7 @@ export const columns: ColumnDef<Customer>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <Image
+            <img 
               src={imageUrl} 
               alt="Banner" 
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh

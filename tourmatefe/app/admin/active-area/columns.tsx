@@ -4,7 +4,6 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import ActiveAreaActions from "./activeAreaAction";
 import { ActiveArea } from "@/types/active-area";
-import Image from "next/image";
 
 export const columns: ColumnDef<ActiveArea>[] = [
 
@@ -96,11 +95,11 @@ export const columns: ColumnDef<ActiveArea>[] = [
   cell: ({ row }) => {
     const content = (row.getValue("areaContent") as string) || "";
 
-    // Thay thế tất cả URL ảnh trong nội dung bằng thẻ <Image>
+    // Thay thế tất cả URL ảnh trong nội dung bằng thẻ <img>
     const updatedContent = content.replace(
         /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,  // Biểu thức chính quy tìm tất cả các URL ảnh
       (match) => {
-        return `<Image src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+        return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
       }
     );
     console.log("Updated Content:", updatedContent); // In ra nội dung đã cập nhật
@@ -137,7 +136,7 @@ export const columns: ColumnDef<ActiveArea>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <Image
+            <img
               src={imageUrl}
               alt="Banner"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh

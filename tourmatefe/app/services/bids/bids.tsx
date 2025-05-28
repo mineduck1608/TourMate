@@ -1,13 +1,12 @@
 import { Button } from "@/components/ui/button";
 import React from "react";
 import BidList from "./bid-list";
-import Image from "next/image";
 
 export default function Bids() {
   return (
     <div className="">
       <div className="flex h-min">
-        <Image
+        <img
           src={"/Anh1.jpg"}
           className="w-[100px] rounded-full"
           alt={"profile"}
