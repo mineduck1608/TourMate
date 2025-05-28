@@ -14,6 +14,8 @@ import { createCVApplication } from "@/app/api/cv-application.api";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
 import { Upload } from "lucide-react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/firebaseConfig";
 
 // Dynamically import ReactQuill with no SSR (Server-Side Rendering)
 const ReactQuill = dynamic(() => import("react-quill-new"), {
@@ -45,26 +47,46 @@ export function SignupForm({
 
   const mutation = useMutation({
     mutationFn: createCVApplication,
-    onSuccess: () => {
-      router.push("/login"); // Redirect to login page
+    onSuccess: (response: any) => {
+      alert(response.msg);
     },
-    onError: (error: Error | unknown) => {
+    onError: (error: any) => {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Application submission failed";
+        error.response?.data?.message ||
+        "Đăng ký thất bại. Vui lòng thử lại sau.";
       setError(errorMessage);
+      alert(errorMessage);
     },
   });
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    try {
+      // Tạo reference đến storage với tên file unique
+      const storageRef = ref(
+        storage,
+        `profile-images/${Date.now()}-${file.name}`
+      );
+
+      // Upload file lên Firebase Storage
+      const snapshot = await uploadBytes(storageRef, file);
+
+      // Lấy URL download
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // Cập nhật state với URL
+      setProfileImage(downloadURL);
+      setFormData((prev) => ({
+        ...prev,
+        image: downloadURL,
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Tải ảnh lên thất bại. Vui lòng thử lại.");
     }
   };
 
@@ -150,6 +172,7 @@ export function SignupForm({
               placeholder="John"
               className="w-full"
               required
+              value={formData.fullName}
               onChange={handleChange}
             />
           </div>
@@ -172,6 +195,7 @@ export function SignupForm({
                 type="date"
                 className="ps-10"
                 required
+                value={formData.dateOfBirth}
                 onChange={handleChange}
               />
             </div>
@@ -182,7 +206,7 @@ export function SignupForm({
               id="gender"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
-              defaultValue=""
+              value={formData.gender}
               onChange={handleChange}
             >
               <option value="" disabled>
@@ -214,6 +238,7 @@ export function SignupForm({
                 placeholder="(+84) 123-456-7890"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
+                value={formData.phone}
                 onChange={handleChange}
               />
             </div>
@@ -228,12 +253,25 @@ export function SignupForm({
 
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" />
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
         </div>
 
         <div className="grid gap-4">
           <Label htmlFor="address">Địa chỉ</Label>
-          <Input id="address" placeholder="123 Main St" />
+          <Input
+            id="address"
+            placeholder="123 Main St"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
         </div>
       </div>
 
