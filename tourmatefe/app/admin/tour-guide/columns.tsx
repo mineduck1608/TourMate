@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TourGuide } from "@/types/tour-guide";
 import TourGuideActions from "./tourGuideAction";
+import Image from "next/image";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
 // const formatDate = (dateString: string) => {
@@ -107,7 +108,7 @@ export const columns: ColumnDef<TourGuide>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img 
+            <Image 
               src={imageUrl} 
               alt="Banner" 
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 
 interface Props {
@@ -40,7 +41,7 @@ function PictureView({ img, isOpen, onClose }: Props) {
                     </button>
                 </div>
                 <div className='flex justify-center items-center w-full h-full'>
-                    {img.length > 0 && <img src={img} className='max-w-[80%] max-h-[80%]' />}
+                    {img.length > 0 && <Image src={img} alt="Profile picture" className='max-w-[80%] max-h-[80%]' />}
                 </div>
             </div>
         </div>

@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table";
 import { News } from "@/types/news";
 import { Checkbox } from "@/components/ui/checkbox";
 import NewsActions from "./newsAction";
+import Image from "next/image";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
 const formatDate = (dateString: string) => {
@@ -73,9 +74,9 @@ export const columns: ColumnDef<News>[] = [
     cell: ({ row }) => {
       const content = row.getValue("content") || "";
 
-      // Kiểm tra và thay thế đường dẫn ảnh trong content bằng thẻ <img>
+      // Kiểm tra và thay thế đường dẫn ảnh trong content bằng thẻ <Image>
       const updatedContent = (content as string).replace(  /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi, (match) => {
-        return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
+        return `<Image src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
       });
 
       return (
@@ -111,7 +112,7 @@ export const columns: ColumnDef<News>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img
+            <Image
               src={imageUrl}
               alt="Banner"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh

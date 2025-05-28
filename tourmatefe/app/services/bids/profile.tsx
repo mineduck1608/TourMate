@@ -1,5 +1,6 @@
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Account } from '@/types/account'
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { JSX } from 'react'
 import { FaBell, FaComment, FaPowerOff, FaUser } from 'react-icons/fa'
@@ -67,7 +68,7 @@ function UserRender({ account }: { account: Account }) {
     return (
         <div className='px-6 pt-10 pb-1'>
             <div className='flex'>
-                <img src={'/Anh1.jpg'}
+                <Image src={'/Anh1.jpg'}
                     className='w-[25%] rounded-full aspect-square'
                     alt={'profile'}
                 />

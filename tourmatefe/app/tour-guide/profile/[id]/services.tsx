@@ -4,6 +4,7 @@ import PaginateList from '@/app/news/paginate-list'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
+import Image from 'next/image'
 import Link from 'next/link'
 import React, { useState } from 'react'
 
@@ -38,7 +39,7 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                             transition={{ duration: 0.1, ease: "easeInOut" }}
                             className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
                         >
-                            <img
+                            <Image
                                 src={'/danang.jpg'}
                                 alt={item.serviceName}
                                 className="w-full h-70 object-cover"

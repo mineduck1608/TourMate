@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from 'dayjs'
+import Image from "next/image";
 import { getNews } from "@/app/api/news.api";
 
 export default function HomeNews() {
@@ -52,7 +53,7 @@ export default function HomeNews() {
               transition={{ duration: 0.1, ease: "easeInOut" }}
               className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
             >
-              <img
+              <Image
                 src={item.bannerImg}
                 alt={item.title}
                 className="w-full h-70 object-cover"

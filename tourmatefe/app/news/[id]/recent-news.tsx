@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import Image from 'next/image'
 import Link from 'next/link'
 import React from 'react'
 
@@ -39,7 +40,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
                                     className='border-b-2 h-max hover:bg-gray-200 transition-colors duration-200 cursor-pointer'
                                 >
                                     <td>
-                                        <img src={v.bannerImg} className='max-w-[150px]' />
+                                        <Image src={v.bannerImg} alt={v.title || 'News banner'} className='max-w-[150px]' />
                                     </td>
                                     <td className='p-2 h-[105px] flex flex-col justify-between'>
                                         {v.newsId !== current

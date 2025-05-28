@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React from 'react'
 import { ActiveArea } from '@/types/active-area'
 import { getRandomActiveArea } from '../api/active-area.api'
+import Image from 'next/image'
 
 const HotAreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
     return (
@@ -15,7 +16,7 @@ const HotAreaCard: React.FC<{ item: ActiveArea }> = ({ item }) => {
                 transition={{ duration: 0.15, ease: 'easeInOut' }}
                 className="relative cursor-pointer overflow-hidden"
             >
-                <img
+                <Image
                     src={item.bannerImg}
                     alt={item.areaName}
                     className="w-full h-150 object-cover transition-transform duration-300 hover:scale-105"

@@ -11,6 +11,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel"
 import Autoplay from "embla-carousel-autoplay"
+import Image from "next/image";
 
 export default function ContactText() {
 
@@ -43,21 +44,21 @@ export default function ContactText() {
             >
               <CarouselContent>
                 <CarouselItem>
-                  <img
+                  <Image
                     src="https://media.vietnamplus.vn/images/7255a701687d11cb8c6bbc58a6c807853659c4f5e6c18951e9d585356e8f856798b4b711ae88fece3a45233417a3d845a74f6b1bfe70b3203772c7979020cefa/99Thuyen_hoa.jpg"
                     alt="Travel 1"
                     className="rounded-lg object-cover w-full h-96 sm:h-[400px]"  // chiều cao lớn hơn
                   />
                 </CarouselItem>
                 <CarouselItem>
-                  <img
+                  <Image
                     src="https://images2.thanhnien.vn/528068263637045248/2024/8/31/base64-17251183007861064965466.jpeg"
                     alt="Travel 2"
                     className="rounded-lg object-cover w-full h-96 sm:h-[400px]"
                   />
                 </CarouselItem>
                 <CarouselItem>
-                  <img
+                  <Image
                     src="https://minhducpc.vn/uploads/images/hinh-nen-viet-nam-4k10.jpg"
                     alt="Travel 3"
                     className="rounded-lg object-cover w-full h-96 sm:h-[400px]"

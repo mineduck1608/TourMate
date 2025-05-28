@@ -10,6 +10,7 @@ import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { GetToken } from "@/components/getToken";
 import { apiHub } from "@/types/constants";
+import Image from "next/image";
 
 const PAGE_SIZE = 20;
 
@@ -186,7 +187,7 @@ function MessageItem({
     <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
       <div className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"}`}>
         {showAvatar ? (
-          <img
+          <Image
             src={
               message.senderAvatarUrl ||
               "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"

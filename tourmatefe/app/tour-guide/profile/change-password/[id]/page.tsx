@@ -5,6 +5,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { use } from 'react'
 import { toast } from 'react-toastify';
 import ProfileForm from './form';
+import Image from 'next/image';
 export default function TourGuideProfileEdit({
     params,
 }: {
@@ -49,7 +50,7 @@ export default function TourGuideProfileEdit({
                 <div className='absolute top-[75px] md:left-[50%] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='p-1 rounded-full relative' >
-                            {tourGuide?.image && <img
+                            {tourGuide?.image && <Image
                                 src={tourGuide.image}
                                 alt={'shell'}
                                 className="w-[150px] rounded-full aspect-square relative border-2"

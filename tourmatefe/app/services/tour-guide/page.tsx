@@ -6,6 +6,7 @@ import { useQueryString } from '@/app/utils/utils';
 import Banner from '@/components/Banner'
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react'
@@ -117,7 +118,7 @@ function TourGuideMain() {
                             >
                                 <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform cursor-pointer">
                                     <div className="overflow-hidden">
-                                        <img
+                                        <Image
                                             src={v.image || "/fallback.jpg"}
                                             alt={v.fullName}
                                             className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"

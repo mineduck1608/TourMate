@@ -5,6 +5,7 @@ import Link from 'next/link'
 import React from 'react'
 import { TourGuide } from '@/types/tour-guide'
 import { getOtherTourGuides } from '../api/tour-guide.api'
+import Image from 'next/image'
 
 interface OtherTourGuidesProps {
     tourGuideId: number
@@ -21,7 +22,7 @@ const TourGuidesCard: React.FC<{ item: TourGuide }> = ({ item }) => {
             >
                 <div className="relative bg-[#F2F8FB] p-6 rounded-lg space-y-4 pt-15 mt-10">
                     <div className="absolute left-1/2 -top-10 -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-                        <img
+                        <Image
                             src={item.image || "/default-avatar.png"}
                             alt={item.fullName || "Tour Guide"}
                             className="w-full h-full object-cover"

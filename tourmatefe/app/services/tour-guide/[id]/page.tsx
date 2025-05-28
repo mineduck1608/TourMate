@@ -8,6 +8,7 @@ import TourServices from './services';
 import { TourGuide } from '@/types/tour-guide';
 import { Button } from '@/components/ui/button';
 import dayjs from 'dayjs';
+import Image from 'next/image';
 
 export default function TourGuideDetail({
     params,
@@ -30,9 +31,9 @@ export default function TourGuideDetail({
             <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
             <div className='shadow-lg w-[85%] rounded-lg place-self-center'>
                 <div className='flex justify-between p-5'>
-                    <img
+                    <Image
                         src={tourGuide?.image || "/fallback.jpg"}
-                        alt={tourGuide?.fullName}
+                        alt={tourGuide?.fullName || "Tour guide image"}
                         className="w-[30%] h-60 object-cover border-2"
                     />
                     <div className='w-[65%]'>
@@ -68,13 +69,13 @@ export default function TourGuideDetail({
                         </Button>
                     </div>
                     <div
-                        className={`text-justify ${displayDesc ? 'block' : 'hidden'}`}
+                        className={`text-justify ${displayDesc ? 'block pb-5' : 'hidden'}`}
                         dangerouslySetInnerHTML={{
                             __html: tourGuide?.tourGuideDescs?.[0]?.description
                                 ? tourGuide?.tourGuideDescs?.[0]?.description.replace(
                                     /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
                                     (match) => {
-                                        return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
+                                        return `<Image src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
                                     }
                                 )
                                 : "Không có mô tả",
