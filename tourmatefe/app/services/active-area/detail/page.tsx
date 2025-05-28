@@ -6,7 +6,6 @@ import { useQueryString } from "@/app/utils/utils";
 import Banner from "@/components/Banner";
 import { useQuery } from "@tanstack/react-query";
 import DOMPurify from "dompurify";
-import HotAreas from "@/app/tour-service/hotArea";
 import OtherArea from "./otherActiveArea";
 
 
