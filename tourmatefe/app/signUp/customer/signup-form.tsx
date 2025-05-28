@@ -19,7 +19,7 @@ export function SignupForm({
 
   useEffect(() => {
     if (confirmPassword && password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Mật khẩu không khớp!");
     } else {
       setError("");
     }
@@ -28,7 +28,7 @@ export function SignupForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (password !== confirmPassword) {
-      setError("Passwords do not match");
+      setError("Mật khẩu không khớp!");
       return;
     }
   };

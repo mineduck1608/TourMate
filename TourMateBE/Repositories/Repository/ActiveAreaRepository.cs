@@ -58,5 +58,18 @@ namespace Repositories.Repository
 
             return result;
         }
+
+        public async Task<List<ActiveArea>> GetOtherActiveAreaAsync(int currentId, int size)
+        {
+            var query = _context.ActiveAreas.Where(c => c.AreaId != currentId)
+                                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                                .AsQueryable();
+
+            var result = await query
+                .Take(size)  // Giới hạn số lượng kết quả theo pageSize
+                .ToListAsync();
+
+            return result;
+        }
     }
 }
