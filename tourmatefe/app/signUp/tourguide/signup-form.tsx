@@ -14,6 +14,8 @@ import { createCVApplication } from "@/app/api/cv-application.api";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
 import { Upload } from "lucide-react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/firebaseConfig";
 
 // Dynamically import ReactQuill with no SSR (Server-Side Rendering)
 const ReactQuill = dynamic(() => import("react-quill-new"), {
@@ -45,30 +47,46 @@ export function SignupForm({
 
   const mutation = useMutation({
     mutationFn: createCVApplication,
-    onSuccess: () => {
-      router.push("/login"); // Redirect to login page
+    onSuccess: (response: any) => {
+      alert(response.msg);
     },
-    onError: (error: Error | unknown) => {
+    onError: (error: any) => {
       const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Application submission failed";
+        error.response?.data?.message ||
+        "Đăng ký thất bại. Vui lòng thử lại sau.";
       setError(errorMessage);
+      alert(errorMessage);
     },
   });
 
-  const handleImageUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        setProfileImage(e.target?.result as string);
-        setFormData((prev) => ({
-          ...prev,
-          image: e.target?.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    try {
+      // Tạo reference đến storage với tên file unique
+      const storageRef = ref(
+        storage,
+        `profile-images/${Date.now()}-${file.name}`
+      );
+
+      // Upload file lên Firebase Storage
+      const snapshot = await uploadBytes(storageRef, file);
+
+      // Lấy URL download
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // Cập nhật state với URL
+      setProfileImage(downloadURL);
+      setFormData((prev) => ({
+        ...prev,
+        image: downloadURL,
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Tải ảnh lên thất bại. Vui lòng thử lại.");
     }
   };
 
