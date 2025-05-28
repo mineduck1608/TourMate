@@ -49,6 +49,9 @@ export function SignupForm({
     mutationFn: createCVApplication,
     onSuccess: (response: any) => {
       alert(response.msg);
+      setTimeout(() => {
+        router.push("/");
+      }, 800);
     },
     onError: (error: any) => {
       const errorMessage =
