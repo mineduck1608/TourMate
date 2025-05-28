@@ -3,7 +3,6 @@
 import type React from "react";
 import { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,13 +10,26 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
-import ImageUpload from "@/components/image-upload";
+import PdfUploader from "@/components/pdf-uploader";
+import dynamic from "next/dynamic";
+import { Upload } from "lucide-react";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { storage } from "@/firebaseConfig";
+
+// Dynamically import ReactQuill with no SSR (Server-Side Rendering)
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+  ssr: false, // Disable SSR for this component
+});
+
+import "react-quill-new/dist/quill.snow.css";
+// import { useRouter } from "next/router";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const router = useRouter();
+  // const router = useRouter()
+  const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",
     dateOfBirth: "",
@@ -35,17 +47,56 @@ export function SignupForm({
 
   const mutation = useMutation({
     mutationFn: createCVApplication,
-    onSuccess: () => {
-      router.push("/login"); // Redirect to login page
+    onSuccess: (response) => {
+      alert(response.msg);
+      setTimeout(() => {
+        window.location.href = "/";
+      }, 800);
     },
-    onError: (error: Error | unknown) => {
-      const errorMessage =
-        error instanceof Error
-          ? error.message
-          : "Application submission failed";
-      setError(errorMessage);
+    onError: (error) => {
+      let message = "Đăng ký thất bại. Vui lòng thử lại sau.";
+      if (typeof error === "object" && error !== null) {
+        if ("response" in error && typeof error.response === "object" && error.response !== null && "msg" in error.response) {
+          message = (error.response as { msg?: string }).msg || message;
+        } else if ("message" in error && typeof (error as { message?: string }).message === "string") {
+          message = (error as { message?: string }).message || message;
+        }
+      }
+      setError(message);
+      alert(message);
     },
   });
+
+  const handleImageUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Tạo reference đến storage với tên file unique
+      const storageRef = ref(
+        storage,
+        `profile-images/${Date.now()}-${file.name}`
+      );
+
+      // Upload file lên Firebase Storage
+      const snapshot = await uploadBytes(storageRef, file);
+
+      // Lấy URL download
+      const downloadURL = await getDownloadURL(snapshot.ref);
+
+      // Cập nhật state với URL
+      setProfileImage(downloadURL);
+      setFormData((prev) => ({
+        ...prev,
+        image: downloadURL,
+      }));
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      alert("Tải ảnh lên thất bại. Vui lòng thử lại.");
+    }
+  };
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -56,6 +107,13 @@ export function SignupForm({
       ...formData,
       [e.target.id]: e.target.value,
     });
+  };
+
+  const handleDescriptionChange = (value: string) => {
+    setFormData((prev) => ({
+      ...prev,
+      description: value,
+    }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -84,17 +142,35 @@ export function SignupForm({
           Nhập thông tin của bạn bên dưới để tạo tài khoản.
         </p>
       </div>
-      <div className="grid gap-4">
-        <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input
-            id="email"
-            type="email"
-            placeholder="m@example.com"
-            required
-            onChange={handleChange}
+      <div className="flex flex-col items-center space-y-4">
+        <Label className="text-sm font-medium">Tải ảnh lên</Label>
+        <div className="relative">
+          <div className="w-24 h-24 rounded-full border-2 border-dashed border-gray-300 flex items-center justify-center bg-gray-50 overflow-hidden">
+            {profileImage ? (
+              <img
+                src={profileImage || "/placeholder.svg"}
+                alt="Profile"
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <Upload className="h-8 w-8 text-gray-400" />
+            )}
+          </div>
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
           />
         </div>
+        <p className="text-xs text-gray-500 text-center">
+          Bấm hoặc kéo thả để tải ảnh lên. SVG, PNG, JPG, JPEG
+        </p>
+      </div>
+      <div className="grid gap-4">
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+          Thông tin cá nhân
+        </h3>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
             <Label htmlFor="fullName">Họ Tên</Label>
@@ -104,6 +180,7 @@ export function SignupForm({
               placeholder="John"
               className="w-full"
               required
+              value={formData.fullName}
               onChange={handleChange}
             />
           </div>
@@ -126,6 +203,7 @@ export function SignupForm({
                 type="date"
                 className="ps-10"
                 required
+                value={formData.dateOfBirth}
                 onChange={handleChange}
               />
             </div>
@@ -136,7 +214,7 @@ export function SignupForm({
               id="gender"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
-              defaultValue=""
+              value={formData.gender}
               onChange={handleChange}
             >
               <option value="" disabled>
@@ -146,17 +224,7 @@ export function SignupForm({
               <option value="female">Nữ</option>
             </select>
           </div>
-          <div className="grid gap-2">
-            <Label htmlFor="address">Địa chỉ</Label>
-            <Input
-              id="address"
-              type="text"
-              placeholder="123 Main St"
-              className="w-full"
-              required
-              onChange={handleChange}
-            />
-          </div>
+
           <div className="grid gap-2">
             <Label htmlFor="phone">Số điện thoại</Label>
             <div className="relative">
@@ -178,59 +246,102 @@ export function SignupForm({
                 placeholder="(+84) 123-456-7890"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
+                value={formData.phone}
                 onChange={handleChange}
               />
             </div>
           </div>
         </div>
+      </div>
+
+      <div className="grid gap-4">
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+          Thông tin liên hệ
+        </h3>
+
         <div className="grid gap-2">
-          <Label>Hình Đại Diện</Label>
-          <ImageUpload
-            onImageUpload={(url: string) =>
-              setFormData((prev) => ({ ...prev, image: url }))
-            }
+          <Label htmlFor="email">Email</Label>
+          <Input
+            id="email"
+            type="email"
+            placeholder="m@example.com"
+            value={formData.email}
+            onChange={handleChange}
+            required
+          />
+        </div>
+
+        <div className="grid gap-4">
+          <Label htmlFor="address">Địa chỉ</Label>
+          <Input
+            id="address"
+            placeholder="123 Main St"
+            value={formData.address}
+            onChange={handleChange}
+            required
+          />
+        </div>
+      </div>
+
+      <div className="grid gap-4">
+        <h3 className="text-lg font-semibold text-gray-800 border-b pb-2">
+          Thông tin bổ sung
+        </h3>
+        <div className="grid gap-2">
+          <Label htmlFor="description">Mô tả bản thân</Label>
+          <ReactQuill
+            value={formData.description}
+            onChange={handleDescriptionChange}
+            theme="snow"
+            placeholder="Giới thiệu bản thân"
+            style={{ minHeight: 100, marginBottom: 40 }}
           />
         </div>
         <div className="grid gap-2">
-            <Label htmlFor="description">Mô tả bản thân</Label>
-            
+          <Label>Tải CV</Label>
+          <PdfUploader
+            onUpload={(url: string) =>
+              setFormData((prev) => ({ ...prev, link: url }))
+            }
+            pdfUrl={formData.link}
+          />
         </div>
+      </div>
 
-        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
-        <div className="flex items-start gap-2">
-          <div className="flex items-center h-5">
-            <input
-              id="terms"
-              type="checkbox"
-              className="w-4 h-4 border rounded bg-background border-input focus:ring-2 focus:ring-primary"
-              required
-            />
-          </div>
-          <label htmlFor="terms" className="text-sm text-muted-foreground">
-            Tôi đồng ý với{" "}
-            <Link href="#" className="text-primary hover:underline">
-              các điều khoản và điều kiện
-            </Link>
-          </label>
+      {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+      <div className="flex items-start gap-2">
+        <div className="flex items-center h-5">
+          <input
+            id="terms"
+            type="checkbox"
+            className="w-4 h-4 border rounded bg-background border-input focus:ring-2 focus:ring-primary"
+            required
+          />
         </div>
-        <Button type="submit" className="w-full cursor-pointer">
-          Đăng Ký
-        </Button>
-        <div className="text-center text-sm">
-          Đã có tài khoản?{" "}
-          <Link
-            href="/login"
-            className="underline underline-offset-4 hover:text-gray-600 transition"
-          >
-            Đăng Nhập
+        <label htmlFor="terms" className="text-sm text-muted-foreground">
+          Tôi đồng ý với{" "}
+          <Link href="#" className="text-primary hover:underline">
+            các điều khoản và điều kiện
           </Link>
-        </div>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"></div>
-        <div className="text-balance text-center text-xs text-black [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-gray-600">
-          Bằng cách nhấn Đăng ký, bạn đồng ý với các{" "}
-          <Link href="#">Điều khoản Dịch vụ</Link> và{" "}
-          <Link href="#">Chính sách Bảo mật</Link> của chúng tôi.
-        </div>
+        </label>
+      </div>
+      <Button type="submit" className="w-full cursor-pointer">
+        Đăng Ký
+      </Button>
+      <div className="text-center text-sm">
+        Đã có tài khoản?{" "}
+        <Link
+          href="/login"
+          className="underline underline-offset-4 hover:text-gray-600 transition"
+        >
+          Đăng Nhập
+        </Link>
+      </div>
+      <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"></div>
+      <div className="text-balance text-center text-xs text-black [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-gray-600">
+        Bằng cách nhấn Đăng ký, bạn đồng ý với các{" "}
+        <Link href="#">Điều khoản Dịch vụ</Link> và{" "}
+        <Link href="#">Chính sách Bảo mật</Link> của chúng tôi.
       </div>
     </form>
   );

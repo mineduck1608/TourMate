@@ -1,5 +1,5 @@
 'use client'
-import { getSimplifiedArea } from "@/app/api/active-area.api";
+import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -48,7 +48,7 @@ export default function ProfileForm({ tourGuide, updateFn }: { tourGuide: TourGu
     }
     const simplifiedAreaQuery = useQuery({
         queryKey: ['simplified-area'],
-        queryFn: () => getSimplifiedArea(),
+        queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
     function submit(e: FormEvent) {

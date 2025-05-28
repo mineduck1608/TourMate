@@ -46,11 +46,11 @@ namespace API.Controllers
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(data.Email);
             if (existingAccount != null)
-                return Conflict("Email này đã được sử dụng!");
+                return Conflict(new { msg = "Email này đã được sử dụng!" });
 
             var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
             if (existingPhone != null)
-                return Conflict("Số điện thoại này đã được sử dụng!");
+                return Conflict(new { msg = "Số điện thoại này đã được sử dụng!" });
 
             var cvapplication = data.Convert();
             var result = await _cvapplicationService.CreateCvapplication(cvapplication);

@@ -27,7 +27,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResult<ActiveArea>>> GetAll(int pageSize = 10, int pageIndex = 1)
         {
-           var result = await _activeareaService.GetAll(pageSize, pageIndex);
+            var result = await _activeareaService.GetAll(pageSize, pageIndex);
             var response = new PagedResult<ActiveArea>
             {
                 Result = result.Result, // Tin tức đã bọc trong "Data"
@@ -42,12 +42,18 @@ namespace API.Controllers
             return Ok(await _activeareaService.GetSimplifiedAreas());
         }
 
+        [HttpGet("most-popular")]
+        public async Task<ActionResult<IEnumerable<MostPopularArea>>> GetMostPopular()
+        {
+            return Ok(await _activeareaService.GetMostPopularAreas());
+        }
+
         [HttpGet("filtered-area")]
         public async Task<ActionResult<PagedResult<ActiveArea>>> GetActiveAreas(
-            string search = "",
-            string region = "",
-            int pageIndex = 1,
-            int pageSize = 8)
+        string search = "",
+        string region = "",
+        int pageIndex = 1,
+        int pageSize = 8)
         {
             // Gọi service để lấy dữ liệu đã lọc và phân trang
             var result = await _activeareaService.GetActiveAreas(search, region, pageIndex, pageSize);
@@ -68,7 +74,7 @@ namespace API.Controllers
         {
             var activearea = data.Convert();
             var result = await _activeareaService.CreateActiveArea(activearea);
-            if(result == true)
+            if (result == true)
             {
                 return Ok();
             }
@@ -95,11 +101,25 @@ namespace API.Controllers
         }
 
         [HttpGet("random")]
-        public async Task<IActionResult> GetOtherTourServices([FromQuery] int size)
+        public async Task<IActionResult> GetRandomActiveAreas([FromQuery] int size)
         {
             try
             {
                 var result = await _activeareaService.GetRandomActiveAreaAsync(size);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
+        }
+
+        [HttpGet("other")]
+        public async Task<IActionResult> GetOtherActiveArea([FromQuery] int currentActiveAreaId, [FromQuery] int size)
+        {
+            try
+            {
+                var result = await _activeareaService.GetOtherActiveAreaAsync(currentActiveAreaId, size);
                 return Ok(result);
             }
             catch (Exception ex)

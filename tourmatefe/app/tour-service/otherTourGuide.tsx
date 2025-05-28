@@ -60,7 +60,6 @@ const OtherTourGuides: React.FC<OtherTourGuidesProps> = ({
         queryFn: () => getOtherTourGuides(tourGuideId, pageSize),
         staleTime: 24 * 3600 * 1000, // 1 day
     })
-    console.log(data)
     return (
         <motion.div
             className="w-full mx-auto px-4"

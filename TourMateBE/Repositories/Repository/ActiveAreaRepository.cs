@@ -46,9 +46,37 @@ namespace Repositories.Repository
             });
         }
 
+
+        public async Task<IEnumerable<MostPopularArea>> GetMostPopularAreas()
+        {
+            return _context.ActiveAreas
+                .Include(x => x.TourBids)
+                .OrderByDescending(x => x.TourBids.Count)
+                .Select(x => new MostPopularArea()
+                {
+                    AreaId = x.AreaId,
+                    AreaName = x.AreaName,
+                    TourBidCount = x.TourBids.Count
+                })
+                .Where(x => x.TourBidCount != 0);
+        }
+
         public async Task<List<ActiveArea>> GetRandomActiveAreaAsync(int size)
         {
             var query = _context.ActiveAreas
+                                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                                .AsQueryable();
+
+            var result = await query
+                .Take(size)  // Giới hạn số lượng kết quả theo pageSize
+                .ToListAsync();
+
+            return result;
+        }
+
+        public async Task<List<ActiveArea>> GetOtherActiveAreaAsync(int currentId, int size)
+        {
+            var query = _context.ActiveAreas.Where(c => c.AreaId != currentId)
                                 .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
                                 .AsQueryable();
 
