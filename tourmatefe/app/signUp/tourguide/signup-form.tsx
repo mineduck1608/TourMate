@@ -22,7 +22,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 import "react-quill-new/dist/quill.snow.css";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export function SignupForm({
   className,
