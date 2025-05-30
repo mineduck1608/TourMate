@@ -21,10 +21,6 @@ export function useToken(key: string = "accessToken") {
 }
 
 export function getUserRole(key: string): string | null {
-  try {
       const decoded: MyJwtPayload | null = key ? jwtDecode<MyJwtPayload>(key.toString()) : null;
       return decoded?.Role ?? null;
-  } catch (error) {
-    return null;
-  }
 }

@@ -35,9 +35,9 @@ export function LoginForm({
     const password = formData.get("password") as string;
 
     try {
-      var result = await login({ email, password });
+      const result = await login({ email, password });
       const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
-      var role = decoded?.Role
+      const role = decoded?.Role
       if (role == "Customer") {
         router.push('/')
       }
