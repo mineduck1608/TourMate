@@ -141,7 +141,7 @@ export function SignupForm({
                 value={formData.phone}
                 onChange={handleChange}
                 className="ps-10"
-                placeholder="(+84) 123-456-7890"
+                placeholder="0123-456-789"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
               />
@@ -191,7 +191,7 @@ export function SignupForm({
             />
           </div>
         </div>
-        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+        {error && <p className="text-sm text-center text-red-500 mt-1">{error}</p>}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
             <input
