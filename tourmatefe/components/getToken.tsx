@@ -1,3 +1,5 @@
+import { MyJwtPayload } from "@/types/JwtPayload";
+import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
 
 /**
@@ -5,15 +7,20 @@ import { useState, useEffect } from "react";
  * 
  * @param key khóa lưu token trong sessionStorage, mặc định 'accessToken'
  */
-export function GetToken(key: string = "accessToken") {
+export function useToken(key: string = "accessToken") {
   const [token, setToken] = useState<string | null>(null);
-
   useEffect(() => {
-
       const storedToken = sessionStorage.getItem(key);
       if (!storedToken) throw new Error("Token không tồn tại trong sessionStorage");
       setToken(storedToken);
+
+
   }, [key]);
 
   return token;
+}
+
+export function getUserRole(key: string): string | null {
+      const decoded: MyJwtPayload | null = key ? jwtDecode<MyJwtPayload>(key.toString()) : null;
+      return decoded?.Role ?? null;
 }
