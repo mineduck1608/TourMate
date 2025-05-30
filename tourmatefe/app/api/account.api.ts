@@ -1,6 +1,7 @@
 import { LoginPayload, LoginResponse } from "@/types/authenticate";
 import http from "../utils/http";
-
+import { Account } from "@/types/account";
+import { Customer } from "@/types/customer";
 import axios from "axios";
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
@@ -21,7 +22,11 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
     let message = "Đăng nhập thất bại";
 
     if (axios.isAxiosError(error)) {
-      if (error.response?.data && typeof error.response.data === "object" && "msg" in error.response.data) {
+      if (
+        error.response?.data &&
+        typeof error.response.data === "object" &&
+        "msg" in error.response.data
+      ) {
         message = (error.response.data as { msg: string }).msg;
       } else if (error.message) {
         message = error.message;
@@ -36,33 +41,57 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
 }
 
 export const RequestResetPassword = async (email: string) => {
-  try{
-    const response = await http.post(`/account/request-reset-password`,{ email });
+  try {
+    const response = await http.post(`/account/request-reset-password`, {
+      email,
+    });
     return response.data.msg;
-    }catch(error){
-      let message = "Yêu cầu thất bại!";
+  } catch (error) {
+    let message = "Yêu cầu thất bại!";
 
     if (axios.isAxiosError(error)) {
-      if (error.response?.data && typeof error.response.data === "object" && "msg" in error.response.data) {
+      if (
+        error.response?.data &&
+        typeof error.response.data === "object" &&
+        "msg" in error.response.data
+      ) {
         message = (error.response.data as { msg: string }).msg;
       }
     }
     throw new Error(message);
-    }
-  };
+  }
+};
 
-  export const ResetPassword = async (token: string, newPassword: string) => {
-  try{
-    const response = await http.post(`/account/reset-password`,{ token, newPassword });
+export const ResetPassword = async (token: string, newPassword: string) => {
+  try {
+    const response = await http.post(`/account/reset-password`, {
+      token,
+      newPassword,
+    });
     return response.data.msg;
-    }catch(error){
-      let message = "Yêu cầu thất bại!";
+  } catch (error) {
+    let message = "Yêu cầu thất bại!";
 
     if (axios.isAxiosError(error)) {
-      if (error.response?.data && typeof error.response.data === "object" && "msg" in error.response.data) {
+      if (
+        error.response?.data &&
+        typeof error.response.data === "object" &&
+        "msg" in error.response.data
+      ) {
         message = (error.response.data as { msg: string }).msg;
       }
     }
     throw new Error(message);
-    }
-  };
+  }
+};
+
+export const createCustomer = async (
+  data: Pick<Account, "email" | "password"> &
+    Pick<Customer, "fullName" | "phone">
+) => {
+  const response = await http.post(
+    "https://localhost:7147/api/account/registercustomer",
+    data
+  );
+  return response.data;
+};
