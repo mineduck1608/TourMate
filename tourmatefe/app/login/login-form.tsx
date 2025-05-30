@@ -11,6 +11,9 @@ import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 import { login } from "../api/account.api";
 import axios from "axios";
+import { useRouter } from "next/navigation";
+import { MyJwtPayload } from "@/types/JwtPayload";
+import { jwtDecode } from "jwt-decode";
 
 export function LoginForm({
   className,
@@ -19,6 +22,8 @@ export function LoginForm({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
+
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -30,8 +35,15 @@ export function LoginForm({
     const password = formData.get("password") as string;
 
     try {
-      await login({ email, password });
-      window.location.href = "/";
+      var result = await login({ email, password });
+      const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
+      var role = decoded?.Role
+      if (role == "Customer") {
+        router.push('/')
+      }
+      if (role == "Admin") {
+        router.push('/admin/dashboard')
+      }
     } catch (err) {
       // Xử lý lỗi không dùng any
       let message = "Đăng nhập thất bại";
