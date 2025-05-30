@@ -8,7 +8,7 @@ import { fetchConversations } from "../api/conversation.api";
 import { Search } from "lucide-react";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
-import { GetToken } from "@/components/getToken";
+import { useToken } from "@/components/getToken";
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void;
@@ -23,7 +23,7 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
 
-  const token = GetToken("accessToken");
+  const token = useToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const currentAccountId = decoded?.AccountId;
 
