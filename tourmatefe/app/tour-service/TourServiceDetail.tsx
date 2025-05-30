@@ -81,74 +81,79 @@ export function TourServiceDetail() {
         <p className="text-xs font-normal text-gray-400 tracking-wide uppercase mt-1">LỊCH TRÌNH VÀ ĐỊA ĐIỂM</p>
       </div>
 
-      <div className="flex justify-between gap-5 py-15 px-15">
-        {/* LEFT CONTENT */}
-        <div className="w-[68%]">
-          <h1 className="mb-5 text-xl font-semibold">{data?.data?.title}</h1>
-          <div
-            className="w-full quill-content text-justify"
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                (data?.data?.content || "").replace(
-                  /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
-                  (match) => {
-                    return `<img src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
-                  }
-                )
-              ),
-            }}
-          />
-          <div className="flex justify-between px-25 py-5 bg-[#F2F8FB] rounded-lg mt-5">
-            <a
-              href="https://www.example.com"
-              className="px-10 py-2 text-lg bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 block font-semibold text-xl"
-            >
-              Giá cả: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data?.data?.price || 0)}
-            </a>
-            <a
-              href="https://www.example.com"
-              className="px-10 py-2 text-lg bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 block font-semibold text-xl"
-            >
-              Đặt lịch
-            </a>
-          </div>
-        </div>
+      <div className="flex flex-col md:flex-row justify-between gap-5 py-10 px-4 md:px-15 min-h-screen">
+  {/* LEFT CONTENT */}
+  <div className="w-full md:w-[68%] overflow-y-auto pr-0 md:pr-4">
+    <h1 className="mb-5 text-xl font-semibold">{data?.data?.title}</h1>
+    <div
+      className="w-full quill-content text-justify"
+      dangerouslySetInnerHTML={{
+        __html: DOMPurify.sanitize(
+          (data?.data?.content || "").replace(
+            /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+            (match) => {
+              return `<img src="${match}" alt="Image" style="width: 100%; height: auto; margin-bottom: 10px;" />`;
+            }
+          )
+        ),
+      }}
+    />
+    <div className="flex flex-col sm:flex-row justify-between gap-4 px-4 py-5 bg-[#F2F8FB] rounded-lg mt-5">
+      <a
+        href="https://www.example.com"
+        className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
+      >
+        Giá cả: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data?.data?.price || 0)}
+      </a>
+      <a
+        href="https://www.example.com"
+        className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
+      >
+        Đặt lịch
+      </a>
+    </div>
+  </div>
 
-        <div className="w-[30%] p-2">
-          {/* Div 1 */}
-          <div className="bg-[#F2F8FB] p-4 rounded-lg space-y-4">
-            <h2 className="text-xl font-semibold text-center">THÔNG TIN</h2>
-            <p className="text-center text-lg">{data?.data.serviceName}</p>
-            <p className="text-center">{data?.data?.tourDesc}</p>
-          </div>
+  {/* RIGHT CONTENT */}
+  <div className="w-full md:w-[30%] p-2 flex flex-col gap-15 mt-10 md:mt-0">
+    {/* Div 1 */}
+    <div className="bg-[#F2F8FB] p-4 rounded-lg space-y-4">
+      <h2 className="text-xl font-semibold text-center">THÔNG TIN</h2>
+      <p className="text-center text-lg">{data?.data.serviceName}</p>
+      <p className="text-center">{data?.data?.tourDesc}</p>
+    </div>
 
-          {/* Div 2 - Tour guide info */}
-          <div className="relative bg-[#F2F8FB] p-6 rounded-lg space-y-4 pt-15 mt-30">
-            <div className="absolute left-1/2 -top-10 -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
-              <img
-                src={tourGuideData?.data?.image || "/default-avatar.png"}
-                alt={tourGuideData?.data?.fullName || "Tour Guide"}
-                className="w-full h-full object-cover"
-              />
-            </div>
-
-            <h2 className=" text-2xl text-gray-600 font-bold text-center">{tourGuideData?.data?.fullName || "Tên không có"}</h2>
-            <p className="text-center">GIỚI THIỆU</p>
-            <p
-              className="text-sm text-gray-600 line-clamp-10"
-              dangerouslySetInnerHTML={{
-                __html: tourGuideData?.data?.tourGuideDescs?.[0].description || "Không có mô tả",
-              }}
-            />
-            <a
-              href="https://www.example.com"
-              className="p-2 mx-25 text-lg bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 block text-sm"
-            >
-              CHI TIẾT
-            </a>
-          </div>
-        </div>
+    {/* Div 2 - Tour guide info */}
+    <div className="relative bg-[#F2F8FB] p-6 pt-20 rounded-lg space-y-4">
+      <div className="absolute left-1/2 -top-10 transform -translate-x-1/2 w-20 h-20 rounded-full overflow-hidden border-4 border-white shadow-lg bg-white">
+        <img
+          src={tourGuideData?.data?.image || "/default-avatar.png"}
+          alt={tourGuideData?.data?.fullName || "Tour Guide"}
+          className="w-full h-full object-cover"
+        />
       </div>
+
+      <h2 className="text-2xl text-gray-600 font-bold text-center">
+        {tourGuideData?.data?.fullName || "Tên không có"}
+      </h2>
+      <p className="text-center">GIỚI THIỆU</p>
+      <p
+        className="text-sm text-gray-600 line-clamp-10"
+        dangerouslySetInnerHTML={{
+          __html: tourGuideData?.data?.tourGuideDescs?.[0].description || "Không có mô tả",
+        }}
+      />
+      <a
+        href="https://www.example.com"
+        className="block px-4 py-2 mx-auto w-fit bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 text-sm"
+      >
+        CHI TIẾT
+      </a>
+    </div>
+  </div>
+</div>
+
+
 
       <div className="px-15 w-full min-w-full max-w-md mx-auto text-center">
         <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
@@ -158,7 +163,7 @@ export function TourServiceDetail() {
         <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
         <OtherAreas />
       </div>
-       <div className="px-15 w-full min-w-full max-w-md mx-auto text-center">
+      <div className="px-15 w-full min-w-full max-w-md mx-auto text-center">
         <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
         <OtherTourGuides tourGuideId={tourGuidId as number} />
       </div>

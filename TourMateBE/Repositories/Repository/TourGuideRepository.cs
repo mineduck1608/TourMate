@@ -36,14 +36,14 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourGuide>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
         {
             var query = _context.TourGuides
-                .Include(x => x.TourGuideDescs)
-                .ThenInclude(x => x.Area)
                 .AsQueryable();
 
             // Phân trang
             var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
+                .Include(x => x.TourGuideDescs)
+                .ThenInclude(x => x.Area)
                 .ToListAsync();
 
             // Lấy tổng số bản ghi
@@ -200,6 +200,18 @@ namespace Repositories.Repository
     .Take(pageSize)  // Giới hạn số lượng kết quả theo pageSize
     .ToListAsync();
 
+
+            return result;
+        }
+
+        public async Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize)
+        {
+            var result = await _context.TourGuides
+                .Include(td => td.TourGuideDescs)  // Load navigation property
+                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId))  // Lọc theo areaId từ mô tả
+                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                .Take(pageSize)  // Giới hạn số lượng
+                .ToListAsync();
 
             return result;
         }

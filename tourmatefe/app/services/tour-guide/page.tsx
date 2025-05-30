@@ -1,6 +1,6 @@
 'use client'
 
-import { getSimplifiedArea } from '@/app/api/active-area.api';
+import { getSimplifiedAreas } from '@/app/api/active-area.api';
 import { getList} from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
 import Banner from '@/components/Banner'
@@ -25,7 +25,7 @@ function TourGuideMain() {
     });
     const simplifiedAreaQuery = useQuery({
         queryKey: ['simplified-area'],
-        queryFn: () => getSimplifiedArea(),
+        queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
     const areas = simplifiedAreaQuery.data?.data ?? []

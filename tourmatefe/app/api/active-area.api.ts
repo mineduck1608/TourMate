@@ -1,4 +1,4 @@
-import { ActiveArea, SimplifiedActiveArea } from '@/types/active-area';
+import { ActiveArea, MostPopularArea, SimplifiedActiveArea } from '@/types/active-area';
 import http from '../utils/http'
 import { PagedResult } from '@/types/pagedResult';
 
@@ -29,7 +29,10 @@ export const getFilteredActiveAreas = async (page: number | string, limit: numbe
 };
 
 
-export const getActiveArea = async (id: number | string) => http.get<ActiveArea>(`active-area/${id}`)
+export const getActiveArea = async (id: number) => {
+  const response = await http.get<ActiveArea>(`active-area/${id}`)
+  return response.data
+} 
 
 export const addActiveArea = async (data: ActiveArea) => {
   const response = await http.post('/active-area', data);
@@ -43,7 +46,9 @@ export const updateActiveArea = async (id: number, data: ActiveArea) => {
 
 export const deleteActiveArea = async (id: number | string) => await http.delete<object>(`active-area/${id}`)
 
-export const getSimplifiedArea = async () => await http.get<SimplifiedActiveArea[]>('active-area/simplified')
+export const getSimplifiedAreas = async () => await http.get<SimplifiedActiveArea[]>('active-area/simplified')
+
+export const getMostPopularAreas = async () => await http.get<MostPopularArea[]>('active-area/most-popular')
 
 export const getRandomActiveArea = async (size: number, signal?: AbortSignal) => {
   const res = await http.get<ActiveArea>('active-area/random', {

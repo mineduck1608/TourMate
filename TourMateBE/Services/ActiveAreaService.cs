@@ -14,6 +14,7 @@ namespace Services
         Task<bool> UpdateActiveArea(ActiveArea activearea);
         Task<bool> DeleteActiveArea(int id);
         Task<IEnumerable<SimplifiedAreaListResult>> GetSimplifiedAreas();
+        Task<IEnumerable<MostPopularArea>> GetMostPopularAreas();
         Task<List<ActiveArea>> GetRandomActiveAreaAsync(int size);
         Task<List<ActiveArea>> GetOtherActiveAreaAsync(int currentId, int size);
     }
@@ -68,6 +69,11 @@ namespace Services
         public async Task<List<ActiveArea>> GetOtherActiveAreaAsync(int currentId, int size)
         {
             return await ActiveAreaRepository.GetOtherActiveAreaAsync(currentId, size);
+        }
+
+        public async Task<IEnumerable<MostPopularArea>> GetMostPopularAreas()
+        {
+            return await ActiveAreaRepository.GetMostPopularAreas();
         }
     }
 }

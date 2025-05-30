@@ -179,5 +179,20 @@ namespace API.Controllers
                 return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
             }
         }
+
+        [HttpGet("getbyarea")]
+        public async Task<IActionResult> GetTourGuidesByArea([FromQuery] int areaId, [FromQuery] int pageSize)
+        {
+            try
+            {
+                var result = await _tourguideService.GetTourGuidesByAreaAsync(areaId, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Something went wrong", error = ex.Message });
+            }
+        }
+
     }
 }
