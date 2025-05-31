@@ -215,6 +215,17 @@ export function SignupForm({
               />
             </div>
           </div>
+          <div className="grid gap-4">
+            <Label htmlFor="address">Địa chỉ</Label>
+            <Input
+              id="address"
+              name="address"
+              placeholder="123 Main St"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
         </div>
         {error && (
           <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">
