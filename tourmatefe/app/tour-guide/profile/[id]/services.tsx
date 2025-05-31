@@ -1,6 +1,7 @@
 'use client'
 import { getTourServicesOf } from '@/app/api/tour-service.api'
 import PaginateList from '@/app/news/paginate-list'
+import SafeImage from '@/components/safe-image'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
@@ -38,8 +39,8 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                             transition={{ duration: 0.1, ease: "easeInOut" }}
                             className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
                         >
-                            <img
-                                src={'/danang.jpg'}
+                            <SafeImage
+                                src={item.image}
                                 alt={item.serviceName}
                                 className="w-full h-70 object-cover"
                             />

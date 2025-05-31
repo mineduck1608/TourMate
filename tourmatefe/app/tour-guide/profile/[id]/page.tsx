@@ -94,7 +94,7 @@ export default function TourGuideProfileEdit({
                         </div>
                     }
                     <Button
-                        className='absolute right-[5%] bottom-[5%] p-2 rounded-lg bg-white text-black hover:bg-gray-200 shadow-lg'
+                        className='absolute right-[5%] bottom-[5%] rounded-lg bg-white text-black hover:bg-gray-200 shadow-lg'
                         onClick={() => {
                             setToggleMode(p => ({ ...p, edit: true, targetType: targetType.banner, value: tourGuide?.bannerImage ?? '' }))
                         }}>
