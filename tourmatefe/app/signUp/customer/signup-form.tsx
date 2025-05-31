@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "@/app/api/account.api";
 import { useRouter } from "next/navigation";
 import { Customer } from "@/types/customer";
+import { toast } from "react-toastify";
 
 export function SignupForm({
   className,
@@ -34,7 +35,7 @@ export function SignupForm({
   const mutation = useMutation({
     mutationFn: createCustomer,
     onSuccess: () => {
-      alert("Đăng ký thành công!");
+      toast.success("Đăng ký thành công!");
       setTimeout(() => {
         router.push("/login");
       }, 500);
@@ -151,7 +152,7 @@ export function SignupForm({
                 value={formData.phone}
                 onChange={handleChange}
                 className="ps-10"
-                placeholder="(+84) 123-456-7890"
+                placeholder="0123-456-789"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
               />
@@ -212,7 +213,7 @@ export function SignupForm({
             />
           </div>
         </div>
-        {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
+        {error && <p className="text-sm text-center text-red-500 mt-1">{error}</p>}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
             <input

@@ -243,7 +243,7 @@ export function SignupForm({
                 id="phone"
                 type="tel"
                 className="ps-10"
-                placeholder="(+84) 123-456-7890"
+                placeholder="0123-456-789"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
                 value={formData.phone}
