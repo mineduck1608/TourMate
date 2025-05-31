@@ -10,20 +10,16 @@ import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { useToken } from "@/components/getToken";
 import * as signalR from "@microsoft/signalr";
+import { apiHub } from "@/types/constants";
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void;
   selectedId?: number;
-  hubConnection: signalR.HubConnection;
 };
 
 const PAGE_SIZE = 20;
 
-export default function ConversationList({
-  onSelect,
-  selectedId,
-  hubConnection,
-}: Props) {
+export default function ConversationList({ onSelect, selectedId }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
@@ -51,7 +47,30 @@ export default function ConversationList({
     enabled: !!currentAccountId,
   });
 
-  // Cập nhật danh sách và join SignalR group
+  // Khởi tạo SignalR connection
+  const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null);
+
+  useEffect(() => {
+    if (!currentAccountId) return;
+
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${apiHub}/chatHub`) // Thay URL hub của bạn
+      .withAutomaticReconnect()
+      .build();
+
+    setHubConnection(connection);
+
+    connection
+      .start()
+      .then(() => console.log("SignalR connected"))
+      .catch((err) => console.error("SignalR connection error:", err));
+
+    return () => {
+      connection.stop();
+    };
+  }, [currentAccountId]);
+
+  // Cập nhật local conversations khi data từ query thay đổi và join group SignalR
   useEffect(() => {
     if (data?.pages) {
       const allConversations = data.pages.flatMap(page => page.conversations);
@@ -64,8 +83,7 @@ export default function ConversationList({
 
       setLocalConversations(allConversations);
 
-      // Join từng conversation
-      if (hubConnection?.state === "Connected") {
+      if (hubConnection?.state === signalR.HubConnectionState.Connected) {
         allConversations.forEach((conv) => {
           const id = conv.conversation.conversationId;
           hubConnection
@@ -75,6 +93,73 @@ export default function ConversationList({
       }
     }
   }, [data, hubConnection]);
+
+  // Nếu hubConnection kết nối hoặc danh sách localConversations thay đổi thì join group lại
+  useEffect(() => {
+    if (
+      hubConnection &&
+      hubConnection.state === signalR.HubConnectionState.Connected &&
+      localConversations.length > 0
+    ) {
+      localConversations.forEach((conv) => {
+        const id = conv.conversation.conversationId;
+        hubConnection
+          .invoke("JoinConversation", id)
+          .then(() => console.log("Joined conversation", id))
+          .catch((err) => console.error(`JoinConversation failed for ${id}:`, err));
+      });
+    }
+  }, [hubConnection?.state, localConversations]);
+
+  useEffect(() => {
+    if (!hubConnection) return;
+
+    const handleReceiveMessage = (
+      message: {
+        messageId: number;
+        senderId: number;
+        senderName: string;
+        conversationId: number;
+        senderAvatarUrl: string;
+        messageText: string;
+        sendAt: string;
+      }
+    ) => {
+      console.log("handleReceiveMessage called", message);
+
+      setLocalConversations((prev) => {
+        const index = prev.findIndex(
+          (conv) => conv.conversation.conversationId === message.conversationId
+        );
+        console.log("Found conversation index:", index);
+        console.log("Message ConversationId:", message.conversationId, typeof message.conversationId);
+        console.log("Local conversation Ids:", prev.map(c => c.conversation.conversationId));
+
+        if (index === -1) return prev;
+
+        const updatedConv = { ...prev[index] };
+        updatedConv.latestMessage = {
+          messageId: message.messageId,
+          senderId: message.senderId,
+          senderName: message.senderName,
+          conversationId: message.conversationId,
+          senderAvatarUrl: message.senderAvatarUrl,
+          messageText: message.messageText,
+          sendAt: message.sendAt,
+        };
+
+        // Đẩy conversation vừa có tin nhắn mới lên đầu danh sách
+        return [updatedConv, ...prev.filter((_, i) => i !== index)];
+      });
+    };
+
+    hubConnection.on("ReceiveMessage", handleReceiveMessage);
+
+    return () => {
+      hubConnection.off("ReceiveMessage", handleReceiveMessage);
+    };
+  }, [hubConnection]);
+
 
   // debounce search
   const debounceSearch = useCallback(
@@ -97,13 +182,8 @@ export default function ConversationList({
     }
   };
 
-  const sortedConversations = React.useMemo(() => {
-    return [...localConversations].sort((a, b) => {
-      const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
-      const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
-      return timeB - timeA;
-    });
-  }, [localConversations]);
+  // Chỉ dùng localConversations đã sort khi set state
+  const sortedConversations = localConversations;
 
   return (
     <div className="flex flex-col border-r h-full w-80">
@@ -166,17 +246,15 @@ function ConversationItem({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer p-3 border-b hover:bg-gray-100 ${
-        selected ? "bg-blue-100 font-semibold" : ""
-      }`}
+      className={`cursor-pointer p-3 border-b hover:bg-gray-100 ${selected ? "bg-blue-100 font-semibold" : ""
+        }`}
     >
       <div>{conversation.accountName2}</div>
       <div
-        className={`text-xs truncate ${
-          conversation.isRead
-            ? "text-gray-500 font-normal"
-            : "text-black font-semibold"
-        }`}
+        className={`text-xs truncate ${conversation.isRead
+          ? "text-gray-500 font-normal"
+          : "text-black font-semibold"
+          }`}
       >
         {conversation.latestMessage?.messageText}
       </div>
