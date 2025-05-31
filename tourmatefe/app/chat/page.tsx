@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import ConversationList from "./conversationList";
 import MessageList from "./messageList";
 import MegaMenu from "@/components/mega-menu";
