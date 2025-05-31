@@ -75,8 +75,17 @@ export default function MessageList({ conversationId }: Props) {
 
     newConnection
       .start()
-      .then(() => console.log("SignalR connected"))
+      .then(async () => {
+        console.log("SignalR connected");
+        try {
+          await newConnection.invoke("JoinConversation", conversationId); // ❗ THÊM DÒNG NÀY
+          console.log("Joined conversation", conversationId);
+        } catch (err) {
+          console.error("Failed to join conversation:", err);
+        }
+      })
       .catch((e) => console.log("SignalR connection failed: ", e));
+
 
     newConnection.on("ReceiveMessage", (message: Message) => {
       if (message.conversationId === conversationId) {
@@ -194,16 +203,14 @@ function MessageItem({
           <div className="w-10 h-10" />
         )}
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-          }`}
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+            }`}
           style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
           <div>{message.messageText}</div>
           <div
-            className={`text-xs mt-1 ${
-              isSender ? "text-white text-right" : "text-gray-500 text-left"
-            }`}
+            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
+              }`}
           >
             {new Date(message.sendAt).toLocaleTimeString()}
           </div>

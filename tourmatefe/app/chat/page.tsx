@@ -5,23 +5,10 @@ import MessageList from "./messageList";
 import MegaMenu from "@/components/mega-menu";
 import { ConversationResponse } from "@/types/conversation";
 import { fetchMarkRead } from "../api/conversation.api";
-import * as signalR from "@microsoft/signalr";
-import { apiHub } from "@/types/constants";
 
 
 export default function ChatPage() {
   const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null);
-
-  const connection = new signalR.HubConnectionBuilder()
-    .withUrl(`${apiHub}/chatHub`, {
-      accessTokenFactory: () => sessionStorage.getItem("accessToken") ?? "",
-    })
-    .withAutomaticReconnect()
-    .build();
-
-  useEffect(() => {
-    connection.start().catch(console.error);
-  }, []);
 
   // Khi chọn conversation
   const handleSelectConversation = async (conv: ConversationResponse) => {
@@ -41,7 +28,6 @@ export default function ChatPage() {
         <ConversationList
           onSelect={handleSelectConversation}
           selectedId={selectedConversation?.conversation.conversationId}
-          hubConnection={connection}
         />
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
