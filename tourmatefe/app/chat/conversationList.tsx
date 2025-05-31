@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useCallback, useRef } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import { debounce } from "lodash";
 import { ConversationResponse } from "@/types/conversation";
@@ -9,16 +9,21 @@ import { Search } from "lucide-react";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { useToken } from "@/components/getToken";
+import * as signalR from "@microsoft/signalr";
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void;
   selectedId?: number;
-  refresh: boolean; // Nhận prop refresh để trigger refetch
+  hubConnection: signalR.HubConnection;
 };
 
 const PAGE_SIZE = 20;
 
-export default function ConversationList({ onSelect, selectedId, refresh }: Props) {
+export default function ConversationList({
+  onSelect,
+  selectedId,
+  hubConnection,
+}: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedTerm, setDebouncedTerm] = useState("");
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([]);
@@ -27,24 +32,12 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const currentAccountId = decoded?.AccountId;
 
-  // Refs để giữ giá trị mới nhất cho event handler hoặc callback
-  const debouncedTermRef = useRef(debouncedTerm);
-  useEffect(() => {
-    debouncedTermRef.current = debouncedTerm;
-  }, [debouncedTerm]);
-
-  const currentAccountIdRef = useRef(currentAccountId);
-  useEffect(() => {
-    currentAccountIdRef.current = currentAccountId;
-  }, [currentAccountId]);
-
   const {
     data,
     fetchNextPage,
     hasNextPage,
     isFetchingNextPage,
     isLoading,
-    refetch, // Lấy hàm refetch từ react-query
   } = useInfiniteQuery<
     { conversations: ConversationResponse[]; hasMore: boolean },
     unknown
@@ -58,19 +51,11 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
     enabled: !!currentAccountId,
   });
 
-  // Khi prop refresh thay đổi, gọi refetch để lấy dữ liệu mới
-  useEffect(() => {
-    if (refresh) {
-      refetch();
-    }
-  }, [refresh, refetch]);
-
-  // Đồng bộ dữ liệu từ React Query vào localConversations mỗi khi data thay đổi
+  // Cập nhật danh sách và join SignalR group
   useEffect(() => {
     if (data?.pages) {
       const allConversations = data.pages.flatMap(page => page.conversations);
 
-      // Sắp xếp giảm dần theo latestMessage.sendAt
       allConversations.sort((a, b) => {
         const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;
         const timeB = b.latestMessage?.sendAt ? new Date(b.latestMessage.sendAt).getTime() : 0;
@@ -78,10 +63,20 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
       });
 
       setLocalConversations(allConversations);
-    }
-  }, [data]);
 
-  // debounce search input
+      // Join từng conversation
+      if (hubConnection?.state === "Connected") {
+        allConversations.forEach((conv) => {
+          const id = conv.conversation.conversationId;
+          hubConnection
+            .invoke("JoinConversation", id)
+            .catch((err) => console.error(`JoinConversation failed for ${id}:`, err));
+        });
+      }
+    }
+  }, [data, hubConnection]);
+
+  // debounce search
   const debounceSearch = useCallback(
     debounce((term: string) => setDebouncedTerm(term.trim().toLowerCase())),
     []
@@ -91,7 +86,6 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
     debounceSearch(searchTerm);
   }, [searchTerm, debounceSearch]);
 
-  // Xử lý scroll lấy trang tiếp theo
   const handleScroll = (e: React.UIEvent<HTMLDivElement>) => {
     const el = e.currentTarget;
     if (
@@ -103,7 +97,6 @@ export default function ConversationList({ onSelect, selectedId, refresh }: Prop
     }
   };
 
-  // Memo sắp xếp lại localConversations trước render (phòng trường hợp setLocalConversations không đảm bảo thứ tự)
   const sortedConversations = React.useMemo(() => {
     return [...localConversations].sort((a, b) => {
       const timeA = a.latestMessage?.sendAt ? new Date(a.latestMessage.sendAt).getTime() : 0;

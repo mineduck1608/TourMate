@@ -15,10 +15,9 @@ const PAGE_SIZE = 20;
 
 type Props = {
   conversationId: number;
-  onNewMessage?: () => void;
 };
 
-export default function MessageList({ conversationId, onNewMessage }: Props) {
+export default function MessageList({ conversationId }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -83,16 +82,13 @@ export default function MessageList({ conversationId, onNewMessage }: Props) {
       if (message.conversationId === conversationId) {
         console.log(message);
         setMessages((prev) => [message, ...prev]);
-        if (onNewMessage) {
-          onNewMessage();
-        }
       }
     });
 
     return () => {
       newConnection.stop();
     };
-  }, [conversationId, onNewMessage]);
+  }, [conversationId]);
 
   // Load thêm tin nhắn khi scroll đến đầu
   const loadMoreMessages = () => {
