@@ -25,15 +25,15 @@ namespace API.Controllers
         }
 
         [HttpGet("bids-of")]
-        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsOfAsync(int id, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsOfAsync(int accountId, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _tourbidService.GetBidsOf(id, pageSize, pageIndex));
+            return Ok(await _tourbidService.GetBidsOf(accountId, pageSize, pageIndex));
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsAsync([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsAsync(int? areaId, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _tourbidService.GetBids(pageSize, pageIndex));
+            return Ok(await _tourbidService.GetBids(areaId, pageSize, pageIndex));
         }
 
         [HttpPost]

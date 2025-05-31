@@ -40,7 +40,7 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
                             className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
                         >
                             <img
-                                src={'/danang.jpg'}
+                                src={item.image}
                                 alt={item.serviceName}
                                 className="w-full h-70 object-cover"
                             />

@@ -6,15 +6,7 @@ namespace Repositories.DTO.CreateModels
     {
         public int AccountId { get; set; }
 
-        public DateTime CreatedAt { get; set; }
-
-        public DateTime? UpdatedAt { get; set; }
-
-        public bool IsDeleted { get; set; }
-
         public int PlaceRequested { get; set; }
-
-        public string Status { get; set; }
 
         public string Content { get; set; }
 
@@ -22,9 +14,11 @@ namespace Repositories.DTO.CreateModels
         public TourBid Convert() => new TourBid
         {
             AccountId = AccountId,
-            CreatedAt = CreatedAt,
-            UpdatedAt = UpdatedAt,
-            IsDeleted = IsDeleted,
+            CreatedAt = DateTime.Now,
+            IsDeleted = false,
+            Content = Content,
+            MaxPrice = MaxPrice,
+            Status = "Hoạt động",
             PlaceRequested = PlaceRequested,
             TourBidId = 0
         };

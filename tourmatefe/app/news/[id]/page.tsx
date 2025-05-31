@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import Banner from "@/components/Banner";
 import RecentNews from "./recent-news";
 import NewsCategories from "./categories";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getOneNews } from "@/app/api/news.api";
@@ -23,7 +22,28 @@ export default function NewsDetailPage({
     queryFn: () => getOneNews(id),
     staleTime: 24 * 3600 * 1000,
   });
+
   const news = data?.data;
+
+  // Create a sanitizer function that works in the browser
+  const sanitizeContent = (html: string) => {
+    // Only sanitize if window is available (client-side)
+    if (typeof window !== 'undefined') {
+      const clean = DOMPurify.sanitize(html, {
+        ADD_TAGS: ["iframe"], // Allow iframes if needed
+        ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"], // Allow certain attributes
+      });
+
+      // Replace image URLs with img tags
+      return clean.replace(
+        /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+        (match) => {
+          return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+        }
+      );
+    }
+    return html; // Fallback for server-side rendering
+  };
 
   useEffect(() => {
     if (news?.content) {
@@ -35,7 +55,6 @@ export default function NewsDetailPage({
       aligned.forEach((el, i) => console.log(`Element ${i + 1}:`, el.outerHTML));
     }
   }, [news?.content]);
-
 
   return (
     <div className="admin-layout">
@@ -49,20 +68,14 @@ export default function NewsDetailPage({
         <div
           className="w-[65%] p-2 quill-content text-justify"
           dangerouslySetInnerHTML={{
-            __html: DOMPurify.sanitize(
-              (data?.data?.content || "").replace(
-                /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,  // Biểu thức chính quy tìm tất cả các URL ảnh
-                (match) => {
-                  return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
-                }
-              )
-            ),
+            __html: sanitizeContent(data?.data?.content || ""),
           }}
         />
+        {/* Rest of your component remains the same */}
         <div className="w-[30%] p-2 *:mb-10">
           <RecentNews currentId={id} />
           <NewsCategories />
-          <ScrollArea className="h-60 rounded-md border shadow-lg bg-black">
+          <div className="rounded-md border shadow-lg bg-black">
             <div className="p-4 text-white">
               <h4 className="mb-4 text-3xl leading-none">
                 Bạn có câu hỏi nào không?
@@ -88,9 +101,10 @@ export default function NewsDetailPage({
                 </tbody>
               </table>
             </div>
-          </ScrollArea>
+          </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );

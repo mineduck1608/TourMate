@@ -15,10 +15,9 @@ const PAGE_SIZE = 20;
 
 type Props = {
   conversationId: number;
-  onNewMessage?: () => void;
 };
 
-export default function MessageList({ conversationId, onNewMessage }: Props) {
+export default function MessageList({ conversationId }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -76,23 +75,29 @@ export default function MessageList({ conversationId, onNewMessage }: Props) {
 
     newConnection
       .start()
-      .then(() => console.log("SignalR connected"))
+      .then(async () => {
+        console.log("SignalR connected");
+        try {
+          await newConnection.invoke("JoinConversation", conversationId); // ❗ THÊM DÒNG NÀY
+          console.log("Joined conversation", conversationId);
+        } catch (err) {
+          console.error("Failed to join conversation:", err);
+        }
+      })
       .catch((e) => console.log("SignalR connection failed: ", e));
+
 
     newConnection.on("ReceiveMessage", (message: Message) => {
       if (message.conversationId === conversationId) {
         console.log(message);
         setMessages((prev) => [message, ...prev]);
-        if (onNewMessage) {
-          onNewMessage();
-        }
       }
     });
 
     return () => {
       newConnection.stop();
     };
-  }, [conversationId, onNewMessage]);
+  }, [conversationId]);
 
   // Load thêm tin nhắn khi scroll đến đầu
   const loadMoreMessages = () => {
@@ -198,16 +203,14 @@ function MessageItem({
           <div className="w-10 h-10" />
         )}
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-          }`}
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+            }`}
           style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
           <div>{message.messageText}</div>
           <div
-            className={`text-xs mt-1 ${
-              isSender ? "text-white text-right" : "text-gray-500 text-left"
-            }`}
+            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
+              }`}
           >
             {new Date(message.sendAt).toLocaleTimeString()}
           </div>

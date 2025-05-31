@@ -8,18 +8,19 @@ namespace Repositories.Repository
 {
     public class TourBidRepository : GenericRepository<TourBid>
     {
-        public async Task<PagedResult<TourBid>> GetBids(int pageSize, int pageIndex)
+        public async Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex)
         {
             var query = _context.TourBids
+                .Where(x => !areaId.HasValue || x.PlaceRequested == areaId)
                 .OrderByDescending(x => x.CreatedAt)
                 .AsQueryable();
             var totalItems = await query.CountAsync();
             var result = await query
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
+                .Include(x => x.PlaceRequestedNavigation)
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Customers)
-                .Include(x => x.PlaceRequestedNavigation)
                 .ToListAsync();
             return new PagedResult<TourBid>
             {

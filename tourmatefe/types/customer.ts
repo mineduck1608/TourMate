@@ -8,7 +8,6 @@ export type Customer = {
   dateOfBirth: string;
   phone: string;
   image: string;
-  address: string;
   account: Account;
 };
 

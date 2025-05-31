@@ -11,7 +11,8 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "@/app/api/account.api";
 import { useRouter } from "next/navigation";
-import { Customer } from "@/types/customer";
+// import { Customer } from "@/types/customer";
+import { toast } from "react-toastify";
 
 export function SignupForm({
   className,
@@ -33,13 +34,13 @@ export function SignupForm({
   const mutation = useMutation({
     mutationFn: createCustomer,
     onSuccess: () => {
-      alert("Đăng ký thành công!");
+      toast.success("Đăng ký thành công!");
       setTimeout(() => {
         router.push("/login");
       }, 500);
     },
-    onError: (error: Error) => {
-      setError(error.message);
+    onError: (error: ApiError) => {
+      setError(error.response?.data?.msg || "Đăng ký thất bại");
     },
   });
 
@@ -57,8 +58,8 @@ export function SignupForm({
       email,
       password,
       fullName,
-      phone,
       address,
+      phone,
       gender,
       dateOfBirth,
     });
@@ -166,7 +167,7 @@ export function SignupForm({
                 value={formData.phone}
                 onChange={handleChange}
                 className="ps-10"
-                placeholder="(+84) 123-456-7890"
+                placeholder="0123-456-789"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
               />
@@ -213,17 +214,6 @@ export function SignupForm({
                 required
               />
             </div>
-          </div>
-          <div className="grid gap-4">
-            <Label htmlFor="address">Địa chỉ</Label>
-            <Input
-              id="address"
-              name="address"
-              placeholder="123 Main St"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
           </div>
         </div>
         {error && (

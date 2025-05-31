@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
+using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Services;
 using Services.Utils;
@@ -39,7 +40,16 @@ namespace API.Controllers
 
             return Ok(response);
         }
-
+        [HttpGet("from-account")]
+        public async Task<ActionResult<Customer>> GetFromAccount(int accountId)
+        {
+            var customer = await _customerService.GetCustomerFromAccount(accountId);
+            if (customer == null)
+            {
+                return NotFound(new { msg = "Không tìm thấy khách hàng!" });
+            }
+            return Ok(customer);
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Customer data)
         {
@@ -122,6 +132,40 @@ namespace API.Controllers
             var updateCustomer = await _customerService.UpdateCustomer(data);
             var updateAccount = await _accountService.UpdateAccount(data.Account);
             if (updateCustomer == true && updateAccount == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
+        }
+
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> UpdateCustomer([FromBody] CustomerUpdateModel data)
+        {
+            if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
+                return BadRequest(new { msg = "Số điện thoại không đúng!" });
+
+            var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
+            if (existingPhone != null && existingPhone.CustomerId != data.CustomerId)
+                return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
+
+            if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
+            {
+                return BadRequest(new { msg = "Ngày sinh không đúng!" });
+            }
+
+            var customer = await _customerService.GetCustomerByAccId(data.AccountId);
+
+            if (customer != null)
+            {
+                customer.FullName = data.FullName;
+                customer.DateOfBirth = data.DateOfBirth;
+                customer.Phone = data.Phone;
+                customer.Gender = data.Gender;
+                customer.Image = data.Image;
+            }
+
+            var updateCustomer = await _customerService.UpdateCustomer(customer);
+            if (updateCustomer == true)
             {
                 return Ok();
             }
