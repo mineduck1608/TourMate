@@ -1,32 +1,49 @@
-import { Button } from "@/components/ui/button";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import BidList from "./bid-list";
+import SafeImage from "@/components/safe-image";
+import BidCreateModal from "./bid-create-modal";
+import { BidCreateContext } from "./bid-create-context";
+import { TourBid } from "@/types/tour-bid";
+import { Customer } from "@/types/customer";
+export const baseData: TourBid = {
+  tourBidId: 0,
+  accountId: 0,
+  createdAt: "",
+  isDeleted: false,
+  placeRequested: 0,
+  status: "",
+  content: "",
+  maxPrice: undefined
+}
+export default function Bids({ customer }: { customer?: Customer }) {
+  const [fireUpdate, setFireUpdate] = useState(false)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [formData, setFormData] = useState(baseData)
+  useEffect(() => {
+    setFormData({ ...formData, accountId: customer?.accountId ?? 0 })
+  }, [customer?.accountId])
 
-export default function Bids() {
   return (
-    <div className="">
+    <BidCreateContext.Provider value={{ fireUpdate, setFireUpdate, formData, setFormData }}>
       <div className="flex h-min">
-        <img
-          src={"/Anh1.jpg"}
-          className="w-[100px] rounded-full"
+        <SafeImage
+          src={customer?.image}
+          className="w-[100px] h-[100px] rounded-full"
           alt={"profile"}
         />
-        <div className="ml-4 w-full">
-          <input
-            className="border-2 p-1 h-[100px] rounded-sm w-full"
-            placeholder="Đăng bài viết mới"
-          />
+        <div className="ml-4 w-full flex items-center">
+          <button
+            onClick={() => { setModalOpen(true) }}
+            className="border-2 p-1 h-[75px] rounded-sm w-full bg-white cursor-pointer hover:text-gray-400"
+          >
+            Đăng bài viết mới
+          </button>
         </div>
       </div>
-      <div className="w-full flex justify-end">
-        <Button
-          className="mt-3 text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer "
-          onClick={() => {}}
-        >
-          Đăng
-        </Button>
-      </div>
       <BidList />
-    </div>
+      <BidCreateModal isOpen={modalOpen} onClose={() => { setModalOpen(false) }} onSave={() => {
+        setFireUpdate(true)
+      }} />
+    </BidCreateContext.Provider>
   );
 }

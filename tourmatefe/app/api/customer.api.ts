@@ -46,3 +46,9 @@ export const unlockCustomer = async (id: number) => {
   return response.data;
 };
 
+export const getCustomerWithAcc = async (id: number) => {
+  const response = await http.get<Customer>('customer/from-account', {
+    params:{accountId: id}
+  })
+  return response.data
+}

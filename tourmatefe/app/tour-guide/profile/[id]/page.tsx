@@ -11,6 +11,8 @@ import PictureView from './profile-pic';
 import EditPic from './edit-pic';
 import { Button } from '@/components/ui/button';
 import TourServices from './services';
+import SafeImage from '@/components/safe-image';
+import Detail from './detail';
 
 const targetType = {
     profilePic: 'Image',
@@ -21,6 +23,7 @@ export default function TourGuideProfileEdit({
 }: {
     params: Promise<{ id: number }>;
 }) {
+    const [editFormOpen, setEditFormOpen] = useState(false)
     const { id } = use(params);
     const [toggleMode, setToggleMode] = useState({
         view: false,
@@ -87,21 +90,21 @@ export default function TourGuideProfileEdit({
                         <div onClick={() => {
                             setToggleMode(p => ({ ...p, view: true, targetType: targetType.banner, value: tourGuide?.bannerImage }))
                         }}>
-                            <Banner imageUrl={tourGuide.bannerImage} title='' height='200px' />
+                            <Banner imageUrl={tourGuide.bannerImage} title='' />
                         </div>
                     }
                     <Button
-                        className='absolute right-[5%] bottom-[5%] p-2 rounded-lg bg-white text-black hover:bg-gray-700 hover:text-white shadow-lg'
+                        className='absolute right-[5%] bottom-[5%] p-2 rounded-lg bg-white text-black hover:bg-gray-200 shadow-lg'
                         onClick={() => {
                             setToggleMode(p => ({ ...p, edit: true, targetType: targetType.banner, value: tourGuide?.bannerImage ?? '' }))
                         }}>
                         <FaCamera /> Chỉnh sửa ảnh bìa
                     </Button>
                 </div>
-                <div className='absolute top-[75px] md:left-[250px] transform -translate-x-1/2'>
+                <div className='absolute top-[275px] md:left-[250px] transform -translate-x-1/2'>
                     <div className='p-1 rounded-full flex justify-center'>
                         <div className='p-1 rounded-full *:hover:cursor-pointer relative' >
-                            {tourGuide?.image && <img
+                            {tourGuide?.image && <SafeImage
                                 src={tourGuide.image}
                                 // src={'/mountain.png'}
                                 alt={'shell'}
@@ -110,7 +113,7 @@ export default function TourGuideProfileEdit({
                                     setToggleMode(p => ({ ...p, view: true, targetType: targetType.profilePic, value: tourGuide?.image }))
                                 }}
                             />}
-                            <div className='absolute right-0 bottom-0 p-2 rounded-full bg-black hover:bg-gray-700' onClick={() => {
+                            <div className='absolute right-[10px] bottom-0 p-2 rounded-full bg-gray-500 hover:bg-gray-300' onClick={() => {
                                 setToggleMode(p => ({ ...p, edit: true, targetType: targetType.profilePic }))
                             }}>
                                 <FaCamera fill='#ffffff' />
@@ -118,7 +121,7 @@ export default function TourGuideProfileEdit({
                         </div>
                     </div>
                 </div>
-                <div className='xl:mx-[20%] mt-16 border-b-2 border-[#000000]'>
+                <div className='xl:mx-[20%] mt-16 border-b-1 border-gray-200'>
                     <div className='flex justify-between mb-5'>
                         <h3 className='text-3xl font-bold'>Thông tin cá nhân</h3>
                         <Button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'
@@ -128,10 +131,16 @@ export default function TourGuideProfileEdit({
                         </Button>
                     </div>
                     <div className={`${toggleSection.info ? 'block' : 'hidden'} mb-1`}>
-                        {tourGuide && <ProfileForm tourGuide={tourGuide} updateFn={(v) => update(v)} />}
+                        {tourGuide && <ProfileForm tourGuide={tourGuide} updateFn={(v) => update(v)} isOpen={editFormOpen} onClose={() => setEditFormOpen(false)} />}
+                        {tourGuide && <Detail s={tourGuide} />}
+                        <Button
+                            onClick={() => setEditFormOpen(true)}
+                            className='w-full text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'>
+                            Cập nhật thông tin
+                        </Button>
                     </div>
                 </div>
-                <div className='xl:mx-[20%] mt-8 border-b-2 border-[#000000]'>
+                <div className='xl:mx-[20%] mt-8 border-[#000000]'>
                     <div className='flex justify-between mb-5'>
                         <h3 className='text-3xl font-bold'>Dịch vụ du lịch</h3>
                         <Button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'

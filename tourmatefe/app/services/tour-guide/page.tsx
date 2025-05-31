@@ -4,6 +4,7 @@ import { getSimplifiedAreas } from '@/app/api/active-area.api';
 import { getList} from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
 import Banner from '@/components/Banner'
+import SafeImage from '@/components/safe-image';
 import { useQuery } from '@tanstack/react-query';
 import dayjs from 'dayjs';
 import Link from 'next/link';
@@ -117,7 +118,7 @@ function TourGuideMain() {
                             >
                                 <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform cursor-pointer">
                                     <div className="overflow-hidden">
-                                        <img
+                                        <SafeImage
                                             src={v.image || "/fallback.jpg"}
                                             alt={v.fullName}
                                             className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"

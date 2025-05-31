@@ -5,7 +5,6 @@ import Footer from "@/components/Footer";
 import Banner from "@/components/Banner";
 import RecentNews from "./recent-news";
 import NewsCategories from "./categories";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getOneNews } from "@/app/api/news.api";
@@ -26,6 +25,26 @@ export default function NewsDetailPage({
 
   const news = data?.data;
 
+  // Create a sanitizer function that works in the browser
+  const sanitizeContent = (html: string) => {
+    // Only sanitize if window is available (client-side)
+    if (typeof window !== 'undefined') {
+      const clean = DOMPurify.sanitize(html, {
+        ADD_TAGS: ["iframe"], // Allow iframes if needed
+        ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"], // Allow certain attributes
+      });
+
+      // Replace image URLs with img tags
+      return clean.replace(
+        /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+        (match) => {
+          return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+        }
+      );
+    }
+    return html; // Fallback for server-side rendering
+  };
+
   useEffect(() => {
     if (news?.content) {
       console.log("🔥 Raw HTML content:", news.content);
@@ -45,56 +64,43 @@ export default function NewsDetailPage({
           <Banner imageUrl={news?.bannerImg} title={news?.title} />
         )}
       </div>
-
-      <div className="flex justify-between py-10 px-10 gap-6">
-        {/* Cột trái 65% - nội dung chính */}
-        <div className="w-[65%] p-2 quill-content text-justify">
-          <div
-            dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                (news?.content || "").replace(
-                  /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
-                  (match) => {
-                    return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
-                  }
-                )
-              ),
-            }}
-          />
-        </div>
-
-        {/* Cột phải 30% - sticky sidebar */}
-        <div className="w-[30%] p-2">
-          <div className="sticky top-10 max-h-[calc(100vh-5rem)] overflow-auto space-y-10">
-            <RecentNews currentId={id} />
-            <NewsCategories />
-
-            <ScrollArea className="h-60 rounded-md border shadow-lg bg-black">
-              <div className="p-4 text-white">
-                <h4 className="mb-4 text-3xl leading-none">
-                  Bạn có câu hỏi nào không?
-                </h4>
-                <p>
-                  Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ chuyên gia và rất vui được trò chuyện với bạn.
-                </p>
-                <table className="mt-5">
-                  <tbody>
-                    <tr className="*:p-2">
-                      <td>
-                        <FaPhoneAlt fill="#ffffff" size={20} />
-                      </td>
-                      <td>0974581366</td>
-                    </tr>
-                    <tr className="*:p-1">
-                      <td>
-                        <FaEnvelope fill="#ffffff" size={20} />
-                      </td>
-                      <td>tourmate2025@gmail.com</td>
-                    </tr>
-                  </tbody>
-                </table>
-              </div>
-            </ScrollArea>
+      <div className="flex justify-between py-10 px-10">
+        <div
+          className="w-[65%] p-2 quill-content text-justify"
+          dangerouslySetInnerHTML={{
+            __html: sanitizeContent(data?.data?.content || ""),
+          }}
+        />
+        {/* Rest of your component remains the same */}
+        <div className="w-[30%] p-2 *:mb-10">
+          <RecentNews currentId={id} />
+          <NewsCategories />
+          <div className="rounded-md border shadow-lg bg-black">
+            <div className="p-4 text-white">
+              <h4 className="mb-4 text-3xl leading-none">
+                Bạn có câu hỏi nào không?
+              </h4>
+              <p>
+                Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ
+                chuyên gia và rất vui được trò chuyện với bạn.
+              </p>
+              <table className="mt-5">
+                <tbody>
+                  <tr className="*:p-2">
+                    <td>
+                      <FaPhoneAlt fill="#ffffff" size={20} />
+                    </td>
+                    <td>0974581366</td>
+                  </tr>
+                  <tr className="*:p-1">
+                    <td>
+                      <FaEnvelope fill="#ffffff" size={20} />
+                    </td>
+                    <td>TourMatebooking@gmail.com</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>

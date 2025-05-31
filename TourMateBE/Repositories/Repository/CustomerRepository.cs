@@ -72,5 +72,13 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
+
+        public async Task<Customer> GetCustomerFromAccount(int accountId)
+        {
+            var customer = await _context.Customers
+                .Include(c => c.Account) // Bao gồm thông tin tài khoản
+                .FirstOrDefaultAsync(c => c.AccountId == accountId);
+            return customer;
+        }
     }
 }

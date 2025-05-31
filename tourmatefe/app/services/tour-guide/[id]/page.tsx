@@ -8,6 +8,7 @@ import TourServices from './services';
 import { TourGuide } from '@/types/tour-guide';
 import { Button } from '@/components/ui/button';
 import dayjs from 'dayjs';
+import SafeImage from '@/components/safe-image';
 
 export default function TourGuideDetail({
     params,
@@ -30,8 +31,8 @@ export default function TourGuideDetail({
             <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
             <div className='shadow-lg w-[85%] rounded-lg place-self-center'>
                 <div className='flex justify-between p-5'>
-                    <img
-                        src={tourGuide?.image || "/fallback.jpg"}
+                    <SafeImage
+                        src={tourGuide?.image}
                         alt={tourGuide?.fullName}
                         className="w-[30%] h-60 object-cover border-2"
                     />
