@@ -11,6 +11,7 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "@/app/api/account.api";
 import { useRouter } from "next/navigation";
+import { Customer } from "@/types/customer";
 
 export function SignupForm({
   className,
@@ -46,8 +47,17 @@ export function SignupForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { email, password, fullName, phone } = formData;
-    mutation.mutate({ email, password, fullName, phone });
+    const { email, password, fullName, phone, address, gender, dateOfBirth } =
+      formData;
+    mutation.mutate({
+      email,
+      password,
+      fullName,
+      phone,
+      address,
+      gender,
+      dateOfBirth,
+    });
   };
 
   const handleChange = (
@@ -151,8 +161,11 @@ export function SignupForm({
             <Label htmlFor="gender">Giới tính</Label>
             <select
               id="gender"
+              name="gender"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
+              value={formData.gender}
+              onChange={handleChange}
               defaultValue=""
             >
               <option value="" disabled>
@@ -176,7 +189,15 @@ export function SignupForm({
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
-              <Input id="birthdate" type="date" className="ps-10" required />
+              <Input
+                id="birthdate"
+                name="dateOfBirth"
+                type="date"
+                className="ps-10"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
           <div className="grid gap-4">
