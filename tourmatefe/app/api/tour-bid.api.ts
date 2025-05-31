@@ -14,3 +14,8 @@ export const getTourBids = async (page: number | string, limit: number | string,
 
   return res.data;
 };
+
+export const addTourBid = async (tourBid: TourBid) => {
+  const response = await http.post('/tour-bids', tourBid);
+  return response.data;  // Assuming the API returns the created news item
+}

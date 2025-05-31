@@ -39,7 +39,16 @@ namespace API.Controllers
 
             return Ok(response);
         }
-
+        [HttpGet("from-account")]
+        public async Task<ActionResult<Customer>> GetFromAccount(int accountId)
+        {
+            var customer = await _customerService.GetCustomerFromAccount(accountId);
+            if (customer == null)
+            {
+                return NotFound(new { msg = "Không tìm thấy khách hàng!" });
+            }
+            return Ok(customer);
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Customer data)
         {

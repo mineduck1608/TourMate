@@ -1,16 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import BidList from "./bid-list";
 import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./bid-create-modal";
-
-export default function Bids() {
-  const [signal, setSignal] = useState(false)
+import { BidCreateContext } from "./bid-create-context";
+import { TourBid } from "@/types/tour-bid";
+import { Customer } from "@/types/customer";
+export const baseData: TourBid = {
+  tourBidId: 0,
+  accountId: 0,
+  createdAt: "",
+  isDeleted: false,
+  placeRequested: 0,
+  status: "",
+  content: "",
+  maxPrice: undefined
+}
+export default function Bids({ customer }: { customer?: Customer }) {
+  const [fireUpdate, setFireUpdate] = useState(false)
   const [modalOpen, setModalOpen] = useState(false)
+  const [formData, setFormData] = useState(baseData)
+  useEffect(() => {
+    setFormData({ ...formData, accountId: customer?.accountId ?? 0 })
+  }, [customer?.accountId])
+
   return (
-    <div className="">
+    <BidCreateContext.Provider value={{ fireUpdate, setFireUpdate, formData, setFormData }}>
       <div className="flex h-min">
         <SafeImage
-          src={"/Anh1.jpg"}
+          src={customer?.image}
           className="w-[100px] h-[100px] rounded-full"
           alt={"profile"}
         />
@@ -23,8 +40,10 @@ export default function Bids() {
           </button>
         </div>
       </div>
-      <BidList signal={signal} turnOff={() => { setSignal(false) }} />
-      <BidCreateModal isOpen={modalOpen} onClose={() => { setModalOpen(false) }} onSave={() => { }} />
-    </div>
+      <BidList />
+      <BidCreateModal isOpen={modalOpen} onClose={() => { setModalOpen(false) }} onSave={() => {
+        setFireUpdate(true)
+      }} />
+    </BidCreateContext.Provider>
   );
 }

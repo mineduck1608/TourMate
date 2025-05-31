@@ -18,6 +18,7 @@ namespace Services
         bool DeleteCustomer(int id);
         Task<Customer> GetCustomerByPhone(string phone);
         Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string phone);
+        Task<Customer> GetCustomerFromAccount(int accountId);
     }
     public class CustomerService : ICustomerService
     {
@@ -62,6 +63,11 @@ namespace Services
         {
             _repository.Remove(id);
             return true;
+        }
+
+        public Task<Customer> GetCustomerFromAccount(int accountId)
+        {
+            return _repository.GetCustomerFromAccount(accountId);
         }
     }
 }

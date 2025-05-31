@@ -9,6 +9,7 @@ import dayjs from "dayjs"
 import { useState, useEffect } from "react"
 import { FaMapMarkerAlt } from "react-icons/fa"
 import InfiniteScroll from "react-infinite-scroll-component"
+import DOMPurify from "dompurify";
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const pageSize = 10
@@ -28,6 +29,25 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
         }
     }, [bidData.data])
     const totalPage = bidData.data?.totalPage ?? 0
+    const sanitizeContent = (html: string) => {
+        // Only sanitize if window is available (client-side)
+        if (typeof window !== 'undefined') {
+            const clean = DOMPurify.sanitize(html, {
+                ADD_TAGS: ["iframe"], // Allow iframes if needed
+                ADD_ATTR: ["allow", "allowfullscreen", "frameborder", "scrolling"], // Allow certain attributes
+            });
+
+            // Replace image URLs with img tags
+            return clean.replace(
+                /(https?:\/\/[^\s"<>]+(?:png|jpg|jpeg|gif|bmp|svg))/gi,
+                (match) => {
+                    return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
+                }
+            );
+        }
+        return html; // Fallback for server-side rendering
+    };
+
     return (
         <div className="shadow-lg p-5 rounded-lg">
             <div className="grid grid-cols-2">
@@ -54,10 +74,18 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                     </span>
                 </div>
             </div>
-            <div className="my-5">{tourBid.content}</div>
+            <div
+                className="my-5"
+                dangerouslySetInnerHTML={{
+                    __html: sanitizeContent(tourBid.content || ""),
+                }}
+            />
             <div className="border-2" />
-            <div className="mt-5">
-                <h3 className="font-semibold text-lg">Bảng đấu giá</h3>
+            <div className="mt-5 w-full">
+                <div className="font-semibold text-lg flex justify-between">
+                    <span >Bảng đấu giá</span>
+                    {tourBid.maxPrice && <span >Giá cao nhất: {formatNumber(tourBid.maxPrice)} VND</span>}
+                </div>
                 <div
                     id="scrollableDiv"
                     className="max-h-[500px] overflow-y-auto"

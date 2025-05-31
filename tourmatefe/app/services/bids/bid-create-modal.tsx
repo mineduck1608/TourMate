@@ -1,20 +1,13 @@
-import { useState } from "react";
-
+import { useContext, useState } from "react";
+import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
 import { TourBid } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
-
-const baseData: TourBid = {
-    tourBidId: 0,
-    accountId: 0,
-    createdAt: "",
-    isDeleted: false,
-    placeRequestedId: 0,
-    status: "",
-    content: "",
-    maxPrice: undefined
-}
+import { BidCreateContext, BidCreateContextProps } from "./bid-create-context";
+const ReactQuill = dynamic(() => import("react-quill-new"), {
+    ssr: false, // Disable SSR for this component
+});
 type BidCreateModalProps = {
     isOpen: boolean;
     onClose: () => void;
@@ -26,14 +19,14 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     onClose,
     onSave,
 }) => {
-    const [formData, setFormData] = useState<TourBid>(baseData);
+    const { formData, setFormData } = useContext(BidCreateContext) as BidCreateContextProps
     const [maxPrice, setMaxPrice] = useState('')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        onSave(formData);
         console.log(formData);
-        setFormData(baseData);
+
+        onSave(formData);
         onClose();
     };
     const simplifiedAreaQuery = useQuery({
@@ -82,20 +75,23 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                     <div className="grid gap-4 mb-4 sm:grid-cols-2">
                         <div className="sm:col-span-1">
                             <label
-                                htmlFor="placeRequestedId"
+                                htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
                                 Địa điểm
                             </label>
                             <select
-                                id="areaId"
-                                name="areaId"
+                                id="placeRequested"
+                                name="placeRequested"
                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                 required
-                                onChange={(e) => { setFormData({ ...formData, placeRequestedId: Number(e.target.value) }) }}
-                                value={formData.placeRequestedId}
+                                onChange={(e) => {
+                                    console.log(Number(e.target.value));
+                                    setFormData({ ...formData, placeRequested: Number(e.target.value) })
+                                }}
+                                value={formData.placeRequested === 0 ? areas[0]?.areaId : formData.placeRequested}
                             >
-                                <option value="" disabled>
+                                <option value="0" disabled>
                                     Chọn khu vực
                                 </option>
                                 {
@@ -134,22 +130,27 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                             >
                                 Nội dung
                             </label>
-                            <input
-                                type="text"
-                                name="content"
-                                id="aremaxPriceaTitle"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            <ReactQuill
                                 value={formData.content}
-                                onChange={(e) => {
-                                    setFormData({ ...formData, content: e.target.value })
+                                onChange={(v) => setFormData({ ...formData, content: v })}
+                                theme="snow"
+                                modules={{
+                                    toolbar: [
+                                        [{ header: "1" }, { header: "2" }, { header: "3" }, { font: [] }],
+                                        [{ list: "ordered" }, { list: "bullet" }],
+                                        ["bold", "italic", "underline"],
+                                        [{ align: [] }],
+                                    ],
                                 }}
+                                placeholder="Nhập nội dung tin tức..."
                             />
                         </div>
                     </div>
                     <div className="flex justify-end">
                         <button
+                            disabled={formData.content.length === 0}
                             type="submit"
-                            className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >
                             Đăng bài viết
                         </button>
