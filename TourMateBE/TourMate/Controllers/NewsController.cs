@@ -38,6 +38,11 @@ namespace API.Controllers
             };
             return Ok(result);
         }
+        [HttpGet("recent")]
+        public async Task<ActionResult<List<News>>> GetRecentNews(int excludeId, int count)
+        {
+            return Ok(await _newsService.GetRecentNews(excludeId, count));
+        }
 
         [HttpGet("all")]
         public async Task<ActionResult<IEnumerable<News>>> GetAllList()

@@ -13,6 +13,7 @@ namespace Services
         Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
         Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category);
+        Task<List<News>> GetRecentNews(int excludeId, int count);
     }
 
     public class NewsService : INewsService
@@ -31,8 +32,8 @@ namespace Services
 
         public async Task<IEnumerable<News>> GetAllList()
         {
-            var list = await NewsRepository.GetAllList(); 
-            return list; 
+            var list = await NewsRepository.GetAllList();
+            return list;
         }
 
 
@@ -43,7 +44,7 @@ namespace Services
 
         public async Task<bool> UpdateNews(News news)
         {
-            
+
             return await NewsRepository.UpdateAsync(news);
         }
 
@@ -56,6 +57,10 @@ namespace Services
         public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category)
         {
             return await NewsRepository.FilterByCategory(pageSize, pageIndex, category);
+        }
+        public async Task<List<News>> GetRecentNews(int excludeId, int count)
+        {
+            return await NewsRepository.GetRecentNews(excludeId, count);
         }
     }
 }
