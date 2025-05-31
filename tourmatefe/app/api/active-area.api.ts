@@ -29,7 +29,10 @@ export const getFilteredActiveAreas = async (page: number | string, limit: numbe
 };
 
 
-export const getActiveArea = async (id: number | string) => http.get<ActiveArea>(`active-area/${id}`)
+export const getActiveArea = async (id: number) => {
+  const response = await http.get<ActiveArea>(`active-area/${id}`)
+  return response.data
+} 
 
 export const addActiveArea = async (data: ActiveArea) => {
   const response = await http.post('/active-area', data);

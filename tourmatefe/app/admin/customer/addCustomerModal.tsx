@@ -23,7 +23,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     account: {
       role: {
         roleId: 2,
-        roleName: "Customer"
+        roleName: "Customer",
       },
       accountId: 0,
       email: "",
@@ -35,7 +35,9 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
   });
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
   ) => {
     const { name, value } = e.target;
 
@@ -81,7 +83,7 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
       account: {
         role: {
           roleId: 2,
-          roleName: "Customer"
+          roleName: "Customer",
         },
         accountId: 0,
         email: "",

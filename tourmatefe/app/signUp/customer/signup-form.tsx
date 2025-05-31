@@ -1,36 +1,72 @@
 "use client";
 
 import type React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
+import { useMutation } from "@tanstack/react-query";
+import { createCustomer } from "@/app/api/account.api";
+import { useRouter } from "next/navigation";
+// import { Customer } from "@/types/customer";
+import { toast } from "react-toastify";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
+  const router = useRouter();
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+    fullName: "",
+    phone: "",
+    gender: "",
+    dateOfBirth: "",
+  });
   const [error, setError] = useState("");
 
-  useEffect(() => {
-    if (confirmPassword && password !== confirmPassword) {
-      setError("Mật khẩu không khớp!");
-    } else {
-      setError("");
-    }
-  }, [password, confirmPassword]);
+  const mutation = useMutation({
+    mutationFn: createCustomer,
+    onSuccess: () => {
+      toast.success("Đăng ký thành công!");
+      setTimeout(() => {
+        router.push("/login");
+      }, 500);
+    },
+    onError: (error: ApiError) => {
+      setError(error.response?.data?.msg || "Đăng ký thất bại");
+    },
+  });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (password !== confirmPassword) {
-      setError("Mật khẩu không khớp!");
-      return;
-    }
+
+    const { email, password, fullName, phone, gender, dateOfBirth } =
+      formData;
+    mutation.mutate({
+      email,
+      password,
+      fullName,
+      phone,
+      gender,
+      dateOfBirth,
+    });
+  };
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -57,36 +93,37 @@ export function SignupForm({
       <div className="grid gap-4">
         <div className="grid gap-2">
           <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Input
+            id="email"
+            name="email"
+            type="email"
+            placeholder="m@example.com"
+            value={formData.email}
+            required
+            onChange={handleChange}
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="grid gap-2">
             <Label htmlFor="password">Mật Khẩu</Label>
             <Input
               id="password"
+              name="password"
               type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              value={formData.password}
+              onChange={handleChange}
               required
             />
-          </div>
-          <div className="grid gap-2">
-            <Label htmlFor="confirm-password">Xác Nhận Mật Khẩu</Label>
-            <Input
-              id="confirm-password"
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              required
-            />
-            {error && <p className="text-sm text-red-500 mt-1">{error}</p>}
           </div>
           <div className="grid gap-2">
             <Label htmlFor="full_name">Họ Tên</Label>
             <Input
-              id="first_name"
+              id="fullName"
+              name="fullName"
               type="text"
-              placeholder="John"
+              value={formData.fullName}
+              onChange={handleChange}
+              placeholder="Nguyễn Văn A"
               className="w-full"
               required
             />
@@ -108,9 +145,12 @@ export function SignupForm({
               </div>
               <Input
                 id="phone"
+                name="phone"
                 type="tel"
+                value={formData.phone}
+                onChange={handleChange}
                 className="ps-10"
-                placeholder="(+84) 123-456-7890"
+                placeholder="0123-456-789"
                 pattern="[0-9]{3}[0-9]{3}[0-9]{4}"
                 required
               />
@@ -120,8 +160,11 @@ export function SignupForm({
             <Label htmlFor="gender">Giới tính</Label>
             <select
               id="gender"
+              name="gender"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
+              value={formData.gender}
+              onChange={handleChange}
               defaultValue=""
             >
               <option value="" disabled>
@@ -130,7 +173,6 @@ export function SignupForm({
               <option value="male">Nam</option>
               <option value="female">Nữ</option>
             </select>
-
           </div>
           <div className="grid gap-2">
             <Label htmlFor="birthdate">Ngày sinh</Label>
@@ -146,10 +188,19 @@ export function SignupForm({
                   <path d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 0 1 0-2Z" />
                 </svg>
               </div>
-              <Input id="birthdate" type="date" className="ps-10" required />
+              <Input
+                id="birthdate"
+                name="dateOfBirth"
+                type="date"
+                className="ps-10"
+                value={formData.dateOfBirth}
+                onChange={handleChange}
+                required
+              />
             </div>
           </div>
         </div>
+        {error && <p className="text-sm text-center text-red-500 mt-1">{error}</p>}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
             <input
@@ -166,8 +217,12 @@ export function SignupForm({
             </Link>
           </label>
         </div>
-        <Button type="submit" className="w-full cursor-pointer">
-          Đăng Ký
+        <Button
+          type="submit"
+          className="w-full cursor-pointer"
+          disabled={mutation.isPending}
+        >
+          {mutation.isPending ? "Đang xử lý..." : "Đăng Ký"}
         </Button>
         <div className="text-center text-sm">
           Đã có tài khoản?{" "}
@@ -178,8 +233,7 @@ export function SignupForm({
             Đăng Nhập
           </Link>
         </div>
-        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-        </div>
+        <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border"></div>
         <div className="text-balance text-center text-xs text-black [&_a]:underline [&_a]:underline-offset-4 hover:[&_a]:text-gray-600">
           Bằng cách nhấn Đăng ký, bạn đồng ý với các{" "}
           <Link href="#">Điều khoản Dịch vụ</Link> và{" "}

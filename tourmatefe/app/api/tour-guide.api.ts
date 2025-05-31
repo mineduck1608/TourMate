@@ -79,6 +79,17 @@ export const getOtherTourGuides = async (tourGuideId: number | string, pageSize:
   return res.data;
 };
 
+export const getTourGuidesByArea = async (areaId: number | string, pageSize: number, signal?: AbortSignal) => {
+  const res = await http.get<TourGuide>('tour-guide/getbyarea', {
+    params: {
+      pageSize: pageSize,
+      areaId: areaId,
+    },
+    signal
+  });
+  return res.data;
+};
+
 export const changePassword = async (id: number, newPassword: string) => {
   try {
     const response = await http.put(`/tour-guide/change-password/${id}`, newPassword);

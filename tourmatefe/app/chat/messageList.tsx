@@ -8,8 +8,8 @@ import { fetchMessages } from "../api/message.api";
 import { Message } from "@/types/message";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
-import { GetToken } from "@/components/getToken";
 import { apiHub } from "@/types/constants";
+import { useToken } from "@/components/getToken";
 
 const PAGE_SIZE = 20;
 
@@ -23,7 +23,7 @@ export default function MessageList({ conversationId, onNewMessage }: Props) {
   const [messages, setMessages] = useState<Message[]>([]);
 
   // Lấy token và decode AccountId
-  const token = GetToken("accessToken");
+  const token = useToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const currentAccountId = decoded?.AccountId;
 

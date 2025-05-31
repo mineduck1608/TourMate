@@ -21,7 +21,7 @@ const AddNewsModal: React.FC<AddNewsModalProps> = ({ isOpen, onClose, onSave }) 
     newsId: 0,
     title: "",
     createdAt: "",
-    category: '',
+    category: "Khám phá",
     content: "",
     bannerImg: "",
   });
@@ -44,7 +44,7 @@ const AddNewsModal: React.FC<AddNewsModalProps> = ({ isOpen, onClose, onSave }) 
       newsId: 0,
       title: "",
       createdAt: "",
-      category: '',
+      category: "Khám phá",
       content: "",
       bannerImg: "",
     });
