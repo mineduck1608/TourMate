@@ -12,6 +12,7 @@ import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "@/app/api/account.api";
 import { useRouter } from "next/navigation";
 import { Customer } from "@/types/customer";
+import { toast } from "react-toastify";
 
 export function SignupForm({
   className,
@@ -34,7 +35,7 @@ export function SignupForm({
   const mutation = useMutation({
     mutationFn: createCustomer,
     onSuccess: () => {
-      alert("Đăng ký thành công!");
+      toast.success("Đăng ký thành công!");
       setTimeout(() => {
         router.push("/login");
       }, 500);
