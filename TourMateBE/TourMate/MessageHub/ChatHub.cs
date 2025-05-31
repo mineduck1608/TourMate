@@ -3,6 +3,7 @@ using Repositories.Models;
 using Services;
 
 namespace TourMate.MessageHub;
+
 public class ChatHub : Hub
 {
     private readonly IMessagesService _messageService;
@@ -10,8 +11,11 @@ public class ChatHub : Hub
     private readonly ICustomerService _customerService;
     private readonly ITourGuideService _tourGuideService;
 
-
-    public ChatHub(IMessagesService messageService, IAccountService accountService, ICustomerService customerService, ITourGuideService tourGuideService)
+    public ChatHub(
+        IMessagesService messageService,
+        IAccountService accountService,
+        ICustomerService customerService,
+        ITourGuideService tourGuideService)
     {
         _messageService = messageService;
         _accountService = accountService;
@@ -19,62 +23,49 @@ public class ChatHub : Hub
         _tourGuideService = tourGuideService;
     }
 
+    // ✅ Client sẽ gọi method này để join group theo conversationId
+    public async Task JoinConversation(int conversationId)
+    {
+        var connectionId = Context.ConnectionId;
+        await Groups.AddToGroupAsync(connectionId, conversationId.ToString());
+        Console.WriteLine($"Connection {connectionId} joined conversation {conversationId}");
+    }
 
     public async Task SendMessage(int conversationId, string messageText, int senderId)
     {
         try
         {
             var message = await SaveMessageToDb(conversationId, messageText, senderId);
-
             if (message == null)
             {
                 throw new HubException("Failed to save message");
             }
 
+            // ✅ Gửi tin nhắn đến tất cả client trong group (conversation)
             await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
         }
         catch (Exception ex)
         {
-            // Log lỗi hoặc Console.WriteLine(ex) để xem lỗi
             Console.WriteLine($"SendMessage error: {ex}");
             throw new HubException($"SendMessage error: {ex.Message}");
         }
     }
 
-
-
-    public override async Task OnConnectedAsync()
+    public override Task OnConnectedAsync()
     {
-        var connectionId = Context.ConnectionId;
-        Console.WriteLine($"Client connected: {connectionId}");
-
-        var httpContext = Context.GetHttpContext();
-        var conversationId = httpContext.Request.Query["conversationId"];
-
-        if (!string.IsNullOrEmpty(conversationId))
-        {
-            await Groups.AddToGroupAsync(connectionId, conversationId);
-            Console.WriteLine($"Added connection {connectionId} to group {conversationId}");
-        }
-
-        await base.OnConnectedAsync();
+        Console.WriteLine($"Client connected: {Context.ConnectionId}");
+        return base.OnConnectedAsync();
     }
 
-    public override async Task OnDisconnectedAsync(Exception exception)
+    public override Task OnDisconnectedAsync(Exception exception)
     {
-        var connectionId = Context.ConnectionId;
-        if (exception != null)
-        {
-            Console.WriteLine($"Client disconnected with error: {connectionId}, Exception: {exception.Message}");
-        }
-        else
-        {
-            Console.WriteLine($"Client disconnected gracefully: {connectionId}");
-        }
-        await base.OnDisconnectedAsync(exception);
+        Console.WriteLine(
+            exception != null
+                ? $"Client disconnected with error: {Context.ConnectionId}, Exception: {exception.Message}"
+                : $"Client disconnected gracefully: {Context.ConnectionId}"
+        );
+        return base.OnDisconnectedAsync(exception);
     }
-
-
 
     private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId)
     {
@@ -88,40 +79,37 @@ public class ChatHub : Hub
             IsDeleted = false,
             IsEdited = false,
         };
+
         var result = await _messageService.CreateMessages(message);
-        if(result != null)
+        if (result == null) return null;
+
+        var account = await _accountService.GetAccount(senderId);
+        var name = "Người dùng";
+        var avatar = "";
+
+        if (account.RoleId == 2)
         {
-            var account = await _accountService.GetAccount(senderId);
-            var name = "Người dùng";
-            var avatar = "";
-            if(account.RoleId == 2)
-            {
-                var customer = await _customerService.GetCustomerByAccId(senderId);
-                name = customer.FullName;
-                avatar = customer.Image;
-
-            }
-            if (account.RoleId == 3)
-            {
-                var tourGuide = await _tourGuideService.GetTourGuideByAccId(senderId);
-                name = tourGuide.FullName;
-                avatar = tourGuide.Image;
-
-            }
-            // TODO: Lưu tin nhắn vào database, trả về DTO Message
-            return new MessageDto
-            {
-                MessageId = result.MessageId,
-                ConversationId = conversationId,
-                MessageText = text,
-                SendAt = DateTime.Now,
-                SenderId = senderId,
-                SenderName = name,
-                SenderAvatarUrl = avatar
-            };
+            var customer = await _customerService.GetCustomerByAccId(senderId);
+            name = customer.FullName;
+            avatar = customer.Image;
         }
-        return null;
+        else if (account.RoleId == 3)
+        {
+            var tourGuide = await _tourGuideService.GetTourGuideByAccId(senderId);
+            name = tourGuide.FullName;
+            avatar = tourGuide.Image;
+        }
 
+        return new MessageDto
+        {
+            MessageId = result.MessageId,
+            ConversationId = conversationId,
+            MessageText = text,
+            SendAt = DateTime.Now,
+            SenderId = senderId,
+            SenderName = name,
+            SenderAvatarUrl = avatar
+        };
     }
 }
 
@@ -134,5 +122,4 @@ public class MessageDto
     public int SenderId { get; set; }
     public string SenderName { get; set; }
     public string SenderAvatarUrl { get; set; }
-
 }
