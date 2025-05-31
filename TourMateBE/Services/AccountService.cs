@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
+using Org.BouncyCastle.Crypto.Generators;
 using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
@@ -30,6 +31,8 @@ namespace Services
         Task<bool> UnlockAccount(int id);
         Task<bool> RequestPasswordResetAsync(string email);
         Task<bool> ResetPasswordAsync(string token, string newPassword);
+        Task<Account?> GetByAccountAndRoleAsync(int id, string role);
+        Task<string> ChangePasswordAsync(int accountId, string currentPassword, string newPassword);
     }
 
         // Services/AuthService.cs
@@ -54,8 +57,30 @@ namespace Services
                 _emailSender = emailSender;
             }
 
+        public async Task<string> ChangePasswordAsync(int accountId, string currentPassword, string newPassword)
+        {
+            var account = await _repo.GetByIdAsync(accountId);
+            if (account == null)
+                throw new Exception("Tài khoản không tồn tại.");
 
-            public async Task<AuthResponse> LoginAsync(string email, string password)
+            if (account.Password != HashString.ToHashString(currentPassword))
+                throw new Exception("Mật khẩu hiện tại không đúng.");
+
+            if (!ValidInput.IsPasswordSecure(newPassword))
+                throw new Exception("Mật khẩu không đủ bảo mật.");
+
+            account.Password = HashString.ToHashString(newPassword);
+            await _repo.UpdateAsync(account);
+
+            return "Mật khẩu đã được thay đổi thành công.";
+        }
+
+        public async Task<Account?> GetByAccountAndRoleAsync(int id, string role)
+        {
+            return await _repo.GetByAccountAndRoleAsync(id, role);
+        }
+
+        public async Task<AuthResponse> LoginAsync(string email, string password)
             {
                 password = HashString.ToHashString(password);
                 var user = await _repo.GetAccountByLogin(email, password);

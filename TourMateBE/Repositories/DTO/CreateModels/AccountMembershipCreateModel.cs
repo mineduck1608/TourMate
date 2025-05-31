@@ -2,7 +2,7 @@
 
 namespace Repositories.DTO.CreateModels
 {
-    public class AcountMembershipCreateModel
+    public class AccountMembershipCreateModel
     {
 
         public int AccountId { get; set; }

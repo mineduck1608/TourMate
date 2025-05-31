@@ -29,7 +29,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AcountMembershipCreateModel data)
+        public IActionResult Create([FromBody] AccountMembershipCreateModel data)
         {
             var accountmembership = data.Convert();
             _accountmembershipService.CreateAccountMembership(accountmembership);
@@ -37,7 +37,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] AcountMembershipCreateModel data)
+        public IActionResult Update([FromBody] AccountMembershipCreateModel data)
         {
             var accountmembership = data.Convert();
             _accountmembershipService.UpdateAccountMembership(accountmembership);

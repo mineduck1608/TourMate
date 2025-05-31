@@ -2,7 +2,7 @@
 
 namespace Repositories.DTO.CreateModels
 {
-    public class AcountCreateModel
+    public class AccountCreateModel
     {
 
         public string Email { get; set; }

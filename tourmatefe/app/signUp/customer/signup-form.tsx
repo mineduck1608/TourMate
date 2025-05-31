@@ -11,20 +11,19 @@ import Link from "next/link";
 import { useMutation } from "@tanstack/react-query";
 import { createCustomer } from "@/app/api/account.api";
 import { useRouter } from "next/navigation";
-import { Customer } from "@/types/customer";
+// import { Customer } from "@/types/customer";
 import { toast } from "react-toastify";
 
 export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
+  // const [password, setPassword] = useState("");
+  // const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
-    address: "",
     fullName: "",
     phone: "",
     gender: "",
@@ -40,22 +39,21 @@ export function SignupForm({
         router.push("/login");
       }, 500);
     },
-    onError: (error: any) => {
-      setError(error.response?.data?.message || "Đăng ký thất bại");
+    onError: (error: ApiError) => {
+      setError(error.response?.data?.msg || "Đăng ký thất bại");
     },
   });
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const { email, password, fullName, phone, address, gender, dateOfBirth } =
+    const { email, password, fullName, phone, gender, dateOfBirth } =
       formData;
     mutation.mutate({
       email,
       password,
       fullName,
       phone,
-      address,
       gender,
       dateOfBirth,
     });
@@ -200,17 +198,6 @@ export function SignupForm({
                 required
               />
             </div>
-          </div>
-          <div className="grid gap-4">
-            <Label htmlFor="address">Địa chỉ</Label>
-            <Input
-              id="address"
-              name="address"
-              placeholder="123 Main St"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
           </div>
         </div>
         {error && <p className="text-sm text-center text-red-500 mt-1">{error}</p>}

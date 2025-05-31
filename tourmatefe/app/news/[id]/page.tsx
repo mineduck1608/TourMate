@@ -22,6 +22,7 @@ export default function NewsDetailPage({
     queryFn: () => getOneNews(id),
     staleTime: 24 * 3600 * 1000,
   });
+
   const news = data?.data;
 
   // Create a sanitizer function that works in the browser
@@ -103,6 +104,7 @@ export default function NewsDetailPage({
           </div>
         </div>
       </div>
+
       <Footer />
     </div>
   );
