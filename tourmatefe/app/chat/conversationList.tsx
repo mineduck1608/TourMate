@@ -123,7 +123,6 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
         senderAvatarUrl: string;
         messageText: string;
         sendAt: string;
-        isRead: boolean;
       }
     ) => {
       console.log("handleReceiveMessage called", message);
@@ -147,7 +146,6 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
           senderAvatarUrl: message.senderAvatarUrl,
           messageText: message.messageText,
           sendAt: message.sendAt,
-          isRead: message.isRead
         };
 
         // Đẩy conversation vừa có tin nhắn mới lên đầu danh sách
@@ -253,10 +251,7 @@ function ConversationItem({
     >
       <div>{conversation.accountName2}</div>
       <div
-        className={`text-xs truncate ${conversation.isRead
-          ? "text-gray-500 font-normal"
-          : "text-black font-semibold"
-          }`}
+        className="text-xs truncate text-gray-500 font-normal"
       >
         {conversation.latestMessage?.messageText}
       </div>

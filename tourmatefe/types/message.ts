@@ -7,7 +7,6 @@ export type Message = {
     sendAt: string;
     conversationId: number;
     senderAvatarUrl: string;
-    isRead: boolean
 }
 
 export type ApiResponse = {
