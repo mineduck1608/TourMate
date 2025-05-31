@@ -25,6 +25,23 @@ namespace API.Controllers
             _tourGuideService = tourGuideService;
         }
 
+        [HttpPut("changepassword")]
+        public async Task<IActionResult> ChangePassword(
+        [FromQuery] int accountId,
+        [FromQuery] string currentPassword,
+        [FromQuery] string newPassword)
+        {
+            try
+            {
+                var message = await _accountService.ChangePasswordAsync(accountId, currentPassword, newPassword);
+                return Ok(new { msg = message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { msg = ex.Message });
+            }
+        }
+
         [HttpPost("registercustomer")]
         public async Task<ActionResult> RegisterCustomer([FromBody] dynamic request)
         {
@@ -43,26 +60,26 @@ namespace API.Controllers
             DateOnly dateOfBirth = DateOnly.FromDateTime(dob);
 
             // Kiểm tra dữ liệu nhập
-            if (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(dateOfBirth.ToString()))
-                return BadRequest("Account details are incomplete.");
+            if (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(dateOfBirth.ToString()))
+                return BadRequest(new { msg = "Thông tin tài khoản chưa đầy đủ." });
 
             if (!ValidInput.IsPhoneFormatted(phone.Trim()))
-                return BadRequest(new { msg = "Phone number is not properly formatted" });
+                return BadRequest(new { msg = "Số điện thoại không đúng định dạng." });
 
             if (!ValidInput.IsMailFormatted(email))
-                return BadRequest(new { msg = "Email is not properly formatted" });
+                return BadRequest(new { msg = "Email không đúng định dạng." });
 
             if (!ValidInput.IsPasswordSecure(password))
-                return BadRequest(new { msg = "Password is not secure enough" });
+                return BadRequest(new { msg = "Mật khẩu không đủ mạnh." });
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(email);
             if (existingAccount != null)
-                return Conflict("Username already exists.");
+                return Conflict(new { msg = "Tài khoản đã tồn tại." });
 
             var existingPhone = await _customerService.GetCustomerByPhone(phone);
             if (existingPhone != null)
-                return Conflict("Phone is used.");
+                return Conflict(new { msg = "Số điện thoại đã được sử dụng." });
 
             // Tạo đối tượng tài khoản
             var account = new Account
@@ -71,13 +88,13 @@ namespace API.Controllers
                 Password = HashString.ToHashString(password),
                 RoleId = 1,
                 Status = true,
-                CreatedDate  = DateTime.Now,
+                CreatedDate = DateTime.Now,
             };
 
             // Lưu tài khoản
             var isAccountCreated = await _accountService.CreateAccount(account);
             if (isAccountCreated == null)
-                return StatusCode(500, "An error occurred while registering the account.");
+                return StatusCode(500, new { msg = "Đã xảy ra lỗi khi đăng ký tài khoản." });
 
             // Tạo đối tượng khách hàng
             var customer = new Customer
@@ -89,15 +106,14 @@ namespace API.Controllers
                 DateOfBirth = dateOfBirth,
             };
 
-            
-
             // Lưu khách hàng
             var isCustomerCreated = await _customerService.CreateCustomer(customer);
             if (!isCustomerCreated)
-                return StatusCode(500, "An error occurred while registering the customer.");
+                return StatusCode(500, new { msg = "Đã xảy ra lỗi khi đăng ký khách hàng." });
 
-            return Ok(new { msg = "Register successfully." });
+            return Ok(new { msg = "Đăng ký thành công." });
         }
+
 
         [HttpPost("registertourguide")]
         public async Task<ActionResult> RegisterTourGuide([FromBody] dynamic request)
@@ -205,7 +221,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] AcountCreateModel data)
+        public IActionResult Create([FromBody] AccountCreateModel data)
         {
             var account = data.Convert();
             _accountService.CreateAccount(account);
@@ -213,7 +229,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] AcountCreateModel data)
+        public IActionResult Update([FromBody] AccountCreateModel data)
         {
             var account = data.Convert();
             _accountService.UpdateAccount(account);
@@ -271,6 +287,18 @@ namespace API.Controllers
             if (!result) return BadRequest(new { msg = "Token không hợp lệ hoặc đã hết hạn!" });
 
             return Ok(new { msg = "Đặt lại mật khẩu thành công." });
+        }
+
+        [HttpGet("getbyaccountandrole")]
+        public async Task<IActionResult> GetByAccountAndRole([FromQuery] int id, [FromQuery] string role)
+        {
+            var account = await _accountService.GetByAccountAndRoleAsync(id, role);
+            if (account == null)
+            {
+                return NotFound("Không tìm thấy người dùng.");
+            }
+
+            return Ok(account);
         }
     }
 }

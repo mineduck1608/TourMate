@@ -31,6 +31,11 @@ export const updateCustomer = async (id: number, data: Customer) => {
   return response.data;
 };
 
+export const updateUserCustomer = async (id: number, data: Customer) => {
+  const response = await http.put(`/customer/update/${id}`, data);
+  return response.data;
+};
+
 export const lockCustomer = async (id: number) => {
   const response = await http.put(`/account/lock/${id}`);
   return response.data;

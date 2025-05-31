@@ -87,8 +87,33 @@ export const ResetPassword = async (token: string, newPassword: string) => {
 
 export const createCustomer = async (
   data: Pick<Account, "email" | "password"> &
-    Pick<Customer, "fullName" | "phone" | "address" | "gender" | "dateOfBirth">
+    Pick<Customer, "fullName" | "phone" | "gender" | "dateOfBirth">
 ) => {
   const response = await http.post("/account/registercustomer", data);
+  return response.data;
+};
+
+export const getUserByAccountAndRole = async (id: number, role: string) => {
+  const response = await http.get<Account>(`account/getbyaccountandrole`, {
+    params: {
+      id: id, 
+      role: role
+    },
+  });
+  return response.data
+} 
+
+export const changePassword = async (
+  accountId: number,
+  currentPassword: string,
+  newPassword: string
+) => {
+  const response = await http.put(`/account/changepassword`, null, {
+    params: {
+      accountId,
+      currentPassword,
+      newPassword,
+    },
+  });
   return response.data;
 };

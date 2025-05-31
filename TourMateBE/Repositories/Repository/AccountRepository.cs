@@ -11,6 +11,28 @@ namespace Repositories.Repository
         {
         }
 
+        public async Task<Account?> GetByAccountAndRoleAsync(int id, string role)
+        {
+            var query = _context.Accounts
+                .Include(a => a.Role);
+
+            if (role == "Customer")
+            {
+                return await query
+                    .Include(a => a.Customers)
+                    .FirstOrDefaultAsync(a => a.AccountId == id && a.Role.RoleName == role);
+            }
+            else if (role == "TourGuide")
+            {
+                return await query
+                    .Include(a => a.TourGuides)
+                    .FirstOrDefaultAsync(a => a.AccountId == id && a.Role.RoleName == role);
+            }
+
+            return null;
+        }
+
+
         public async Task<List<AccountSearchResult>> SearchAccountsByNameAsync(string searchTerm, int excludeUserId)
         {
             searchTerm = searchTerm?.ToLower() ?? "";

@@ -68,13 +68,16 @@ const AreaDetail = () => {
         </div>
 
         {/* SIDEBAR */}
-        <div className="w-[30%] p-2 *:mb-10">
-          <TourGuidesInArea />
+        <div className="w-[30%] p-2">
+          <div className="sticky top-10 max-h-[calc(100vh-5rem)] overflow-auto space-y-10">
+            <TourGuidesInArea />
+          </div>
         </div>
+
       </div>
       <div className="px-15 pb-15 w-full min-w-full max-w-md mx-auto text-center">
         <hr className="border-gray-200 sm:w-full mx-auto mb-10" />
-        <OtherArea activeAreaId={areaId} size={2}/>
+        <OtherArea activeAreaId={areaId} size={2} />
       </div>
     </div>
   );
