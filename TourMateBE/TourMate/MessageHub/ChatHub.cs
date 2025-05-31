@@ -108,7 +108,8 @@ public class ChatHub : Hub
             SendAt = result.SendAt,
             SenderId = senderId,
             SenderName = name,
-            SenderAvatarUrl = avatar
+            SenderAvatarUrl = avatar,
+            IsRead = false
         };
     }
 }
@@ -122,4 +123,5 @@ public class MessageDto
     public int SenderId { get; set; }
     public string SenderName { get; set; }
     public string SenderAvatarUrl { get; set; }
+    public bool IsRead { get; set; }
 }

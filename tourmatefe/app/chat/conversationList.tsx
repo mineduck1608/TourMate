@@ -123,6 +123,7 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
         senderAvatarUrl: string;
         messageText: string;
         sendAt: string;
+        isRead: boolean;
       }
     ) => {
       console.log("handleReceiveMessage called", message);
@@ -146,6 +147,7 @@ export default function ConversationList({ onSelect, selectedId }: Props) {
           senderAvatarUrl: message.senderAvatarUrl,
           messageText: message.messageText,
           sendAt: message.sendAt,
+          isRead: message.isRead
         };
 
         // Đẩy conversation vừa có tin nhắn mới lên đầu danh sách
