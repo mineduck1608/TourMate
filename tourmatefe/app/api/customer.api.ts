@@ -1,4 +1,4 @@
-import { Customer } from "@/types/customer";
+import { Customer, CustomerAdminUpdateModel } from "@/types/customer";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -26,7 +26,7 @@ export const addCustomer = async (data: Customer) => {
   return response.data;
 };
 
-export const updateCustomer = async (id: number, data: Customer) => {
+export const updateCustomer = async (id: number, data: CustomerAdminUpdateModel) => {
   const response = await http.put(`/customer/${id}`, data);
   return response.data;
 };

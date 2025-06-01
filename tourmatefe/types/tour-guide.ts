@@ -42,6 +42,17 @@ export type TourGuideUpdateModel = {
     company: string,
 }
 
+export type TourGuideAdminUpdateModel = {
+    tourGuideId: number,
+    fullName: string,
+    gender: string,
+    dateOfBirth: string,
+    accountId: number,
+    phone: string,
+    email: string,
+    password?: string
+}
+
 export function convertToUpdateModel(tourGuide: TourGuide) {
     const desc = tourGuide.tourGuideDescs?.[0]
     const result: TourGuideUpdateModel = {
@@ -53,6 +64,6 @@ export function convertToUpdateModel(tourGuide: TourGuide) {
     }
     console.log();
     console.log(result);
-    
+
     return result
 }

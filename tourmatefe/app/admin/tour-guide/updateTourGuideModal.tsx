@@ -1,11 +1,11 @@
-import { TourGuide } from "@/types/tour-guide";
+import { TourGuide, TourGuideAdminUpdateModel } from "@/types/tour-guide";
 import { useState, useEffect } from "react";
 
 type UpdateTourGuideModalProps = {
   isOpen: boolean;
   onClose: () => void;
   currentTourGuide: TourGuide;
-  onSave: (data: TourGuide) => void;
+  onSave: (data: TourGuideAdminUpdateModel) => void;
 };
 
 const UpdateTourGuideModal: React.FC<UpdateTourGuideModalProps> = ({
@@ -43,20 +43,32 @@ const UpdateTourGuideModal: React.FC<UpdateTourGuideModalProps> = ({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onSave(formData);
+
+    const updateModel: TourGuideAdminUpdateModel = {
+      tourGuideId: formData.tourGuideId,
+      accountId: formData.accountId,
+      email: formData.account.email,
+      fullName: formData.fullName,
+      phone: formData.phone,
+      dateOfBirth: formData.dateOfBirth,
+      gender: formData.gender,
+      password: formData.account.password
+    };
+
+    console.log("Update Model:", updateModel);
+    onSave(updateModel);
     onClose();
   };
 
+
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div
-        className={`absolute inset-0 bg-black opacity-50 ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"
+          }`}
         onClick={onClose}
       ></div>
 
@@ -214,7 +226,7 @@ const UpdateTourGuideModal: React.FC<UpdateTourGuideModalProps> = ({
               type="submit"
               className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
-              Cập nhật tin tức
+              Cập nhật
             </button>
           </div>
         </form>
