@@ -23,7 +23,6 @@ export function SignupForm({
     email: "",
     password: "",
     confirmPassword: "", // Add confirmPassword to formData
-    address: "",
     fullName: "",
     phone: "",
     gender: "",
@@ -52,13 +51,12 @@ export function SignupForm({
       return;
     }
 
-    const { email, password, fullName, phone, address, gender, dateOfBirth } =
+    const { email, password, fullName, phone, gender, dateOfBirth } =
       formData;
     mutation.mutate({
       email,
       password,
       fullName,
-      address,
       phone,
       gender,
       dateOfBirth,
@@ -214,17 +212,6 @@ export function SignupForm({
                 required
               />
             </div>
-          </div>
-          <div className="grid gap-4">
-            <Label htmlFor="address">Địa chỉ</Label>
-            <Input
-              id="address"
-              name="address"
-              placeholder="123 Main St"
-              value={formData.address}
-              onChange={handleChange}
-              required
-            />
           </div>
         </div>
         {error && (

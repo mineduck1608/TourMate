@@ -87,7 +87,7 @@ export const ResetPassword = async (token: string, newPassword: string) => {
 
 export const createCustomer = async (
   data: Pick<Account, "email" | "password"> &
-    Pick<Customer, "fullName" | "phone" | "gender" | "dateOfBirth" | "address">
+    Pick<Customer, "fullName" | "phone" | "gender" | "dateOfBirth">
 ) => {
   try {
     const response = await http.post("/account/registercustomer", data);
