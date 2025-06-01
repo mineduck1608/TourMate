@@ -135,3 +135,13 @@ export const changePassword = async (
   });
   return response.data;
 };
+
+export const getAssociatedId = async (accId: number, role: 'Customer' | 'TourGuide') => {
+  const response = await http.get<number>(`/account/get-associated-id`, {
+    params: {
+      accountId: accId,
+      role
+    },
+  });
+  return response.data;
+}

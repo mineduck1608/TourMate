@@ -9,6 +9,7 @@ import { getCustomerWithAcc } from '@/app/api/customer.api'
 import { useToken } from '@/components/getToken'
 import { MyJwtPayload } from '@/types/JwtPayload'
 import { jwtDecode } from 'jwt-decode'
+import { AuthProvider } from '@/components/authProvider'
 
 function BidPage() {
     const token = useToken('accessToken')
@@ -55,8 +56,10 @@ function BidPage() {
 
 export default function BidDriver() {
     return (
-        <Suspense fallback={<p>Loading...</p>}>
-            <BidPage />
-        </Suspense>
+        <AuthProvider>
+            <Suspense fallback={<p>Loading...</p>}>
+                <BidPage />
+            </Suspense>
+        </AuthProvider>
     )
 }

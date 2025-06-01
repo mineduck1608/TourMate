@@ -6,7 +6,6 @@ import Link from 'next/link';
 
 function AdminContent({ children }: { children: ReactNode }) {
   const { role } = useAuth();
-
   const isLoading = role === null;
 
   if (isLoading) {

@@ -1,9 +1,11 @@
 ﻿using Repositories.Models;
 
-namespace Repositories.DTO.CreateModels
+namespace Repositories.DTO.UpdateModals
 {
-    public class TourServiceCreateModel
+    public class TourServiceEditModel
     {
+        public int ServiceId { get; set; }
+
         public string ServiceName { get; set; }
 
         public float Price { get; set; }
@@ -16,17 +18,18 @@ namespace Repositories.DTO.CreateModels
 
         public int TourGuideId { get; set; }
         public string Title { get; set; }
+        public string TourDesc { get; set; }
         public TourService Convert() => new()
         {
             TourGuideId = TourGuideId,
-            Content = Content,
-            CreatedDate = new DateOnly(),
-            IsDeleted = false,            
+            Content = Content,            
             Duration = Duration,
             Image = Image,
             Price = Price,
-            ServiceName = ServiceName,
-            Title = Title
+            TourDesc = TourDesc,
+            ServiceId = ServiceId,
+            Title = Title,
+            ServiceName = ServiceName,           
         };
     }
 }

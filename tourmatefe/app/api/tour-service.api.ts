@@ -22,8 +22,8 @@ export const addTourService = async (newsData: TourService) => {
   return response.data;  // Assuming the API returns the created news item
 };
 
-export const updateTourService = async (id: number, newsData: TourService) => {
-  const response = await http.put(`/tour-services/${id}`, newsData);
+export const updateTourService = async (newData: TourService) => {
+  const response = await http.put(`/tour-services`, newData);
   return response.data;  // Assuming the API returns the updated news item
 };
 

@@ -44,6 +44,9 @@ export function LoginForm({
       if (role == "Admin") {
         router.push('/admin/dashboard')
       }
+      if (role === "TourGuide") {
+        router.push('/tour-guide/profile')
+      }
     } catch (err) {
       // Xử lý lỗi không dùng any
       let message = "Đăng nhập thất bại";

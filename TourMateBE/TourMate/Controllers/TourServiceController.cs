@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Services;
 
@@ -38,7 +39,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] TourServiceCreateModel tourservice)
+        public async Task<IActionResult> UpdateAsync([FromBody] TourServiceEditModel tourservice)
         {
             await _tourserviceService.UpdateTourServices(tourservice.Convert());
             return NoContent();

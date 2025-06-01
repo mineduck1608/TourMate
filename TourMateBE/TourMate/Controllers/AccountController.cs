@@ -113,6 +113,28 @@ namespace API.Controllers
 
             return Ok(new { msg = "Đăng ký thành công." });
         }
+        [HttpGet("get-associated-id")]
+        public async Task<ActionResult<int>> GetAssociatedId([FromQuery] int accountId, [FromQuery] string role)
+        {
+            if (role == "Customer")
+            {
+                var customer = await _customerService.GetCustomerByAccId(accountId);
+                if (customer == null)
+                    return NotFound("Customer not found.");
+                return Ok(customer.CustomerId);
+            }
+            else if (role == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(accountId);
+                if (tourGuide == null)
+                    return NotFound("Tour guide not found.");
+                return Ok(tourGuide.TourGuideId);
+            }
+            else
+            {
+                return BadRequest("Invalid role specified.");
+            }
+        }
 
 
         [HttpPost("registertourguide")]

@@ -43,7 +43,11 @@ function EditPic({ onChange, isOpen, onClose, type }: Props) {
                 </div>
                 <h3 className='text-center font-bold text-2xl mb-5'>Cập nhật {type === 'Image' ? 'ảnh đại diện' : 'ảnh bìa'}</h3>
                 <ImageUpload
-                    onImageUpload={setPic}
+                    onImageUpload={(url) => {
+                        console.log(url);
+                        
+                        setPic(url)
+                    }}
                 />
                 <div className="flex justify-center mt-5">
                     <button
