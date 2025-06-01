@@ -3,7 +3,7 @@ import { getTourGuide } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
 import React, { use, useEffect, useState } from 'react'
-import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaRegMap, FaRegUser, FaSuitcaseRolling } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaFacebookMessenger, FaRegMap, FaRegUser, FaSuitcaseRolling } from 'react-icons/fa';
 import TourServices from './services';
 import { TourGuide } from '@/types/tour-guide';
 import { Button } from '@/components/ui/button';
@@ -31,16 +31,16 @@ export default function TourGuideDetail({
 
     useEffect(() => {
         AOS.init({
-          offset: 0,
-          delay: 200,
-          duration: 1200,
-          once: true,
+            offset: 0,
+            delay: 200,
+            duration: 1200,
+            once: true,
         });
-      }, []);
+    }, []);
 
     return (
         <div className='*:my-10' data-aos="fade-in"
-          data-aos-delay="300">
+            data-aos-delay="300">
             <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
             <div className='shadow-lg w-[85%] rounded-lg place-self-center'>
                 <div className='flex justify-between p-5'>
@@ -49,27 +49,42 @@ export default function TourGuideDetail({
                         alt={tourGuide?.fullName}
                         className="w-[30%] h-60 object-cover border-2"
                     />
-                    <div className='w-[65%]'>
+                    <div className='w-[60%]'>
                         <h4 className="font-bold text-4xl text-gray-800 p-2 mb-4">
                             {tourGuide?.fullName}
                         </h4>
                         {tourGuide && (
-                            <table>
-                                <tbody>
-                                    {statToRender(tourGuide).map((v, i) => (
-                                        <tr key={i}>
-                                            <td className='p-2'>
-                                                <span className='flex gap-5 font-semibold'>
-                                                    {v.icon}
-                                                    {v.name}:
-                                                </span>
-                                            </td>
-                                            <td>{v.value}</td>
-                                        </tr>
-                                    ))}
-                                </tbody>
-                            </table>
+                            <>
+                                <table>
+                                    <tbody>
+                                        {statToRender(tourGuide).map((v, i) => (
+                                            <tr key={i}>
+                                                <td className='p-2'>
+                                                    <span className='flex gap-5 font-semibold'>
+                                                        {v.icon}
+                                                        {v.name}:
+                                                    </span>
+                                                </td>
+                                                <td>{v.value}</td>
+                                            </tr>
+                                        ))}
+                                    </tbody>
+                                </table>
+                            </>
                         )}
+                    </div>
+                    {/* Nút nhắn tin */}
+                    <div className='mt-4'>
+                        <Button
+                            className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'
+                            onClick={() => {
+                                // Ví dụ: mở modal nhắn tin hoặc chuyển đến chat
+                                alert(`Nhắn tin tới ${tourGuide?.fullName} - SĐT: ${tourGuide?.phone}`);
+                            }}
+                        >
+                            <FaFacebookMessenger size={20} />
+                            Nhắn tin
+                        </Button>
                     </div>
                 </div>
                 <div className='pt-2 px-5'>
