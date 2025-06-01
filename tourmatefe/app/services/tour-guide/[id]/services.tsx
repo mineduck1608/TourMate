@@ -6,6 +6,9 @@ import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
 import React, { useState } from 'react'
+import AOS from "aos";
+import "aos/dist/aos.css";
+import { useEffect } from "react";
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
     const [page, setPage] = useState(1)
@@ -17,8 +20,19 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number }) {
     })
     const services = data?.result ?? []
     const maxPage = data?.totalPage ?? 0
+
+     useEffect(() => {
+        AOS.init({
+          offset: 0,
+          delay: 200,
+          duration: 1200,
+          once: true,
+        });
+      }, []);
+      
     return (
-        <motion.div className='w-full'>
+        <motion.div className='w-full' data-aos="fade-up"
+     data-aos-duration="3000">
             <h2 className="text-blue-800 text-3xl inter mb-5">Dịch vụ du lịch</h2>
             <AnimatePresence mode="wait">
                 <motion.div
