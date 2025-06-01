@@ -12,7 +12,7 @@ import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
-import { TourGuide } from "@/types/tour-guide";
+import { TourGuide, TourGuideAdminUpdateModel } from "@/types/tour-guide";
 import {
   getTourGuides,
   lockTourGuide,
@@ -57,14 +57,13 @@ const TourGuideActions: React.FC<TourGuideActionsProps> = ({ data }) => {
     setIsModalOpen(false);
   };
 
-  const handleSave = (data: TourGuide) => {
-    data.account.roleId = 2; // Set default roleId to 2
+  const handleSave = (data: TourGuideAdminUpdateModel) => {
     updateTourGuideMutation.mutate({ id: data.tourGuideId, data: data });
   };
 
   // Mutation for updating
   const updateTourGuideMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: TourGuide }) =>
+    mutationFn: ({ id, data }: { id: number; data: TourGuideAdminUpdateModel }) =>
       updateTourGuideAdmin(id, data),
     onSuccess: () => {
       toast.success("Cập nhật hướng dẫn viên thành công");

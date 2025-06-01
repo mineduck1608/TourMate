@@ -3,17 +3,29 @@ import http from '../utils/http'
 import { PagedResult } from '@/types/pagedResult';
 
 export const getNews = async (page: number | string, limit: number | string, category: string, signal?: AbortSignal) => {
-    const res = await http.get<PagedResult<News>>('news', {
-      params: {
-        pageSize: limit,
-        pageIndex: page,
-        category: category
-      },
-      signal
-    });
-  
-    return res.data; // chỉ trả về mảng News[]
-  };
+  const res = await http.get<PagedResult<News>>('news', {
+    params: {
+      pageSize: limit,
+      pageIndex: page,
+      category: category
+    },
+    signal
+  });
+
+  return res.data; // chỉ trả về mảng News[]
+};
+
+export const getRecentNews = async (limit: number, exceptId: number, signal?: AbortSignal) => {
+  const res = await http.get<News[]>('news/recent', {
+    params: {
+      count: limit,
+      excludeId: exceptId
+    },
+    signal
+  });
+
+  return res.data; // chỉ trả về mảng News[]
+};
 
 export const getOneNews = (id: number | string) => http.get<News>(`news/${id}`)
 

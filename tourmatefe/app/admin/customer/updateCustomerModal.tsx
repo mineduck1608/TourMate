@@ -1,11 +1,11 @@
-import { Customer } from "@/types/customer";
+import { Customer, CustomerAdminUpdateModel } from "@/types/customer";
 import { useState, useEffect } from "react";
 
 type UpdateCustomerModalProps = {
   isOpen: boolean;
   onClose: () => void;
   currentCustomer: Customer;
-  onSave: (data: Customer) => void;
+  onSave: (data: CustomerAdminUpdateModel) => void;
 };
 
 const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
@@ -42,11 +42,23 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log(formData)
-    onSave(formData);
-    onClose();
-  };
+      e.preventDefault();
+  
+      const updateModel: CustomerAdminUpdateModel = {
+        customerId: formData.customerId,
+        accountId: formData.accountId,
+        email: formData.account.email,
+        fullName: formData.fullName,
+        phone: formData.phone,
+        dateOfBirth: formData.dateOfBirth,
+        gender: formData.gender,
+        password: formData.account.password
+      };
+  
+      console.log("Update Model:", updateModel);
+      onSave(updateModel);
+      onClose();
+    };
 
   return (
     <div
@@ -215,7 +227,7 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
               type="submit"
               className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
             >
-              Cập nhật tin tức
+              Cập nhật
             </button>
           </div>
         </form>

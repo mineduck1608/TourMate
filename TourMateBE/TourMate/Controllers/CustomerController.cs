@@ -40,7 +40,16 @@ namespace API.Controllers
 
             return Ok(response);
         }
-
+        [HttpGet("from-account")]
+        public async Task<ActionResult<Customer>> GetFromAccount(int accountId)
+        {
+            var customer = await _customerService.GetCustomerFromAccount(accountId);
+            if (customer == null)
+            {
+                return NotFound(new { msg = "Không tìm thấy khách hàng!" });
+            }
+            return Ok(customer);
+        }
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Customer data)
         {
@@ -95,33 +104,46 @@ namespace API.Controllers
         //}
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update([FromBody] Customer data)
+        public async Task<IActionResult> Update([FromBody] CustomerAdminUpdateModel data)
         {
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-            if (!ValidInput.IsMailFormatted(data.Account.Email))
-                return BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure(data.Account.Password))
-                return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+            if (!ValidInput.IsMailFormatted((string)data.Email))
+                return base.BadRequest(new { msg = "Email không đúng định dạng!" });
+            if (!ValidInput.IsPasswordSecure((string?)data.Password))
+                return base.BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
 
             // Kiểm tra tài khoản đã tồn tại
-            var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
-            if (existingAccount != null && existingAccount.AccountId != data.Account.AccountId)
+            var existingAccount = await _accountService.GetAccountByEmail((string)data.Email);
+            if (existingAccount != null && existingAccount.AccountId != data.AccountId)
                 return Conflict(new { msg = "Tài khoản đã tồn tại!" });
 
 
-            var existingPhone = await _customerService.GetCustomerByPhone(data.Phone);
-            if (existingPhone != null && existingPhone.CustomerId != data.CustomerId)
+            var existingCustomerByPhone = await _customerService.GetCustomerByPhone((string)data.Phone);
+            if (existingCustomerByPhone != null && existingCustomerByPhone.CustomerId != data.CustomerId)
                 return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
+
+            var account = await _accountService.GetAccount(data.AccountId);
+            if (account == null) return BadRequest(new { msg = "Tài khoản không đúng!" });
 
             if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
             {
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
             }
+            if (data.Password != account.Password)
+            {
+                account.Password = HashString.ToHashString(data.Password);
+            }
 
-            data.Account.Password = HashString.ToHashString(data.Account.Password);
-            var updateCustomer = await _customerService.UpdateCustomer(data);
-            var updateAccount = await _accountService.UpdateAccount(data.Account);
+            account.Email = data.Email;
+            existingCustomerByPhone.FullName = data.FullName;
+            existingCustomerByPhone.Phone = data.Phone;
+            existingCustomerByPhone.DateOfBirth = data.DateOfBirth;
+            existingCustomerByPhone.Gender = data.Gender;
+
+
+            var updateCustomer = await _customerService.UpdateCustomer(existingCustomerByPhone);
+            var updateAccount = await _accountService.UpdateAccount(account);
             if (updateCustomer == true && updateAccount == true)
             {
                 return Ok();

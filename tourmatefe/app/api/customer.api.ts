@@ -1,4 +1,4 @@
-import { Customer } from "@/types/customer";
+import { Customer, CustomerAdminUpdateModel } from "@/types/customer";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -26,7 +26,7 @@ export const addCustomer = async (data: Customer) => {
   return response.data;
 };
 
-export const updateCustomer = async (id: number, data: Customer) => {
+export const updateCustomer = async (id: number, data: CustomerAdminUpdateModel) => {
   const response = await http.put(`/customer/${id}`, data);
   return response.data;
 };
@@ -46,3 +46,9 @@ export const unlockCustomer = async (id: number) => {
   return response.data;
 };
 
+export const getCustomerWithAcc = async (id: number) => {
+  const response = await http.get<Customer>('customer/from-account', {
+    params:{accountId: id}
+  })
+  return response.data
+}

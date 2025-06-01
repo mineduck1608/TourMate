@@ -18,12 +18,11 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  // const [password, setPassword] = useState("");
-  // const [confirmPassword, setConfirmPassword] = useState("");
   const router = useRouter();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
+    confirmPassword: "", // Add confirmPassword to formData
     fullName: "",
     phone: "",
     gender: "",
@@ -46,6 +45,11 @@ export function SignupForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Mật khẩu không khớp.");
+      return;
+    }
 
     const { email, password, fullName, phone, gender, dateOfBirth } =
       formData;
@@ -116,6 +120,17 @@ export function SignupForm({
             />
           </div>
           <div className="grid gap-2">
+            <Label htmlFor="confirmPassword">Xác Nhận Mật Khẩu</Label>
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div className="grid gap-2">
             <Label htmlFor="full_name">Họ Tên</Label>
             <Input
               id="fullName"
@@ -165,7 +180,6 @@ export function SignupForm({
               required
               value={formData.gender}
               onChange={handleChange}
-              defaultValue=""
             >
               <option value="" disabled>
                 Chọn giới tính
@@ -200,7 +214,11 @@ export function SignupForm({
             </div>
           </div>
         </div>
-        {error && <p className="text-sm text-center text-red-500 mt-1">{error}</p>}
+        {error && (
+          <div className="p-3 text-sm text-red-500 bg-red-50 rounded-md border border-red-200">
+            {error}
+          </div>
+        )}
         <div className="flex items-start gap-2">
           <div className="flex items-center h-5">
             <input

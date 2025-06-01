@@ -12,7 +12,7 @@ import React from "react";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import { useQueryString } from "@/app/utils/utils";
-import { Customer } from "@/types/customer";
+import { Customer, CustomerAdminUpdateModel } from "@/types/customer";
 import {
   getCustomers,
   lockCustomer,
@@ -58,14 +58,13 @@ const CustomerActions: React.FC<CustomerActionsProps> = ({ data }) => {
     setIsModalOpen(false);
   };
 
-  const handleSave = (data: Customer) => {
-    data.account.roleId = 2; // Set default roleId to 2
+  const handleSave = (data: CustomerAdminUpdateModel) => {
     updateCustomerMutation.mutate({ id: data.customerId, data: data });
   };
 
   // Mutation for updating customer
   const updateCustomerMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Customer }) =>
+    mutationFn: ({ id, data }: { id: number; data: CustomerAdminUpdateModel }) =>
       updateCustomer(id, data),
     onSuccess: () => {
       toast.success("Cập nhật khách hàng thành công");

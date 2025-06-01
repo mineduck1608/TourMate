@@ -1,4 +1,4 @@
-import { convertToUpdateModel, TourGuide } from "@/types/tour-guide";
+import { convertToUpdateModel, TourGuide, TourGuideAdminUpdateModel } from "@/types/tour-guide";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -43,7 +43,7 @@ export const updateTourGuide = async (id: number, data: TourGuide) => {
   return response.data;
 };
 
-export const updateTourGuideAdmin = async (id: number, data: TourGuide) => {
+export const updateTourGuideAdmin = async (id: number, data: TourGuideAdminUpdateModel) => {
   const response = await http.put(`/tour-guide/${id}`, data);
   return response.data;
 };

@@ -1,4 +1,4 @@
-import { getNews } from '@/app/api/news.api'
+import { getRecentNews } from '@/app/api/news.api'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import { Separator } from '@radix-ui/react-dropdown-menu'
 import { useQuery } from '@tanstack/react-query'
@@ -15,7 +15,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
             setTimeout(() => {
                 controller.abort()
             }, 5000);
-            return getNews(1, size, '')
+            return getRecentNews(size, Number(params.currentId))
         }
     })
     const current = params.currentId
@@ -24,7 +24,7 @@ export default function RecentNews(params: { currentId?: number | string }) {
             : params.currentId
         )
         : -1
-    const news = data?.result ?? []
+    const news = data ?? []
     return (
         <div className='rounded-md border shadow-lg'>
             <h4 className="px-6 py-3 text-3xl font-medium leading-none">Bài viết gần đây</h4>

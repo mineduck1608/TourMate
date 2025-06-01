@@ -8,7 +8,7 @@ export type TourBid = {
     createdAt: string,
     updatedAt?: string,
     isDeleted: boolean,
-    placeRequestedId: number,
+    placeRequested: number,
     status: string,
     content: string,
     maxPrice?: number,

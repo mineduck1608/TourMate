@@ -30,5 +30,14 @@ namespace Repositories.Repository
                 TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
             };
         }
+
+        public async Task<List<News>> GetRecentNews(int excludeId, int count)
+        {
+            return await _context.News
+                .Where(x => x.NewsId != excludeId)
+                .OrderByDescending(x => x.CreatedAt)
+                .Take(count)
+                .ToListAsync();
+        }
     }
 }

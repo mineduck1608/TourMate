@@ -2,12 +2,16 @@
 import { getTourGuide } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
-import React, { use, useState } from 'react'
+import React, { use, useEffect, useState } from 'react'
 import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaRegMap, FaRegUser, FaSuitcaseRolling } from 'react-icons/fa';
 import TourServices from './services';
 import { TourGuide } from '@/types/tour-guide';
 import { Button } from '@/components/ui/button';
 import dayjs from 'dayjs';
+import SafeImage from '@/components/safe-image';
+import "@/styles/globals.css";
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 export default function TourGuideDetail({
     params,
@@ -25,13 +29,23 @@ export default function TourGuideDetail({
     const tourGuide = tourGuideData.data?.data;
     const [displayDesc, setDisplayDesc] = useState(true);
 
+    useEffect(() => {
+        AOS.init({
+          offset: 0,
+          delay: 200,
+          duration: 1200,
+          once: true,
+        });
+      }, []);
+
     return (
-        <div className='*:my-10'>
+        <div className='*:my-10' data-aos="fade-in"
+          data-aos-delay="300">
             <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
             <div className='shadow-lg w-[85%] rounded-lg place-self-center'>
                 <div className='flex justify-between p-5'>
-                    <img
-                        src={tourGuide?.image || "/fallback.jpg"}
+                    <SafeImage
+                        src={tourGuide?.image}
                         alt={tourGuide?.fullName}
                         className="w-[30%] h-60 object-cover border-2"
                     />

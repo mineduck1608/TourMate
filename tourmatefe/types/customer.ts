@@ -11,3 +11,13 @@ export type Customer = {
   account: Account;
 };
 
+export type CustomerAdminUpdateModel = {
+    customerId: number,
+    fullName: string,
+    gender: string,
+    dateOfBirth: string,
+    accountId: number,
+    phone: string,
+    email: string,
+    password?: string
+}

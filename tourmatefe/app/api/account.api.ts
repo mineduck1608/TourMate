@@ -89,19 +89,37 @@ export const createCustomer = async (
   data: Pick<Account, "email" | "password"> &
     Pick<Customer, "fullName" | "phone" | "gender" | "dateOfBirth">
 ) => {
-  const response = await http.post("/account/registercustomer", data);
-  return response.data;
+  try {
+    const response = await http.post("/account/registercustomer", data);
+    return response.data;
+  } catch (error) {
+    let message = "Đăng ký thất bại";
+
+    if (axios.isAxiosError(error)) {
+      if (error.response?.data) {
+        if (
+          typeof error.response.data === "object" &&
+          "msg" in error.response.data
+        ) {
+          message = error.response.data.msg;
+        } else if (typeof error.response.data === "string") {
+          message = error.response.data;
+        }
+      }
+    }
+    throw new Error(message);
+  }
 };
 
 export const getUserByAccountAndRole = async (id: number, role: string) => {
   const response = await http.get<Account>(`account/getbyaccountandrole`, {
     params: {
-      id: id, 
-      role: role
+      id: id,
+      role: role,
     },
   });
-  return response.data
-} 
+  return response.data;
+};
 
 export const changePassword = async (
   accountId: number,
