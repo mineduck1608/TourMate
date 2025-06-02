@@ -97,7 +97,7 @@ namespace API.Controllers
                 AccountName2 = accountName2,
                 LatestMessage = null,
                 IsRead = false,
-                Account2Img = null
+                Account2Img = account2Img
             };
 
             return Ok(response);
