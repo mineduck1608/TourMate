@@ -21,6 +21,7 @@ export default function ActionMenu() {
   const token = useToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const accountName = decoded?.FullName;
+  const accountId = decoded?.AccountId;
   const role = decoded?.Role
 
   return (
@@ -41,6 +42,9 @@ export default function ActionMenu() {
         </SheetHeader>
         <div className="mt-4 space-y-3">
           <SheetTitle className=" px-4">Xin chào {accountName}</SheetTitle>
+          <SheetDescription className=" px-4">
+            ID: {accountId}
+          </SheetDescription>
           {role === "Customer" ? <CustomerProfile /> : <button
             className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
             onClick={() => alert("TourGuide chỉnh sửa tài khoản")}
