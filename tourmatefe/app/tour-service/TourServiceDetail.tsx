@@ -10,6 +10,7 @@ import OtherServices from "./otherService";
 import OtherAreas from "./otherArea";
 import HotAreas from "./hotArea";
 import OtherTourGuides from "./otherTourGuide";
+import Link from "next/link";
 
 
 
@@ -99,18 +100,18 @@ export function TourServiceDetail() {
             }}
           />
           <div className="flex flex-col sm:flex-row justify-between gap-4 px-4 py-5 bg-[#F2F8FB] rounded-lg mt-5">
-            <a
-              href="https://www.example.com"
+            <Link
+              href={`/chat?userId=${data?.data.tourGuideId}`} 
               className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
             >
               Giá cả: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data?.data?.price || 0)}
-            </a>
-            <a
-              href="https://www.example.com"
+            </Link>
+            <Link
+              href={`/chat?userId=${data?.data.tourGuideId}`} 
               className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
             >
               Đặt lịch
-            </a>
+            </Link>
           </div>
         </div>
 
@@ -144,12 +145,12 @@ export function TourServiceDetail() {
                   __html: tourGuideData?.data?.tourGuideDescs?.[0].description || "Không có mô tả",
                 }}
               />
-              <a
-                href="https://www.example.com"
+              <Link
+                href={`/services/tour-guide/${data?.data.tourGuideId}`}
                 className="block px-4 py-2 mx-auto w-fit bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 text-sm"
               >
                 CHI TIẾT
-              </a>
+              </Link>
             </div>
           </div> {/* <-- Đóng sticky div */}
         </div>
