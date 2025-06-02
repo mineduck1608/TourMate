@@ -41,6 +41,9 @@ export function LoginForm({
       if (role == "Customer") {
         router.push('/')
       }
+      if (role == "TourGuide") {
+        router.push('/')
+      }
       if (role == "Admin") {
         router.push('/admin/dashboard')
       }

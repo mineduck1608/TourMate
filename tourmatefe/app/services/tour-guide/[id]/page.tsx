@@ -12,6 +12,7 @@ import SafeImage from '@/components/safe-image';
 import "@/styles/globals.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
+import { useRouter } from 'next/navigation';
 
 export default function TourGuideDetail({
     params,
@@ -19,6 +20,7 @@ export default function TourGuideDetail({
     params: Promise<{ id: number }>;
 }) {
     const { id } = use(params);
+    const router = useRouter();
 
     const tourGuideData = useQuery({
         queryKey: ['tour-guide', id],
@@ -78,8 +80,8 @@ export default function TourGuideDetail({
                         <Button
                             className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'
                             onClick={() => {
-                                // Ví dụ: mở modal nhắn tin hoặc chuyển đến chat
-                                alert(`Nhắn tin tới ${tourGuide?.fullName} - SĐT: ${tourGuide?.phone}`);
+                                // Chuyển hướng sang trang chat với userId hoặc tourGuideId
+                                router.push(`/chat?userId=${id}`);
                             }}
                         >
                             <FaFacebookMessenger size={20} />
