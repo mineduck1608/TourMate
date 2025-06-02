@@ -246,15 +246,24 @@ function ConversationItem({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer p-3 border-b hover:bg-gray-100 ${selected ? "bg-blue-100 font-semibold" : ""
+      className={`cursor-pointer p-3 border-b hover:bg-gray-100 flex items-center gap-3 ${selected ? "bg-blue-100 font-semibold" : ""
         }`}
     >
-      <div>{conversation.accountName2}</div>
-      <div
-        className="text-xs truncate text-gray-500 font-normal"
-      >
-        {conversation.latestMessage?.messageText}
+      {/* Avatar */}
+      <img
+        src={conversation.account2Img || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
+        alt={`${conversation.accountName2} avatar`}
+        className="w-10 h-10 rounded-full object-cover"
+      />
+
+      {/* Nội dung conversation */}
+      <div className="flex flex-col overflow-hidden">
+        <div className="truncate">{conversation.accountName2}</div>
+        <div className="text-xs truncate text-gray-500 font-normal">
+          {conversation.latestMessage?.messageText}
+        </div>
       </div>
     </div>
   );
 }
+
