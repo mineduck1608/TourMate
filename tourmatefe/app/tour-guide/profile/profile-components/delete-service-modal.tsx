@@ -1,18 +1,13 @@
-
-import ImageUpload from '@/components/image-upload'
-import React, { useState } from 'react'
-
+import React, { useContext } from 'react'
+import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 interface Props {
-    onChange: (imageUrl: string) => void,
     isOpen: boolean,
-    onClose: () => void,
-    type: string
+    onClose: () => void
 }
 
-function EditPic({ onChange, isOpen, onClose, type }: Props) {
-    console.log(type);
-    
-    const [pic, setPic] = useState('')
+function DeleteServiceModal(props: Props) {
+    const { isOpen, onClose } = props
+    const { setSignal, modalOpen, setModalOpen, signal } = useContext(ServiceEditContext) as ServiceEditContextProp
     return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}
@@ -44,24 +39,29 @@ function EditPic({ onChange, isOpen, onClose, type }: Props) {
                         <span className="sr-only">Close modal</span>
                     </button>
                 </div>
-                <h3 className='text-center font-bold text-2xl mb-5'>Cập nhật {type === 'Image' ? 'ảnh đại diện' : 'ảnh bìa'}</h3>
-                <ImageUpload
-                    onImageUpload={(url) => {
-                        //console.log(url);
-                        
-                        setPic(url)
-                    }}
-                />
-                <div className="flex justify-center mt-5">
+                <h3 className='text-center font-bold text-2xl mb-5'>Xóa dịch vụ</h3>
+                <p className='text-center text-xl mb-2'>Bạn có chắc bạn muốn xóa dịch vụ này?</p>
+                <p className='text-center text-xl mb-2 text-red-600'>Điều này không thể khôi phục</p>
+                <div className="flex justify-evenly mt-5">
                     <button
                         onClick={() => {
-                            onChange(pic)
+                            setModalOpen({ create: false, edit: false, delete: false })
+                            setSignal({ ...signal, delete: true })
                         }}
                         type="submit"
-                        disabled={pic.length === 0}
+                        className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
+
+                    >
+                        Xóa
+                    </button>
+                    <button
+                        onClick={() => {
+                            setModalOpen({ ...modalOpen, delete: false })
+                        }}
+                        type="submit"
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                     >
-                        Đổi ảnh đại diện
+                        Hủy
                     </button>
                 </div>
             </div>
@@ -69,4 +69,4 @@ function EditPic({ onChange, isOpen, onClose, type }: Props) {
     )
 }
 
-export default EditPic
+export default DeleteServiceModal

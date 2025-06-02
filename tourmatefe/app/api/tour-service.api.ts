@@ -17,8 +17,18 @@ export const getTourServices = async (page: number | string, limit: number | str
 
 export const getTourService = (id: number | string) => http.get<TourService>(`tour-services/${id}`)
 
-export const addTourService = async (newsData: TourService) => {
-  const response = await http.post('/tour-services', newsData);
+export const addTourService = async (newData: TourService) => {
+  const data = {
+    serviceName: newData.serviceName,
+    price: newData.price,
+    duration: newData.duration,
+    content: newData.content,
+    image: newData.image,
+    tourGuideId: newData.tourGuideId,
+    title: newData.title,
+    tourDesc: newData.tourDesc
+  }
+  const response = await http.post('/tour-services', data);
   return response.data;  // Assuming the API returns the created news item
 };
 

@@ -31,11 +31,11 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateAsync([FromBody] TourServiceCreateModel data)
+        public async Task<IActionResult> Create([FromBody] TourServiceCreateModel data)
         {
             var tourservice = data.Convert();
             await _tourserviceService.CreateTourServices(tourservice);
-            return CreatedAtAction(nameof(GetAsync), new { id = tourservice.ServiceId }, tourservice);
+            return CreatedAtAction(nameof(Create), new { id = tourservice.ServiceId }, tourservice);
         }
 
         [HttpPut]

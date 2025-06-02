@@ -2,6 +2,7 @@ import ImageUpload from '@/components/image-upload'
 import React, { useContext } from 'react'
 import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 import dynamic from 'next/dynamic';
+import DeleteServiceModal from './delete-service-modal';
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false,  // Disable SSR for this component
 });
@@ -11,7 +12,7 @@ interface Props {
 }
 
 function ServiceEditModal({ isOpen, onClose }: Props) {
-    const { target, setTarget, setSignal } = useContext(ServiceEditContext) as ServiceEditContextProp
+    const { target, setTarget, setSignal, modalOpen, setModalOpen } = useContext(ServiceEditContext) as ServiceEditContextProp
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -51,7 +52,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         <span className="sr-only">Close modal</span>
                     </button>
                 </div>
-                <h3 className='text-center font-bold text-2xl mb-5'>Cập nhật dịch vụ</h3>
+                <h3 className='text-center font-bold text-2xl mb-5'>{modalOpen.edit ? 'Cập nhật' : 'Tạo'} dịch vụ</h3>
                 <form onSubmit={() => { }}>
                     <div className="sm:col-span-1">
                         <label
@@ -110,6 +111,23 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                     </div>
                     <div className="sm:col-span-1">
                         <label
+                            htmlFor="title"
+                            className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                        >
+                            Tiêu đề
+                        </label>
+                        <input
+                            type="text"
+                            name="title"
+                            id="duration"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                            value={target.title}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div>
+                    <div className="sm:col-span-1">
+                        <label
                             htmlFor="tourDesc"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                         >
@@ -164,10 +182,10 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         />}
                     </div>
                 </form>
-                <div className="flex justify-evenly mt-5">
+                {modalOpen.edit &&<div className="flex justify-evenly mt-5">
                     <button
                         onClick={() => {
-                            setSignal({ edit: true, delete: false })
+                            setSignal({ edit: true, delete: false, create: false })
                         }}
                         type="submit"
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
@@ -176,14 +194,28 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                     </button>
                     <button
                         onClick={() => {
-                            setSignal({ edit: false, delete: true })
+                            setModalOpen({ edit: true, delete: true, create: false })
+                        }}
+                        type="submit"
+                        className="text-white inline-flex items-center bg-red-700 hover:bg-red-800 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-red-600 dark:hover:bg-red-700 dark:focus:ring-red-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
+                    >
+                        Xóa
+                    </button>
+                </div>}
+                {
+                    modalOpen.create && <div className="flex justify-evenly mt-5">
+                    <button
+                        onClick={() => {
+                            setSignal({ edit: false, delete: false, create: true })
                         }}
                         type="submit"
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                     >
-                        Xóa
+                        Tạo
                     </button>
                 </div>
+                }
+                <DeleteServiceModal isOpen={modalOpen.delete} onClose={() => setModalOpen({...modalOpen, delete: false})} />
             </div>
         </div>
     )

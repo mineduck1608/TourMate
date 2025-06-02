@@ -72,7 +72,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
+            <div className="relative p-4 w-full max-w-3xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Chỉnh sửa thông tin

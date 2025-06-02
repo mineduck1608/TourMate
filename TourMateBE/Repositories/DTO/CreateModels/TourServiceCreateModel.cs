@@ -16,17 +16,19 @@ namespace Repositories.DTO.CreateModels
 
         public int TourGuideId { get; set; }
         public string Title { get; set; }
+        public string TourDesc { get; set; }
         public TourService Convert() => new()
         {
             TourGuideId = TourGuideId,
             Content = Content,
-            CreatedDate = new DateOnly(),
+            CreatedDate = DateOnly.FromDateTime(DateTime.Now),
             IsDeleted = false,            
             Duration = Duration,
             Image = Image,
             Price = Price,
             ServiceName = ServiceName,
-            Title = Title
+            Title = Title,
+            TourDesc = TourDesc
         };
     }
 }

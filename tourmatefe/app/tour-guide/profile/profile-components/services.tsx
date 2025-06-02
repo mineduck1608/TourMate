@@ -1,5 +1,5 @@
 'use client'
-import { deleteTourService, getTourServicesOf, updateTourService } from '@/app/api/tour-service.api'
+import { addTourService, deleteTourService, getTourServicesOf, updateTourService } from '@/app/api/tour-service.api'
 import PaginateList from '@/app/news/paginate-list'
 import SafeImage from '@/components/safe-image'
 import { useMutation, useQuery } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 import { TourService } from '@/types/tour-service'
 import { toast } from 'react-toastify'
+import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../layout'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
@@ -42,19 +43,36 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
             console.error(error);
         },
     });
+    const addServicesMutation = useMutation({
+        mutationFn: async (service: TourService) => addTourService(service),
+        onSuccess: () => {
+            toast.success("Tạo thành công");
+            refetch()
+        },
+        onError: (error) => {
+            toast.error("Tạo thất bại");
+            console.error(error);
+        },
+    });
     const updateService = (newData: TourService) => {
         updateServicesMutation.mutate(newData)
         refetch()
-        setSignal({ edit: false, delete: false })
+        setSignal({ edit: false, delete: false, create: false })
     }
     const deleteService = (id: number) => {
         deleteServicesMutation.mutate(id)
         refetch()
-        setSignal({ edit: false, delete: false })
+        setSignal({ edit: false, delete: false, create: false })
+    }
+    const addService = (newData: TourService) => {
+        addServicesMutation.mutate(newData)
+        refetch()
+        setSignal({ edit: false, delete: false, create: false })
     }
     const services = data?.result ?? []
     const maxPage = data?.totalPage ?? 0
     const { setTarget, setModalOpen, modalOpen, signal, setSignal, target } = useContext(ServiceEditContext) as ServiceEditContextProp
+    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     useEffect(() => {
         if (signal.edit) {
             updateService(target)
@@ -62,7 +80,13 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
         if (signal.delete) {
             deleteService(target.serviceId)
         }
-    }, [signal.edit, signal.delete])
+        if (signal.create) {
+            const t = target
+            t.tourGuideId = id
+            addService(t)
+        }
+        setModalOpen({create: false, delete: false, edit: false})
+    }, [signal.edit, signal.delete, signal.create])
     return (
         <motion.div className='w-full'>
             <AnimatePresence mode="wait">

@@ -3,7 +3,7 @@ import { changePicture as changeTourGuidePicture, getTourGuide, updateTourGuideC
 import Banner from '@/components/Banner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { Suspense, useContext, useState } from 'react'
-import ProfileForm from './profile-components/form';
+import ProfileForm from './profile-components/tour-guide-edit-modal';
 import { TourGuide } from '@/types/tour-guide';
 import { toast } from 'react-toastify';
 import { FaCamera } from 'react-icons/fa';
@@ -34,8 +34,8 @@ function TourGuideProfileEdit() {
         services: true
     })
     const [target, setTarget] = useState(baseService)
-    const [modalOpen, setModalOpen] = useState({ edit: false, delete: false })
-    const [signal, setSignal] = useState({ edit: false, delete: false })
+    const [modalOpen, setModalOpen] = useState({ edit: false, delete: false, create: false })
+    const [signal, setSignal] = useState({ edit: false, delete: false, create: false })
 
     const { data, refetch } = useQuery({
         queryKey: ['tour-guide', id],
@@ -57,6 +57,7 @@ function TourGuideProfileEdit() {
         },
         onSuccess: () => {
             toast.success("Cập thành công");
+            setEditFormOpen(false)
             refetch()
         },
         onError: (error) => {
@@ -67,21 +68,15 @@ function TourGuideProfileEdit() {
 
     const update = (newData: TourGuide) => {
         updateTourGuideMutation.mutate({ data: newData })
-        refetch()
+        setToggleMode({ ...toggleMode, edit: false })
     }
     const updatePfp = (fieldToChange: string, newValue: string) => {
         updateTourGuideMutation.mutate({ changePic: { fieldToChange, newValue } })
-        refetch()
         setToggleMode({ ...toggleMode, edit: false })
     }
     const tourGuide = data?.data
     return (
         <ServiceEditContext.Provider value={{ modalOpen, setModalOpen, target, setTarget, signal, setSignal }}>
-            <ServiceEditModal
-                isOpen={modalOpen.edit}
-                onClose={() => { setModalOpen(p => ({ ...p, edit: false })) }}
-            />
-            <PictureView isOpen={toggleMode.view} onClose={() => { setToggleMode({ ...toggleMode, view: false }) }} img={toggleMode.value} />
             {toggleMode.edit &&
                 <EditPic
                     onChange={(url) => updatePfp(toggleMode.targetType, url)}
@@ -90,6 +85,12 @@ function TourGuideProfileEdit() {
                     type={toggleMode.targetType}
                 />
             }
+            <ServiceEditModal
+                isOpen={modalOpen.edit || modalOpen.create}
+                onClose={() => { setModalOpen(p => ({ ...p, edit: false, create: false })) }}
+            />
+            <PictureView isOpen={toggleMode.view} onClose={() => { setToggleMode({ ...toggleMode, view: false }) }} img={toggleMode.value} />
+            
             <div className='my-10 relative'>
                 <div className='relative'>
 
@@ -158,7 +159,12 @@ function TourGuideProfileEdit() {
 
                     </div>
                     <div className={`${toggleSection.services ? 'block' : 'hidden'}`}>
-                        <Button className='mx-[20%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer my-6'>
+                        <Button 
+                        onClick={() => {
+                            setTarget(baseService)
+                            setModalOpen({edit: false, delete: false, create: true})
+                        }}
+                        className='mx-[20%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer my-6'>
                             Tạo dịch vụ
                         </Button>
                         <div className='mx-[5%] mt-4'>
