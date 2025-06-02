@@ -55,12 +55,11 @@ namespace API.Controllers
             string fullName = jsonElement.GetProperty("fullName").GetString();
             string gender = jsonElement.GetProperty("gender").GetString();
             string phone = jsonElement.GetProperty("phone").GetString();
-            string address = jsonElement.GetProperty("address").GetString();
             DateTime dob = jsonElement.GetProperty("dateOfBirth").GetDateTime();
             DateOnly dateOfBirth = DateOnly.FromDateTime(dob);
 
             // Kiểm tra dữ liệu nhập
-            if (string.IsNullOrEmpty(address) || string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(dateOfBirth.ToString()))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(fullName) || string.IsNullOrEmpty(gender) || string.IsNullOrEmpty(phone) || string.IsNullOrEmpty(dateOfBirth.ToString()))
                 return BadRequest(new { msg = "Thông tin tài khoản chưa đầy đủ." });
 
             if (!ValidInput.IsPhoneFormatted(phone.Trim()))

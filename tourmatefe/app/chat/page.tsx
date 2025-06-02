@@ -54,7 +54,7 @@ function ChatContent() {
         />
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
-            <MessageList conversationId={selectedConversation.conversation.conversationId} />
+            <MessageList conversationId={selectedConversation.conversation.conversationId} conversationResponse={selectedConversation} />
           ) : (
             <div className="flex-1 flex items-center justify-center text-gray-400">
               Vui lòng chọn cuộc trò chuyện
