@@ -74,7 +74,7 @@ public class ChatHub : Hub
             ConversationId = conversationId,
             SenderId = senderId,
             MessageText = text,
-            SendAt = DateTime.Now,
+            SendAt = DateTime.UtcNow,
             IsRead = false,
             IsDeleted = false,
             IsEdited = false,

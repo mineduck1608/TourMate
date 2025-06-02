@@ -15,6 +15,7 @@ import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import CustomerProfile from "./customerProfile";
 import { ResetPass } from "./reset-password";
+import Link from "next/link";
 
 export default function ActionMenu() {
 
@@ -45,13 +46,25 @@ export default function ActionMenu() {
           <SheetDescription className=" px-4">
             ID: {accountId}
           </SheetDescription>
-          {role === "Customer" ? <CustomerProfile /> : <button
-            className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
-            onClick={() => alert("TourGuide chỉnh sửa tài khoản")}
-          >
-            <Settings size={18} />
-            Thông tin tài khoản
-          </button>}
+          {role === "Customer" ? (
+            <CustomerProfile />
+          ) : role === "TourGuide" ? (
+            <Link
+              href={`/tour-guide/profile`}
+              className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+            >
+              <Settings size={18} />
+              Thông tin tài khoản
+            </Link>
+          ) : role === "Admin" ? null : (
+            <button
+              className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+              onClick={() => alert("Chức năng chưa hỗ trợ")}
+            >
+              <Settings size={18} />
+              Thông tin tài khoản
+            </button>
+          )}
           <button
             className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
             onClick={() => alert("Xem lịch sử hoạt động")}
