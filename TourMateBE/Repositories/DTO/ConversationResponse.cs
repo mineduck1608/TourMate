@@ -14,6 +14,7 @@ namespace Repositories.DTO
         public string AccountName2 { get; set; }
         public Message LatestMessage { get; set; }  // Tin nhắn mới nhất trong conversation
         public bool IsRead { get; set; }             // Trạng thái đã đọc (dựa vào message)
+        public string Account2Img { get; set; }     // Hình ảnh của người dùng 2
     }
 
 }

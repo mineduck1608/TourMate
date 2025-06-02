@@ -7,6 +7,22 @@ namespace Repositories.Repository
 {
     public class ConversationRepository : GenericRepository<Conversation>
     {
+        public async Task<Conversation?> GetConversationBetweenUsersAsync(int userId1, int userId2)
+        {
+            return await _context.Conversations.Include(c => c.Account1)
+                .Include(c => c.Account2)
+                .FirstOrDefaultAsync(c =>
+                    (c.Account1Id == userId1 && c.Account2Id == userId2) ||
+                    (c.Account1Id == userId2 && c.Account2Id == userId1));
+        }
+
+        public async Task<Conversation> CreateConversationAsync(Conversation conversation)
+        {
+            _context.Conversations.Add(conversation);
+            await _context.SaveChangesAsync();
+            return conversation;
+        }
+
         public async Task<Conversation?> GetConversationAsync(int conversationId)
         {
             return await _context.Conversations
