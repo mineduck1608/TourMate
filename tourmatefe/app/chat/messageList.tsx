@@ -10,14 +10,16 @@ import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { apiHub } from "@/types/constants";
 import { useToken } from "@/components/getToken";
+import { ConversationResponse } from "@/types/conversation";
 
 const PAGE_SIZE = 20;
 
 type Props = {
   conversationId: number;
+  conversationResponse?: ConversationResponse;
 };
 
-export default function MessageList({ conversationId }: Props) {
+export default function MessageList({ conversationId, conversationResponse }: { conversationId: number; conversationResponse?: ConversationResponse }) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -34,24 +36,20 @@ export default function MessageList({ conversationId }: Props) {
     isLoading,
     isFetching,
     refetch,
-  } = useInfiniteQuery<
-    { messages: Message[]; hasMore: boolean },
-    unknown
-  >({
+  } = useInfiniteQuery<{ messages: Message[]; hasMore: boolean }, unknown>({
     queryKey: ["messages", conversationId],
-    queryFn: ({ pageParam = 1 }) => fetchMessages(conversationId, pageParam, PAGE_SIZE),
-    getNextPageParam: (
-      lastPage,
-      allPages
-    ) => (lastPage.hasMore ? allPages.length + 1 : undefined),
+    queryFn: ({ pageParam = 1 }) =>
+      fetchMessages(conversationId, pageParam, PAGE_SIZE),
+    getNextPageParam: (lastPage, allPages) =>
+      lastPage.hasMore ? allPages.length + 1 : undefined,
     enabled: !!conversationId,
     initialPageParam: 1,
     staleTime: 0,
   });
 
   useEffect(() => {
-    setMessages([]);  // Xoá tin nhắn cũ khi chuyển conversation
-    refetch();        // Lấy tin nhắn mới
+    setMessages([]); // Xoá tin nhắn cũ khi chuyển conversation
+    refetch(); // Lấy tin nhắn mới
   }, [conversationId, refetch]);
 
   useEffect(() => {
@@ -78,7 +76,7 @@ export default function MessageList({ conversationId }: Props) {
       .then(async () => {
         console.log("SignalR connected");
         try {
-          await newConnection.invoke("JoinConversation", conversationId); // ❗ THÊM DÒNG NÀY
+          await newConnection.invoke("JoinConversation", conversationId);
           console.log("Joined conversation", conversationId);
         } catch (err) {
           console.error("Failed to join conversation:", err);
@@ -86,15 +84,19 @@ export default function MessageList({ conversationId }: Props) {
       })
       .catch((e) => console.log("SignalR connection failed: ", e));
 
-
     newConnection.on("ReceiveMessage", (message: Message) => {
       if (message.conversationId === conversationId) {
-        console.log(message);
-        setMessages((prev) => [message, ...prev]);
+        // Kiểm tra tránh duplicate
+        setMessages((prev) =>
+          prev.some((m) => m.messageId === message.messageId)
+            ? prev
+            : [message, ...prev]
+        );
       }
     });
 
     return () => {
+      newConnection.off("ReceiveMessage");
       newConnection.stop();
     };
   }, [conversationId]);
@@ -117,7 +119,12 @@ export default function MessageList({ conversationId }: Props) {
     }
 
     try {
-      await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber);
+      await connection.invoke(
+        "SendMessage",
+        conversationId,
+        text.trim(),
+        currentAccountIdNumber
+      );
     } catch (error) {
       console.error("Send message error:", error);
     }
@@ -134,6 +141,9 @@ export default function MessageList({ conversationId }: Props) {
 
   return (
     <div className="flex flex-col h-full">
+      {/* Header chứa avatar và đường kẻ ngang */}
+      <ConversationHeader conversationId={conversationId} conversationResponse={conversationResponse} />
+
       <div
         id="scrollableDiv"
         className="flex-1 overflow-auto p-4 flex flex-col-reverse"
@@ -151,7 +161,9 @@ export default function MessageList({ conversationId }: Props) {
           dataLength={messages.length}
           next={loadMoreMessages}
           hasMore={!!hasNextPage}
-          loader={<div className="text-center text-gray-500">Đang tải thêm...</div>}
+          loader={
+            <div className="text-center text-gray-500">Đang tải thêm...</div>
+          }
           inverse={true}
           scrollableTarget="scrollableDiv"
           style={{ display: "flex", flexDirection: "column-reverse" }}
@@ -176,6 +188,27 @@ export default function MessageList({ conversationId }: Props) {
   );
 }
 
+function ConversationHeader({ conversationId, conversationResponse }: { conversationId: number, conversationResponse?: ConversationResponse }) {
+  // Ở đây bạn có thể tùy chỉnh lại nguồn dữ liệu của avatar, ví dụ lấy từ conversation info
+  const avatarUrl =
+    "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"; // mặc định, thay đổi nếu cần
+
+  return (
+    <div className="flex items-center p-4 border-b border-gray-300">
+      <img
+        src={conversationResponse?.account2Img || avatarUrl}
+        alt="Conversation Avatar"
+        className="w-12 h-12 rounded-full"
+      />
+      <div className="ml-4">
+        <h2 className="text-lg font-semibold">
+          {conversationResponse?.accountName2 || "Người dùng"}
+        </h2>
+      </div>
+    </div>
+  );
+}
+
 function MessageItem({
   message,
   currentAccountId,
@@ -189,7 +222,11 @@ function MessageItem({
 
   return (
     <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
-      <div className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"}`}>
+      <div
+        className={`flex items-end gap-2 ${
+          isSender ? "flex-row-reverse" : "flex-row"
+        }`}
+      >
         {showAvatar ? (
           <img
             src={
@@ -203,14 +240,16 @@ function MessageItem({
           <div className="w-10 h-10" />
         )}
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-            }`}
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
+            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+          }`}
           style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
           <div>{message.messageText}</div>
           <div
-            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
-              }`}
+            className={`text-xs mt-1 ${
+              isSender ? "text-white text-right" : "text-gray-500 text-left"
+            }`}
           >
             {new Date(message.sendAt).toLocaleTimeString()}
           </div>
