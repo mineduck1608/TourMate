@@ -1,23 +1,92 @@
 'use client'
-import { getTourServicesOf } from '@/app/api/tour-service.api'
+import { addTourService, deleteTourService, getTourServicesOf, updateTourService } from '@/app/api/tour-service.api'
 import PaginateList from '@/app/news/paginate-list'
 import SafeImage from '@/components/safe-image'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
 import Link from 'next/link'
-import React, { useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
+import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
+import { TourService } from '@/types/tour-service'
+import { toast } from 'react-toastify'
+import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../layout'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
     const pageSize = 6
-    const { data } = useQuery({
+    const { data, refetch } = useQuery({
         queryKey: ['tour-services-of', tourGuideId, pageSize, page],
         queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize),
         staleTime: 24 * 3600 * 1000,
     })
+    //Mutation here
+    const updateServicesMutation = useMutation({
+        mutationFn: async (data: TourService) => updateTourService(data),
+        onSuccess: () => {
+            toast.success("Cập nhật thành công");
+            refetch()
+        },
+        onError: (error) => {
+            toast.error("Cập nhật thất bại");
+            console.error(error);
+        },
+    });
+    const deleteServicesMutation = useMutation({
+        mutationFn: async (id: number) => deleteTourService(id),
+        onSuccess: () => {
+            toast.success("Xóa thành công");
+            refetch()
+        },
+        onError: (error) => {
+            toast.error("Xóa thất bại");
+            console.error(error);
+        },
+    });
+    const addServicesMutation = useMutation({
+        mutationFn: async (service: TourService) => addTourService(service),
+        onSuccess: () => {
+            toast.success("Tạo thành công");
+            refetch()
+        },
+        onError: (error) => {
+            toast.error("Tạo thất bại");
+            console.error(error);
+        },
+    });
+    const updateService = (newData: TourService) => {
+        updateServicesMutation.mutate(newData)
+        refetch()
+        setSignal({ edit: false, delete: false, create: false })
+    }
+    const deleteService = (id: number) => {
+        deleteServicesMutation.mutate(id)
+        refetch()
+        setSignal({ edit: false, delete: false, create: false })
+    }
+    const addService = (newData: TourService) => {
+        addServicesMutation.mutate(newData)
+        refetch()
+        setSignal({ edit: false, delete: false, create: false })
+    }
     const services = data?.result ?? []
     const maxPage = data?.totalPage ?? 0
+    const { setTarget, setModalOpen, modalOpen, signal, setSignal, target } = useContext(ServiceEditContext) as ServiceEditContextProp
+    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
+    useEffect(() => {
+        if (signal.edit) {
+            updateService(target)
+        }
+        if (signal.delete) {
+            deleteService(target.serviceId)
+        }
+        if (signal.create) {
+            const t = target
+            t.tourGuideId = id
+            addService(t)
+        }
+        setModalOpen({create: false, delete: false, edit: false})
+    }, [signal.edit, signal.delete, signal.create])
     return (
         <motion.div className='w-full'>
             <AnimatePresence mode="wait">
@@ -34,7 +103,12 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                             key={item.serviceId}
                             whileHover={{
                                 scale: 1.05,
-                                //boxShadow: "0 16px 40px rgba(0,0,0,0.2)",
+                            }}
+                            onClick={() => {
+                                setTarget(item)
+                                setTimeout(() => {
+                                    setModalOpen({ ...modalOpen, edit: true })
+                                }, 50);
                             }}
                             transition={{ duration: 0.1, ease: "easeInOut" }}
                             className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"

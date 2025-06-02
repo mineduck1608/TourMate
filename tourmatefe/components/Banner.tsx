@@ -1,9 +1,10 @@
 "use client";
 
 import React from 'react';
+import SafeImage from './safe-image';
 
 interface BannerProps {
-  imageUrl: string;
+  imageUrl?: string;
   title: string;
   subtitle?: string;
   height?: string
@@ -12,15 +13,15 @@ interface BannerProps {
 const Banner: React.FC<BannerProps> = ({ imageUrl, title, subtitle, height }) => {
   return (
     <div style={{ position: 'relative', width: '100%', height: height ?? '400px' }}>
-      <img 
-        src={imageUrl} 
-        alt={title} 
+      <SafeImage
+        src={imageUrl}
+        alt={title}
         style={{
           width: '100%',
           height: '100%',
           objectFit: 'cover',
           filter: 'brightness(0.6)' // Keeps the text readable
-        }} 
+        }}
       />
       <div className="banner-title">
         {title}
