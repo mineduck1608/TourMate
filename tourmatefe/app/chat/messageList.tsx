@@ -19,7 +19,7 @@ type Props = {
   conversationResponse?: ConversationResponse;
 };
 
-export default function MessageList({ conversationId, conversationResponse }: { conversationId: number; conversationResponse?: ConversationResponse }) {
+export default function MessageList({ conversationId, conversationResponse }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
 
@@ -142,7 +142,7 @@ export default function MessageList({ conversationId, conversationResponse }: { 
   return (
     <div className="flex flex-col h-full">
       {/* Header chứa avatar và đường kẻ ngang */}
-      <ConversationHeader conversationId={conversationId} conversationResponse={conversationResponse} />
+      <ConversationHeader conversationResponse={conversationResponse} />
 
       <div
         id="scrollableDiv"
@@ -188,7 +188,7 @@ export default function MessageList({ conversationId, conversationResponse }: { 
   );
 }
 
-function ConversationHeader({ conversationId, conversationResponse }: { conversationId: number, conversationResponse?: ConversationResponse }) {
+function ConversationHeader({ conversationResponse }: { conversationResponse?: ConversationResponse }) {
   // Ở đây bạn có thể tùy chỉnh lại nguồn dữ liệu của avatar, ví dụ lấy từ conversation info
   const avatarUrl =
     "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"; // mặc định, thay đổi nếu cần
