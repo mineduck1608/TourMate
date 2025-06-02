@@ -40,6 +40,8 @@ export default function TourGuideDetail({
         });
     }, []);
 
+    const token = sessionStorage.getItem("accessToken");
+
     return (
         <div className='*:my-10' data-aos="fade-in"
             data-aos-delay="300">
@@ -80,7 +82,10 @@ export default function TourGuideDetail({
                         <Button
                             className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'
                             onClick={() => {
-                                // Chuyển hướng sang trang chat với userId hoặc tourGuideId
+                                if (!token) {
+                                    alert('Vui lòng đăng nhập để sử dụng dịch vụ này');
+                                    return;
+                                }
                                 router.push(`/chat?userId=${tourGuide?.accountId}`);
                             }}
                         >
