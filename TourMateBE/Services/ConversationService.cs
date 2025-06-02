@@ -13,6 +13,7 @@ namespace Services
         bool DeleteConversation(int id);
         Task<ConversationListResult> GetConversationsAsync(int userId, string searchTerm, int page, int pageSize);
         Task<(List<Message> messages, bool hasMore)> GetMessagesAsync(int conversationId, int page, int pageSize);
+        Task<Conversation> GetOrCreateConversationAsync(int currentUserId, int userId);
     }
 
     public class ConversationService : IConversationService
@@ -24,6 +25,21 @@ namespace Services
         {
             ConversationRepository = conversationRepo;
             _accountRepo = accountRepo;
+        }
+
+        public async Task<Conversation> GetOrCreateConversationAsync(int currentUserId, int userId)
+        {
+            var conversation = await ConversationRepository.GetConversationBetweenUsersAsync(currentUserId, userId);
+            if (conversation != null) return conversation;
+
+            var newConv = new Conversation
+            {
+                Account1Id = currentUserId,
+                Account2Id = userId,
+                CreatedAt = DateTime.Now
+            };
+
+            return await ConversationRepository.CreateConversationAsync(newConv);
         }
 
 

@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -21,6 +22,88 @@ namespace API.Controllers
             _customerService = customerService;
             _tourGuideService = tourGuideService;
         }
+
+        [HttpGet("fetch-or-create")]
+        public async Task<IActionResult> FetchOrCreateConversation([FromQuery] int currentUserId, [FromQuery] int userId)
+        {
+            // 1. Lấy hoặc tạo conversation giữa 2 user
+            var conversation = await _conversationService.GetOrCreateConversationAsync(currentUserId, userId);
+
+            // 2. Lấy info cho account1 (currentUserId)
+            string accountName1 = "Người dùng";
+            string account1Img = "";
+            var account1 = await _accountService.GetAccount(currentUserId);
+            if (account1 != null)
+            {
+                if (account1.RoleId == 2) // Customer
+                {
+                    var customer = await _customerService.GetCustomerByAccId(currentUserId);
+                    if (customer != null)
+                    {
+                        accountName1 = customer.FullName;
+                        account1Img = customer.Image;
+                    }
+                }
+                else if (account1.RoleId == 3) // TourGuide
+                {
+                    var tourGuide = await _tourGuideService.GetTourGuideByAccId(currentUserId);
+                    if (tourGuide != null)
+                    {
+                        accountName1 = tourGuide.FullName;
+                        account1Img = tourGuide.Image;
+                    }
+                }
+                else
+                {
+                    accountName1 = "Người dùng";
+                }
+            }
+
+            // 3. Lấy info cho account2 (userId)
+            string accountName2 = "Người dùng";
+            string account2Img = "";
+            var account2 = await _accountService.GetAccount(userId);
+            if (account2 != null)
+            {
+                if (account2.RoleId == 2) // Customer
+                {
+                    var customer = await _customerService.GetCustomerByAccId(userId);
+                    if (customer != null)
+                    {
+                        accountName2 = customer.FullName;
+                        account2Img = customer.Image;
+                    }
+                }
+                else if (account2.RoleId == 3) // TourGuide
+                {
+                    var tourGuide = await _tourGuideService.GetTourGuideByAccId(userId);
+                    if (tourGuide != null)
+                    {
+                        accountName2 = tourGuide.FullName;
+                        account2Img = tourGuide.Image;
+                    }
+                }
+                else
+                {
+                    accountName2 = "Người dùng";
+                }
+            }
+
+            // 6. Trả về dữ liệu dạng đúng kiểu ConversationResponse
+            var response = new ConversationResponse
+            {
+                Conversation = conversation,
+                AccountName1 = accountName1,
+                AccountName2 = accountName2,
+                LatestMessage = null,
+                IsRead = false,
+                Account2Img = account2Img
+            };
+
+            return Ok(response);
+        }
+
+
 
         [HttpGet]
         public async Task<IActionResult> GetConversations(

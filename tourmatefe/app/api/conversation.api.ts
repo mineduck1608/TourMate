@@ -1,4 +1,4 @@
-import { ConversationListResult } from "@/types/conversation";
+import { ConversationListResult, ConversationResponse } from "@/types/conversation";
 import http from "../utils/http";
 
 export const fetchConversations = async (
@@ -27,3 +27,20 @@ export const fetchMarkRead = async (id: number, userId: number) => {
   });
   return response.data;
 };
+
+
+export const fetchOrCreateConversation = async (
+  currentUserId: number,
+  userId: number
+): Promise<ConversationResponse> => {
+  const res = await http.get<ConversationResponse>(
+    "/conversation/fetch-or-create",
+    {
+      params: { currentUserId, userId },
+    }
+  );
+
+  return res.data;
+};
+
+
