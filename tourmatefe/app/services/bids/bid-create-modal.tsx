@@ -4,7 +4,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { TourBid } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
-import { BidCreateContext, BidCreateContextProps } from "./bid-create-context";
+import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -19,14 +19,12 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     onClose,
     onSave,
 }) => {
-    const { formData, setFormData } = useContext(BidCreateContext) as BidCreateContextProps
+    const { setTarget, target } = useContext(BidTaskContext) as BidTaskContextProp
     const [maxPrice, setMaxPrice] = useState('')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(formData);
-
-        onSave(formData);
+        onSave(target);
         onClose();
     };
     const simplifiedAreaQuery = useQuery({
@@ -87,9 +85,9 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 required
                                 onChange={(e) => {
                                     console.log(Number(e.target.value));
-                                    setFormData({ ...formData, placeRequested: Number(e.target.value) })
+                                    setTarget({ ...target, placeRequested: Number(e.target.value) })
                                 }}
-                                value={formData.placeRequested === 0 ? areas[0]?.areaId : formData.placeRequested}
+                                value={target.placeRequested === 0 ? areas[0]?.areaId : target.placeRequested}
                             >
                                 <option value="0" disabled>
                                     Chọn khu vực
@@ -116,7 +114,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 value={maxPrice}
                                 onChange={(e) => {
                                     const v = Number(e.target.value)
-                                    setFormData({ ...formData, maxPrice: v === 0 ? undefined : v })
+                                    setTarget({ ...target, maxPrice: v === 0 ? undefined : v })
                                     setMaxPrice(e.target.value)
                                 }}
                             />
@@ -131,8 +129,8 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 Nội dung
                             </label>
                             <ReactQuill
-                                value={formData.content}
-                                onChange={(v) => setFormData({ ...formData, content: v })}
+                                value={target.content}
+                                onChange={(v) => setTarget({ ...target, content: v })}
                                 theme="snow"
                                 modules={{
                                     toolbar: [
@@ -148,7 +146,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                     </div>
                     <div className="flex justify-end">
                         <button
-                            disabled={formData.content.length === 0}
+                            disabled={target.content.length === 0}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >

@@ -19,3 +19,9 @@ export const addTourBid = async (tourBid: TourBid) => {
   const response = await http.post('/tour-bids', tourBid);
   return response.data;  // Assuming the API returns the created news item
 }
+
+
+export const updateTourBid = async (tourBid: TourBid) => {
+  const response = await http.put('/tour-bids', tourBid);
+  return response.data;  // Assuming the API returns the created news item
+}

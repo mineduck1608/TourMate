@@ -5,19 +5,17 @@ import Bids from './bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
-import { getCustomerWithAcc } from '@/app/api/customer.api'
+import { getCustomer } from '@/app/api/customer.api'
 import { CustomerSiteContext, CustomerSiteContextProp } from '../context'
 import { AuthProvider } from '@/components/authProvider'
 import { CustomerContent } from '../customer-content'
 
 function BidPage() {
     const { id } = useContext(CustomerSiteContext) as CustomerSiteContextProp
-    const accId = Number(id)
     const customerQueryData = useQuery({
-        queryFn: () => getCustomerWithAcc(accId),
-        queryKey: ['customer-with-accountId', accId],
+        queryFn: () => getCustomer(id),
+        queryKey: ['customer', id],
         staleTime: 24 * 3600 * 1000,
-        enabled: !Object.is(accId, NaN)
     })
     const customer = customerQueryData.data
     const simplifiedAreaQuery = useQuery({

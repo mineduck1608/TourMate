@@ -63,7 +63,7 @@ export default function Profile({ customer }: { customer?: Customer }) {
 function UserRender({ customer }: { customer?: Customer }) {
     return (
         <div className='px-6 pt-5 pb-1'>
-            <div className='xl:flex'>
+            <div className='lg:flex gap-5'>
                 <SafeImage src={customer?.image}
                     className='w-[75px] h-[75px] rounded-full aspect-square border-2'
                     alt={'profile'}

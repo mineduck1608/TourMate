@@ -11,6 +11,7 @@ import { FaMapMarkerAlt } from "react-icons/fa"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DOMPurify from "dompurify";
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
+import { baseModal, BidTaskContext, BidTaskContextProp } from "./bid-task-context"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const pageSize = 10
@@ -19,7 +20,8 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const bidData = useQuery({
         queryKey: ['bids-of', tourBid.tourBidId, pageSize, page],
-        queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize)
+        queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
+        staleTime: 60 * 1000
     })
     useEffect(() => {
         setBids([])
@@ -49,6 +51,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
         }
         return html; // Fallback for server-side rendering
     };
+    const { setModalOpen, setTarget } = useContext(BidTaskContext) as BidTaskContextProp
 
     return (
         <div className="shadow-lg p-5 rounded-lg">
@@ -76,19 +79,41 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                     </span>
                     {
                         tourBid.accountId === accId &&
-                        <div className="flex flex-col *:mt-2 h-fit">
-                            <button
-                                type="submit"
-                                className="p-2 text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                        <div className="mt-4">
+                            <select
+                                id="areaId"
+                                name="areaId"
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                required
+                                onChange={(e) => {
+                                    setTarget(tourBid);
+                                    const data = { ...baseModal };
+                                    switch (e.target.value) {
+                                        case '1': data.changeStatus = true; break;
+                                        case '2': data.edit = true; break;
+                                        case '3': data.delete = true; break;
+                                    }
+                                    setModalOpen(data);
+                                    e.target.disabled = true
+                                    setTimeout(() => {
+                                        e.target.value = '0';
+                                        e.target.disabled = false
+                                    }, 1000);
+                                }}
                             >
-                                Cập nhật
-                            </button>
-                            <button
-                                type="submit"
-                                className="p-2 text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
-                            >
-                                Xóa
-                            </button>
+                                <option value="0" hidden>
+                                    Chọn thao tác
+                                </option>
+                                <option value={'1'}>
+                                    {isOnGoing ? 'Chấm dứt' : 'Hoạt động lại'}
+                                </option>
+                                <option value={'2'}>
+                                    Cập nhật
+                                </option>
+                                <option value={'3'}>
+                                    Xóa
+                                </option>
+                            </select>
                         </div>
                     }
                 </div>

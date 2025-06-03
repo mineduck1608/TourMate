@@ -1,6 +1,5 @@
 import { Account } from "./account"
 import { ActiveArea } from "./active-area"
-import { Bid } from "./bid"
 
 export type TourBid = {
     tourBidId: number,
@@ -14,5 +13,4 @@ export type TourBid = {
     maxPrice?: number,
     account?: Account,
     placeRequestedNavigation?: ActiveArea,
-    bids?: Bid[]
 }

@@ -14,9 +14,6 @@ export function CustomerContent({ children }: { children: ReactNode }) {
   const token = useToken('accessToken')
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accId = Number(payLoad?.AccountId)
-  console.log(accId);
-  console.log(role);
-  
   const { data } = useQuery({
     queryKey: ['id-of', accId],
     queryFn: () => getAssociatedId(accId, 'Customer'),
