@@ -19,7 +19,7 @@ import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import "react-quill-new/dist/quill.snow.css";
-import { ApiResponse } from "@/types/message";
+//import { ApiResponse } from "@/types/message";
 
 
 async function fetchAreas(): Promise<AreaIdAndName[]> {

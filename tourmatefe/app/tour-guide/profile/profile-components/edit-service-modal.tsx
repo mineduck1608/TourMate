@@ -1,8 +1,8 @@
 import ImageUpload from '@/components/image-upload'
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 import dynamic from 'next/dynamic';
-import DeleteServiceModal from './delete-service-modal';
+import DeleteModal from '@/components/delete-modal';
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false,  // Disable SSR for this component
 });
@@ -10,9 +10,69 @@ interface Props {
     isOpen: boolean,
     onClose: () => void
 }
+function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) => void }) {
+    const t = d.split(':')
+    const [time, setTime] = useState({
+        day: Number(parseInt(t[0])) || 0,
+        hour: Number(parseInt(t[1])) || 0
+    })
 
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+    ) => {
+        const { name, value } = e.target;
+        // Ensure the value is a natural number
+        const numValue = Math.max(0, Math.floor(Number(value)));
+
+        // Apply specific max limits
+        const clampedValue = name === 'day'
+            ? Math.min(numValue, 10)
+            : Math.min(numValue, 23);
+
+        const newV = {
+            ...time,
+            [name]: clampedValue
+        }
+        setTime(newV);
+        const newStr = newV.day.toString().padStart(2, '0') + ':' +
+            newV.hour.toString().padStart(2, '0') + ":00"
+        onChange(newStr)
+        // Format the new value back to string and notify parent
+        // const newTime = name === 'day'
+        //     ? { day: clampedValue, hour: time.hour }
+        //     : { day: time.day, hour: clampedValue };
+        // onChange(`${newTime.day}:${newTime.hour}`);
+    };
+
+    return (
+        <div className='flex gap-2 justify-evenly items-center'>
+            <input
+                type='number'
+                inputMode='numeric'
+                min={0}
+                max={10}
+                name='day'
+                value={time.day}
+                onChange={handleChange}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            />
+            <label>Ngày</label>
+            <input
+                type='number'
+                min={0}
+                max={23}
+                name='hour'
+                value={time.hour}
+                inputMode='numeric'
+                onChange={handleChange}
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+            />
+            <label>Giờ</label>
+        </div>
+    )
+}
 function ServiceEditModal({ isOpen, onClose }: Props) {
-    const { target, setTarget, setSignal, modalOpen, setModalOpen } = useContext(ServiceEditContext) as ServiceEditContextProp
+    const { target, setTarget, setSignal, modalOpen, setModalOpen, signal } = useContext(ServiceEditContext) as ServiceEditContextProp
 
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -30,7 +90,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[900px] overflow-y-auto">
+            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[90%] overflow-y-auto">
                 <div className="relative justify-between items-center">
                     <button
                         type="button"
@@ -54,7 +114,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                 </div>
                 <h3 className='text-center font-bold text-2xl mb-5'>{modalOpen.edit ? 'Cập nhật' : 'Tạo'} dịch vụ</h3>
                 <form onSubmit={() => { }}>
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-1 mb-4">
                         <label
                             htmlFor="serviceName"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -98,18 +158,15 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             >
                                 Thời lượng
                             </label>
-                            <input
-                                type="text"
-                                name="duration"
-                                id="duration"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                value={target.duration}
-                                onChange={handleChange}
-                                required
+                            <DurationRender d={target.duration}
+                                onChange={(txt) => {
+                                    const updated = { ...target, duration: txt }
+                                    setTarget(updated);
+                                }}
                             />
                         </div>
                     </div>
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-1 mb-4">
                         <label
                             htmlFor="title"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -126,7 +183,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             required
                         />
                     </div>
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-1 mb-4">
                         <label
                             htmlFor="tourDesc"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -157,7 +214,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         />
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-2 mb-4">
                         <label
                             htmlFor="areaContent"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
@@ -182,16 +239,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         />}
                     </div>
                 </form>
-                {modalOpen.edit &&<div className="flex justify-evenly mt-5">
-                    <button
-                        onClick={() => {
-                            setSignal({ edit: true, delete: false, create: false })
-                        }}
-                        type="submit"
-                        className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
-                    >
-                        Cập nhật
-                    </button>
+                {modalOpen.edit && <div className="flex justify-evenly mt-5">
                     <button
                         onClick={() => {
                             setModalOpen({ edit: true, delete: true, create: false })
@@ -201,21 +249,39 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                     >
                         Xóa
                     </button>
-                </div>}
-                {
-                    modalOpen.create && <div className="flex justify-evenly mt-5">
                     <button
                         onClick={() => {
-                            setSignal({ edit: false, delete: false, create: true })
+                            setSignal({ edit: true, delete: false, create: false })
                         }}
                         type="submit"
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                     >
-                        Tạo
+                        Cập nhật
                     </button>
-                </div>
+                </div>}
+                {
+                    modalOpen.create && <div className="flex justify-evenly mt-5">
+                        <button
+                            onClick={() => {
+                                setSignal({ edit: false, delete: false, create: true })
+                            }}
+                            type="submit"
+                            className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
+                        >
+                            Tạo
+                        </button>
+                    </div>
                 }
-                <DeleteServiceModal isOpen={modalOpen.delete} onClose={() => setModalOpen({...modalOpen, delete: false})} />
+                {/* <DeleteServiceModal isOpen={modalOpen.delete} onClose={() => setModalOpen({ ...modalOpen, delete: false })} /> */}
+                <DeleteModal
+                    isOpen={modalOpen.delete}
+                    message='Xóa dịch vụ này?'
+                    onClose={() => setModalOpen({ ...modalOpen, delete: false })}
+                    onConfirm={() => {
+                        setModalOpen({ create: false, edit: false, delete: false })
+                        setSignal({ ...signal, delete: true })
+                    }}
+                />
             </div>
         </div>
     )
