@@ -13,11 +13,11 @@ function PictureView({ img, isOpen, onClose }: Props) {
             className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}
         >
             <div
-                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"}`}
+                className={`absolute inset-0 ${isOpen ? "block" : "hidden"}`}
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full h-full bg-gray-900 z-10 overflow-y-hidden">
+            <div className="relative p-4 w-full h-full bg-[rgba(0,0,0,0.9)] z-10 overflow-y-hidden">
                 <div className="absolute justify-between items-center pb-4 mb-4">
                     <button
                         type="button"
@@ -39,7 +39,7 @@ function PictureView({ img, isOpen, onClose }: Props) {
                         <span className="sr-only">Close modal</span>
                     </button>
                 </div>
-                <div className='flex justify-center items-center w-full h-full'>
+                <div className='opacity-100 flex justify-center items-center w-full h-full'>
                     {img.length > 0 && <img src={img} className='max-w-[80%] max-h-[80%]' />}
                 </div>
             </div>

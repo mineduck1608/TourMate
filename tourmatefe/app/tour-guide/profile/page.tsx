@@ -7,7 +7,7 @@ import ProfileForm from './profile-components/tour-guide-edit-modal';
 import { TourGuide } from '@/types/tour-guide';
 import { toast } from 'react-toastify';
 import { FaCamera } from 'react-icons/fa';
-import PictureView from './profile-components/profile-pic';
+import PictureView from './profile-components/picture-view';
 import EditPic from './profile-components/edit-pic';
 import { Button } from '@/components/ui/button';
 import SafeImage from '@/components/safe-image';
@@ -85,13 +85,14 @@ function TourGuideProfileEdit() {
                     type={toggleMode.targetType}
                 />
             }
-            <ServiceEditModal
-                isOpen={modalOpen.edit || modalOpen.create}
+            {(modalOpen.edit || modalOpen.create) && <ServiceEditModal
+                isOpen
                 onClose={() => { setModalOpen(p => ({ ...p, edit: false, create: false })) }}
-            />
+            />}
             <PictureView isOpen={toggleMode.view} onClose={() => { setToggleMode({ ...toggleMode, view: false }) }} img={toggleMode.value} />
-            
+
             <div className='my-10 relative'>
+                {/* Banner */}
                 <div className='relative'>
 
                     <div onClick={() => {
@@ -100,27 +101,27 @@ function TourGuideProfileEdit() {
                         <Banner imageUrl={tourGuide?.bannerImage} title='' />
                     </div>
 
-                    <Button
-                        className='absolute right-[5%] bottom-[5%] rounded-lg bg-white text-black hover:bg-gray-200 shadow-lg'
+                    <div
+                        className='absolute right-[5%] bottom-[5%] rounded-full lg:rounded-lg bg-gray-200 hover:bg-gray-300 text-black shadow-lg px-2.5 py-2 pt-1 lg:pt-2'
                         onClick={() => {
                             setToggleMode(p => ({ ...p, edit: true, targetType: targetType.banner, value: tourGuide?.bannerImage ?? '' }))
                         }}>
-                        <FaCamera /> Chỉnh sửa ảnh bìa
-                    </Button>
+                        <FaCamera className='inline'/> <span className='hidden lg:inline'>Chỉnh sửa ảnh bìa</span>
+                    </div>
                 </div>
-                <div className='absolute top-[250px] md:left-[250px] transform -translate-x-1/2'>
+                {/* Profile pic */}
+                <div className='absolute top-[300px] left-1/2 transform -translate-x-1/2 lg:top-[250px] lg:left-[250px]'>
                     <div className='p-1 rounded-full flex justify-center'>
-                        <div className='p-1 rounded-full *:hover:cursor-pointer relative' >
+                        <div className='p-1 rounded-full *:hover:cursor-pointer relative'>
                             <SafeImage
                                 src={tourGuide?.image}
-                                // src={'/mountain.png'}
                                 alt={'shell'}
-                                className="w-[175px] h-[175px] rounded-full aspect-square relative border-2"
+                                className="w-[125px] h-[125px] lg:w-[175px] lg:h-[175px] rounded-full aspect-square relative border-2"
                                 onClick={() => {
                                     setToggleMode(p => ({ ...p, view: true, targetType: targetType.profilePic, value: tourGuide?.image ?? '' }))
                                 }}
                             />
-                            <div className='absolute right-[20px] bottom-[5px] border-[1] p-3 rounded-full bg-gray-200 hover:bg-gray-300' onClick={() => {
+                            <div className='absolute right-0 bottom-0 lg:right-[20px] lg:bottom-[5px] border-[1] p-3 rounded-full bg-gray-200 hover:bg-gray-300' onClick={() => {
                                 setToggleMode(p => ({ ...p, edit: true, targetType: targetType.profilePic }))
                             }}>
                                 <FaCamera fill='#000000' />
@@ -128,7 +129,7 @@ function TourGuideProfileEdit() {
                         </div>
                     </div>
                 </div>
-                <div className='xl:mx-[20%] mt-16 '>
+                <div className='mx-[5%] lg:mx-[20%] mt-16 '>
                     <div className='flex justify-between mb-5'>
                         <h3 className='text-3xl font-bold'>Thông tin cá nhân</h3>
                         <Button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'
@@ -149,7 +150,7 @@ function TourGuideProfileEdit() {
                 </div>
                 <div className='my-10 mx-[5%] border-[1] border-b-gray-200' />
                 <div className=''>
-                    <div className='mx-[20%] flex justify-between '>
+                    <div className='mx-[5%] lg:mx-[20%] flex justify-between '>
                         <h3 className='text-3xl font-bold'>Dịch vụ du lịch</h3>
                         <Button className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer'
                             onClick={() => setToggleSection(p => ({ ...p, services: !p.services }))}
@@ -159,12 +160,12 @@ function TourGuideProfileEdit() {
 
                     </div>
                     <div className={`${toggleSection.services ? 'block' : 'hidden'}`}>
-                        <Button 
-                        onClick={() => {
-                            setTarget(baseService)
-                            setModalOpen({edit: false, delete: false, create: true})
-                        }}
-                        className='mx-[20%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer my-6'>
+                        <Button
+                            onClick={() => {
+                                setTarget(baseService)
+                                setModalOpen({ edit: false, delete: false, create: true })
+                            }}
+                            className='mx-[5%] lg:mx-[20%] text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer my-6'>
                             Tạo dịch vụ
                         </Button>
                         <div className='mx-[5%] mt-4'>
