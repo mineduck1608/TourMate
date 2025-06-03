@@ -551,7 +551,7 @@ namespace API.Controllers
             // Nếu đăng nhập không thành công, trả về BadRequest với thông báo lỗi
             if (login == null)
             {
-                return BadRequest(new { msg = "Username or password is not correct." });
+                return BadRequest(new { msg = "Tài khoản hoặc mật khẩu không đúng." });
             }
 
             // Nếu đăng nhập thành công, trả về phản hồi đăng nhập
