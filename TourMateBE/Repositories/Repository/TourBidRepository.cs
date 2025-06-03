@@ -11,7 +11,9 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex)
         {
             var query = _context.TourBids
-                .Where(x => !areaId.HasValue || x.PlaceRequested == areaId)
+                .Where(x => 
+                !x.IsDeleted &&
+                (!areaId.HasValue || x.PlaceRequested == areaId))
                 .OrderByDescending(x => x.CreatedAt)
                 .AsQueryable();
             var totalItems = await query.CountAsync();

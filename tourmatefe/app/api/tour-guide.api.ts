@@ -1,4 +1,4 @@
-import { convertToUpdateModel, TourGuide, TourGuideAdminUpdateModel } from "@/types/tour-guide";
+import { convertToUpdateModel, TourGuide, TourGuideAdminUpdateModel, TourGuideIdAndName } from "@/types/tour-guide";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -13,6 +13,11 @@ export const getTourGuides = async (page: number | string, limit: number | strin
   });
 
   return res.data;
+};
+
+export const getTourGuideByAccountId = async (accountId: number): Promise<TourGuideIdAndName> => {
+  const response = await http.get<TourGuideIdAndName>(`/tour-guide/from-account/${accountId}`);
+  return response.data;
 };
 
 export const getList = async (name: string, areaId: string | number | undefined, page: number | string, limit: number | string, signal?: AbortSignal) => {

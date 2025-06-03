@@ -27,6 +27,7 @@ namespace Repositories.DTO.CreateModels
             Image = Image,
             Phone = Phone,
             TourGuideId = 0,
+            
         };
     }
 }

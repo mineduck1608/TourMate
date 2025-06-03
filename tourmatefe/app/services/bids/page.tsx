@@ -1,19 +1,18 @@
 'use client'
-import React, { Suspense } from 'react'
+import React, { Suspense, useContext } from 'react'
 import Profile from './profile'
-import Bids from './bids'
+import Bids from './bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { getCustomerWithAcc } from '@/app/api/customer.api'
-import { useToken } from '@/components/getToken'
-import { MyJwtPayload } from '@/types/JwtPayload'
-import { jwtDecode } from 'jwt-decode'
+import { CustomerSiteContext, CustomerSiteContextProp } from '../context'
+import { AuthProvider } from '@/components/authProvider'
+import { CustomerContent } from '../customer-content'
 
 function BidPage() {
-    const token = useToken('accessToken')
-    const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
-    const accId = Number(payLoad?.AccountId)
+    const { id } = useContext(CustomerSiteContext) as CustomerSiteContextProp
+    const accId = Number(id)
     const customerQueryData = useQuery({
         queryFn: () => getCustomerWithAcc(accId),
         queryKey: ['customer-with-accountId', accId],
@@ -55,8 +54,12 @@ function BidPage() {
 
 export default function BidDriver() {
     return (
-        <Suspense fallback={<p>Loading...</p>}>
-            <BidPage />
-        </Suspense>
+        <AuthProvider>
+            <CustomerContent>
+                <Suspense fallback={<p>Loading...</p>}>
+                    <BidPage />
+                </Suspense>
+            </CustomerContent>
+        </AuthProvider>
     )
 }

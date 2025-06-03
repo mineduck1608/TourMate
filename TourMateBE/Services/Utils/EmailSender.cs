@@ -1,10 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using MailKit.Net.Smtp;
+﻿using MailKit.Net.Smtp;
+using Microsoft.Extensions.Configuration;
 using MimeKit;
-using System.Text;
+using MimeKit.Utils;
+using System;
 using System.Threading.Tasks;
 
 namespace Services.Utils
@@ -27,30 +25,55 @@ namespace Services.Utils
         {
             var emailMessage = new MimeMessage();
 
+            // From email (tên + địa chỉ)
             emailMessage.From.Add(new MailboxAddress(
                 _configuration["EmailSettings:FromName"],
                 _configuration["EmailSettings:FromEmail"]));
+
+            // To email (bạn có thể thêm tên người nhận nếu có)
             emailMessage.To.Add(new MailboxAddress("", toEmail));
+
             emailMessage.Subject = subject;
 
-            // Bạn có thể set body dạng plain text hoặc html
-            emailMessage.Body = new TextPart("html") { Text = body };
+            // Thiết lập ngày gửi và messageId rõ ràng
+            emailMessage.Date = DateTimeOffset.Now;
+            emailMessage.MessageId = MimeUtils.GenerateMessageId();
+
+            // Tạo body mail với cả text và html để đảm bảo hiển thị tốt trên mọi client
+            var builder = new BodyBuilder
+            {
+                HtmlBody = body,
+                TextBody = "Bạn nhận được email này từ hệ thống TourMate. Nếu không xem được nội dung HTML, vui lòng xem phần này."
+            };
+            emailMessage.Body = builder.ToMessageBody();
 
             using var client = new SmtpClient();
 
-            // Kết nối SMTP server
-            await client.ConnectAsync(
-                _configuration["EmailSettings:SmtpHost"],
-                int.Parse(_configuration["EmailSettings:SmtpPort"]),
-                MailKit.Security.SecureSocketOptions.StartTls);
+            try
+            {
+                // Kết nối tới SMTP server, port và ssl/tls tùy cấu hình của bạn
+                await client.ConnectAsync(
+                    _configuration["EmailSettings:SmtpHost"],
+                    int.Parse(_configuration["EmailSettings:SmtpPort"]),
+                    MailKit.Security.SecureSocketOptions.StartTls);
 
-            // Đăng nhập SMTP
-            await client.AuthenticateAsync(
-                _configuration["EmailSettings:SmtpUser"],
-                _configuration["EmailSettings:SmtpPass"]);
+                // Đăng nhập SMTP
+                await client.AuthenticateAsync(
+                    _configuration["EmailSettings:SmtpUser"],
+                    _configuration["EmailSettings:SmtpPass"]);
 
-            await client.SendAsync(emailMessage);
-            await client.DisconnectAsync(true);
+                // Gửi mail
+                await client.SendAsync(emailMessage);
+
+                // Ngắt kết nối
+                await client.DisconnectAsync(true);
+            }
+            catch (Exception ex)
+            {
+                // Log lỗi (bạn có thể thay thế bằng logging framework)
+                Console.WriteLine("Lỗi gửi mail: " + ex.Message);
+                throw;
+            }
         }
     }
 }

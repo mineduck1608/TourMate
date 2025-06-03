@@ -3,6 +3,7 @@ using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using System;
 
 namespace API.Controllers
 {
@@ -97,7 +98,7 @@ namespace API.Controllers
                 AccountName2 = accountName2,
                 LatestMessage = null,
                 IsRead = false,
-                Account2Img = null
+                Account2Img = account2Img
             };
 
             return Ok(response);
@@ -136,6 +137,9 @@ namespace API.Controllers
             // Giúp map senderId trong từng message thành senderName
             var messagesWithSenderName = new List<object>();
 
+            var vnTimeZone = TimeZoneInfo.FindSystemTimeZoneById("SE Asia Standard Time");
+
+
             foreach (var message in messages)
             {
                 string senderName = "Người dùng";
@@ -161,12 +165,15 @@ namespace API.Controllers
                     }
                 }
 
+                // ✅ Convert thời gian sang giờ Việt Nam
+                var sendAtVN = TimeZoneInfo.ConvertTimeFromUtc(message.SendAt, vnTimeZone);
+
                 messagesWithSenderName.Add(new
                 {
                     message.MessageId,
                     message.ConversationId,
                     message.MessageText,
-                    message.SendAt,
+                    SendAt = sendAtVN, // ⚠️ Gán thời gian đã chuyển múi giờ
                     message.SenderId,
                     senderName,
                     senderAvatarUrl

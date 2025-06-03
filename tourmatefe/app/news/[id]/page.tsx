@@ -72,17 +72,19 @@ export default function NewsDetailPage({
           }}
         />
         {/* Rest of your component remains the same */}
-        <div className="w-[30%] p-2 *:mb-10">
+        <div
+          className="w-[30%] p-2 *:mb-10 sticky top-10 h-[calc(100vh)] overflow-auto"
+        >
           <RecentNews currentId={id} />
           <NewsCategories />
-          <div className="rounded-md border shadow-lg bg-black">
+          <div className="rounded-md border shadow-lg bg-black mt-6">
             <div className="p-4 text-white">
               <h4 className="mb-4 text-3xl leading-none">
                 Bạn có câu hỏi nào không?
               </h4>
               <p>
-                Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ
-                chuyên gia và rất vui được trò chuyện với bạn.
+                Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ chuyên
+                gia và rất vui được trò chuyện với bạn.
               </p>
               <table className="mt-5">
                 <tbody>
@@ -103,6 +105,7 @@ export default function NewsDetailPage({
             </div>
           </div>
         </div>
+
       </div>
 
       <Footer />

@@ -1,7 +1,7 @@
 import { Input } from '@/components/ui/input'
 import { cn } from '@/lib/utils'
 import { TourGuide } from '@/types/tour-guide'
-import { Label } from '@radix-ui/react-label'
+import { Label } from "@/components/ui/label"
 import React from 'react'
 import DOMPurify from "dompurify";
 
@@ -26,7 +26,7 @@ function Detail({ s }: { s: TourGuide }) {
     };
     return (
         <div className={cn("flex flex-col gap-6")}>
-            <div className="grid grid-cols-2 gap-4">
+            <div className="lg:grid grid-cols-2 gap-4 *:mb-4">
                 <div className="grid gap-2">
                     <Label htmlFor="fullName">Họ và tên</Label>
                     <Input id="fullName" type="text"
@@ -60,7 +60,7 @@ function Detail({ s }: { s: TourGuide }) {
                         />
                     </div>
                 </div>
-                <div className="grid gap-2">
+                <div className="grid gap-2 lg:-mt-4">
                     <Label htmlFor="address">Địa chỉ</Label>
                     <Input
                         id="address"
@@ -70,7 +70,7 @@ function Detail({ s }: { s: TourGuide }) {
                         readOnly
                     />
                 </div>
-                <div className="grid grid-cols-2 gap-2">
+                <div className="lg:grid grid-cols-2 gap-2 *:mb-4">
                     <div className="grid gap-2">
                         <Label htmlFor="dateOfBirth">Ngày sinh</Label>
                         <div className="relative">
@@ -103,7 +103,7 @@ function Detail({ s }: { s: TourGuide }) {
                     </div>
                 </div>
             </div>
-            <div className="grid grid-cols-3 gap-4">
+            <div className="lg:grid grid-cols-3 gap-4 -mt-6 *:mb-4">
                 <div className="grid gap-2">
                     <Label htmlFor="company">Công ty</Label>
                     <Input id="company" type="text"
@@ -128,7 +128,7 @@ function Detail({ s }: { s: TourGuide }) {
                     />
                 </div>
             </div>
-            <div className="sm:col-span-2">
+            <div className="sm:col-span-2 -mt-6">
                 <label
                     htmlFor="areaContent"
                     className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
