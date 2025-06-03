@@ -68,12 +68,6 @@ const data = {
       ],
     },
     {
-      title: "Tuyển dụng",
-      url: "/admin/recruit",
-      icon: UserPlus,
-      isActive: true,
-    },
-    {
       title: "Models",
       url: "#",
       icon: Bot,
@@ -134,6 +128,11 @@ const data = {
       name: "Liên hệ",
       url: "/admin/contact",
       icon: Send,
+    },
+     {
+      name: "Tuyển dụng",
+      url: "/admin/recruit",
+      icon: UserPlus,
     },
   ],
 };
