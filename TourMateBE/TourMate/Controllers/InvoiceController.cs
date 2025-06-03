@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -29,12 +29,32 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] InvoiceCreateModel data)
+        public async Task<IActionResult> Create([FromBody] InvoiceCreateModel data)
         {
+            if (data == null)
+                return BadRequest(new { msg = "Dữ liệu gửi lên không hợp lệ." });
+
+            if (data.StartDate < DateTime.Now || data.EndDate < DateTime.Now)
+            {
+                return BadRequest(new { msg = "Ngày bắt đầu và ngày kết thúc không được nhỏ hơn ngày hiện tại." });
+            }
+
+            if (data.StartDate > data.EndDate)
+            {
+                return BadRequest(new { msg = "Ngày bắt đầu phải nhỏ hơn hoặc bằng ngày kết thúc." });
+            }
+
             var invoice = data.Convert();
-            _invoiceService.CreateInvoice(invoice);
-            return CreatedAtAction(nameof(Get), new { id = invoice.InvoiceId }, invoice);
+            var ketQua = await _invoiceService.CreateInvoice(invoice);
+
+            if (ketQua)
+            {
+                return Ok(new { msg = "Tạo hóa đơn thành công." });
+            }
+
+            return BadRequest(new { msg = "Tạo hóa đơn thất bại." });
         }
+
 
         [HttpPut]
         public IActionResult Update([FromBody] InvoiceCreateModel invoice)

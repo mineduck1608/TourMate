@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { Settings, Clock, LogOut } from "lucide-react";
+import { Settings, Clock, LogOut, MapPin } from "lucide-react";
 import { useToken } from "./getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
@@ -49,13 +49,23 @@ export default function ActionMenu() {
           {role === "Customer" ? (
             <CustomerProfile />
           ) : role === "TourGuide" ? (
-            <Link
-              href={`/tour-guide/profile`}
-              className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
-            >
-              <Settings size={18} />
-              Thông tin tài khoản
-            </Link>
+            <>
+              <Link
+                href={`/tour-guide/profile`}
+                className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+              >
+                <Settings size={18} />
+                Thông tin tài khoản
+              </Link>
+
+              <Link
+                href={`/tour-guide/create-tour`}
+                className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+              >
+                <MapPin size={18} />
+                Tạo lịch Tour
+              </Link>
+            </>
           ) : role === "Admin" ? null : (
             <button
               className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"

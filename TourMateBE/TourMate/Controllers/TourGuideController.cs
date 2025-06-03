@@ -22,6 +22,16 @@ namespace API.Controllers
             _accountService = accountService;
         }
 
+        [HttpGet("from-account/{accountId}")]
+        public async Task<IActionResult> GetTourGuideByAccountId(int accountId)
+        {
+            var result = await _tourguideService.GetTourGuideByAccountIdAsync(accountId);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<TourGuide>> GetAsync(int id)
         {

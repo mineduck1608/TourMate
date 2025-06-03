@@ -20,6 +20,16 @@ namespace API.Controllers
             _accountService = accountService;
         }
 
+        [HttpGet("by-phone/{phoneNumber}")]
+        public async Task<IActionResult> GetByPhone(string phoneNumber)
+        {
+            var tourGuide = await _customerService.GetCustomerByPhone(phoneNumber);
+            if (tourGuide == null)
+                return NotFound(new { message = "Không tìm thấy khác hàng theo số điện thoại." });
+
+            return Ok(tourGuide);
+        }
+
         [HttpGet("{id}")]
         public ActionResult<Customer> Get(int id)
         {

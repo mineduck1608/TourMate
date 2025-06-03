@@ -24,6 +24,7 @@ namespace Services
         Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize);
         Task<bool> ChangePassword(int id, string password);
         Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize);
+        Task<TourGuideIdAndName> GetTourGuideByAccountIdAsync(int accountId);
     }
     public class TourGuideService : ITourGuideService
     {
@@ -32,6 +33,11 @@ namespace Services
         public TourGuideService(TourGuideRepository repository)
         {
             _repository = repository ?? throw new ArgumentNullException(nameof(repository));
+        }
+
+        public async Task<TourGuideIdAndName> GetTourGuideByAccountIdAsync(int accountId)
+        {
+            return await _repository.GetTourGuideByAccountIdAsync(accountId);
         }
 
         public async Task<TourGuide> GetTourGuideByAccId(int accId)

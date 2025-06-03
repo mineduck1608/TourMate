@@ -85,7 +85,7 @@ namespace API.Controllers
             {
                 Email = email,
                 Password = HashString.ToHashString(password),
-                RoleId = 1,
+                RoleId = 2,
                 Status = true,
                 CreatedDate = DateTime.Now,
             };
@@ -181,7 +181,7 @@ namespace API.Controllers
             {
                 Email = email,
                 Password = HashString.ToHashString(password),
-                RoleId = 2,
+                RoleId = 3,
                 Status = true,
                 CreatedDate = DateTime.Now,
             };

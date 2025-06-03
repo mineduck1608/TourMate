@@ -29,6 +29,8 @@ public partial class Invoice
 
     public DateTime CreatedDate { get; set; }
 
+    public string CustomerPhone { get; set; } = null!;
+
     public virtual ActiveArea Area { get; set; } = null!;
 
     public virtual Customer Customer { get; set; } = null!;

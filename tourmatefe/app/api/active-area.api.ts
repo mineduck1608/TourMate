@@ -1,4 +1,4 @@
-import { ActiveArea, MostPopularArea, SimplifiedActiveArea } from '@/types/active-area';
+import { ActiveArea, AreaIdAndName, MostPopularArea, SimplifiedActiveArea } from '@/types/active-area';
 import http from '../utils/http'
 import { PagedResult } from '@/types/pagedResult';
 
@@ -33,6 +33,12 @@ export const getActiveArea = async (id: number) => {
   const response = await http.get<ActiveArea>(`active-area/${id}`)
   return response.data
 } 
+
+export const fetchAreaIdAndName = async (): Promise<AreaIdAndName[]> => {
+  const response = await http.get<AreaIdAndName[]>('/active-area/id-and-name');
+  return response.data;
+};
+
 
 export const addActiveArea = async (data: ActiveArea) => {
   const response = await http.post('/active-area', data);

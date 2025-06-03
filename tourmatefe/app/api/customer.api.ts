@@ -52,3 +52,8 @@ export const getCustomerWithAcc = async (id: number) => {
   })
   return response.data
 }
+
+export const getCustomerByPhone = async (phone: string) => {
+  const response = await http.get<Customer>(`customer/by-phone/${phone}`)
+  return response.data
+} 

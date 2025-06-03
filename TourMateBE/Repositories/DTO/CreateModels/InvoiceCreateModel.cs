@@ -6,7 +6,7 @@ namespace Repositories.DTO.CreateModels
     {
         public DateTime StartDate { get; set; }
 
-        public DateTime? EndDate { get; set; }
+        public DateTime EndDate { get; set; }
 
         public int TourGuideId { get; set; }
 
@@ -23,6 +23,8 @@ namespace Repositories.DTO.CreateModels
         public int AreaId { get; set; }
 
         public string TourDesc { get; set; }
+        public string CustomerPhone { get; set; }
+
 
         public DateTime CreatedDate { get; set; }
         public Invoice Convert() => new()
@@ -38,7 +40,8 @@ namespace Repositories.DTO.CreateModels
             PeopleAmount = PeopleAmount,
             Status = Status,
             Price = Price,
-            
+            CustomerPhone = CustomerPhone,
+            TourGuideId = TourGuideId
         };
     }
 }
