@@ -6,7 +6,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import TourBidRender from "./tour-bid-render";
 import { toast } from "react-toastify";
 import { BidCreateContext, BidCreateContextProps } from "./bid-create-context";
-import { baseData } from "./bids";
+import { baseData } from "./bids-page";
 
 function BidList() {
   const divRef = useRef<HTMLDivElement>(null);

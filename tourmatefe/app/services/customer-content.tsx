@@ -1,31 +1,33 @@
-'use client'
-import Footer from '@/components/Footer';
-import { ReactNode, useEffect, useState } from 'react';
-import MegaMenu from '@/components/mega-menu';
-import Link from 'next/link';
-import { AuthProvider, useAuth } from '@/components/authProvider';
-import { useToken } from '@/components/getToken';
-import { MyJwtPayload } from '@/types/JwtPayload';
-import { jwtDecode } from 'jwt-decode';
-import { useQuery } from '@tanstack/react-query';
-import { getAssociatedId } from '../api/account.api';
-import { TourGuideSiteContext } from './context';
+import { useAuth } from "@/components/authProvider";
+import { useToken } from "@/components/getToken";
+import { MyJwtPayload } from "@/types/JwtPayload";
+import { useQuery } from "@tanstack/react-query";
+import { jwtDecode } from "jwt-decode";
+import { ReactNode, useState, useEffect } from "react";
+import { getAssociatedId } from "../api/account.api";
+import { CustomerSiteContext } from "./context";
+import Link from "next/link";
 
-function TourGuideContent({ children }: { children: ReactNode }) {
+export function CustomerContent({ children }: { children: ReactNode }) {
   const { role } = useAuth();
   const isLoading = role === null;
   const token = useToken('accessToken')
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accId = Number(payLoad?.AccountId)
+  console.log(accId);
+  console.log(role);
+  
   const { data } = useQuery({
     queryKey: ['id-of', accId],
-    queryFn: () => getAssociatedId(accId, 'TourGuide'),
+    queryFn: () => getAssociatedId(accId, 'Customer'),
     staleTime: 24 * 3600 * 1000
   })
-  const [, setTourGuideId] = useState<number | undefined>()
+  const [, setId] = useState<number | undefined>()
+  const [, setAccId] = useState<number | undefined>()
   useEffect(() => {
     if (data) {
-      setTourGuideId(data)
+      setId(data)
+      setAccId(accId)
     }
   }, [data])
 
@@ -36,7 +38,7 @@ function TourGuideContent({ children }: { children: ReactNode }) {
   }
 
 
-  if (role !== 'TourGuide') {
+  if (role !== 'Customer') {
     return <section className="bg-white dark:bg-gray-900 min-h-screen flex items-center justify-center">
       <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
         <div className="mx-auto max-w-screen-sm text-center">
@@ -58,17 +60,8 @@ function TourGuideContent({ children }: { children: ReactNode }) {
 
 
   return <>
-    {data && <TourGuideSiteContext.Provider value={{ id: data }}>
+    {data && <CustomerSiteContext.Provider value={{ id: data, accId }}>
       {children}
-    </TourGuideSiteContext.Provider>}
+    </CustomerSiteContext.Provider>}
   </>;
-}
-export default function TourGuideLayout({ children }: { children: ReactNode }) {
-  return (
-    <AuthProvider>
-      <MegaMenu />
-      <TourGuideContent>{children}</TourGuideContent>
-      <Footer />
-    </AuthProvider>
-  );
 }

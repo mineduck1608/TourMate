@@ -18,6 +18,13 @@ namespace API.Controllers
             _activeareaService = activeareaService;
         }
 
+        [HttpGet("id-and-name")]
+        public async Task<IActionResult> GetActiveAreas()
+        {
+            var areas = await _activeareaService.GetActiveAreasAsync();
+            return Ok(areas);
+        }
+
         [HttpGet("{id}")]
         public ActionResult<ActiveArea> Get(int id)
         {

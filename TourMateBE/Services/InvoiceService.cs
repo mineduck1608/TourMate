@@ -7,7 +7,7 @@ namespace Services
     {
         Invoice GetInvoice(int id);
         IEnumerable<Invoice> GetAll(int pageSize, int pageIndex);
-        void CreateInvoice(Invoice invoice);
+        Task<bool> CreateInvoice(Invoice invoice);
         void UpdateInvoice(Invoice invoice);
         bool DeleteInvoice(int id);
     }
@@ -26,9 +26,9 @@ namespace Services
             return InvoiceRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateInvoice(Invoice invoice)
+        public async Task<bool> CreateInvoice(Invoice invoice)
         {
-            InvoiceRepository.Create(invoice);
+            return await InvoiceRepository.CreateAsync(invoice);
         }
 
         public void UpdateInvoice(Invoice invoice)

@@ -12,6 +12,18 @@ namespace Repositories.Repository
         {
         }
 
+        public async Task<TourGuideIdAndName> GetTourGuideByAccountIdAsync(int accountId)
+        {
+            return await _context.TourGuides
+                .Where(tg => tg.AccountId == accountId)
+                .Select(tg => new TourGuideIdAndName
+                {
+                    TourGuideId = tg.TourGuideId,
+                    FullName = tg.FullName
+                })
+                .FirstOrDefaultAsync();
+        }
+
         public async Task<TourGuide> GetByAccId(int accId)
         {
             return await _context.TourGuides.FirstOrDefaultAsync(x => x.AccountId == accId);

@@ -67,3 +67,8 @@ export function convertToUpdateModel(tourGuide: TourGuide) {
 
     return result
 }
+
+export type TourGuideIdAndName = {
+  tourGuideId: number;
+  fullName: string;
+}

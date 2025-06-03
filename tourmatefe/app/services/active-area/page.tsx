@@ -32,8 +32,7 @@ function ActiveAreaList() {
 
   const handlePageChange = (a: number) => {
     router.push(
-      `/services/active-area?page=${
-        page + a
+      `/services/active-area?page=${page + a
       }&search=${searchTerm}&region=${selectedRegion}`
     );
   };
@@ -87,7 +86,7 @@ function ActiveAreaList() {
         {/* Bộ lọc bên trái */}
         <div
           data-aos="fade-right"
-          className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full"
+          className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-[calc(30vh)] sticky top-15 overflow-auto"
         >
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
           <input

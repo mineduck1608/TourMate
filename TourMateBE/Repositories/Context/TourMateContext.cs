@@ -320,6 +320,7 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("phone");
+            entity.Property(e => e.Response).HasColumnName("response");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");
@@ -377,6 +378,10 @@ public partial class TourmateContext : DbContext
                 .HasColumnType("datetime")
                 .HasColumnName("createdDate");
             entity.Property(e => e.CustomerId).HasColumnName("customerId");
+            entity.Property(e => e.CustomerPhone)
+                .HasMaxLength(10)
+                .IsUnicode(false)
+                .HasColumnName("customerPhone");
             entity.Property(e => e.EndDate)
                 .HasColumnType("datetime")
                 .HasColumnName("endDate");
@@ -668,9 +673,6 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("phone");
-
-            entity.Property(e => e.BannerImage)
-            .HasColumnName("bannerImage");
 
             entity.HasOne(d => d.Account).WithMany(p => p.TourGuides)
                 .HasForeignKey(d => d.AccountId)

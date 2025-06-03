@@ -17,11 +17,23 @@ namespace Services
         Task<IEnumerable<MostPopularArea>> GetMostPopularAreas();
         Task<List<ActiveArea>> GetRandomActiveAreaAsync(int size);
         Task<List<ActiveArea>> GetOtherActiveAreaAsync(int currentId, int size);
+        Task<List<AreaIdAndName>> GetActiveAreasAsync();
     }
 
     public class ActiveAreaService : IActiveAreaService
     {
         private ActiveAreaRepository ActiveAreaRepository { get; set; } = new();
+
+        public async Task<List<AreaIdAndName>> GetActiveAreasAsync()
+        {
+            var areas = await ActiveAreaRepository.GetAllList();
+
+            return areas.Select(a => new AreaIdAndName
+            {
+                AreaId = a.AreaId,
+                AreaName = a.AreaName
+            }).ToList();
+        }
 
         public ActiveArea GetActiveArea(int id)
         {

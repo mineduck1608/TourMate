@@ -6,10 +6,11 @@ import { formatNumber } from "@/types/other"
 import { TourBid } from "@/types/tour-bid"
 import { useQuery } from "@tanstack/react-query"
 import dayjs from "dayjs"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useContext } from "react"
 import { FaMapMarkerAlt } from "react-icons/fa"
 import InfiniteScroll from "react-infinite-scroll-component"
 import DOMPurify from "dompurify";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const pageSize = 10
@@ -28,6 +29,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
             setBids(b => [...b, ...bidData.data.result])
         }
     }, [bidData.data])
+    const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     const totalPage = bidData.data?.totalPage ?? 0
     const sanitizeContent = (html: string) => {
         // Only sanitize if window is available (client-side)
@@ -50,14 +52,14 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
 
     return (
         <div className="shadow-lg p-5 rounded-lg">
-            <div className="grid grid-cols-2">
-                <div className="flex">
+            <div className="relative lg:flex grid-cols-2">
+                <div className="lg:flex w-full">
                     <SafeImage
                         src={tourBid.account?.customers?.[0]?.image}
                         className="w-[75px] rounded-full h-[75px]"
                         alt={"profile"}
                     />
-                    <div className="ml-4 w-full">
+                    <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
                         <h3 className="font-bold text-xl">
                             {tourBid.account?.customers?.[0]?.fullName}
                         </h3>
@@ -65,13 +67,30 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                         <p className=""><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
                     </div>
                 </div>
-                <div className="text-end">
+                <div className="absolute right-0 top-0 lg:block text-end ">
                     <span className={
                         cn("p-1 rounded-sm font-semibold",
                             isOnGoing ? 'text-[#22dd22] bg-green-100' : 'text-[#ff0000] bg-red-100'
                         )}>
                         {tourBid.status}
                     </span>
+                    {
+                        tourBid.accountId === accId &&
+                        <div className="flex flex-col *:mt-2 h-fit">
+                            <button
+                                type="submit"
+                                className="p-2 text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                Cập nhật
+                            </button>
+                            <button
+                                type="submit"
+                                className="p-2 text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800"
+                            >
+                                Xóa
+                            </button>
+                        </div>
+                    }
                 </div>
             </div>
             <div
@@ -98,8 +117,6 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                 >
                     <InfiniteScroll dataLength={bids.length}
                         next={() => {
-                            console.log('MORE');
-
                         }}
                         hasMore={page < totalPage} loader={<p>Loading...</p>}
                         scrollableTarget={'scrollableDiv'}

@@ -17,3 +17,8 @@ export type SimplifiedActiveArea = {
 export type MostPopularArea = SimplifiedActiveArea & {
     tourBidCount: number
 }
+
+export type AreaIdAndName = {
+    areaId: number;
+    areaName: string;
+};

@@ -72,7 +72,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
+            <div className="relative p-4 w-full max-w-3xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Chỉnh sửa thông tin
@@ -98,7 +98,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                     </button>
                 </div>
                 <form className={cn("flex flex-col gap-6")} onSubmit={(e) => submit(e)}>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="lg:grid grid-cols-2 gap-4 *:mb-4">
                         <div className="grid gap-2">
                             <Label htmlFor="fullName">Họ và tên</Label>
                             <Input id="fullName" type="text"
@@ -133,7 +133,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 />
                             </div>
                         </div>
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 lg:-mt-4">
                             <Label htmlFor="address">Địa chỉ</Label>
                             <Input
                                 id="address"
@@ -144,7 +144,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 required
                             />
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="lg:grid grid-cols-2 gap-2 *:mb-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="dateOfBirth">Ngày sinh</Label>
                                 <div className="relative">
@@ -169,9 +169,10 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 <Label htmlFor="gender">Giới tính</Label>
                                 <select
                                     id="gender"
+                                    name="gender"
                                     className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                     required
-                                    defaultValue={formData.gender}
+                                    value={formData.gender}
                                     onChange={(e) => handleChange(e)}
                                 >
                                     <option value="" disabled>
@@ -183,7 +184,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="lg:grid grid-cols-3 gap-4 -mt-6 *:mb-4">
                         <div className="grid gap-2">
                             <Label htmlFor="company">Công ty</Label>
                             <Input id="company" type="text"
@@ -223,7 +224,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                             </select>
                         </div>
                     </div>
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-2 -mt-6">
                         <label
                             htmlFor="areaContent"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
