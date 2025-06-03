@@ -1,6 +1,6 @@
 ﻿using Repositories.Models;
 
-namespace Repositories.DTO.UpdateModals
+namespace Repositories.DTO.UpdateModels
 {
     public class TourServiceEditModel
     {
