@@ -1,6 +1,6 @@
 'use client'
 import Footer from '@/components/Footer';
-import { createContext, ReactNode, useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import MegaMenu from '@/components/mega-menu';
 import Link from 'next/link';
 import { AuthProvider, useAuth } from '@/components/authProvider';
@@ -9,10 +9,8 @@ import { MyJwtPayload } from '@/types/JwtPayload';
 import { jwtDecode } from 'jwt-decode';
 import { useQuery } from '@tanstack/react-query';
 import { getAssociatedId } from '../api/account.api';
-export type TourGuideSiteContextProps = {
-  id: number
-}
-export const TourGuideSiteContext = createContext<TourGuideSiteContextProps | undefined>(undefined)
+import { TourGuideSiteContext } from './context';
+
 function TourGuideContent({ children }: { children: ReactNode }) {
   const { role } = useAuth();
   const isLoading = role === null;

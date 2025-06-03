@@ -10,7 +10,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 import { TourService } from '@/types/tour-service'
 import { toast } from 'react-toastify'
-import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../layout'
+import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../context'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)

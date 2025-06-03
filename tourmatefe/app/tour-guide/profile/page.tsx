@@ -16,7 +16,7 @@ import ServiceEditModal from './profile-components/edit-service-modal';
 import { ServiceEditContext } from './profile-components/service-edit-context';
 import TourServices from './profile-components/services';
 import { AuthProvider } from '@/components/authProvider';
-import { TourGuideSiteContext, TourGuideSiteContextProps } from '../layout';
+import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
 import { targetType, baseService } from './constants';
 
 
