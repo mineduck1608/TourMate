@@ -98,7 +98,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                     </button>
                 </div>
                 <form className={cn("flex flex-col gap-6")} onSubmit={(e) => submit(e)}>
-                    <div className="grid grid-cols-2 gap-4">
+                    <div className="lg:grid grid-cols-2 gap-4 *:mb-4">
                         <div className="grid gap-2">
                             <Label htmlFor="fullName">Họ và tên</Label>
                             <Input id="fullName" type="text"
@@ -133,7 +133,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 />
                             </div>
                         </div>
-                        <div className="grid gap-2">
+                        <div className="grid gap-2 lg:-mt-4">
                             <Label htmlFor="address">Địa chỉ</Label>
                             <Input
                                 id="address"
@@ -144,7 +144,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 required
                             />
                         </div>
-                        <div className="grid grid-cols-2 gap-2">
+                        <div className="lg:grid grid-cols-2 gap-2 *:mb-4">
                             <div className="grid gap-2">
                                 <Label htmlFor="dateOfBirth">Ngày sinh</Label>
                                 <div className="relative">
@@ -183,7 +183,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                             </div>
                         </div>
                     </div>
-                    <div className="grid grid-cols-3 gap-4">
+                    <div className="lg:grid grid-cols-3 gap-4 -mt-6 *:mb-4">
                         <div className="grid gap-2">
                             <Label htmlFor="company">Công ty</Label>
                             <Input id="company" type="text"
@@ -223,7 +223,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                             </select>
                         </div>
                     </div>
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-2 -mt-6">
                         <label
                             htmlFor="areaContent"
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"

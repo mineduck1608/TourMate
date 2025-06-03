@@ -11,6 +11,7 @@ import { ServiceEditContext, ServiceEditContextProp } from './service-edit-conte
 import { TourService } from '@/types/tour-service'
 import { toast } from 'react-toastify'
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../layout'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
@@ -85,7 +86,7 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
             t.tourGuideId = id
             addService(t)
         }
-        setModalOpen({create: false, delete: false, edit: false})
+        setModalOpen({ create: false, delete: false, edit: false })
     }, [signal.edit, signal.delete, signal.create])
     return (
         <motion.div className='w-full'>
@@ -99,40 +100,46 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                     className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
                 >
                     {services.map((item) => (
-                        <motion.div
-                            key={item.serviceId}
-                            whileHover={{
-                                scale: 1.05,
-                            }}
-                            onClick={() => {
-                                setTarget(item)
-                                setTimeout(() => {
-                                    setModalOpen({ ...modalOpen, edit: true })
-                                }, 50);
-                            }}
-                            transition={{ duration: 0.1, ease: "easeInOut" }}
-                            className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
-                        >
-                            <SafeImage
-                                src={item.image}
-                                alt={item.serviceName}
-                                className="w-full h-70 object-cover"
-                            />
-                            <div className="flex justify-between">
-                                <div className="p-6">
-                                    <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdDate).format('DD/MM/YYYY HH:mm:ss')}</p>
-                                    <h3 className="font-semibold text-lg mb-2">{item.serviceName}</h3>
-                                    {/* <p className="text-sm text-gray-700">{item.}</p> */}
-                                </div>
-                                <div className="relative content-center">
-                                    <Link
-                                        href={'/news/' + item.serviceId}
-                                        className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                        Xem ngay
-                                    </Link>
-                                </div>
-                            </div>
-                        </motion.div>
+                        <Tooltip key={item.serviceId}>
+                            <TooltipTrigger>
+                                <motion.div
+                                    whileHover={{
+                                        scale: 1.05,
+                                    }}
+                                    onClick={() => {
+                                        setTarget(item)
+                                        setTimeout(() => {
+                                            setModalOpen({ ...modalOpen, edit: true })
+                                        }, 50);
+                                    }}
+                                    transition={{ duration: 0.1, ease: "easeInOut" }}
+                                    className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all"
+                                >
+                                    <SafeImage
+                                        src={item.image}
+                                        alt={item.serviceName}
+                                        className="w-full h-70 object-cover"
+                                    />
+                                    <div className="flex justify-between">
+                                        <div className="p-6">
+                                            <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdDate).format('DD/MM/YYYY HH:mm:ss')}</p>
+                                            <h3 className="font-semibold text-lg mb-2">{item.serviceName}</h3>
+                                            {/* <p className="text-sm text-gray-700">{item.}</p> */}
+                                        </div>
+                                        <div className="relative content-center">
+                                            <Link
+                                                href={'/news/' + item.serviceId}
+                                                className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
+                                                Xem ngay
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </motion.div>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                                <p>Cập nhật</p>
+                            </TooltipContent>
+                        </Tooltip>
                     ))}
                 </motion.div>
             </AnimatePresence>

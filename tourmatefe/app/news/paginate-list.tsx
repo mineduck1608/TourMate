@@ -14,7 +14,7 @@ export default function PaginateList({ current, maxPage, onClick }: PaginationPr
                 <button
                     onClick={() => onClick(current - 1)}
                     disabled={current === 1}
-                    className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
+                    className="px-3 py-1.5 lg:px-6 lg:py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
                 >
                     Trang trước
                 </button>
@@ -24,7 +24,7 @@ export default function PaginateList({ current, maxPage, onClick }: PaginationPr
                 <button
                     onClick={() => onClick(current + 1)}
                     disabled={current === maxPage || maxPage === 0}
-                    className="px-6 py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
+                    className="px-3 py-1.5 lg:px-6 lg:py-3 border rounded-lg bg-gray-300 text-gray-800 hover:bg-gray-400 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 transition duration-200"
                 >
                     Trang sau
                 </button>
