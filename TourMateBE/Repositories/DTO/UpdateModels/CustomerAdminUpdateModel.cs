@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.DTO.UpdateModals
+namespace Repositories.DTO.UpdateModels
 {
     public class CustomerAdminUpdateModel
     {
