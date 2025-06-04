@@ -1,20 +1,13 @@
-import { addTourBid, getTourBids, updateTourBid } from "@/app/api/tour-bid.api";
-import { useQueryString } from "@/app/utils/utils";
+import { getTourBids } from "@/app/api/tour-bid.api";
 import { TourBid } from "@/types/tour-bid";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import React, {  useEffect, useRef, useState } from "react";
 import TourBidRender from "./tour-bid-render";
-import { toast } from "react-toastify";
-import { baseData } from "./bids-page";
-import ChangeStatusModal from "./change-status-modal";
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 
-function BidList() {
+function BidList({ search }: { search: string }) {
   // Refs and constants
   const divRef = useRef<HTMLDivElement>(null); // Reference to the intersection observer target
   const pageSize = 3; // Number of items per page
-  const queryString: { areaId?: string } = useQueryString(); // Get URL query params
-
   // State management
   const [page, setPage] = useState(1); // Current page number
   const [tourBids, setTourBids] = useState<TourBid[]>([]); // List of loaded tour bids
@@ -22,56 +15,17 @@ function BidList() {
 
   // Data fetching with react-query
   const tourBidQuery = useQuery({
-    queryKey: ["tour-bids", pageSize, page, queryString.areaId, isResetting],
+    queryKey: ["tour-bids", pageSize, page, search, isResetting],
     queryFn: async () => {
       // Fetch tour bids with current pagination and filters
-      return await getTourBids(page, pageSize, undefined, queryString.areaId);
+      return await getTourBids(page, pageSize, undefined, search);
     },
     // Note: No staleTime to ensure fresh data after mutations
   });
 
   // Context for bid operations (create/edit)
-  const { modalOpen, setModalOpen, setSignal, setTarget, signal, target } =
-    useContext(BidTaskContext) as BidTaskContextProp;
 
   // Mutation for creating new tour bids
-  const createTourBidMutation = useMutation({
-    mutationFn: async (data: TourBid) => {
-      return await addTourBid(data);
-    },
-    onSuccess: () => {
-      toast.success("Tạo thành công");
-      // Reset all data to show fresh results
-      setIsResetting(true);
-      setPage(1);
-      setTourBids([]);
-      // Refetch will automatically trigger with new params
-      tourBidQuery.refetch();
-    },
-    onError: (error) => {
-      toast.error("Tạo thất bại");
-      console.error(error);
-    },
-  });
-
-  // Mutation for updating existing tour bids
-  const updateTourBidMutation = useMutation({
-    mutationFn: async ({ data }: { data: TourBid }) => {
-      return await updateTourBid(data);
-    },
-    onSuccess: () => {
-      toast.success("Cập nhật thành công");
-      // Reset all data to show fresh results
-      setIsResetting(true);
-      setPage(1);
-      setTourBids([]);
-      tourBidQuery.refetch();
-    },
-    onError: (error) => {
-      toast.error("Cập nhật thất bại");
-      console.error(error);
-    },
-  });
 
   // Calculate max pages from API response
   const maxPage = tourBidQuery.data?.totalPage ?? 0;
@@ -83,7 +37,7 @@ function BidList() {
     setPage(1); // Always start from page 1
     setTourBids([]); // Clear existing data
     // The query will automatically refetch because queryString.areaId changed
-  }, [queryString.areaId]);
+  }, [search]);
 
   // Effect: Handle incoming data from queries
   useEffect(() => {
@@ -131,25 +85,6 @@ function BidList() {
     };
   }, [maxPage, isResetting]); // Recreate observer when these change
 
-  // Effect: Handle external create signals
-  useEffect(() => {
-    if (signal.create) {
-      createTourBidMutation.mutate(target);
-      // Reset the signal after handling
-      setSignal({ ...signal, create: false });
-      setTarget(baseData);
-    }
-  }, [signal.create]);
-
-  // Effect: Handle external edit signals
-  useEffect(() => {
-    if (signal.edit) {
-      updateTourBidMutation.mutate({ data: target });
-      // Reset the signal after handling
-      setSignal({ ...signal, edit: false });
-      setTarget(baseData);
-    }
-  }, [signal.edit]);
 
   // Render component
   return (
@@ -168,12 +103,6 @@ function BidList() {
           Hidden content (infinite scroll trigger)
         </div>
       )}
-
-      {/* Modal for status changes */}
-      <ChangeStatusModal
-        isOpen={modalOpen.changeStatus}
-        onClose={() => setModalOpen({ ...modalOpen, changeStatus: false })}
-      />
     </div>
   );
 }

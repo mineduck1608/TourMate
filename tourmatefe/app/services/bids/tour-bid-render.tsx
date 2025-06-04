@@ -1,16 +1,20 @@
 import SafeImage from "@/components/safe-image"
 import { cn } from "@/lib/utils"
-import { formatNumber } from "@/types/other"
 import { TourBid } from "@/types/tour-bid"
 import dayjs from "dayjs"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { FaMapMarkerAlt } from "react-icons/fa"
 import DOMPurify from "dompurify";
 import BidCommentModal from "./bid-comment-modal"
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
+import { BidTaskContext, BidTaskContextProp } from "./bid-task-context"
+import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const [open, setOpen] = useState(false)
+    const { setModalOpen, modalOpen, setTarget } = useContext(BidTaskContext) as BidTaskContextProp
+    const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     const sanitizeContent = (html: string) => {
         // Only sanitize if window is available (client-side)
         if (typeof window !== 'undefined') {
@@ -43,8 +47,8 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                         <h3 className="font-bold text-xl">
                             {tourBid.account?.customers?.[0]?.fullName}
                         </h3>
-                        <p>{dayjs(tourBid.createdAt).format("DD/MM/YYYY")}</p>
-                        <p className=""><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
+                        <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
+                        <p className="lg:inline"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
                     </div>
                 </div>
                 <div className="absolute right-0 top-0 lg:block text-end ">
@@ -54,6 +58,25 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                         )}>
                         {tourBid.status}
                     </span>
+
+                    {tourBid.accountId === accId && <DropdownMenu>
+                        <DropdownMenuTrigger>
+                            <button
+                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                            >
+                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                </svg>
+                            </button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent>
+                            <DropdownMenuItem onClick={() => {
+                                setTarget(tourBid)
+                                setModalOpen({ ...modalOpen, edit: true })
+                            }}>Cập nhật</DropdownMenuItem>
+                            <DropdownMenuItem>Xóa</DropdownMenuItem>
+                        </DropdownMenuContent>
+                    </DropdownMenu>}
                 </div>
             </div>
             <div
@@ -66,8 +89,14 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
             <div className="mt-5 w-full">
                 <div className="font-semibold text-lg flex justify-between">
                     <span >Bảng đấu giá</span>
-                    {tourBid.maxPrice && <span >Giá cao nhất: {formatNumber(tourBid.maxPrice)} VND</span>}
-                    
+                    {/* {tourBid.maxPrice && <span >Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</span>} */}
+                    <button
+                        type="submit"
+                        onClick={() => setOpen(true)}
+                        className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
+                    >
+                        Xem
+                    </button>
                 </div>
 
                 <BidCommentModal isOpen={open} onClose={() => setOpen(false)} tourBid={tourBid} />

@@ -2,12 +2,12 @@ import { TourBid } from "@/types/tour-bid";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
-export const getTourBids = async (page: number | string, limit: number | string, signal?: AbortSignal, areaId?: string | number) => {
+export const getTourBids = async (page: number | string, limit: number | string, signal?: AbortSignal, content?: string) => {
   const res = await http.get<PagedResult<TourBid>>('tour-bids', {
     params: {
       pageSize: limit,
       pageIndex: page,
-      areaId: areaId
+      content
     },
     signal
   });

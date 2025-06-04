@@ -1,5 +1,5 @@
 'use client'
-import React, { Suspense, useContext } from 'react'
+import React, { Suspense, useContext, useState } from 'react'
 import Profile from './profile'
 import Bids from './bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
@@ -24,26 +24,32 @@ function BidPage() {
         queryFn: () => getMostPopularAreas(),
         staleTime: 24 * 3600 * 1000
     })
+    const [content, setContent] = useState('')
     const areas = simplifiedAreaQuery.data?.data ?? []
     return (
         <div>
-            <Banner title='Đấu giá' imageUrl='/travel.jpg'/>
+            <Banner title='Đấu giá' imageUrl='/travel.jpg' />
             <div className='lg:flex justify-between'>
 
-                <div className='hidden lg:block lg:w-[25%] px-5 py-5 sticky'>
+                <div className='hidden lg:block lg:w-[25%] px-5 py-5 sticky top-0 h-screen overflow-y-auto'>
                     <Profile customer={customer} />
                 </div>
                 <div className='w-full lg:w-[45%] px-5 py-5'>
-                    <Bids customer={customer} />
+                    <Bids customer={customer} search={content} />
                 </div>
-                <div className='block lg:w-[20%] px-5 py-5 sticky'>
+                <div className='hidden lg:block lg:w-[20%] px-5 py-5 sticky top-0 h-screen overflow-y-auto'>
                     <div className='rounded-md border shadow-lg p-5'>
-                        <input className='p-1 w-full mb-2 border-2' placeholder='Tìm kiếm...' />
+                        <input
+                            className='p-1 w-full mb-2 border-2 rounded-sm'
+                            value={content}
+                            onChange={(e) => setContent(e.target.value)}
+                            placeholder='Tìm kiếm...'
+                        />
                         <h4 className="text-xl font-medium leading-none">Địa điểm nổi tiếng</h4>
                         {
                             areas.map((v) =>
                                 <div key={v.areaId} className='mt-2 grid grid-cols-2 w-full'>
-                                    <Link href={'?areaId=' + v.areaId} className='text-blue-500'>{v.areaName}</Link>
+                                    <Link href={'/services/active-area/detail?id=' + v.areaId} className='text-blue-500'>{v.areaName}</Link>
                                     <span className='text-end'>({v.tourBidCount} bài đăng)</span>
                                 </div>
                             )

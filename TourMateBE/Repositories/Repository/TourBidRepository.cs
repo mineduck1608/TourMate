@@ -9,12 +9,13 @@ namespace Repositories.Repository
 {
     public class TourBidRepository : GenericRepository<TourBid>
     {
-        public async Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex)
+        public async Task<PagedResult<TourBid>> GetBids(string content, int pageSize, int pageIndex)
         {
+            content = content != null ? content.Trim().ToLower() : "";
             var query = _context.TourBids
                 .Where(x =>
                 !x.IsDeleted &&
-                (!areaId.HasValue || x.PlaceRequested == areaId))
+                (string.IsNullOrEmpty(content) || x.Content.ToLower().Contains(content)))
                 .OrderByDescending(x => x.CreatedAt)
                 .AsQueryable();
             var totalItems = await query.CountAsync();

@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
 import { TourBid } from "@/types/tour-bid";
@@ -20,8 +20,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     onSave,
 }) => {
     const { setTarget, target } = useContext(BidTaskContext) as BidTaskContextProp
-
-    const [maxPrice, setMaxPrice] = useState(target.maxPrice ? target.maxPrice.toString() : '')
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
@@ -85,7 +83,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                 required
                                 onChange={(e) => {
-                                    console.log(Number(e.target.value));
                                     setTarget({ ...target, placeRequested: Number(e.target.value) })
                                 }}
                                 value={target.placeRequested}
@@ -105,18 +102,35 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="areaType"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Giá cao nhất (tùy chọn)
+                                Giá mong đợi (tùy chọn)
                             </label>
                             <input
                                 type="number"
                                 name="maxPrice"
-                                id="aremaxPriceaTitle"
+                                id="maxPriceInput"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                value={maxPrice}
+                                min="0"
+                                step="1"
+                                value={target.maxPrice ?? ''}
                                 onChange={(e) => {
-                                    const v = Number(e.target.value)
-                                    setTarget({ ...target, maxPrice: v === 0 ? undefined : v })
-                                    setMaxPrice(e.target.value)
+                                    const rawValue = e.target.value;
+                                    // Handle empty input (will set to undefined)
+                                    if (rawValue === '') {
+                                        setTarget({ ...target, maxPrice: undefined });
+                                        return;
+                                    }
+
+                                    const numValue = Number(rawValue);
+                                    // Only update if it's a valid positive integer
+                                    if (!isNaN(numValue) && numValue >= 0) {
+                                        setTarget({ ...target, maxPrice: Math.floor(numValue) });
+                                    }
+                                }}
+                                onBlur={(e) => {
+                                    // Sanitize value on blur
+                                    if (e.target.value === '' || Number(e.target.value) <= 0) {
+                                        setTarget({ ...target, maxPrice: undefined });
+                                    }
                                 }}
                             />
                         </div>

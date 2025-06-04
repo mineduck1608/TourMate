@@ -1,37 +1,12 @@
-import React, { useEffect, useState } from "react";
+import React, {  } from "react";
 import BidList from "./bid-list";
-import { TourBid } from "@/types/tour-bid";
-import { Customer } from "@/types/customer";
-import { BidTaskContext } from "./bid-task-context";
-export const baseData: TourBid = {
-  tourBidId: 0,
-  accountId: 0,
-  createdAt: "",
-  isDeleted: false,
-  placeRequested: 0,
-  status: "",
-  content: "",
-  maxPrice: undefined
-}
-export default function BidListMain({ customer }: { customer?: Customer }) {
-  const [modalOpen, setModalOpen] = useState({
-    changeStatus: false,
-    edit: false,
-    delete: false,
-    create: false
-  })
-  const [signal, setSignal] = useState({
-    edit: false,
-    create: false
-  })
-  const [target, setTarget] = useState(baseData)
-  useEffect(() => {
-    setTarget({ ...target, accountId: customer?.accountId ?? 0 })
-  }, [customer?.accountId])
-
+export default function BidListMain({ search }: { search: string }) {
   return (
-    <BidTaskContext.Provider value={{ signal, setSignal, modalOpen, setModalOpen, setTarget, target }}>
-      {/* <div className="flex h-min">
+
+    < BidList search={search} />
+  );
+}
+{/* <div className="flex h-min">
         <SafeImage
           src={customer?.image}
           className="w-[100px] h-[100px] rounded-full"
@@ -48,7 +23,3 @@ export default function BidListMain({ customer }: { customer?: Customer }) {
           </button>
         </div>
       </div> */}
-      <BidList />
-    </BidTaskContext.Provider>
-  );
-}

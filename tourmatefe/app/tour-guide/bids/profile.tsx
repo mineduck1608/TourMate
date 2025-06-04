@@ -1,9 +1,9 @@
 import SafeImage from '@/components/safe-image'
-import { Customer } from '@/types/customer'
+import { TourGuide } from '@/types/tour-guide'
 import Link from 'next/link'
 import React, { JSX } from 'react'
 import { FaBell, FaComment, FaPowerOff, FaUser } from 'react-icons/fa'
-export default function Profile({ customer }: { customer?: Customer }) {
+export default function Profile({ tourGuide }: { tourGuide?: TourGuide }) {
     const tags: { icon: JSX.Element, title: string, link: string }[] = [
         {
             icon: <FaUser />,
@@ -33,7 +33,7 @@ export default function Profile({ customer }: { customer?: Customer }) {
     ]
     return (
         <div className='rounded-md border shadow-lg'>
-            <UserRender customer={customer} />
+            <UserRender tourGuide={tourGuide} />
             <table className="mx-3 mb-5">
                 <tbody>
                     {tags.map((tag) => (
@@ -60,18 +60,18 @@ export default function Profile({ customer }: { customer?: Customer }) {
     )
 }
 
-function UserRender({ customer }: { customer?: Customer }) {
+function UserRender({ tourGuide }: { tourGuide?: TourGuide }) {
     return (
         <div className='px-6 pt-5 pb-1'>
             <div className='lg:flex gap-5'>
-                <SafeImage src={customer?.image}
+                <SafeImage src={tourGuide?.image}
                     className='w-[75px] h-[75px] rounded-full aspect-square border-2'
                     alt={'profile'}
                 />
                 <div className='xl:ml-4 *:mb-2 '>
                     <h4 className="text-2xl font-medium leading-none">Cá nhân</h4>
-                    <p>{customer?.fullName}</p>
-                    <p>{customer?.account?.email}</p>
+                    <p>{tourGuide?.fullName}</p>
+                    <p>{tourGuide?.account?.email}</p>
                 </div>
             </div>
         </div>
