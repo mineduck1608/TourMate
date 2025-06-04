@@ -1,6 +1,6 @@
 ﻿using Repositories.Models;
 
-namespace Repositories.DTO.CreateModels
+namespace Repositories.DTO.UpdateModels
 {
     public class TourGuideAdminUpdateModel
     {

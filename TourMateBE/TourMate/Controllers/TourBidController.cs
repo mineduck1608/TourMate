@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 using System.Threading.Tasks;
@@ -45,7 +46,7 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] TourBidCreateModel tourbid)
+        public async Task<IActionResult> UpdateAsync([FromBody] TourBidUpdateModel tourbid)
         {
             await _tourbidService.UpdateTourBid(tourbid.Convert());
             return NoContent();

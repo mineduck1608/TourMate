@@ -3,6 +3,7 @@ using Microsoft.Identity.Client;
 using Repositories.DTO;
 using Repositories.GenericRepository;
 using Repositories.Models;
+using System.Linq.Expressions;
 
 namespace Repositories.Repository
 {
@@ -11,7 +12,7 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex)
         {
             var query = _context.TourBids
-                .Where(x => 
+                .Where(x =>
                 !x.IsDeleted &&
                 (!areaId.HasValue || x.PlaceRequested == areaId))
                 .OrderByDescending(x => x.CreatedAt)
@@ -50,6 +51,23 @@ namespace Repositories.Repository
                 TotalResult = totalItems,
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
+        }
+        public new async Task UpdateAsync(TourBid entity)
+        {
+            try
+            {
+                var existingEntity = _context.TourBids.FirstOrDefault(x => x.TourBidId == entity.TourBidId);
+                if (existingEntity != null)
+                {
+                    entity.CreatedAt = existingEntity.CreatedAt; // Preserve the original CreatedAt
+                    _context.Entry(existingEntity).CurrentValues.SetValues(entity);
+                    await _context.SaveChangesAsync();
+                }
+            }
+            catch(Exception ex)
+            {
+
+            }
         }
     }
 }

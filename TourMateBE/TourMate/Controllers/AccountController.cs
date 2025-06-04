@@ -80,7 +80,7 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Email không đúng định dạng." });
 
             if (!ValidInput.IsPasswordSecure(password))
-                return BadRequest(new { msg = "Mật khẩu không đủ mạnh." });
+                return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(email);
@@ -189,7 +189,7 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Email is not properly formatted" });
 
             if (!ValidInput.IsPasswordSecure(password))
-                return BadRequest(new { msg = "Password is not secure enough" });
+                return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(email);
