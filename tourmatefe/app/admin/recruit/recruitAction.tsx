@@ -66,7 +66,7 @@ const RecruitActions: React.FC<recruitActionsProps> = ({ data }) => {
     onError: (error) => {
       toast.error(
         (error as { response?: { data?: { msg?: string } } })?.response?.data
-          ?.msg || "Cập nhật hướng dẫn viên thất bại"
+          ?.msg || "Cập nhật CV thất bại"
       );
     },
   });

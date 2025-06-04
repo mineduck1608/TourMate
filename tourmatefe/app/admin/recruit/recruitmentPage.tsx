@@ -14,17 +14,20 @@ export default function RecruitPage() {
 
   const { data } = useQuery({
     queryKey: ["applications", page],
-    queryFn: () => {
+    queryFn: async () => {
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return getCVApplications(page, LIMIT, controller.signal);
+      const response = await getCVApplications(page, LIMIT, controller.signal);
+      console.log("API Response from RecruitPage:", response); // Add this line
+      return response;
     },
     retry: 0,
     refetchOnWindowFocus: false,
   });
 
+  console.log("Current data in RecruitPage:", data); // Add this line
   return (
     <div>
       <DataTable
