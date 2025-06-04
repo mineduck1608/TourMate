@@ -8,13 +8,14 @@ import {
   PieChart,
   Send,
   Settings2,
-  ContactRound
-} from "lucide-react"
+  ContactRound,
+  UserPlus,
+} from "lucide-react";
 
-import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
-import { NavSecondary } from "@/components/nav-secondary"
-import { NavUser } from "@/components/nav-user"
+import { NavMain } from "@/components/nav-main";
+import { NavProjects } from "@/components/nav-projects";
+import { NavSecondary } from "@/components/nav-secondary";
+import { NavUser } from "@/components/nav-user";
 import {
   Sidebar,
   SidebarContent,
@@ -23,10 +24,9 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
-import Image from "next/image"
+} from "@/components/ui/sidebar";
+import Image from "next/image";
 import Logo from "@/public/Logo.png";
-
 
 const data = {
   user: {
@@ -48,7 +48,7 @@ const data = {
         {
           title: "Hướng dẫn viên",
           url: "/admin/tour-guide",
-        }
+        },
       ],
     },
     {
@@ -64,7 +64,7 @@ const data = {
         {
           title: "Địa điểm hoạt động",
           url: "/admin/active-area",
-        }
+        },
       ],
     },
     {
@@ -129,8 +129,13 @@ const data = {
       url: "/admin/contact",
       icon: Send,
     },
+     {
+      name: "Tuyển dụng",
+      url: "/admin/recruit",
+      icon: UserPlus,
+    },
   ],
-}
+};
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

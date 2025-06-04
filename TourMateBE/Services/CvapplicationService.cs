@@ -5,10 +5,10 @@ namespace Services
 {
     public interface ICvapplicationService
     {
-        Cvapplication GetCvapplication(int id);
+        Task<Cvapplication> GetCvapplication(int id);
         IEnumerable<Cvapplication> GetAll(int pageSize, int pageIndex);
         Task<bool> CreateCvapplication(Cvapplication cvapplication);
-        void UpdateCvapplication(Cvapplication cvapplication);
+        Task<bool> UpdateCvapplication(Cvapplication cvapplication);
         bool DeleteCvapplication(int id);
     }
 
@@ -16,9 +16,9 @@ namespace Services
     {
         private CvapplicationRepository CvapplicationRepository { get; set; } = new();
 
-        public Cvapplication GetCvapplication(int id)
+        public async Task<Cvapplication> GetCvapplication(int id)
         {
-            return CvapplicationRepository.GetById(id);
+            return await CvapplicationRepository.GetByIdAsync(id);
         }
 
         public IEnumerable<Cvapplication> GetAll(int pageSize, int pageIndex)
@@ -31,9 +31,9 @@ namespace Services
             return await CvapplicationRepository.CreateAsync(cvapplication);
         }
 
-        public void UpdateCvapplication(Cvapplication cvapplication)
+        public async Task<bool> UpdateCvapplication(Cvapplication cvapplication)
         {
-            CvapplicationRepository.Update(cvapplication);
+            return await CvapplicationRepository.UpdateAsync(cvapplication);
         }
 
         public bool DeleteCvapplication(int id)

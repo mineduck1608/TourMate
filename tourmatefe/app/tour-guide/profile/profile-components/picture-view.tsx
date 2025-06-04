@@ -17,7 +17,7 @@ function PictureView({ img, isOpen, onClose }: Props) {
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full h-full bg-[rgba(0,0,0,0.9)] z-10 overflow-y-hidden">
+            <div className="relative p-4 w-full h-full bg-[rgba(0,0,0,0.5)] z-10 overflow-y-hidden">
                 <div className="absolute justify-between items-center pb-4 mb-4">
                     <button
                         type="button"

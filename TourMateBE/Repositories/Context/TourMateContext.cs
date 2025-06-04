@@ -320,6 +320,7 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("phone");
+            entity.Property(e => e.Response).HasColumnName("response");
             entity.Property(e => e.Status)
                 .HasMaxLength(50)
                 .HasColumnName("status");

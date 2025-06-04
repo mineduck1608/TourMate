@@ -7,7 +7,7 @@ namespace Services
     {
         TourGuideDesc GetTourGuideDesc(int id);
         IEnumerable<TourGuideDesc> GetAll(int pageSize, int pageIndex);
-        void CreateTourGuideDesc(TourGuideDesc tourguidedesc);
+        Task<bool> CreateTourGuideDesc(TourGuideDesc tourguidedesc);
         void UpdateTourGuideDesc(TourGuideDesc tourguidedesc);
         bool DeleteTourGuideDesc(int id);
     }
@@ -26,9 +26,9 @@ namespace Services
             return TourGuideDescRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateTourGuideDesc(TourGuideDesc tourguidedesc)
+        public async Task<bool> CreateTourGuideDesc(TourGuideDesc tourguidedesc)
         {
-            TourGuideDescRepository.Create(tourguidedesc);
+            return await TourGuideDescRepository.CreateAsync(tourguidedesc);
         }
 
         public void UpdateTourGuideDesc(TourGuideDesc tourguidedesc)

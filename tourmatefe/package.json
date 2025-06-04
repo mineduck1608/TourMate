@@ -65,6 +65,7 @@
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4",
     "@types/aos": "^3.0.7",
+    "@types/date-fns": "^2.5.3",
     "@types/lodash": "^4.17.17",
     "@types/node": "^20",
     "@types/react": "^19",
