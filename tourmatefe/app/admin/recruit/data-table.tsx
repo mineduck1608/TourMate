@@ -83,25 +83,40 @@ export function DataTable<TData, TValue>({
   });
 
   // React Query lấy dữ liệu theo page
+  const [searchTerm, setSearchTerm] = React.useState("");
   const { refetch } = useQuery({
     queryKey: ["cv-applications", page],
-    queryFn: ({ queryKey, signal }) => {
+    queryFn: async ({ queryKey, signal }) => {
       const [, currentPage] = queryKey;
-      return getCVApplications(currentPage, LIMIT, signal, searchTerm);
+      const response = await getCVApplications(
+        currentPage,
+        LIMIT,
+        signal,
+        searchTerm
+      );
+      console.log("API Response from DataTable:", response); // Add this line
+      return response;
     },
     enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
   });
 
+  // Add this to see when refetch is called
   React.useEffect(() => {
+    console.log("Refetching data with page:", page);
     refetch();
   }, [page]);
+
+  React.useEffect(() => {
+    console.log("Refetching data with searchTerm:", searchTerm);
+    refetch();
+  }, [searchTerm]);
 
   const [isModalOpen, setIsModalOpen] = React.useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
-  const [searchTerm, setSearchTerm] = React.useState("");
+
 
   React.useEffect(() => {
     refetch();
