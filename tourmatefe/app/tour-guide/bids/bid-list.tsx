@@ -6,6 +6,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import TourBidRender from "./tour-bid-render";
 import { toast } from "react-toastify";
 import { baseData } from "./bids-page";
+import ChangeStatusModal from "./change-status-modal";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 
 function BidList() {
@@ -30,7 +31,7 @@ function BidList() {
   });
 
   // Context for bid operations (create/edit)
-  const { setSignal, setTarget, signal, target } =
+  const { modalOpen, setModalOpen, setSignal, setTarget, signal, target } =
     useContext(BidTaskContext) as BidTaskContextProp;
 
   // Mutation for creating new tour bids
@@ -167,6 +168,12 @@ function BidList() {
           Hidden content (infinite scroll trigger)
         </div>
       )}
+
+      {/* Modal for status changes */}
+      <ChangeStatusModal
+        isOpen={modalOpen.changeStatus}
+        onClose={() => setModalOpen({ ...modalOpen, changeStatus: false })}
+      />
     </div>
   );
 }

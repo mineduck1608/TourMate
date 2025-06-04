@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from "react";
 import BidList from "./bid-list";
-import SafeImage from "@/components/safe-image";
-import BidCreateModal from "./bid-create-modal";
 import { TourBid } from "@/types/tour-bid";
 import { Customer } from "@/types/customer";
 import { BidTaskContext } from "./bid-task-context";
@@ -15,7 +13,7 @@ export const baseData: TourBid = {
   content: "",
   maxPrice: undefined
 }
-export default function Bids({ customer }: { customer?: Customer }) {
+export default function BidListMain({ customer }: { customer?: Customer }) {
   const [modalOpen, setModalOpen] = useState({
     changeStatus: false,
     edit: false,
@@ -33,7 +31,7 @@ export default function Bids({ customer }: { customer?: Customer }) {
 
   return (
     <BidTaskContext.Provider value={{ signal, setSignal, modalOpen, setModalOpen, setTarget, target }}>
-      <div className="flex h-min">
+      {/* <div className="flex h-min">
         <SafeImage
           src={customer?.image}
           className="w-[100px] h-[100px] rounded-full"
@@ -49,12 +47,8 @@ export default function Bids({ customer }: { customer?: Customer }) {
             Đăng bài viết mới
           </button>
         </div>
-      </div>
+      </div> */}
       <BidList />
-      <BidCreateModal isOpen={modalOpen.create || modalOpen.edit} onClose={() => { setModalOpen({ ...modalOpen, create: false, edit: false }) }} onSave={() => {
-        const name = modalOpen.create ? 'create' : 'edit'
-        setSignal({ ...signal, [name]: true })
-      }} />
     </BidTaskContext.Provider>
   );
 }

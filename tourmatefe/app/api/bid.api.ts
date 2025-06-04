@@ -13,3 +13,11 @@ export const getBidsOfTourBid = async (tourBid: number | string, page: number | 
 
     return res.data;
 };
+
+export const addBid = async (data: Bid, signal?: AbortSignal) => {
+    const res = await http.post('bids', data, {
+        signal
+    });
+
+    return res.data;
+};

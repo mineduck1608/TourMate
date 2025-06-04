@@ -8,18 +8,13 @@ namespace Repositories.DTO.CreateModels
         public int TourBidId { get; set; }
 
         public float Amount { get; set; }
-
-        public DateTime CreatedAt { get; set; }
-
         public string Comment { get; set; }
-
-        public string Status { get; set; }
         public Bid Convert() => new()
         {
-            Status = Status,
+            Status = "Hoạt động",
             Amount = Amount,
             TourGuideId = TourGuideId,
-            CreatedAt = CreatedAt,
+            CreatedAt = DateTime.Now,
             BidId = 0,
             TourBidId = TourBidId,
             Comment = Comment

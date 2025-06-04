@@ -1,12 +1,11 @@
 import SafeImage from "@/components/safe-image"
 import { cn } from "@/lib/utils"
-import { formatNumber } from "@/types/other"
 import { TourBid } from "@/types/tour-bid"
 import dayjs from "dayjs"
 import { useState } from "react"
-import { FaMapMarkerAlt } from "react-icons/fa"
+import { FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify";
-import BidCommentModal from "./bid-comment-modal"
+import BidResultModal from "./bid-comment-modal"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
@@ -36,15 +35,15 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                 <div className="lg:flex w-full">
                     <SafeImage
                         src={tourBid.account?.customers?.[0]?.image}
-                        className="w-[75px] rounded-full h-[75px]"
+                        className="w-[65px] rounded-full h-[65px]"
                         alt={"profile"}
                     />
                     <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
                         <h3 className="font-bold text-xl">
                             {tourBid.account?.customers?.[0]?.fullName}
                         </h3>
-                        <p>{dayjs(tourBid.createdAt).format("DD/MM/YYYY")}</p>
-                        <p className=""><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
+                        <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
+                        <p className="lg:inline"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
                     </div>
                 </div>
                 <div className="absolute right-0 top-0 lg:block text-end ">
@@ -62,16 +61,27 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                     __html: sanitizeContent(tourBid.content || ""),
                 }}
             />
+            <div className="mt-2">
+                <button onClick={() => setOpen(true)} className="">
+                    <FaRegCommentDots className="inline" /> Bình luận
+                </button>
+            </div>
             <div className="border-2" />
             <div className="mt-5 w-full">
                 <div className="font-semibold text-lg flex justify-between">
                     <span >Bảng đấu giá</span>
-                    {tourBid.maxPrice && <span >Giá cao nhất: {formatNumber(tourBid.maxPrice)} VND</span>}
-                    
+                    {
+                        isOnGoing && <button
+                            type="submit"
+                            onClick={() => setOpen(true)}
+                            className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
+                        >
+                            Đấu giá
+                        </button>
+                    }
                 </div>
-
-                <BidCommentModal isOpen={open} onClose={() => setOpen(false)} tourBid={tourBid} />
             </div>
+            <BidResultModal isOpen={open} onClose={() => setOpen(false)} tourBid={tourBid} />
         </div>
     );
 }
