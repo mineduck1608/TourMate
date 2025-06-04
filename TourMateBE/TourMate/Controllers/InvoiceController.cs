@@ -2,6 +2,7 @@
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using System.Threading.Tasks;
 
 namespace API.Controllers
 {
@@ -23,9 +24,24 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Invoice>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<IActionResult> GetPaged(
+        [FromQuery] string status,
+        [FromQuery] string search = "",
+        [FromQuery] int page = 1,
+        [FromQuery] int pageSize = 5, 
+        [FromQuery] int accountId = 1,
+        [FromQuery] string role = ""
+        )
         {
-            return Ok(_invoiceService.GetAll(pageSize, pageIndex));
+            var result = await _invoiceService.GetPagedAsync(status, search, page, pageSize, accountId, role);
+            return Ok(result);
+        }
+
+        [HttpGet("schedule/{id}")]
+        public async Task<IActionResult> GetScheduleByInvoiceId(int id)
+        {
+            var result = await _invoiceService.GetScheduleByInvoiceIdAsync(id);
+            return Ok(result);
         }
 
         [HttpPost]
@@ -56,11 +72,19 @@ namespace API.Controllers
         }
 
 
-        [HttpPut]
-        public IActionResult Update([FromBody] InvoiceCreateModel invoice)
+        [HttpPut("deny/{id}")]
+        public async Task<IActionResult> Update(int id)
         {
-            _invoiceService.UpdateInvoice(invoice.Convert());
-            return NoContent();
+            var result = await _invoiceService.GetInvoice(id);
+            result.Status = "Từ chối";
+            var isUpdated = await _invoiceService.UpdateInvoice(result);
+
+            if (isUpdated)
+            {
+                return Ok(new { msg = "Từ chối lịch hẹn thành công." });
+            }
+
+            return BadRequest(new { msg = "Từ chối lịch hẹn thất bại." });
         }
 
         [HttpDelete("{id}")]

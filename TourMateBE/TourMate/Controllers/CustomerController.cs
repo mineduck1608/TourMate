@@ -51,6 +51,7 @@ namespace API.Controllers
 
             return Ok(response);
         }
+
         [HttpGet("from-account")]
         public async Task<ActionResult<Customer>> GetFromAccount(int accountId)
         {
@@ -61,6 +62,7 @@ namespace API.Controllers
             }
             return Ok(customer);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Customer data)
         {

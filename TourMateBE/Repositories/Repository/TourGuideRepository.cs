@@ -26,7 +26,7 @@ namespace Repositories.Repository
 
         public async Task<TourGuide> GetByAccId(int accId)
         {
-            return await _context.TourGuides.FirstOrDefaultAsync(x => x.AccountId == accId);
+            return await _context.TourGuides.Include(a => a.Account).FirstOrDefaultAsync(x => x.AccountId == accId);
         }
 
         public async Task<TourGuide> GetById(int id)

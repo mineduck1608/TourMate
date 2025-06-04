@@ -24,9 +24,19 @@ namespace API.Controllers
         }
 
         [HttpGet("from-account/{accountId}")]
-        public async Task<IActionResult> GetTourGuideByAccountId(int accountId)
+        public async Task<IActionResult> GetTourGuideFromAccount(int accountId)
         {
             var result = await _tourguideService.GetTourGuideByAccountIdAsync(accountId);
+            if (result == null)
+                return NotFound();
+
+            return Ok(result);
+        }
+
+        [HttpGet("get-by-accountid/{accountId}")]
+        public async Task<IActionResult> GetTourGuideByAccountId(int accountId)
+        {
+            var result = await _tourguideService.GetTourGuideByAccId(accountId);
             if (result == null)
                 return NotFound();
 

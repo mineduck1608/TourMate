@@ -1,7 +1,5 @@
 'use client'
-import Footer from '@/components/Footer';
 import { ReactNode, useEffect, useState } from 'react';
-import MegaMenu from '@/components/mega-menu';
 import Link from 'next/link';
 import { AuthProvider, useAuth } from '@/components/authProvider';
 import { useToken } from '@/components/getToken';
@@ -66,9 +64,7 @@ function TourGuideContent({ children }: { children: ReactNode }) {
 export default function TourGuideLayout({ children }: { children: ReactNode }) {
   return (
     <AuthProvider>
-      <MegaMenu />
       <TourGuideContent>{children}</TourGuideContent>
-      <Footer />
     </AuthProvider>
   );
 }

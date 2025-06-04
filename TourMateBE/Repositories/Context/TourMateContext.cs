@@ -398,6 +398,9 @@ public partial class TourmateContext : DbContext
                 .HasColumnName("status");
             entity.Property(e => e.TourDesc).HasColumnName("tourDesc");
             entity.Property(e => e.TourGuideId).HasColumnName("tourGuideId");
+            entity.Property(e => e.TourName)
+                .HasMaxLength(255)
+                .HasColumnName("tourName");
 
             entity.HasOne(d => d.Area).WithMany(p => p.Invoices)
                 .HasForeignKey(d => d.AreaId)

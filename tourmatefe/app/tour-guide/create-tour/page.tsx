@@ -19,6 +19,8 @@ import { toast } from "react-toastify";
 import dynamic from "next/dynamic";
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import "react-quill-new/dist/quill.snow.css";
+import MegaMenu from "@/components/mega-menu";
+import Footer from "@/components/Footer";
 //import { ApiResponse } from "@/types/message";
 
 
@@ -53,7 +55,7 @@ export default function CreateTourPage() {
         endDate: "",
         tourGuideId: tourGuide?.tourGuideId ?? 0,
         peopleAmount: "",
-        status: "Chưa thanh toán",
+        status: "Chờ xác nhận",
         price: 0,
         note: "",
         customerId: 0,
@@ -61,6 +63,7 @@ export default function CreateTourPage() {
         tourDesc: "",
         createdDate: new Date().toISOString(),
         customerPhone: "",
+        tourName: "",
     });
 
     useEffect(() => {
@@ -163,7 +166,7 @@ export default function CreateTourPage() {
             endDate: "",
             tourGuideId: tourGuide?.tourGuideId ?? 0,
             peopleAmount: "",
-            status: "Chưa thanh toán",
+            status: "Chờ xác nhận",
             price: 0,
             note: "",
             customerId: 0,
@@ -171,6 +174,7 @@ export default function CreateTourPage() {
             tourDesc: "",
             createdDate: new Date().toISOString(),
             customerPhone: "",
+            tourName: "",
         });
         setUserOptions([]);
         setShowUserOptions(false);
@@ -191,6 +195,8 @@ export default function CreateTourPage() {
 
 
     return (
+        <>
+        <MegaMenu />
         <section className="relative min-h-screen py-16 px-4 md:px-8 lg:px-16 bg-gray-100 overflow-hidden">
             <div className="relative z-20 w-full mx-auto rounded-3xl shadow-2xl p-4 md:p-10 border border-blue-200 bg-white">
                 <div className="flex items-center gap-4 mb-10">
@@ -202,27 +208,15 @@ export default function CreateTourPage() {
                         <div className="grid sm:grid-cols-2 gap-6">
                             <div>
                                 <label className="block text-sm font-medium text-black mb-1">
-                                    Ngày bắt đầu <span className="text-red-500">*</span>
+                                    Tên Tour <span className="text-red-500">*</span>
                                 </label>
                                 <input
-                                    type="datetime-local"
-                                    name="startDate"
-                                    value={formData.startDate}
+                                    type="text"
+                                    name="tourName"
+                                    value={formData.tourName}
                                     onChange={handleChange}
                                     required
-                                    className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-sm font-medium text-black mb-1">
-                                    Ngày kết thúc <span className="text-red-500">*</span>
-                                </label>
-                                <input
-                                    type="datetime-local"
-                                    name="endDate"
-                                    value={formData.endDate}
-                                    onChange={handleChange}
-                                    required
+                                    placeholder="Nhập tên tour"
                                     className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
                                 />
                             </div>
@@ -262,6 +256,33 @@ export default function CreateTourPage() {
                                     </div>
                                 )}
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-1">
+                                    Ngày bắt đầu <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-1">
+                                    Ngày kết thúc <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="datetime-local"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleChange}
+                                    required
+                                    className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                />
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-medium text-black mb-1">
                                     Số lượng người <span className="text-red-500">*</span>
@@ -311,6 +332,17 @@ export default function CreateTourPage() {
                                     ))}
                                 </select>
                             </div>
+                            <div>
+                                <label className="block text-sm font-medium text-black mb-1">Ghi chú</label>
+                                <input
+                                    type="text"
+                                    name="note"
+                                    value={formData.note}
+                                    onChange={handleChange}
+                                    placeholder="Ghi chú thêm"
+                                    className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                />
+                            </div>
 
                         </div>
 
@@ -329,19 +361,7 @@ export default function CreateTourPage() {
                                     }))
                                 }
                                 placeholder="Mô tả chi tiết về tour"
-                                className="min-h-[120px]"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="block text-sm font-medium text-black mb-1">Ghi chú</label>
-                            <textarea
-                                name="note"
-                                value={formData.note}
-                                onChange={handleChange}
-                                rows={4}
-                                placeholder="Ghi chú thêm"
-                                className="w-full border  rounded-lg px-3 py-2 bg-white focus:ring-2 focus:ring-blue-400 focus:outline-none"
+                                className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             />
                         </div>
 
@@ -356,7 +376,7 @@ export default function CreateTourPage() {
                                         endDate: "",
                                         tourGuideId: tourGuide?.tourGuideId ?? 0,
                                         peopleAmount: "",
-                                        status: "Pending",
+                                        status: "Chờ xác nhận",
                                         price: 0,
                                         note: "",
                                         customerId: 0,
@@ -364,6 +384,7 @@ export default function CreateTourPage() {
                                         tourDesc: "",
                                         createdDate: new Date().toISOString(),
                                         customerPhone: "",
+                                        tourName: "",
                                     })
                                 }
                             >
@@ -378,6 +399,18 @@ export default function CreateTourPage() {
                     <div className="lg:col-span-2 bg-gray-50 border border-gray-200 rounded-2xl p-8 shadow-inner flex flex-col justify-center">
                         <h2 className="text-2xl font-bold text-blue-700 mb-10 text-center tracking-wide uppercase">Xác nhận thông tin</h2>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-10 text-blue-900 text-lg">
+                            <div className="flex items-center">
+                                <div className="font-semibold text-black w-44">Tên Tour:</div>
+                                <div className="ml-2 text-blue-800 break-words">
+                                    {formData.tourName || <em className="text-blue-300">Chưa nhập</em>}
+                                </div>
+                            </div>
+                                 <div className="flex items-center">
+                                <div className="font-semibold text-black w-44">Khách hàng:</div>
+                                <div className="ml-2 text-blue-800 break-words">
+                                    {userOptions.find(u => u.customerId == formData.customerId)?.fullName || <em className="text-blue-300">Chưa chọn</em>}
+                                </div>
+                            </div>
                             <div className="flex items-center">
                                 <div className="font-semibold text-black w-44">Ngày bắt đầu:</div>
                                 <div className="ml-2 text-blue-800 break-words">
@@ -407,15 +440,15 @@ export default function CreateTourPage() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <div className="font-semibold text-black w-44">Số lượng người:</div>
+                                <div className="font-semibold text-black w-44">SĐT khách hàng:</div>
                                 <div className="ml-2 text-blue-800 break-words">
-                                    {formData.peopleAmount || <em className="text-blue-300">Chưa nhập</em>}
+                                    {formData.customerPhone || <em className="text-blue-300">Chưa nhập</em>}
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <div className="font-semibold text-black w-44">Trạng thái:</div>
+                                <div className="font-semibold text-black w-44">Số lượng người:</div>
                                 <div className="ml-2 text-blue-800 break-words">
-                                    {formData.status}
+                                    {formData.peopleAmount || <em className="text-blue-300">Chưa nhập</em>}
                                 </div>
                             </div>
                             <div className="flex items-center">
@@ -426,6 +459,8 @@ export default function CreateTourPage() {
                                         : <em className="text-blue-300">Chưa nhập</em>}
                                 </div>
                             </div>
+                            
+
                             <div className="flex items-center">
                                 <div className="font-semibold text-black w-44">Khu vực:</div>
                                 <div className="ml-2 text-blue-800 break-words">
@@ -433,26 +468,9 @@ export default function CreateTourPage() {
                                 </div>
                             </div>
                             <div className="flex items-center">
-                                <div className="font-semibold text-black w-44">Khách hàng:</div>
-                                <div className="ml-2 text-blue-800 break-words">
-                                    {userOptions.find(u => u.customerId == formData.customerId)?.fullName || <em className="text-blue-300">Chưa chọn</em>}
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="font-semibold text-black w-44">SĐT khách hàng:</div>
-                                <div className="ml-2 text-blue-800 break-words">
-                                    {formData.customerPhone || <em className="text-blue-300">Chưa nhập</em>}
-                                </div>
-                            </div>
-                            <div className="flex items-center">
-                                <div className="font-semibold text-black w-44">Ngày tạo:</div>
-                                <div className="ml-2 text-blue-800 break-words">
-                                    {formData.createdDate
-                                        ? (() => {
-                                            const d = new Date(formData.createdDate);
-                                            return `${d.toLocaleDateString("vi-VN")} ${d.toLocaleTimeString("vi-VN", { hour12: false })}`;
-                                        })()
-                                        : ""}
+                                <div className="font-semibold text-black mb-1">Ghi chú:</div>
+                                <div className="ml-2 whitespace-pre-wrap break-words text-blue-800">
+                                    {formData.note || <em className="text-blue-300">Chưa nhập</em>}
                                 </div>
                             </div>
                             <div className="md:col-span-2 mt-2">
@@ -464,16 +482,13 @@ export default function CreateTourPage() {
                                     }}
                                 />
                             </div>
-                            <div className="md:col-span-2">
-                                <div className="font-semibold text-black mb-1">Ghi chú:</div>
-                                <div className="ml-2 whitespace-pre-wrap break-words text-blue-800">
-                                    {formData.note || <em className="text-blue-300">Chưa nhập</em>}
-                                </div>
-                            </div>
+                            
                         </div>
                     </div>
                 </form>
             </div>
         </section>
+        <Footer/>
+        </>
     );
 }
