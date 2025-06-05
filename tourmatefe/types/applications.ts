@@ -1,13 +1,18 @@
-export type Applications = {
-    cvApplicationId: number;
-    fullName: string;
-    dateOfBirth: string;
-    gender: string;
-    address: string;
-    email: string;
-    phone: string;
-    link: string;
-    image: string;
-    description: string;
-    status: string;
+export interface Applications {
+  cvApplicationId: number;
+  fullName: string;
+  dateOfBirth: string;
+  gender: string;
+  phone: string;
+  email: string;
+  address: string;
+  description: string;
+  image: string;
+  link: string;
+  status: string;
+}
+
+export interface RejectCVRequest {
+  cvApplicationId: Applications["cvApplicationId"];
+  response: string;
 }

@@ -1,3 +1,4 @@
+using Repositories.DTO;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -6,7 +7,7 @@ namespace Services
     public interface ICvapplicationService
     {
         Task<Cvapplication> GetCvapplication(int id);
-        IEnumerable<Cvapplication> GetAll(int pageSize, int pageIndex);
+        Task<PagedResult<Cvapplication>> GetAll(int pageSize, int pageIndex);
         Task<bool> CreateCvapplication(Cvapplication cvapplication);
         Task<bool> UpdateCvapplication(Cvapplication cvapplication);
         bool DeleteCvapplication(int id);
@@ -21,9 +22,9 @@ namespace Services
             return await CvapplicationRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Cvapplication> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<Cvapplication>> GetAll(int pageSize, int pageIndex)
         {
-            return CvapplicationRepository.GetAll(pageSize, pageIndex);
+            return await CvapplicationRepository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<bool> CreateCvapplication(Cvapplication cvapplication)
