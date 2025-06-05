@@ -9,70 +9,73 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import React from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import { useQueryString } from "@/app/utils/utils";
 import CVDetailModal from "./recruitDetailModal";
 import { Applications } from "@/types/applications";
-import { getCVApplications } from "@/app/api/cv-application.api";
-import { updateCVApplication } from "@/app/api/cv-application.api";
-interface recruitActionsProps {
+import { rejectCVApplication } from "@/app/api/cv-application.api";
+import { RejectCVRequest } from "@/types/applications";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import { Textarea } from "@/components/ui/textarea";
+
+interface RecruitActionsProps {
   data: Applications;
 }
 
-const RecruitActions: React.FC<recruitActionsProps> = ({ data }) => {
-  const queryString: { page?: string } = useQueryString();
-  const page = Number(queryString.page) || 1;
-  // Modal toggle functions
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = React.useState(false);
+  const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
+  const [rejectReason, setRejectReason] = React.useState("");
+  const queryClient = useQueryClient();
 
-  const openDetailModal = () => setIsDetailModalOpen(true);
-  const closeDetailModal = () => setIsDetailModalOpen(false);
-
-  const { refetch } = useQuery({
-    queryKey: ["applications", page], // Pass page and limit as part of the query key
-    queryFn: ({ queryKey }) => {
-      const controller = new AbortController();
-      setTimeout(() => {
-        controller.abort();
-      }, 5000);
-      const [, page, limit] = queryKey; // Destructure page and limit from queryKey
-      return getCVApplications(page, limit, controller.signal);
-    },
-    enabled: false, // Tắt tự động fetch, chỉ gọi refetch khi cần
-  });
-
-  const openModal = () => {
-    setIsModalOpen(true);
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false);
-  };
-
-  const handleSave = (data: Applications) => {
-    updateCVMutation.mutate({ id: data.cvApplicationId, data: data });
-  };
-
-  // Mutation for updating
-  const updateCVMutation = useMutation({
-    mutationFn: ({ id, data }: { id: number; data: Applications }) =>
-      updateCVApplication(id, data),
+  // Mutation for rejecting CV
+  const rejectCVMutation = useMutation({
+    mutationFn: (rejectData: RejectCVRequest) =>
+      rejectCVApplication(rejectData),
     onSuccess: () => {
-      toast.success("Cập nhật CV thành công");
-      refetch(); // Refetch dữ liệu sau khi cập nhật thành công
+      toast.success("Từ chối CV thành công");
+      // Sửa cách invalidate query
+      queryClient.invalidateQueries({ queryKey: ["cv-applications"] });
+      setIsRejectModalOpen(false);
+      setRejectReason("");
     },
     onError: (error) => {
       toast.error(
         (error as { response?: { data?: { msg?: string } } })?.response?.data
-          ?.msg || "Cập nhật CV thất bại"
+          ?.msg || "Từ chối CV thất bại"
       );
     },
   });
 
+  const handleViewDetail = () => setIsDetailModalOpen(true);
+  const handleCloseDetail = () => setIsDetailModalOpen(false);
+
+  const handleOpenReject = () => setIsRejectModalOpen(true);
+  const handleCloseReject = () => {
+    setIsRejectModalOpen(false);
+    setRejectReason("");
+  };
+
+  const handleReject = () => {
+    if (!rejectReason.trim()) {
+      toast.error("Vui lòng nhập lý do từ chối");
+      return;
+    }
+
+    rejectCVMutation.mutate({
+      cvApplicationId: data.cvApplicationId,
+      response: rejectReason,
+    });
+  };
+
   return (
-    <div>
+    <>
       <DropdownMenu>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
@@ -82,24 +85,46 @@ const RecruitActions: React.FC<recruitActionsProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={openDetailModal}>
+          <DropdownMenuItem onClick={handleViewDetail}>
             Xem chi tiết
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={openModal}>Cập nhật</DropdownMenuItem>
+          <DropdownMenuItem onClick={handleOpenReject}>
+            Từ chối CV
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
-
-      {/* Render UpdateNewsModal only when needed */}
 
       {isDetailModalOpen && (
         <CVDetailModal
           isOpen={isDetailModalOpen}
-          onClose={closeDetailModal}
-          currentCV={data} // data là object CV bạn truyền vào component này
+          onClose={handleCloseDetail}
+          currentCV={data}
         />
       )}
-    </div>
+
+      <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Từ chối CV</DialogTitle>
+          </DialogHeader>
+          <div className="py-4">
+            <Textarea
+              placeholder="Nhập lý do từ chối..."
+              value={rejectReason}
+              onChange={(e) => setRejectReason(e.target.value)}
+              className="min-h-[100px]"
+            />
+          </div>
+          <DialogFooter>
+            <Button variant="outline" onClick={handleCloseReject}>
+              Hủy
+            </Button>
+            <Button onClick={handleReject}>Xác nhận</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 

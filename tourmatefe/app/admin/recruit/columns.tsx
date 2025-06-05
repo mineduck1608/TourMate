@@ -1,22 +1,10 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Applications } from "@/types/applications";
 import { Badge } from "@/components/ui/badge";
 import RecruitActions from "./recruitAction";
-// Hàm định dạng ngày theo dd/mm/yyyy
-// const formatDate = (dateString: string) => {
-//   const date = new Date(dateString);
-//   const day = String(date.getDate()).padStart(2, '0');
-//   const month = String(date.getMonth() + 1).padStart(2, '0');
-//   const year = date.getFullYear();
-//   const hours = String(date.getHours()).padStart(2, '0');
-//   const minutes = String(date.getMinutes()).padStart(2, '0');
-//   const seconds = String(date.getSeconds()).padStart(2, '0');
-
-//   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
-// };
+import { Checkbox } from "@/components/ui/checkbox";
 
 export const columns: ColumnDef<Applications>[] = [
   {
@@ -47,19 +35,13 @@ export const columns: ColumnDef<Applications>[] = [
     accessorKey: "fullName",
     header: "Họ và tên",
     cell: ({ row }) => (
-      <div
-        style={{
-          maxWidth: "300px", // Chiều rộng tối đa của cột
-          whiteSpace: "normal", // Cho phép nội dung xuống dòng
-          overflowWrap: "break-word", // Cho phép cắt từ nếu cần thiết
-        }}
-      >
+      <div className="max-w-[300px] whitespace-normal break-words">
         {row.getValue("fullName")}
       </div>
     ),
   },
   {
-    accessorKey: "account.email",
+    accessorKey: "email", // Thay đổi từ account.email thành email
     header: "Email",
   },
   {
@@ -71,7 +53,7 @@ export const columns: ColumnDef<Applications>[] = [
     header: "Giới tính",
     cell: ({ row }) => {
       const gender = row.getValue("gender") as string;
-      return gender === "male" ? "Nam" : "Nữ";
+      return gender === "Nam" ? "Nam" : "Nữ"; // Đổi male thành Nam để phù hợp với API
     },
   },
   {
@@ -84,42 +66,11 @@ export const columns: ColumnDef<Applications>[] = [
     ),
   },
   {
-    accessorKey: "link",
-    header: "CV",
-    cell: ({ row }) => {
-      const link = row.getValue("link") as string;
-      return link ? (
-        <a
-          href={link}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-blue-600 hover:underline"
-        >
-          Xem CV
-        </a>
-      ) : (
-        <span className="text-gray-500">Không có CV</span>
-      );
-    },
-  },
-  {
-    accessorKey: "description",
-    header: "Mô tả",
-    cell: ({ row }) => (
-      <div className="max-w-[300px] whitespace-normal break-words">
-        {row.getValue("description")}
-      </div>
-    ),
-  },
-  {
     accessorKey: "dateOfBirth",
     header: "Ngày sinh",
-    cell: (info) => {
-      const date = new Date(info.getValue() as string | Date);
-      const day = String(date.getDate()).padStart(2, "0");
-      const month = String(date.getMonth() + 1).padStart(2, "0"); // Tháng bắt đầu từ 0
-      const year = date.getFullYear();
-      return `${day}/${month}/${year}`;
+    cell: ({ row }) => {
+      const date = new Date(row.getValue("dateOfBirth") as string);
+      return new Intl.DateTimeFormat("vi-VN").format(date);
     },
   },
   {
@@ -128,47 +79,9 @@ export const columns: ColumnDef<Applications>[] = [
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
       return (
-        <Badge
-          variant={
-            status === "pending"
-              ? "outline"
-              : status === "approved"
-              ? "secondary"
-              : "destructive"
-          }
-        >
-          {status === "pending"
-            ? "Chờ duyệt"
-            : status === "approved"
-            ? "Đã duyệt"
-            : "Từ chối"}
+        <Badge variant={status === "active" ? "secondary" : "destructive"}>
+          {status === "active" ? "Hoạt động" : "Không hoạt động"}
         </Badge>
-      );
-    },
-  },
-  {
-    accessorKey: "image",
-    header: "Hình ảnh",
-    cell: ({ row }) => {
-      const imageUrl = row.getValue("image") as string;
-      return (
-        <div
-          style={{
-            maxWidth: "200px",
-          }}
-        >
-          {/* Hiển thị ảnh nếu có URL */}
-          {imageUrl ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img
-              src={imageUrl}
-              alt="Banner"
-              style={{ maxWidth: "100%", height: "auto", borderRadius: "8px" }} // Style cho ảnh
-            />
-          ) : (
-            <span>Không có ảnh</span>
-          )}
-        </div>
       );
     },
   },
@@ -180,3 +93,5 @@ export const columns: ColumnDef<Applications>[] = [
     },
   },
 ];
+
+console.log("Column definitions:", columns);
