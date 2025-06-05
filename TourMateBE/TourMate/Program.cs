@@ -100,7 +100,9 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
-builder.Services.AddScoped<VNPayService>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<VnPayLibrary>();
+
 
 
 // Đăng ký DbContext

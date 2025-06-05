@@ -6,11 +6,14 @@ import type { TourSchedule } from "@/types/tour-schedule"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, MapPin, Users, Phone, Mail, CreditCard,  CheckCircle2, ArrowLeft, Clock, Star, ShieldCheck, CircleDollarSign, CircleDollarSignIcon, Wallet, WalletCards } from 'lucide-react'
+import { Calendar, Users, Phone, Mail, CreditCard,  CheckCircle2, ArrowLeft, Clock, Star, ShieldCheck, WalletCards } from 'lucide-react'
 import { fetchScheduleByInvoiceId } from "@/app/api/schedule.api"
 import Footer from "@/components/Footer"
 import MegaMenu from "@/components/mega-menu"
 import { getCreatePaymentUrl } from "@/app/api/payment.api"
+import { useToken } from "@/components/getToken"
+import { MyJwtPayload } from "@/types/JwtPayload"
+import { jwtDecode } from "jwt-decode"
 
 const PaymentMethodCard = ({
   method,
@@ -91,6 +94,12 @@ export default function TourPaymentPage() {
   const [selectedMethod, setSelectedMethod] = useState<string>("")
   const [paying, setPaying] = useState(false)
 
+  const token = useToken("accessToken");
+      const decoded: MyJwtPayload | null = token
+          ? jwtDecode<MyJwtPayload>(token.toString())
+          : null;
+      const accountId = decoded?.AccountId;
+
   useEffect(() => {
     async function loadSchedule() {
       if (!invoiceId) return
@@ -128,7 +137,8 @@ export default function TourPaymentPage() {
       const orderId = invoiceId; // hoặc ID đơn hàng bạn có
 
       // Gọi API backend VNPAY
-      const paymentUrl = await getCreatePaymentUrl(amount, orderId);
+      const paymentUrl = await getCreatePaymentUrl(amount, orderId, "Đặt lịch hẹn");
+      console.log("Payment URL:", paymentUrl);
 
       if (paymentUrl) {
         window.location.href = paymentUrl;

@@ -7,7 +7,7 @@ namespace Services
     {
         Payment GetPayments(int id);
         IEnumerable<Payment> GetAll(int pageSize, int pageIndex);
-        void CreatePayments(Payment payments);
+        Task<bool> CreatePayments(Payment payments);
         void UpdatePayments(Payment payments);
         bool DeletePayments(int id);
     }
@@ -26,9 +26,9 @@ namespace Services
             return PaymentsRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreatePayments(Payment payments)
+        public async Task<bool> CreatePayments(Payment payments)
         {
-            PaymentsRepository.Create(payments);
+            return await PaymentsRepository.CreateAsync(payments);
         }
 
         public void UpdatePayments(Payment payments)

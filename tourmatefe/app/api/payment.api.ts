@@ -9,10 +9,11 @@ export interface PaymentResponse {
 export const getCreatePaymentUrl = async (
   amount: number,
   orderId: string,
+  orderType: string,
   signal?: AbortSignal
 ): Promise<string> => {
   const res = await http.get<PaymentResponse>('payment/create', {
-    params: { amount, orderId },
+    params: { amount, orderId, orderType },
     signal,
   });
   return res.data.paymentUrl;
