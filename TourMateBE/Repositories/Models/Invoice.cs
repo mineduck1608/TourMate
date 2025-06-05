@@ -9,7 +9,7 @@ public partial class Invoice
 
     public DateTime StartDate { get; set; }
 
-    public DateTime? EndDate { get; set; }
+    public DateTime EndDate { get; set; }
 
     public int TourGuideId { get; set; }
 
@@ -30,6 +30,8 @@ public partial class Invoice
     public DateTime CreatedDate { get; set; }
 
     public string CustomerPhone { get; set; } = null!;
+
+    public string TourName { get; set; } = null!;
 
     public virtual ActiveArea Area { get; set; } = null!;
 

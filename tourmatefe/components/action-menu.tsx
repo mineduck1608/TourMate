@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { Settings, Clock, LogOut, MapPin } from "lucide-react";
+import { Settings, LogOut, MapPin, CalendarCheck2 } from "lucide-react";
 import { useToken } from "./getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
@@ -47,7 +47,16 @@ export default function ActionMenu() {
             ID: {accountId}
           </SheetDescription>
           {role === "Customer" ? (
-            <CustomerProfile />
+            <>
+              <CustomerProfile />
+              <Link
+                href={`/tour-schedule`}
+                className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+              >
+                <CalendarCheck2 size={18} />
+                Xem lịch trình
+              </Link>
+            </>
           ) : role === "TourGuide" ? (
             <>
               <Link
@@ -65,8 +74,15 @@ export default function ActionMenu() {
                 <MapPin size={18} />
                 Tạo lịch Tour
               </Link>
+              <Link
+                href={`/tour-guide/tour-schedule`}
+                className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+              >
+                <CalendarCheck2 size={18} />
+                Quản lý lịch trình
+              </Link>
             </>
-          ) : role === "Admin" ? null : (
+          ) : (
             <button
               className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
               onClick={() => alert("Chức năng chưa hỗ trợ")}
@@ -75,13 +91,7 @@ export default function ActionMenu() {
               Thông tin tài khoản
             </button>
           )}
-          <button
-            className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
-            onClick={() => alert("Xem lịch sử hoạt động")}
-          >
-            <Clock size={18} />
-            Xem lịch sử hoạt động
-          </button>
+
           <ResetPass />
           <button
             className="w-full flex items-center gap-3 text-red-600 hover:bg-red-100 px-4 py-2 rounded-md font-semibold"

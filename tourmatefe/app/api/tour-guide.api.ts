@@ -20,6 +20,12 @@ export const getTourGuideByAccountId = async (accountId: number): Promise<TourGu
   return response.data;
 };
 
+export const getByAccountId = async (accountId: number): Promise<TourGuide> => {
+  const response = await http.get<TourGuide>(`/tour-guide/get-by-accountid/${accountId}`);
+  return response.data;
+};
+
+
 export const getList = async (name: string, areaId: string | number | undefined, page: number | string, limit: number | string, signal?: AbortSignal) => {
   const num = Number(areaId)
   const res = await http.get<PagedResult<TourGuide>>('tour-guide/get-list', {
