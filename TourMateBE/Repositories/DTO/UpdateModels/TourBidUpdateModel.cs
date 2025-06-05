@@ -14,7 +14,7 @@ namespace Repositories.DTO.UpdateModels
         public float? MaxPrice { get; set; }
         public bool IsDeleted { get; set; } = false;
         public string Status { get; set; }
-        public TourBid Convert() => new TourBid
+        public TourBid Convert() => new()
         {
             AccountId = AccountId,
             Content = Content,

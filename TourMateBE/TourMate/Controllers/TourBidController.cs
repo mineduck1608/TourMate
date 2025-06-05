@@ -32,9 +32,9 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsAsync(string? content, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourBidListResult>>> GetBidsAsync(string? content, int accountIdFrom, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _tourbidService.GetBids(content, pageSize, pageIndex));
+            return Ok(await _tourbidService.GetBids(content, accountIdFrom, pageSize, pageIndex));
         }
 
         [HttpPost]

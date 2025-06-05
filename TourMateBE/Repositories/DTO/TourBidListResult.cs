@@ -3,33 +3,26 @@
 using System;
 using System.Collections.Generic;
 
-namespace Repositories.Models;
+namespace Repositories.DTO;
 
-public partial class TourBid
+public partial class TourBidListResult
 {
     public int TourBidId { get; set; }
 
     public int AccountId { get; set; }
+    public string CustomerName { get; set; }
 
     public DateTime CreatedAt { get; set; }
 
-    public DateTime? UpdatedAt { get; set; }
-
-    public bool IsDeleted { get; set; }
-
     public int PlaceRequested { get; set; }
+    public string PlaceRequestedName { get; set; }
 
     public string Status { get; set; }
 
     public string Content { get; set; }
 
     public float? MaxPrice { get; set; }
-
-    public virtual Account Account { get; set; }
-
-    public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
-
-    public virtual ActiveArea PlaceRequestedNavigation { get; set; }
-
-    public virtual ICollection<UserLikeBid> UserLikeBids { get; set; } = new List<UserLikeBid>();
+    public int LikeCount { get; set; }
+    public bool IsLiked { get; set; }
+    public string CustomerImg { get; set; }
 }

@@ -31,22 +31,6 @@
          "ObjectType": 0
       },
       {
-         "Name": "[dbo].[Blog]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[BlogComment]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[BlogCommentReply]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[BlogLike]",
-         "ObjectType": 0
-      },
-      {
          "Name": "[dbo].[Contact]",
          "ObjectType": 0
       },
@@ -76,6 +60,10 @@
       },
       {
          "Name": "[dbo].[Message]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[MessageType]",
          "ObjectType": 0
       },
       {
@@ -116,6 +104,10 @@
       },
       {
          "Name": "[dbo].[TourService]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[UserLikeBid]",
          "ObjectType": 0
       }
    ],
