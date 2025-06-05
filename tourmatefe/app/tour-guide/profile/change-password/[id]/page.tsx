@@ -5,6 +5,8 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { use } from 'react'
 import { toast } from 'react-toastify';
 import ProfileForm from './form';
+import MegaMenu from '@/components/mega-menu';
+import Footer from '@/components/Footer';
 export default function TourGuideProfileEdit({
     params,
 }: {
@@ -37,7 +39,8 @@ export default function TourGuideProfileEdit({
     }
     const tourGuide = data?.data
     return (
-        <div className=''>
+        <div>
+            <MegaMenu/>
             <div className='my-10 relative'>
                 <div className='relative'>
                     {tourGuide?.bannerImage &&
@@ -63,6 +66,7 @@ export default function TourGuideProfileEdit({
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     )
 }

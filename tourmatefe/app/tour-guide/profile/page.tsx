@@ -18,6 +18,8 @@ import TourServices from './profile-components/services';
 import { AuthProvider } from '@/components/authProvider';
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
 import { targetType, baseService } from './constants';
+import MegaMenu from '@/components/mega-menu';
+import Footer from '@/components/Footer';
 
 
 function TourGuideProfileEdit() {
@@ -76,6 +78,8 @@ function TourGuideProfileEdit() {
     }
     const tourGuide = data?.data
     return (
+        <>
+        <MegaMenu/>
         <ServiceEditContext.Provider value={{ modalOpen, setModalOpen, target, setTarget, signal, setSignal }}>
             {toggleMode.edit &&
                 <EditPic
@@ -175,6 +179,8 @@ function TourGuideProfileEdit() {
                 </div>
             </div>
         </ServiceEditContext.Provider >
+        <Footer />
+        </>
     )
 }
 
