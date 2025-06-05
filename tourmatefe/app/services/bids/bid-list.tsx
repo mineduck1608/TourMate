@@ -2,7 +2,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useContext, useState, useEffect, useRef } from 'react';
 import { toast } from 'react-toastify';
-import { TourBid } from '@/types/tour-bid';
+import { TourBid, TourBidListResult } from '@/types/tour-bid';
 import { getTourBids, addTourBid, updateTourBid, deleteTourBid } from '@/app/api/tour-bid.api';
 import { BidTaskContext, BidTaskContextProp } from './bid-task-context';
 import { baseData } from './bids-page';
@@ -14,7 +14,7 @@ const ITEM_HEIGHT_ESTIMATE = 200;
 function BidList({ search }: { search: string }) {
   const pageSize = 3;
   const [page, setPage] = useState(1);
-  const [tourBids, setTourBids] = useState<TourBid[]>([]);
+  const [tourBids, setTourBids] = useState<TourBidListResult[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [resetTrigger, setResetTrigger] = useState(false);
   const scrollPositionRef = useRef<{ index: number; top: number } | null>(null);
@@ -70,7 +70,7 @@ function BidList({ search }: { search: string }) {
   };
 
   const createTourBidMutation = useMutation({
-    mutationFn: async (data: TourBid) => {
+    mutationFn: async (data: TourBid | TourBidListResult) => {
       return await addTourBid(data);
     },
     onSuccess: () => {
@@ -89,7 +89,7 @@ function BidList({ search }: { search: string }) {
   });
 
   const updateTourBidMutation = useMutation({
-    mutationFn: async ({ data }: { data: TourBid }) => {
+    mutationFn: async ({ data }: { data: TourBid | TourBidListResult }) => {
       return await updateTourBid(data);
     },
     onSuccess: () => {
@@ -155,6 +155,8 @@ function BidList({ search }: { search: string }) {
   useEffect(() => {
     if (signal.create) {
       createTourBidMutation.mutate(target);
+      setSignal({...signal, create: false})
+      setTarget({ ...baseData });
     }
   }, [signal.create]);
 

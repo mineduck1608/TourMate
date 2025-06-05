@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid } from "@/types/tour-bid";
+import { TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
@@ -13,7 +13,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 type BidCreateModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (tourBidData: TourBid) => void;
+    onSave: (tourBidData: TourBidListResult) => void;
 };
 
 const BidCreateModal: React.FC<BidCreateModalProps> = ({
@@ -27,7 +27,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
         e.preventDefault();
         console.log(target);
         onSave(target);
-
     };
     const simplifiedAreaQuery = useQuery({
         queryKey: ['simplified-area'],
@@ -36,8 +35,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     })
     const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     useEffect(() => {
-        const u: TourBid = { ...baseData, accountId: accId }
-        console.log('Set target');
+        const u: TourBidListResult = { ...baseData, accountId: accId }
         setTarget(u)
     }, [modalOpen.create])
     const areas = simplifiedAreaQuery.data?.data ?? []

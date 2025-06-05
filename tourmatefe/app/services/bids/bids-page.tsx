@@ -2,29 +2,24 @@ import React, { useEffect, useState } from "react";
 import BidList from "./bid-list";
 import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./bid-create-modal";
-import { TourBid } from "@/types/tour-bid";
+import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import { Customer } from "@/types/customer";
 import { BidTaskContext } from "./bid-task-context";
 import DeleteModal from "@/components/delete-modal";
 import BidEditModal from "./bid-edit-modal";
-export const baseData: TourBid = {
+export const baseData: TourBidListResult = {
   tourBidId: 0,
   accountId: 0,
   createdAt: "",
-  isDeleted: false,
   placeRequested: 0,
   status: "",
   content: "",
-  maxPrice: undefined
-}
-type TourBidTMP = {
-  tourBidId: number,
-  accountId: number,
-  placeRequested: number,
-}
-function f(x: TourBid): TourBidTMP {
-  const { accountId, placeRequested, tourBidId } = x
-  return { accountId, placeRequested, tourBidId }
+  maxPrice: undefined,
+  customerName: "",
+  placeRequestedName: "",
+  likeCount: 0,
+  isLiked: false,
+  customerImg: ""
 }
 export default function Bids({ customer, search }: { customer?: Customer, search: string }) {
   const [modalOpen, setModalOpen] = useState({
@@ -38,7 +33,7 @@ export default function Bids({ customer, search }: { customer?: Customer, search
     create: false,
     delete: false
   });
-  const [target, setTarget] = useState({ ...baseData });
+  const [target, setTarget] = useState<TourBidListResult | TourBid>({ ...baseData });
 
   useEffect(() => {
     setTarget({ ...target, accountId: customer?.accountId ?? 0 });
@@ -63,9 +58,6 @@ export default function Bids({ customer, search }: { customer?: Customer, search
           </div>
         </div>
       </div>
-      <div>
-        HERE: {JSON.stringify(f(target), undefined, 1)}
-      </div>
       <BidList search={search} />
 
       {modalOpen.create && <BidCreateModal
@@ -74,7 +66,8 @@ export default function Bids({ customer, search }: { customer?: Customer, search
           setTarget({ ...baseData })
           setModalOpen({ ...modalOpen, create: false })
         }}
-        onSave={() => {
+        onSave={(data) => {
+          setTarget(data)
           setSignal({ ...signal, create: true });
         }}
       />}

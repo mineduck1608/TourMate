@@ -1,16 +1,16 @@
 import SafeImage from "@/components/safe-image"
 import { cn } from "@/lib/utils"
-import { TourBid } from "@/types/tour-bid"
+import { TourBidListResult } from "@/types/tour-bid"
 import dayjs from "dayjs"
 import { useContext, useState } from "react"
-import { FaMapMarkerAlt } from "react-icons/fa"
+import { FaHeart, FaMapMarkerAlt } from "react-icons/fa"
 import DOMPurify from "dompurify";
 import BidCommentModal from "./bid-comment-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context"
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 
-export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
+export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const [open, setOpen] = useState(false)
     const { setModalOpen, modalOpen, setTarget } = useContext(BidTaskContext) as BidTaskContextProp
@@ -39,16 +39,16 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
             <div className="relative lg:flex grid-cols-2">
                 <div className="lg:flex w-full">
                     <SafeImage
-                        src={tourBid.account?.customers?.[0]?.image}
+                        src={tourBid.customerImg}
                         className="w-[75px] rounded-full h-[75px]"
                         alt={"profile"}
                     />
                     <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
                         <h3 className="font-bold text-xl">
-                            {tourBid.account?.customers?.[0]?.fullName}
+                            {tourBid.customerName}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
-                        <p className="lg:inline"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedNavigation?.areaName}</p>
+                        <p className="lg:inline"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
                     </div>
                 </div>
                 <div className="absolute right-0 top-0 lg:block text-end ">
@@ -88,6 +88,10 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                     __html: sanitizeContent(tourBid.content || ""),
                 }}
             />
+            <div className="grid grid-cols-2">
+                <FaHeart fill={tourBid.isLiked ? '#ff0000' : '#eeeeee'} />
+                <p>{tourBid.likeCount}</p>
+            </div>
             <div className="border-2" />
             <div className="mt-5 w-full">
                 <div className="font-semibold text-lg flex justify-between">
@@ -102,7 +106,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                     </button>
                 </div>
 
-                <BidCommentModal isOpen={open} onClose={() => setOpen(false)} tourBid={tourBid} />
+                <BidCommentModal isOpen={open} onClose={() => setOpen(false)} tourBidId={tourBid.tourBidId} />
             </div>
         </div>
     );

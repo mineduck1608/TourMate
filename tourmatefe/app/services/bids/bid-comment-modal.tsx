@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid } from "@/types/tour-bid";
 import { useQuery } from "@tanstack/react-query";
 import { getBidsOfTourBid } from "@/app/api/bid.api";
 import { Bid } from "@/types/bid";
@@ -10,20 +9,20 @@ import InfiniteScroll from "react-infinite-scroll-component";
 type BidCommentModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    tourBid: TourBid
+    tourBidId: number
 };
 
 const BidCommentModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
-    tourBid
+    tourBidId
 }) => {
     const pageSize = 10
     const [page, setPage] = useState(1)
     const [bids, setBids] = useState<Bid[]>([])
     const bidData = useQuery({
-        queryKey: ['bids-of', tourBid.tourBidId, pageSize, page],
-        queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
+        queryKey: ['bids-of', tourBidId, pageSize, page],
+        queryFn: () => getBidsOfTourBid(tourBidId, page, pageSize),
         staleTime: 60 * 1000
     })
     useEffect(() => {

@@ -1,9 +1,9 @@
-import { TourBid } from "@/types/tour-bid";
+import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
 export const getTourBids = async (page: number | string, limit: number | string, signal?: AbortSignal, content?: string) => {
-  const res = await http.get<PagedResult<TourBid>>('tour-bids', {
+  const res = await http.get<PagedResult<TourBidListResult>>('tour-bids', {
     params: {
       pageSize: limit,
       pageIndex: page,
@@ -15,13 +15,20 @@ export const getTourBids = async (page: number | string, limit: number | string,
   return res.data;
 };
 
-export const addTourBid = async (tourBid: TourBid) => {
-  const response = await http.post('/tour-bids', tourBid);
+export const addTourBid = async (tourBid: TourBid | TourBidListResult) => {
+  console.log(tourBid);
+  
+  const response = await http.post('/tour-bids', {
+    accountId: tourBid.accountId,
+    content: tourBid.content,
+    placeRequested: tourBid.placeRequested,
+    maxPrice: tourBid.maxPrice
+  });
   return response.data;  // Assuming the API returns the created news item
 }
 
 
-export const updateTourBid = async (tourBid: TourBid) => {
+export const updateTourBid = async (tourBid: TourBid | TourBidListResult) => {
   const response = await http.put('/tour-bids', tourBid);
   return response.data;  // Assuming the API returns the created news item
 }

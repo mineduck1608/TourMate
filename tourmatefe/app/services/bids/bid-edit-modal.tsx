@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid } from "@/types/tour-bid";
+import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
@@ -11,7 +11,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 type BidEditModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (tourBidData: TourBid) => void;
+    onSave: (tourBidData: TourBid | TourBidListResult) => void;
 };
 
 const BidEditModal: React.FC<BidEditModalProps> = ({
