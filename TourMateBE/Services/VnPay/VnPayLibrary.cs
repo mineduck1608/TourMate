@@ -3,56 +3,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
-using System.Threading.Tasks;
 using System.Web;
 
 namespace Services.VnPay
+{ 
+public class VnPayLibrary
 {
-    public class VnPayLibrary
+    private SortedList<string, string> requestData = new();
+
+    public void AddRequestData(string key, string value)
     {
-        private SortedList<string, string> requestData = new();
-        private SortedList<string, string> responseData = new();
-
-        public void AddRequestData(string key, string value)
+        if (!string.IsNullOrEmpty(value))
         {
-            requestData.Add(key, value);
+            requestData[key] = value;
         }
-
-        public void AddResponseData(string key, string value)
-        {
-            responseData.Add(key, value);
-        }
-
-        public string GetResponseData(string key) => responseData.TryGetValue(key, out var value) ? value : "";
-
-        public string CreateRequestUrl(string baseUrl, string secretKey)
-        {
-            var data = string.Join("&", requestData.Select(x => $"{x.Key}={HttpUtility.UrlEncode(x.Value)}"));
-            var rawData = string.Join("&", requestData.Select(x => $"{x.Key}={x.Value}"));
-            var secureHash = HmacSHA256(secretKey, rawData);
-            return $"{baseUrl}?{data}&vnp_SecureHashType=SHA256&vnp_SecureHash={secureHash}";
-        }
-
-
-        public bool ValidateSignature(string secretKey)
-        {
-            var raw = responseData
-                .Where(kvp => kvp.Key != "vnp_SecureHash" && kvp.Key != "vnp_SecureHashType")
-                .OrderBy(kvp => kvp.Key)
-                .Select(kvp => $"{kvp.Key}={kvp.Value}");
-
-            var rawData = string.Join("&", raw);
-            var expectedHash = HmacSHA256(secretKey, rawData);
-            return responseData["vnp_SecureHash"] == expectedHash;
-        }
-
-        private static string HmacSHA256(string key, string data)
-        {
-            using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key)); // Đúng thuật toán
-            var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
-            return BitConverter.ToString(hashBytes).Replace("-", "").ToUpper(); // PHẢI viết hoa
-        }
-
     }
 
+    // Tạo URL đầy đủ với chữ ký vnp_SecureHash
+    public string CreateRequestUrl(string baseUrl, string secretKey)
+    {
+        // 1. Sắp xếp requestData theo key tăng dần (theo yêu cầu VNPay)
+        var sortedData = new SortedDictionary<string, string>(requestData);
+
+        // 2. Chuẩn bị chuỗi dữ liệu raw để tạo chữ ký (chưa encode URL)
+        var rawData = string.Join("&", sortedData.Select(kvp => $"{kvp.Key}={kvp.Value}"));
+
+        // 3. Tạo chữ ký HMAC SHA256 chữ hoa (VNPay yêu cầu chữ hoa)
+        var secureHash = HmacSHA256(secretKey, rawData).ToUpper();
+
+        // 4. Chuẩn bị chuỗi URL encode các tham số
+        var encodedData = string.Join("&", sortedData.Select(kvp => $"{kvp.Key}={HttpUtility.UrlEncode(kvp.Value)}"));
+
+        // 5. Trả về URL hoàn chỉnh có thêm tham số vnp_SecureHash
+        return $"{baseUrl}?{encodedData}&vnp_SecureHash={secureHash}";
+    }
+
+    private static string HmacSHA256(string key, string data)
+    {
+        using var hmac = new HMACSHA256(Encoding.UTF8.GetBytes(key));
+        var hashBytes = hmac.ComputeHash(Encoding.UTF8.GetBytes(data));
+        return BitConverter.ToString(hashBytes).Replace("-", "");
+    }
+}
 }
