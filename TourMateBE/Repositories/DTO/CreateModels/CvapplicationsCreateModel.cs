@@ -23,6 +23,7 @@ namespace Repositories.DTO.CreateModels
         public string Description { get; set; }
 
         public string Status { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
         public Cvapplication Convert() => new()
         {
             FullName = FullName,
@@ -35,7 +36,8 @@ namespace Repositories.DTO.CreateModels
             Image = Image,
             Description = Description,
             Status = Status,
-            CvApplicationId = 0
+            CvApplicationId = 0,
+            CreatedAt = CreatedAt
         };
     }
 }

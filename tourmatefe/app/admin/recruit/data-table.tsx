@@ -31,9 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { getCVApplications } from "@/app/api/cv-application.api";
 import { Input } from "@/components/ui/input";
 
 interface DataTableProps<TData, TValue> {
