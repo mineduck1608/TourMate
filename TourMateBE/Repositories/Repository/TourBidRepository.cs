@@ -53,7 +53,7 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
-        public new async Task UpdateAsync(TourBid entity)
+        public new async Task<bool> UpdateAsync(TourBid entity)
         {
             try
             {
@@ -63,12 +63,14 @@ namespace Repositories.Repository
                     entity.CreatedAt = existingEntity.CreatedAt; // Preserve the original CreatedAt
                     _context.Entry(existingEntity).CurrentValues.SetValues(entity);
                     await _context.SaveChangesAsync();
+                    return true;
                 }
             }
             catch(Exception ex)
             {
 
             }
+            return false;
         }
     }
 }

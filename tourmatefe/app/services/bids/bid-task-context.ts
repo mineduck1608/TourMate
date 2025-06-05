@@ -1,7 +1,7 @@
 import { TourBid } from "@/types/tour-bid"
 import { createContext } from "react"
 export type BidTaskModalType = { edit: boolean, changeStatus: boolean, delete: boolean, create: boolean }
-export type BidTaskSignalType = { edit: boolean, create: boolean }
+export type BidTaskSignalType = { edit: boolean, create: boolean, delete: boolean }
 export type BidTaskContextProp = {
     target: TourBid,
     setTarget: (t: TourBid) => void

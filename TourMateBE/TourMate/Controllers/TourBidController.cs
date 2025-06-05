@@ -41,15 +41,15 @@ namespace API.Controllers
         public async Task<IActionResult> CreateAsync([FromBody] TourBidCreateModel data)
         {
             var tourbid = data.Convert();
-            await _tourbidService.CreateTourBid(tourbid);
-            return CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid);
+            var r = await _tourbidService.CreateTourBid(tourbid);
+            return r ? CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid) : BadRequest();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] TourBidUpdateModel tourbid)
         {
-            await _tourbidService.UpdateTourBid(tourbid.Convert());
-            return NoContent();
+            var r = await _tourbidService.UpdateTourBid(tourbid.Convert());
+            return r? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]

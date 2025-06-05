@@ -25,3 +25,8 @@ export const updateTourBid = async (tourBid: TourBid) => {
   const response = await http.put('/tour-bids', tourBid);
   return response.data;  // Assuming the API returns the created news item
 }
+
+export const deleteTourBid = async (id: number) => {
+  const response = await http.delete('/tour-bids/' + id);
+  return response.data;  // Assuming the API returns the created news item
+}

@@ -1,28 +1,25 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
 import { TourBid } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
-import { baseData } from "./bids-page";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
-type BidCreateModalProps = {
+type BidEditModalProps = {
     isOpen: boolean;
     onClose: () => void;
     onSave: (tourBidData: TourBid) => void;
 };
 
-const BidCreateModal: React.FC<BidCreateModalProps> = ({
+const BidEditModal: React.FC<BidEditModalProps> = ({
     isOpen,
     onClose,
     onSave,
 }) => {
-    const { modalOpen } = useContext(BidTaskContext) as BidTaskContextProp
-    const [target, setTarget] = useState({...baseData})
+    const {target, setTarget} = useContext(BidTaskContext) as BidTaskContextProp
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         console.log(target);
@@ -34,12 +31,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
         queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
-    const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
-    useEffect(() => {
-        const u: TourBid = { ...baseData, accountId: accId }
-        console.log('Set target');
-        setTarget(u)
-    }, [modalOpen.create])
     const areas = simplifiedAreaQuery.data?.data ?? []
     return (
         <div
@@ -55,7 +46,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
             <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Tạo bài đăng
+                        Chỉnh sửa bài đăng
                     </h3>
                     <button
                         type="button"
@@ -184,4 +175,4 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     );
 };
 
-export default BidCreateModal;
+export default BidEditModal;

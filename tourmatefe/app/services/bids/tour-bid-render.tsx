@@ -71,10 +71,13 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBid }) {
                         </DropdownMenuTrigger>
                         <DropdownMenuContent>
                             <DropdownMenuItem onClick={() => {
-                                setTarget(tourBid)
+                                setTarget({ ...tourBid })
                                 setModalOpen({ ...modalOpen, edit: true })
                             }}>Cập nhật</DropdownMenuItem>
-                            <DropdownMenuItem>Xóa</DropdownMenuItem>
+                            <DropdownMenuItem onClick={() => {
+                                setTarget({ ...tourBid })
+                                setModalOpen({ ...modalOpen, delete: true })
+                            }}>Xóa</DropdownMenuItem>
                         </DropdownMenuContent>
                     </DropdownMenu>}
                 </div>

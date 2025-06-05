@@ -10,8 +10,8 @@ namespace Services
     {
         Task<TourBid> GetTourBid(int id);
         Task<PagedResult<TourBid>> GetBidsOf(int accountId, int pageSize, int pageIndex);
-        Task CreateTourBid(TourBid tourbid);
-        Task UpdateTourBid(TourBid tourbid);
+        Task<bool> CreateTourBid(TourBid tourbid);
+        Task<bool> UpdateTourBid(TourBid tourbid);
         Task<bool> DeleteTourBid(int id);
         Task<PagedResult<TourBid>> GetBids(string content, int pageSize, int pageIndex);
     }
@@ -30,14 +30,14 @@ namespace Services
             return await TourBidRepository.GetBidsOf(accountId, pageSize, pageIndex);
         }
 
-        public async Task CreateTourBid(TourBid tourbid)
+        public async Task<bool> CreateTourBid(TourBid tourbid)
         {
-            await TourBidRepository.CreateAsync(tourbid);
+            return await TourBidRepository.CreateAsync(tourbid);
         }
 
-        public async Task UpdateTourBid(TourBid tourbid)
+        public async Task<bool> UpdateTourBid(TourBid tourbid)
         {
-            await TourBidRepository.UpdateAsync(tourbid);
+            return await TourBidRepository.UpdateAsync(tourbid);
         }
 
         public async Task<bool> DeleteTourBid(int id)
