@@ -5,6 +5,7 @@ using Repositories.Context;
 using Repositories.Repository;
 using Services;
 using Services.Utils;
+using Services.VnPay;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
 
@@ -99,6 +100,7 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<VNPayService>();
 
 
 // Đăng ký DbContext

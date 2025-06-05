@@ -1,53 +1,55 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
+using Services.VnPay;
 
 namespace API.Controllers
 {
-    [Route("api/payments")]
+    [Route("api/payment")]
     [ApiController]
     public class PaymentController : ControllerBase
     {
-        private readonly IPaymentsService _paymentService;
+        private readonly VNPayService _vnPayService;
+        private readonly IConfiguration _config;
 
-        public PaymentController(IPaymentsService paymentService)
+        public PaymentController(VNPayService vnPayService, IConfiguration config)
         {
-            _paymentService = paymentService;
+            _vnPayService = vnPayService;
+            _config = config;
         }
 
-        [HttpGet("{id}")]
-        public ActionResult<Payment> Get(int id)
+        [HttpGet("create")]
+        public IActionResult CreatePayment(decimal amount, string orderId)
         {
-            return Ok(_paymentService.GetPayments(id));
+            var url = _vnPayService.CreatePaymentUrl(HttpContext, amount, orderId);
+            return Ok(new { paymentUrl = url });
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Payment>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        [HttpGet("vnpay-return")]
+        public IActionResult VNPayReturn()
         {
-            return Ok(_paymentService.GetAll(pageSize, pageIndex));
+            var vnpay = new VnPayLibrary();
+            foreach (var (key, value) in Request.Query)
+            {
+                if (key.StartsWith("vnp_"))
+                    vnpay.AddResponseData(key, value);
+            }
+
+            bool isValid = vnpay.ValidateSignature(_config["VNPay:HashSecret"]);
+            if (!isValid)
+                return BadRequest(new { msg = "Sai chữ ký" });
+
+            var responseCode = vnpay.GetResponseData("vnp_ResponseCode");
+            if (responseCode == "00")
+            {
+                return Ok(new { msg = "Thanh toán thành công" });
+            }
+            else
+            {
+                return BadRequest(new { msg = "Thanh toán thất bại" });
+            }
         }
 
-        [HttpPost]
-        public IActionResult Create([FromBody] PaymentCreateModel data)
-        {
-            var payment = data.Convert();
-            _paymentService.CreatePayments(payment);
-            return CreatedAtAction(nameof(Get), new { id = payment.PaymentId }, payment);
-        }
-
-        [HttpPut]
-        public IActionResult Update([FromBody] PaymentCreateModel payment)
-        {
-            _paymentService.UpdatePayments(payment.Convert());
-            return NoContent();
-        }
-
-        [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
-        {
-            var result = _paymentService.DeletePayments(id);
-            return result ? NoContent() : NotFound();
-        }
     }
 }
