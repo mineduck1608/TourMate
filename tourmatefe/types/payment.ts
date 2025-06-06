@@ -6,4 +6,6 @@ export type Payment = {
     paymentType: string;
     paymentMethod: string;
     accountId: number;
+    membershipId?: number;
+    invoiceId?: number;
 }

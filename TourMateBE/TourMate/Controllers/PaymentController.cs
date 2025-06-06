@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Azure;
+using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -144,6 +145,19 @@ namespace API.Controllers
             {
                 return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] PaymentCreateModel data)
+        {
+            var payment = data.Convert();
+
+            var result = await _paymentService.CreatePayments(payment);
+            if (result != null)
+            {
+                return Ok(result);
+            }
+            return BadRequest();
         }
     }
 }

@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query"
 import { fetchPaymentById } from "@/app/api/payment.api"
 import { fetchScheduleByInvoiceId } from "@/app/api/schedule.api"
 import { getInvoiceById } from "@/app/api/invoice.api"
+import { useEffect } from "react"
 
 export default function PaymentResult({
     searchParams,
@@ -50,7 +51,6 @@ export default function PaymentResult({
 
         return `${day}/${month}/${year} ${hour}:${minute}:${second}`;
     };
-
 
     return (
         <>

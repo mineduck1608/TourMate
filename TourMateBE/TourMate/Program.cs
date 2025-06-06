@@ -8,6 +8,8 @@ using Services.Utils;
 using Services.VnPay;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
+using Net.payOS;
+
 
 
 
@@ -117,6 +119,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton(sp =>
+{
+    var config = builder.Configuration.GetSection("PayOS");
+    var clientId = config["ClientId"];
+    var apiKey = config["ApiKey"];
+    var checksumKey = config["ChecksumKey"];
+    return new PayOS(clientId!, apiKey!, checksumKey!);
+});
+
 
 var app = builder.Build();
 

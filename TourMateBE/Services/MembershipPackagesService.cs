@@ -5,7 +5,7 @@ namespace Services
 {
     public interface IMembershipPackagesService
     {
-        MembershipPackage GetMembershipPackages(int id);
+        Task<MembershipPackage> GetMembershipPackages(int id);
         IEnumerable<MembershipPackage> GetAll(int pageSize, int pageIndex);
         void CreateMembershipPackages(MembershipPackage membershippackages);
         void UpdateMembershipPackages(MembershipPackage membershippackages);
@@ -16,9 +16,9 @@ namespace Services
     {
         private MembershipPackagesRepository MembershipPackagesRepository { get; set; } = new();
 
-        public MembershipPackage GetMembershipPackages(int id)
+        public Task<MembershipPackage> GetMembershipPackages(int id)
         {
-            return MembershipPackagesRepository.GetById(id);
+            return MembershipPackagesRepository.GetByIdAsync(id);
         }
 
         public IEnumerable<MembershipPackage> GetAll(int pageSize, int pageIndex)

@@ -24,3 +24,8 @@ export const fetchPaymentById = async (id: number) => {
   const response = await http.get<Payment>(`payment/${id}`)
   return response.data
 } 
+
+export const addPayment = async (data: Payment) => {
+  const response = await http.post('/payment', data);
+  return response.data;
+};

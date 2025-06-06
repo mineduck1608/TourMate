@@ -110,8 +110,8 @@ const ScheduleCard: FC<TourSchedule> = ({
         <p>📞 SĐT hướng dẫn viên: {tourGuidePhone}</p>
         <p>🌍 Khu vực: {areaName}</p>
         <p>
-          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm', { locale: vi })}
-          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm', { locale: vi })}` : ''}
+          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm')}
+          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm')}` : ''}
         </p>
 
         <p>👥 Số lượng người: {peopleAmount}</p>
