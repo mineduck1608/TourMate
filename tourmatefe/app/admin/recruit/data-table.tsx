@@ -30,9 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { toast } from "react-toastify";
 import Link from "next/link";
 import { Input } from "@/components/ui/input";
+import { getCVApplications } from "@/app/api/cv-application.api";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -59,14 +61,6 @@ export function DataTable<TData, TValue>({
 
   const LIMIT = 10; // Giới hạn số bản ghi/trang
 
-  // Log để debug
-  console.log("DataTable received data:", {
-    data,
-    totalResults,
-    totalPages,
-    page,
-  });
-
   // React Table setup
   const table = useReactTable({
     data,
@@ -87,15 +81,22 @@ export function DataTable<TData, TValue>({
     },
   });
 
-  // Log table data
-  console.log("Table rows:", table.getRowModel().rows);
-
+  // React Query lấy dữ liệu theo page
   const [searchTerm, setSearchTerm] = React.useState("");
+  const { refetch } = useQuery({
+    queryKey: ["cv-applications", page],
+    queryFn: ({ queryKey, signal }) => {
+      const [, currentPage] = queryKey;
+      return getCVApplications(currentPage, LIMIT, signal);
+    },
+    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
+  });
 
   React.useEffect(() => {
-    if (searchTerm) {
-      table.getColumn("phone")?.setFilterValue(searchTerm);
-    }
+    refetch();
+  }, [page]);
+  React.useEffect(() => {
+    refetch();
   }, [searchTerm]);
 
   return (
@@ -149,6 +150,7 @@ export function DataTable<TData, TValue>({
               </TableRow>
             ))}
           </TableHeader>
+
           <TableBody>
             {table.getRowModel().rows.length > 0 ? (
               table.getRowModel().rows.map((row) => (
@@ -192,7 +194,7 @@ export function DataTable<TData, TValue>({
             Trước
           </Button>
         ) : (
-          <Link href={`/admin/recruit?page=${page - 1}`}>
+          <Link href={`/admin/tour-guide?page=${page - 1}`}>
             <Button variant="outline" size="sm">
               Trước
             </Button>
