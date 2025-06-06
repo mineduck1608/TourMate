@@ -1,4 +1,4 @@
-import {  useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import "react-quill-new/dist/quill.snow.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addBid, getBidsOfTourBid } from "@/app/api/bid.api";
@@ -26,34 +26,75 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     const pageSize = 4
     const [page, setPage] = useState(1)
     const [bids, setBids] = useState<Bid[]>([])
+    const [hasMore, setHasMore] = useState(true)
     const [open, setOpen] = useState(false)
+    const scrollRef = useRef<HTMLDivElement>(null)
+    const [dataVersion, setDataVersion] = useState(0)
+
     const bidData = useQuery({
-        queryKey: ['bids-of', tourBid.tourBidId, pageSize, page],
+        queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
         queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
-        staleTime: 60 * 1000
+        staleTime: 60 * 1000,
+        keepPreviousData: true
     })
+
+    const resetData = () => {
+        setPage(1)
+        setBids([])
+        setHasMore(true)
+        setDataVersion(v => v + 1)
+    }
+
     const addBidMutation = useMutation({
         mutationFn: ({ data }: { data: Bid }) => addBid(data),
         onSuccess: () => {
             toast.success("Tạo thành công");
             setOpen(false)
-            setBids([])
-            bidData.refetch()
+            resetData()
+            // Scroll to top when new bid is created
+            setTimeout(() => {
+                if (scrollRef.current) {
+                    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+                }
+            }, 100)
         },
         onError: (error) => {
             toast.error("Tạo thất bại");
             console.error(error);
         },
     })
+
     useEffect(() => {
-        setBids([])
-    }, [])
+        if (!isOpen) return
+        resetData()
+    }, [isOpen, tourBid.tourBidId])
+
     useEffect(() => {
-        if (bidData.data) {
-            setBids(b => [...b, ...bidData.data.result])
+        if (!bidData.data) return
+
+        const newItems = bidData.data.result
+        const totalPages = bidData.data.totalPage ?? 0
+
+        if (page === 1) {
+            setBids(newItems)
+        } else {
+            setBids(prev => {
+                const existingIds = new Set(prev.map(b => b.bidId))
+                const filteredNewItems = newItems.filter(b =>
+                    !existingIds.has(b.bidId)
+                )
+                return [...prev, ...filteredNewItems]
+            })
         }
+
+        setHasMore(page < totalPages)
     }, [bidData.data])
-    const totalPage = bidData.data?.totalPage ?? 0
+
+    const loadMore = () => {
+        if (!bidData.isFetching && hasMore) {
+            setPage(prev => prev + 1)
+        }
+    }
 
     return (
         <div
@@ -94,40 +135,48 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 <div
                     id="scrollableDiv"
                     className="max-h-[500px] overflow-y-auto"
-                    onScroll={(e) => {
-                        const { scrollHeight, scrollTop, clientHeight } = e.currentTarget
-                        if (scrollHeight - scrollTop === clientHeight && totalPage !== 0 && page < totalPage) {
-                            setPage(p => Math.min(p + 1, totalPage))
-                        }
-                    }}
+                    ref={scrollRef}
                 >
-                    <InfiniteScroll dataLength={bids.length}
-                        next={() => {
-                        }}
-                        hasMore={page < totalPage} loader={<p>Loading...</p>}
-                        scrollableTarget={'scrollableDiv'}
-                    >
-                        {
-                            bids.map((v) => (
-                                <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center ">
-                                    <div className="flex justify-between">
-                                        <div className="flex items-center">
-                                            <SafeImage src={v.tourGuide?.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                            <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
-
-                                        </div>
-                                        <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
-                                    </div>
-                                    <div className="wrap-break-word mt-4">
-                                        {v.comment}
-                                    </div>
-                                </div>
-                            ))
+                    <InfiniteScroll 
+                        dataLength={bids.length}
+                        next={loadMore}
+                        hasMore={hasMore}
+                        loader={
+                            <div className="flex justify-center py-4">
+                                {bidData.isFetching && bids.length > 0 ? (
+                                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+                                ) : null}
+                            </div>
                         }
+                        endMessage={
+                            bids.length > 0 ? (
+                                <p className="text-center py-4 text-gray-500">
+                                    {bidData.data?.result.length === 0
+                                        ? "No results found"
+                                        : "Bạn đã xem hết tất cả kết quả"}
+                                </p>
+                            ) : null
+                        }
+                        scrollableTarget="scrollableDiv"
+                    >
+                        {bids.map((v) => (
+                            <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center ">
+                                <div className="flex justify-between">
+                                    <div className="flex items-center">
+                                        <SafeImage src={v.tourGuide?.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                        <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
+                                    </div>
+                                    <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
+                                </div>
+                                <div className="wrap-break-word mt-4">
+                                    {v.comment}
+                                </div>
+                            </div>
+                        ))}
                     </InfiniteScroll>
                 </div>
                 {bids.length === 0 && !bidData.isFetching &&
-                    <p>Không có lượt đấu giá nào</p>
+                    <p className="text-center py-4 text-gray-500">Không có lượt đấu giá nào</p>
                 }
                 <div className="my-4 mt-0 border-t-[1px]" />
                 <Button
@@ -137,7 +186,8 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 >
                     Tham gia đấu giá
                 </Button>
-                {open && <ParticipateBidModal isOpen
+                {open && <ParticipateBidModal 
+                    isOpen
                     onClose={() => setOpen(false)}
                     tourBid={tourBid}
                     onSave={(b) => {
