@@ -1,3 +1,4 @@
+import { Payment } from "@/types/payment";
 import http from "../utils/http";
 
 // Define or extend PaymentResponse to include paymentUrl
@@ -18,3 +19,8 @@ export const getCreatePaymentUrl = async (
   });
   return res.data.paymentUrl;
 };
+
+export const fetchPaymentById = async (id: number) => {
+  const response = await http.get<Payment>(`payment/${id}`)
+  return response.data
+} 

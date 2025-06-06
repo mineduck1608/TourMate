@@ -19,8 +19,6 @@ namespace Services
     public class InvoiceService : IInvoiceService
     {
         private InvoiceRepository InvoiceRepository { get; set; } = new();
-        private AccountRepository AccountRepository { get; set; } = new();
-
 
         public async Task<PagedResult<TourSchedule>> GetPagedAsync(string status, string search, int page, int pageSize, int accountId, string role)
         {

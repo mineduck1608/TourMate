@@ -6,7 +6,7 @@ import type { TourSchedule } from "@/types/tour-schedule"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { Calendar, Users, Phone, Mail, CreditCard,  CheckCircle2, ArrowLeft, Clock, Star, ShieldCheck, WalletCards } from 'lucide-react'
+import { Calendar, Users, Phone, Mail, CreditCard, CheckCircle2, ArrowLeft, Clock, Star, ShieldCheck, WalletCards } from 'lucide-react'
 import { fetchScheduleByInvoiceId } from "@/app/api/schedule.api"
 import Footer from "@/components/Footer"
 import MegaMenu from "@/components/mega-menu"
@@ -95,10 +95,10 @@ export default function TourPaymentPage() {
   const [paying, setPaying] = useState(false)
 
   const token = useToken("accessToken");
-      const decoded: MyJwtPayload | null = token
-          ? jwtDecode<MyJwtPayload>(token.toString())
-          : null;
-      const accountId = decoded?.AccountId;
+  const decoded: MyJwtPayload | null = token
+    ? jwtDecode<MyJwtPayload>(token.toString())
+    : null;
+  const accountId = decoded?.AccountId;
 
   useEffect(() => {
     async function loadSchedule() {
@@ -119,42 +119,42 @@ export default function TourPaymentPage() {
   }, [invoiceId])
 
   const handlePayment = async () => {
-  if (!selectedMethod) {
-    alert("Vui lòng chọn phương thức thanh toán");
-    return;
-  }
-  if (!schedule) {
-    alert("Không có dữ liệu lịch hẹn");
-    return;
-  }
+    if (!selectedMethod) {
+      alert("Vui lòng chọn phương thức thanh toán");
+      return;
+    }
+    if (!schedule) {
+      alert("Không có dữ liệu lịch hẹn");
+      return;
+    }
 
-  try {
-    setPaying(true);
+    try {
+      setPaying(true);
 
-    if (selectedMethod.toLowerCase() === "vnpay") {
-      // Gọi API backend để lấy paymentUrl
-      const amount = schedule.price || 0; // hoặc lấy giá đúng bạn cần
-      const orderId = invoiceId; // hoặc ID đơn hàng bạn có
+      if (selectedMethod.toLowerCase() === "vnpay") {
+        // Gọi API backend để lấy paymentUrl
+        const amount = schedule.price || 0; // hoặc lấy giá đúng bạn cần
+        const orderId = invoiceId; // hoặc ID đơn hàng bạn có
 
-      // Gọi API backend VNPAY
-      const paymentUrl = await getCreatePaymentUrl(amount, orderId, "Đặt lịch hẹn");
-      console.log("Payment URL:", paymentUrl);
+        // Gọi API backend VNPAY
+        const paymentUrl = await getCreatePaymentUrl(amount, orderId, "Đặt lịch hẹn");
+        console.log("Payment URL:", paymentUrl);
 
-      if (paymentUrl) {
-        window.location.href = paymentUrl;
+        if (paymentUrl) {
+          window.location.href = paymentUrl;
+        } else {
+          throw new Error("Không nhận được URL thanh toán");
+        }
       } else {
-        throw new Error("Không nhận được URL thanh toán");
+        // Xử lý các phương thức thanh toán khác
+        alert("Phương thức thanh toán chưa được hỗ trợ");
+        setPaying(false);
       }
-    } else {
-      // Xử lý các phương thức thanh toán khác
-      alert("Phương thức thanh toán chưa được hỗ trợ");
+    } catch (error) {
+      alert(error instanceof Error ? error.message : "Lỗi thanh toán");
       setPaying(false);
     }
-  } catch (error) {
-    alert(error instanceof Error ? error.message : "Lỗi thanh toán");
-    setPaying(false);
-  }
-};
+  };
 
 
   if (loading) {
@@ -190,206 +190,206 @@ export default function TourPaymentPage() {
 
   return (
     <>
-    <MegaMenu />
-    <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
-      <div className="max-w-full mx-auto p-20">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Tour Information - Left Side */}
-          <div className="lg:col-span-3">
-            <Card className="overflow-hidden shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
-              {/* Hero Section */}
-              <div className="relative h-45 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 overflow-hidden">
+      <MegaMenu />
+      <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-100">
+        <div className="max-w-full mx-auto p-20">
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
+            {/* Tour Information - Left Side */}
+            <div className="lg:col-span-3">
+              <Card className="overflow-hidden shadow-2xl border-0 bg-white/90 backdrop-blur-sm">
+                {/* Hero Section */}
+                <div className="relative h-45 bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 overflow-hidden">
 
-                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
-                <div className="absolute bottom-8 left-8 text-white">
-                  <h2 className="text-4xl font-bold leading-tight mb-2">{schedule.tourName}</h2>
-                  <p className="text-sm text-white mb-4">Mã đơn hàng: #{invoiceId}</p>
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
+                  <div className="absolute bottom-8 left-8 text-white">
+                    <h2 className="text-4xl font-bold leading-tight mb-2">{schedule.tourName}</h2>
+                    <p className="text-sm text-white mb-4">Mã đơn hàng: #{invoiceId}</p>
 
-                  <div className="flex items-center gap-3 text-blue-100">
-                    <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
-                      <Star className="w-4 h-4 text-yellow-300 fill-current" />
-                      <span className="text-white font-medium">4.9</span>
-                    </div>
-                    <Badge variant="outline" className="bg-white/20 text-white border-white/30">
-                      {schedule.status}
-                    </Badge>
-                  </div>
-                </div>
-              </div>
-
-              <CardContent className="p-8">
-                {/* Customer Info */}
-                <div className="mb-8">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                      <Users className="w-5 h-5 text-blue-600" />
-                    </div>
-                    Thông tin khách hàng
-                  </h3>
-                  <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl p-8">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
-                          {schedule.customerName.charAt(0)}
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500 mb-1">Họ tên</p>
-                          <p className="font-bold text-gray-900 text-lg">{schedule.customerName}</p>
-                        </div>
+                    <div className="flex items-center gap-3 text-blue-100">
+                      <div className="flex items-center gap-1 bg-white/20 backdrop-blur-sm rounded-full px-3 py-1">
+                        <Star className="w-4 h-4 text-yellow-300 fill-current" />
+                        <span className="text-white font-medium">4.9</span>
                       </div>
-                      <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
-                          <Phone className="w-6 h-6 text-green-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500 mb-1">Số điện thoại</p>
-                          <p className="font-bold text-gray-900 text-lg">{schedule.customerPhone}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 md:col-span-2">
-                        <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
-                          <Mail className="w-6 h-6 text-purple-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm text-gray-500 mb-1">Email</p>
-                          <p className="font-bold text-gray-900 text-lg">{schedule.email}</p>
-                        </div>
-                      </div>
+                      <Badge variant="outline" className="bg-white/20 text-white border-white/30">
+                        {schedule.status}
+                      </Badge>
                     </div>
-                  </div>
-                </div>
-
-                {/* Trip Details */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                  <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 text-center border border-orange-100">
-                    <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Calendar className="w-8 h-8 text-white" />
-                    </div>
-                    <p className="text-sm text-gray-500 mb-2">Thời gian khởi hành</p>
-                    <p className="font-bold text-gray-900 text-lg">{formatDateTime(schedule.startDate)}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 text-center border border-green-100">
-                    <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Clock className="w-8 h-8 text-white" />
-                    </div>
-                    <p className="text-sm text-gray-500 mb-2">Thời gian kết thúc</p>
-                    <p className="font-bold text-gray-900 text-lg">{formatDateTime(schedule.endDate)}</p>
-                  </div>
-                  <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 text-center border border-blue-100">
-                    <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
-                      <Users className="w-8 h-8 text-white" />
-                    </div>
-                    <p className="text-sm text-gray-500 mb-2">Số người</p>
-                    <p className="font-bold text-gray-900 text-lg">{schedule.peopleAmount} người</p>
-                  </div>
-                </div>
-
-                {/* Tour Guide */}
-                <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-3xl p-8 border border-indigo-100">
-                  <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
-                    <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
-                      <Users className="w-5 h-5 text-indigo-600" />
-                    </div>
-                    Hướng dẫn viên
-                  </h3>
-                  <div className="flex items-center gap-6">
-                    <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
-                      {schedule.tourGuideName.charAt(0)}
-                    </div>
-                    <div className="flex-1">
-                      <p className="font-bold text-gray-900 text-xl mb-1">{schedule.tourGuideName}</p>
-                      <p className="text-gray-600 text-lg mb-2">{schedule.tourGuidePhone}</p>
-                      <div className="flex items-center gap-1">
-                        {[...Array(5)].map((_, i) => (
-                          <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
-                        ))}
-                        <span className="text-sm text-gray-500 ml-2 font-medium">(4.9 • 127 đánh giá)</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Payment Section - Right Side */}
-          <div className="lg:col-span-2">
-            <div className="">
-              <Card className="overflow-hidden shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
-                {/* Price Header */}
-                <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 p-8 text-white text-center relative overflow-hidden">
-                  <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
-                  <div className="relative z-10">
-                    <p className="text-green-100 text-lg font-medium mb-3">Tổng thanh toán</p>
-                    <div className="text-5xl font-bold mb-2">{schedule.price.toLocaleString("vi-VN")} ₫</div>
-                    <p className="text-green-100 text-sm">Đã bao gồm thuế và phí dịch vụ</p>
                   </div>
                 </div>
 
                 <CardContent className="p-8">
-                  {/* Payment Methods */}
+                  {/* Customer Info */}
                   <div className="mb-8">
                     <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
                       <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                        <CreditCard className="w-5 h-5 text-blue-600" />
+                        <Users className="w-5 h-5 text-blue-600" />
                       </div>
-                      Chọn phương thức thanh toán
+                      Thông tin khách hàng
                     </h3>
-                    <div className="grid grid-cols-1 gap-4">
-                      {paymentMethods.map((method) => (
-                        <PaymentMethodCard
-                          key={method.key}
-                          method={method}
-                          isSelected={selectedMethod === method.key}
-                          onSelect={() => setSelectedMethod(method.key)}
-                        />
-                      ))}
+                    <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-3xl p-8">
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold text-lg">
+                            {schedule.customerName.charAt(0)}
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500 mb-1">Họ tên</p>
+                            <p className="font-bold text-gray-900 text-lg">{schedule.customerName}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center">
+                            <Phone className="w-6 h-6 text-green-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500 mb-1">Số điện thoại</p>
+                            <p className="font-bold text-gray-900 text-lg">{schedule.customerPhone}</p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4 md:col-span-2">
+                          <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center">
+                            <Mail className="w-6 h-6 text-purple-600" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-gray-500 mb-1">Email</p>
+                            <p className="font-bold text-gray-900 text-lg">{schedule.email}</p>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Payment Button */}
-                  <Button
-                    onClick={handlePayment}
-                    disabled={!selectedMethod || paying}
-                    className={`w-full h-16 text-xl font-bold rounded-2xl transition-all duration-300 ${selectedMethod && !paying
-                      ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
-                      : "bg-gray-300 cursor-not-allowed"
-                      }`}
-                  >
-                    {paying ? (
-                      <div className="flex items-center gap-3">
-                        <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-                        Đang xử lý thanh toán...
+                  {/* Trip Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div className="bg-gradient-to-br from-orange-50 to-red-50 rounded-3xl p-8 text-center border border-orange-100">
+                      <div className="w-16 h-16 bg-orange-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Calendar className="w-8 h-8 text-white" />
                       </div>
-                    ) : (
-                      <div className="flex items-center gap-3">
-                        <WalletCards className="w-12 h-12" />
-                        Thanh toán
+                      <p className="text-sm text-gray-500 mb-2">Thời gian khởi hành</p>
+                      <p className="font-bold text-gray-900 text-lg">{formatDateTime(schedule.startDate)}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-3xl p-8 text-center border border-green-100">
+                      <div className="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Clock className="w-8 h-8 text-white" />
                       </div>
-                    )}
-                  </Button>
+                      <p className="text-sm text-gray-500 mb-2">Thời gian kết thúc</p>
+                      <p className="font-bold text-gray-900 text-lg">{formatDateTime(schedule.endDate)}</p>
+                    </div>
+                    <div className="bg-gradient-to-br from-blue-50 to-cyan-50 rounded-3xl p-8 text-center border border-blue-100">
+                      <div className="w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <Users className="w-8 h-8 text-white" />
+                      </div>
+                      <p className="text-sm text-gray-500 mb-2">Số người</p>
+                      <p className="font-bold text-gray-900 text-lg">{schedule.peopleAmount} người</p>
+                    </div>
+                  </div>
 
-                  {/* Security Features */}
-                  <div className="mt-7 p-6 bg-gray-50 rounded-2xl">
-                    <div className="flex items-center justify-center gap-8 text-sm text-gray-600">
-                      <div className="flex items-center gap-2">
-                        <ShieldCheck className="w-5 h-5 text-green-500" />
-                        <span className="font-medium">Mã hóa SSL</span>
+                  {/* Tour Guide */}
+                  <div className="bg-gradient-to-r from-indigo-50 to-purple-50 rounded-3xl p-8 border border-indigo-100">
+                    <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                      <div className="w-8 h-8 bg-indigo-100 rounded-full flex items-center justify-center">
+                        <Users className="w-5 h-5 text-indigo-600" />
                       </div>
-                      <div className="flex items-center gap-2">
-                        <CheckCircle2 className="w-5 h-5 text-green-500" />
-                        <span className="font-medium">Bảo mật 100%</span>
+                      Hướng dẫn viên
+                    </h3>
+                    <div className="flex items-center gap-6">
+                      <div className="w-20 h-20 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold text-2xl">
+                        {schedule.tourGuideName.charAt(0)}
+                      </div>
+                      <div className="flex-1">
+                        <p className="font-bold text-gray-900 text-xl mb-1">{schedule.tourGuideName}</p>
+                        <p className="text-gray-600 text-lg mb-2">{schedule.tourGuidePhone}</p>
+                        <div className="flex items-center gap-1">
+                          {[...Array(5)].map((_, i) => (
+                            <Star key={i} className="w-5 h-5 text-yellow-400 fill-current" />
+                          ))}
+                          <span className="text-sm text-gray-500 ml-2 font-medium">(4.9 • 127 đánh giá)</span>
+                        </div>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
             </div>
+
+            {/* Payment Section - Right Side */}
+            <div className="lg:col-span-2">
+              <div className="">
+                <Card className="overflow-hidden shadow-2xl border-0 bg-white/95 backdrop-blur-sm">
+                  {/* Price Header */}
+                  <div className="bg-gradient-to-r from-emerald-500 via-green-500 to-teal-500 p-8 text-white text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-white/10 backdrop-blur-sm"></div>
+                    <div className="relative z-10">
+                      <p className="text-green-100 text-lg font-medium mb-3">Tổng thanh toán</p>
+                      <div className="text-5xl font-bold mb-2">{schedule.price.toLocaleString("vi-VN")} ₫</div>
+                      <p className="text-green-100 text-sm">Đã bao gồm thuế và phí dịch vụ</p>
+                    </div>
+                  </div>
+
+                  <CardContent className="p-8">
+                    {/* Payment Methods */}
+                    <div className="mb-8">
+                      <h3 className="text-xl font-bold text-gray-900 mb-6 flex items-center gap-3">
+                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                          <CreditCard className="w-5 h-5 text-blue-600" />
+                        </div>
+                        Chọn phương thức thanh toán
+                      </h3>
+                      <div className="grid grid-cols-1 gap-4">
+                        {paymentMethods.map((method) => (
+                          <PaymentMethodCard
+                            key={method.key}
+                            method={method}
+                            isSelected={selectedMethod === method.key}
+                            onSelect={() => setSelectedMethod(method.key)}
+                          />
+                        ))}
+                      </div>
+                    </div>
+
+                    {/* Payment Button */}
+                    <Button
+                      onClick={handlePayment}
+                      disabled={!selectedMethod || paying}
+                      className={`w-full h-16 text-xl font-bold rounded-2xl transition-all duration-300 ${selectedMethod && !paying
+                        ? "bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 shadow-lg hover:shadow-xl transform hover:-translate-y-1"
+                        : "bg-gray-300 cursor-not-allowed"
+                        }`}
+                    >
+                      {paying ? (
+                        <div className="flex items-center gap-3">
+                          <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                          Đang xử lý thanh toán...
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-3">
+                          <WalletCards className="w-12 h-12" />
+                          Thanh toán
+                        </div>
+                      )}
+                    </Button>
+
+                    {/* Security Features */}
+                    <div className="mt-7 p-6 bg-gray-50 rounded-2xl">
+                      <div className="flex items-center justify-center gap-8 text-sm text-gray-600">
+                        <div className="flex items-center gap-2">
+                          <ShieldCheck className="w-5 h-5 text-green-500" />
+                          <span className="font-medium">Mã hóa SSL</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <CheckCircle2 className="w-5 h-5 text-green-500" />
+                          <span className="font-medium">Bảo mật 100%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <Footer />
+      <Footer />
     </>
   )
 }

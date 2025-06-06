@@ -25,6 +25,12 @@ namespace API.Controllers
             _paymentService = paymentService;
         }
 
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Payment>> Get(int id)
+        {
+            return Ok( await _paymentService.GetPayments(id));
+        }
+
         //[HttpGet("create")]
         //public IActionResult CreatePayment(decimal amount, string orderId)
         //{
@@ -79,11 +85,13 @@ namespace API.Controllers
             var response = _vnPayService.PaymentExecute(Request.Query);
             if (!response.Success)
             {
-                return Redirect($"http://localhost:3000/pay-result?success=false");
+                return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
+                ;
             }
 
             try
             {
+                var result = new Payment { };
                 if (response.OrderDescription != "Membership")
                 {
                     // Order desc is txn id
@@ -91,7 +99,7 @@ namespace API.Controllers
                     // Convert txnId from string to int to match the method signature
                     if (!int.TryParse(invoiceId, out var invoiceIdInt))
                     {
-                        return Redirect($"http://localhost:3000/pay-result?success=false");
+                        return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
                     }
                     var s = await _invoiceService.GetInvoice(invoiceIdInt);
                     s.Status = "Sắp diễn ra";
@@ -104,7 +112,7 @@ namespace API.Controllers
                         InvoiceId = s.InvoiceId,
                         Price = response.Amount,
                         CompleteDate = DateTime.Now,
-                        PaymentType = "Invoice",
+                        PaymentType = "Đặt chuyến đi",
                         PaymentMethod = "VNPay",
                         Status = "Thành công",
                         AccountId = account.Customer.Account.AccountId,
@@ -112,10 +120,10 @@ namespace API.Controllers
 
                     var payment = data.Convert();
 
-                    var result = await _paymentService.CreatePayments(payment);
-                    if (!result)
+                    result = await _paymentService.CreatePayments(payment);
+                    if (result == null)
                     {
-                        return Redirect($"http://localhost:3000/pay-result?success=false");
+                        return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
 
                     }
 
@@ -124,17 +132,17 @@ namespace API.Controllers
                 {
                     //var tr = await _invoiceService.GetTransactionById(txnIdInt);
                     //if (tr == null)
-                    //    return Redirect($"http://localhost:3000/pay-result?success=false");
+                    //    return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
 
                     //var result = await UpdateServiceTransaction(tr);
                     //result.Add("success", "True");
-                    //return Redirect($"http://localhost:3000/pay-result?{Util.QueryStringFromDict(result)}");
+                    //return Redirect($"http://localhost:3000/payment/pay-result?{Util.QueryStringFromDict(result)}");
                 }
-                return Redirect($"http://localhost:3000/pay-result?success=true");
+                return Redirect($"http://localhost:3000/payment/pay-result?success=true&id={(response.OrderDescription)}&paymentId={result.PaymentId}");
             }
             catch (Exception ex)
             {
-                return Redirect($"http://localhost:3000/pay-result?success=false");
+                return Redirect($"http://localhost:3000/payment/pay-result?success=false&id={(response.OrderDescription)}");
             }
         }
     }

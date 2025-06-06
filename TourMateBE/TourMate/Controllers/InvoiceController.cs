@@ -18,9 +18,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Invoice> Get(int id)
+        public async Task<ActionResult<Invoice>> Get(int id)
         {
-            return Ok(_invoiceService.GetInvoice(id));
+            return Ok(await _invoiceService.GetInvoice(id));
         }
 
         [HttpGet]
