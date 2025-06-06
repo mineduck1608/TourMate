@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -29,9 +30,19 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Cvapplication>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<Cvapplication>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_cvapplicationService.GetAll(pageSize, pageIndex));
+            // Gọi service để lấy dữ liệu đã lọc và phân trang
+            var result = await _cvapplicationService.GetAll(pageSize, pageIndex);
+            // Tạo đối tượng PagedResult để trả về cho client
+            var response = new PagedResult<Cvapplication>
+            {
+                Result = result.Result,  // Các Cvapplication đã lọc
+                TotalResult = result.TotalResult,  // Tổng số kết quả
+                TotalPage = result.TotalPage  // Tổng số trang
+            };
+
+            return Ok(response);  // Trả về dữ liệu dưới dạng OK response
         }
 
         [HttpPost]

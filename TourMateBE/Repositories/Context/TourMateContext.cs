@@ -63,6 +63,8 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<TourService> TourServices { get; set; }
 
+    public virtual DbSet<UserLikeTourBid> UserLikeTourBids { get; set; }
+
     public static string GetConnectionString(string connectionStringName)
     {
         var config = new ConfigurationBuilder()
@@ -73,10 +75,8 @@ public partial class TourmateContext : DbContext
         string connectionString = config.GetConnectionString(connectionStringName);
         return connectionString;
     }
-
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
-
+       => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -298,6 +298,9 @@ public partial class TourmateContext : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
                 .HasColumnName("address");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createdAt");
             entity.Property(e => e.DateOfBirth).HasColumnName("dateOfBirth");
             entity.Property(e => e.Description).HasColumnName("description");
             entity.Property(e => e.Email)
@@ -770,6 +773,24 @@ public partial class TourmateContext : DbContext
                 .HasForeignKey(d => d.TourGuideId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKTourServic281225");
+        });
+
+        modelBuilder.Entity<UserLikeTourBid>(entity =>
+        {
+            entity
+                .HasNoKey()
+                .ToTable("UserLikeTourBid");
+
+            entity.Property(e => e.AccountId).HasColumnName("accountId");
+            entity.Property(e => e.TourBidId).HasColumnName("tourBidId");
+
+            entity.HasOne(d => d.Account).WithMany()
+                .HasForeignKey(d => d.AccountId)
+                .HasConstraintName("FK__UserLikeT__accou__03F0984C");
+
+            entity.HasOne(d => d.TourBid).WithMany()
+                .HasForeignKey(d => d.TourBidId)
+                .HasConstraintName("FK__UserLikeT__tourB__02FC7413");
         });
 
         OnModelCreatingPartial(modelBuilder);

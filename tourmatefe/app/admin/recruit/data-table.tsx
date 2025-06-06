@@ -30,12 +30,11 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { toast } from "react-toastify";
 import Link from "next/link";
-import { getCVApplications } from "@/app/api/cv-application.api";
 import { Input } from "@/components/ui/input";
+import { getCVApplications } from "@/app/api/cv-application.api";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
