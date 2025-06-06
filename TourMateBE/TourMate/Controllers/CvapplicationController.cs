@@ -50,7 +50,7 @@ namespace API.Controllers
         {
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-
+            
             if (!ValidInput.IsMailFormatted(data.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
 
@@ -64,6 +64,9 @@ namespace API.Controllers
                 return Conflict(new { msg = "Số điện thoại này đã được sử dụng!" });
 
             var cvapplication = data.Convert();
+
+            cvapplication.Status = "Đang chờ duyệt";
+
             var result = await _cvapplicationService.CreateCvapplication(cvapplication);
             if (!result) return BadRequest(new { msg = "Tạo hồ sơ ứng tuyển thất bại." });
             return Ok(new { msg = "Tạo hồ sơ ứng tuyển thành công, bạn sẽ nhận được thông tin phản hồi trong thời gian sớm nhất." });
@@ -84,3 +87,85 @@ namespace API.Controllers
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
