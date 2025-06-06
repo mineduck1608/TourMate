@@ -1,46 +1,17 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext } from "react";
 import BidList from "./bid-list";
 import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./bid-create-modal";
-import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import { Customer } from "@/types/customer";
-import { BidTaskContext } from "./bid-task-context";
+import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 import DeleteModal from "@/components/delete-modal";
 import BidEditModal from "./bid-edit-modal";
-export const baseData: TourBidListResult = {
-  tourBidId: 0,
-  accountId: 0,
-  createdAt: "",
-  placeRequested: 0,
-  status: "",
-  content: "",
-  maxPrice: undefined,
-  customerName: "",
-  placeRequestedName: "",
-  likeCount: 0,
-  isLiked: false,
-  customerImg: ""
-}
+import { baseData } from "./page";
+
 export default function Bids({ customer, search }: { customer?: Customer, search: string }) {
-  const [modalOpen, setModalOpen] = useState({
-    changeStatus: false,
-    edit: false,
-    delete: false,
-    create: false
-  });
-  const [signal, setSignal] = useState({
-    edit: false,
-    create: false,
-    delete: false
-  });
-  const [target, setTarget] = useState<TourBidListResult | TourBid>({ ...baseData });
-
-  useEffect(() => {
-    setTarget({ ...target, accountId: customer?.accountId ?? 0 });
-  }, [customer?.accountId]);
-
+  const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp
   return (
-    <BidTaskContext.Provider value={{ signal, setSignal, modalOpen, setModalOpen, setTarget, target }}>
+    <div>
       <div className="z-10 bg-white pt-4 pb-2">
         <div className="flex h-min">
           <SafeImage
@@ -86,10 +57,10 @@ export default function Bids({ customer, search }: { customer?: Customer, search
         }}
         onSave={(tourBid) => {
           setTarget(tourBid)
-          setModalOpen({...modalOpen, edit: false})
+          setModalOpen({ ...modalOpen, edit: false })
           setSignal({ ...signal, edit: true })
         }}
       />}
-    </BidTaskContext.Provider>
+    </div>
   );
 }

@@ -56,7 +56,7 @@ function TourGuideContent({ children }: { children: ReactNode }) {
 
 
   return <>
-    {data && <TourGuideSiteContext.Provider value={{ id: data }}>
+    {data && <TourGuideSiteContext.Provider value={{ id: data, accId }}>
       {children}
     </TourGuideSiteContext.Provider>}
   </>;

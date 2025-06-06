@@ -1,17 +1,19 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid } from "@/types/tour-bid";
+import { TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
+import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
+import { baseData } from "./page";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
 type BidCreateModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (tourBidData: TourBid) => void;
+    onSave: (tourBidData: TourBidListResult) => void;
 };
 
 const BidCreateModal: React.FC<BidCreateModalProps> = ({
@@ -19,20 +21,22 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     onClose,
     onSave,
 }) => {
-    const { setTarget, target } = useContext(BidTaskContext) as BidTaskContextProp
-
-    const [maxPrice, setMaxPrice] = useState(target.maxPrice ? target.maxPrice.toString() : '')
-
+    const { modalOpen } = useContext(BidTaskContext) as BidTaskContextProp
+    const [target, setTarget] = useState({...baseData})
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(target);
-        onClose();
     };
     const simplifiedAreaQuery = useQuery({
         queryKey: ['simplified-area'],
         queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
+    const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
+    useEffect(() => {
+        const u: TourBidListResult = { ...baseData, accountId: accId }
+        setTarget(u)
+    }, [modalOpen.create])
     const areas = simplifiedAreaQuery.data?.data ?? []
     return (
         <div
@@ -77,7 +81,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm
+                                Địa điểm ({target.placeRequested})
                             </label>
                             <select
                                 id="placeRequested"
@@ -85,7 +89,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                 required
                                 onChange={(e) => {
-                                    console.log(Number(e.target.value));
                                     setTarget({ ...target, placeRequested: Number(e.target.value) })
                                 }}
                                 value={target.placeRequested}
@@ -95,7 +98,8 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 </option>
                                 {
                                     areas.map((v, i) =>
-                                        <option value={v.areaId} key={'area' + i}>{v.areaName}</option>
+                                        <option value={v.areaId} key={'area' + i}
+                                        >{v.areaName}</option>
                                     )
                                 }
                             </select>
@@ -105,18 +109,35 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="areaType"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Giá cao nhất (tùy chọn)
+                                Giá mong đợi (tùy chọn)
                             </label>
                             <input
                                 type="number"
                                 name="maxPrice"
-                                id="aremaxPriceaTitle"
+                                id="maxPriceInput"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
-                                value={maxPrice}
+                                min="0"
+                                step="1"
+                                value={target.maxPrice ?? ''}
                                 onChange={(e) => {
-                                    const v = Number(e.target.value)
-                                    setTarget({ ...target, maxPrice: v === 0 ? undefined : v })
-                                    setMaxPrice(e.target.value)
+                                    const rawValue = e.target.value;
+                                    // Handle empty input (will set to undefined)
+                                    if (rawValue === '') {
+                                        setTarget({ ...target, maxPrice: undefined });
+                                        return;
+                                    }
+
+                                    const numValue = Number(rawValue);
+                                    // Only update if it's a valid positive integer
+                                    if (!isNaN(numValue) && numValue >= 0) {
+                                        setTarget({ ...target, maxPrice: Math.floor(numValue) });
+                                    }
+                                }}
+                                onBlur={(e) => {
+                                    // Sanitize value on blur
+                                    if (e.target.value === '' || Number(e.target.value) <= 0) {
+                                        setTarget({ ...target, maxPrice: undefined });
+                                    }
                                 }}
                             />
                         </div>
@@ -147,7 +168,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                     </div>
                     <div className="flex justify-end">
                         <button
-                            disabled={target.content.length === 0}
+                            disabled={target.content.length === 0 || target.placeRequested === 0}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >

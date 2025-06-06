@@ -49,7 +49,7 @@ namespace API.Controllers
         public async Task<IActionResult> UpdateAsync([FromBody] TourBidUpdateModel tourbid)
         {
             var r = await _tourbidService.UpdateTourBid(tourbid.Convert());
-            return r? NoContent() : BadRequest();
+            return r ? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]
@@ -57,6 +57,12 @@ namespace API.Controllers
         {
             var result = await _tourbidService.DeleteTourBid(id);
             return result ? NoContent() : NotFound();
+        }
+        [HttpPost("like-or-unlike")]
+        public async Task<IActionResult> LikeOrUnlikeBid(int accountId, int tourBidId)
+        {
+            var result = await _tourbidService.LikeOrUnlikeBid(accountId, tourBidId);
+            return result ? NoContent() : BadRequest();
         }
     }
 }

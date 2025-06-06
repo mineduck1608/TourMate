@@ -39,7 +39,7 @@ namespace Repositories.Repository
                     CustomerImg = x.Account.Customers.FirstOrDefault().Image,
                     MaxPrice = x.MaxPrice,
                     PlaceRequestedName = x.PlaceRequestedNavigation.AreaName,
-                    Status = x.Status                    
+                    Status = x.Status
                 }).ToListAsync()
                 ;
             return new PagedResult<TourBidListResult>
@@ -69,6 +69,55 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
+
+        public async Task<bool> LikeOrUnlikeBid(int accountId, int tourBidId)
+        {
+            try
+            {
+                var entry = await _context.UserLikeBids
+                    .FirstOrDefaultAsync(x => x.AccountId == accountId && x.TourBidId == tourBidId);
+                if (entry != null)
+                {
+                    _context.UserLikeBids.Remove(entry); // Unlike
+                }
+                else
+                {
+                    _context.UserLikeBids.Add(new UserLikeBid
+                    {
+                        AccountId = accountId,
+                        TourBidId = tourBidId
+                    }); // Like
+                }
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+                return false;
+            }
+        }
+
+        public new async Task<bool> RemoveAsync(int id)
+        {
+            try
+            {
+                var entity = await _context.TourBids.FindAsync(id);
+                if (entity != null)
+                {
+                    entity.IsDeleted = true; // Soft delete
+                    _context.Entry(entity).State = EntityState.Modified;
+                    await _context.SaveChangesAsync();
+                    return true;
+                }
+            }
+            catch (Exception ex)
+            {
+                // Handle exceptions as needed
+            }
+            return false;
+        }
+
         public new async Task<bool> UpdateAsync(TourBid entity)
         {
             try

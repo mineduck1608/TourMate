@@ -1,108 +1,232 @@
-import { getTourBids } from "@/app/api/tour-bid.api";
-import { TourBid } from "@/types/tour-bid";
-import { useQuery } from "@tanstack/react-query";
-import React, {  useEffect, useRef, useState } from "react";
-import TourBidRender from "./tour-bid-render";
+import InfiniteScroll from 'react-infinite-scroll-component';
+import { useQuery, useMutation } from '@tanstack/react-query';
+import { useContext, useState, useEffect } from 'react';
+import { toast } from 'react-toastify';
+import { TourBid, TourBidListResult } from '@/types/tour-bid';
+import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } from '@/app/api/tour-bid.api';
+import { BidTaskContext, BidTaskContextProp } from './bid-task-context';
+import TourBidRender from './tour-bid-render';
+import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
+import { baseData } from './page';
 
 function BidList({ search }: { search: string }) {
-  // Refs and constants
-  const divRef = useRef<HTMLDivElement>(null); // Reference to the intersection observer target
-  const pageSize = 3; // Number of items per page
-  // State management
-  const [page, setPage] = useState(1); // Current page number
-  const [tourBids, setTourBids] = useState<TourBid[]>([]); // List of loaded tour bids
-  const [isResetting, setIsResetting] = useState(false); // Flag to track data reset operations
+  const pageSize = 3;
+  const [page, setPage] = useState(1);
+  const [tourBids, setTourBids] = useState<TourBidListResult[]>([]);
+  const [hasMore, setHasMore] = useState(true);
+  const [resetTrigger, setResetTrigger] = useState(false);
 
-  // Data fetching with react-query
+  const { setSignal, setTarget, signal, target, modalOpen, setModalOpen } =
+    useContext(BidTaskContext) as BidTaskContextProp;
+  const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
+
   const tourBidQuery = useQuery({
-    queryKey: ["tour-bids", pageSize, page, search, isResetting],
+    queryKey: ["tour-bids", pageSize, page, search, resetTrigger],
     queryFn: async () => {
-      // Fetch tour bids with current pagination and filters
-      return await getTourBids(page, pageSize, undefined, search);
+      const response = await getTourBids(accId, page, pageSize, undefined, search);
+      return response;
     },
-    // Note: No staleTime to ensure fresh data after mutations
   });
 
-  // Context for bid operations (create/edit)
+  const resetData = async () => {
+    setPage(1);
+    setTourBids([]);
+    setHasMore(true);
+    setResetTrigger(prev => !prev);
+  };
 
-  // Mutation for creating new tour bids
+  // Enhanced update function that handles all fields including placeRequested
+  const updateLocalBid = (updatedBid: TourBidListResult) => {
+    // const asSet = new Set(tourBids)
+    setTourBids(prevBids =>
+      prevBids.map(bid =>
+        bid.tourBidId === updatedBid.tourBidId ? { 
+          ...bid,
+          ...updatedBid // This spreads all updated properties including placeRequested and placeRequestedName
+        } : bid
+      )
+    );
+  };
 
-  // Calculate max pages from API response
-  const maxPage = tourBidQuery.data?.totalPage ?? 0;
+  const createTourBidMutation = useMutation({
+    mutationFn: async (data: TourBid | TourBidListResult) => {
+      return await addTourBid(data);
+    },
+    onSuccess: () => {
+      toast.success("Tạo thành công");
+      setSignal({ ...signal, create: false });
+      setTarget({ ...baseData });
+      setModalOpen({ ...modalOpen, create: false });
+      resetData().then(() => {
+        if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
+      });
+    },
+    onError: (error) => {
+      toast.error("Tạo thất bại");
+      console.error(error);
+    },
+  });
 
-  // Effect: Reset data when area filter changes
+  const updateTourBidMutation = useMutation({
+    mutationFn: async ({ data }: { data: TourBid | TourBidListResult }) => {
+      return await updateTourBid(data);
+    },
+    onMutate: async (variables) => {
+      // Optimistically update all fields including location
+      updateLocalBid(variables.data as TourBidListResult);
+    },
+    onSuccess: (data) => {
+      // Update with server response to ensure all fields are in sync
+      if (data?.result) {
+        updateLocalBid(data.result);
+      }
+      toast.success("Cập nhật thành công");
+      setSignal({ ...signal, edit: false });
+      setTarget({ ...baseData });
+    },
+    onError: (error) => {
+      toast.error("Cập nhật thất bại");
+      console.error(error);
+      // Revert to previous state
+      resetData();
+    },
+  });
+
+  const deleteTourBidMutation = useMutation({
+    mutationFn: async ({ data }: { data: number }) => {
+      return await deleteTourBid(data);
+    },
+    onSuccess: () => {
+      toast.success("Xóa thành công");
+      resetData();
+    },
+    onError: (error) => {
+      toast.error("Xóa thất bại");
+      console.error(error);
+    },
+  });
+
+  const likeOrUnlikeMutation = useMutation({
+    mutationFn: async ({ tourBidId }: { tourBidId: number }) => {
+      return await likeOrUnlike(accId, tourBidId);
+    },
+    onMutate: async (variables) => {
+      const currentBid = tourBids.find(b => b.tourBidId === variables.tourBidId);
+      if (currentBid) {
+        updateLocalBid({
+          ...currentBid,
+          isLiked: !currentBid.isLiked,
+          likeCount: currentBid.isLiked ? currentBid.likeCount - 1 : currentBid.likeCount + 1
+        });
+      }
+    },
+    onError: (error, variables) => {
+      const currentBid = tourBids.find(b => b.tourBidId === variables.tourBidId);
+      if (currentBid) {
+        updateLocalBid({
+          ...currentBid,
+          isLiked: currentBid.isLiked,
+          likeCount: currentBid.likeCount
+        });
+      }
+      toast.error("Có lỗi xảy ra khi thực hiện thao tác");
+    },
+  });
+
   useEffect(() => {
-    // When area changes, we need to completely reset the data
-    setIsResetting(true);
-    setPage(1); // Always start from page 1
-    setTourBids([]); // Clear existing data
-    // The query will automatically refetch because queryString.areaId changed
+    resetData();
   }, [search]);
 
-  // Effect: Handle incoming data from queries
   useEffect(() => {
-    if (!tourBidQuery.data) return; // Ignore if no data
+    if (!tourBidQuery.data) return;
 
-    if (page === 1 || isResetting) {
-      // For first page or after reset, replace all data
-      setTourBids(tourBidQuery.data.result);
-      setIsResetting(false); // Reset complete
+    const newItems = tourBidQuery.data.result;
+    const totalPages = tourBidQuery.data.totalPage ?? 0;
+
+    if (page === 1) {
+      setTourBids(newItems);
     } else {
-      // For subsequent pages, merge new data while avoiding duplicates
       setTourBids(prev => {
         const existingIds = new Set(prev.map(b => b.tourBidId));
-        const newItems = tourBidQuery.data.result.filter(b =>
+        const filteredNewItems = newItems.filter(b =>
           !existingIds.has(b.tourBidId)
         );
-        return [...prev, ...newItems];
+        return [...prev, ...filteredNewItems];
       });
     }
+
+    setHasMore(page < totalPages);
   }, [tourBidQuery.data]);
 
-  // Effect: Intersection observer for infinite scroll
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      // Only trigger when:
-      // - Element is visible
-      // - We know the max pages
-      // - We're not on the last page
-      // - We're not currently resetting data
-      if (entry.isIntersecting && maxPage !== 0 && page < maxPage && !isResetting) {
-        setPage(p => p + 1); // Load next page
-      }
-    }, { threshold: 1 }); // 100% visibility required
-
-    const currentRef = divRef.current;
-    if (currentRef) {
-      observer.observe(currentRef);
+  const loadMore = () => {
+    if (!tourBidQuery.isFetching && hasMore) {
+      setPage(prev => prev + 1);
     }
+  };
 
-    // Cleanup: Remove observer when component unmounts
-    return () => {
-      if (currentRef) {
-        observer.unobserve(currentRef);
-      }
-    };
-  }, [maxPage, isResetting]); // Recreate observer when these change
+  useEffect(() => {
+    if (signal.create) {
+      createTourBidMutation.mutate(target);
+      setSignal({ ...signal, create: false });
+      setTarget({ ...baseData });
+    }
+  }, [signal.create]);
 
+  useEffect(() => {
+    if (signal.edit) {
+      updateTourBidMutation.mutate({ data: target });
+      setSignal({ ...signal, edit: false });
+      setTarget({ ...baseData });
+    }
+  }, [signal.edit]);
 
-  // Render component
+  useEffect(() => {
+    if (signal.delete) {
+      deleteTourBidMutation.mutate({ data: target.tourBidId });
+      setSignal({ ...signal, delete: false });
+      setTarget({ ...baseData });
+    }
+  }, [signal.delete]);
+
+  useEffect(() => {
+    if (signal.likeOrUnlike) {
+      likeOrUnlikeMutation.mutate({ tourBidId: target.tourBidId });
+      setSignal({ ...signal, likeOrUnlike: false });
+      setTarget({ ...baseData });
+    }
+  }, [signal.likeOrUnlike]);
+
   return (
     <div>
-      {/* List of tour bids */}
-      <div className="*:my-5">
-        {tourBids.map((v) => (
-          // Use tourBidId as key for stable rendering
-          <TourBidRender tourBid={v} key={v.tourBidId} />
-        ))}
-      </div>
-
-      {/* Infinite scroll trigger - only visible when there are more pages */}
-      {page < maxPage && !isResetting && (
-        <div ref={divRef} style={{ visibility: 'hidden' }}>
-          Hidden content (infinite scroll trigger)
+      <InfiniteScroll
+        dataLength={tourBids.length}
+        next={loadMore}
+        hasMore={hasMore}
+        loader={
+          <div className="flex justify-center py-4">
+            {tourBidQuery.isFetching ? (
+              <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
+            ) : null}
+          </div>
+        }
+        endMessage={
+          tourBids.length > 0 ? (
+            <p className="text-center py-4 text-gray-500">
+              {tourBidQuery.data?.result.length === 0
+                ? "No results found"
+                : "Bạn đã xem hết tất cả kết quả"}
+            </p>
+          ) : null
+        }
+        pullDownToRefresh={false}
+        className="overflow-hidden"
+      >
+        <div className="*:my-5">
+          {tourBids.map((v) => (
+            <TourBidRender tourBid={v} key={v.tourBidId} />
+          ))}
         </div>
-      )}
+      </InfiniteScroll>
     </div>
   );
 }

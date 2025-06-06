@@ -14,6 +14,7 @@ namespace Services
         Task<bool> UpdateTourBid(TourBid tourbid);
         Task<bool> DeleteTourBid(int id);
         Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex);
+        Task<bool> LikeOrUnlikeBid(int accountId, int tourBidId);
     }
 
     public class TourBidService : ITourBidService
@@ -49,6 +50,11 @@ namespace Services
         public async Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex)
         {
             return await TourBidRepository.GetBids(content, accountIdFrom, pageSize, pageIndex);
+        }
+
+        public async Task<bool> LikeOrUnlikeBid(int accountId, int tourBidId)
+        {
+            return await TourBidRepository.LikeOrUnlikeBid(accountId, tourBidId);
         }
     }
 }

@@ -51,12 +51,12 @@ namespace Repositories.Repository
         {
             return _context.ActiveAreas
                 .Include(x => x.TourBids)
-                .OrderByDescending(x => x.TourBids.Count)
+                .OrderByDescending(x => x.TourBids.Count(t => !t.IsDeleted))
                 .Select(x => new MostPopularArea()
                 {
                     AreaId = x.AreaId,
                     AreaName = x.AreaName,
-                    TourBidCount = x.TourBids.Count
+                    TourBidCount = x.TourBids.Count(t => !t.IsDeleted) // Only count non-deleted bids
                 })
                 .Where(x => x.TourBidCount != 0);
         }

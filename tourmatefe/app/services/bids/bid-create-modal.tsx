@@ -6,7 +6,7 @@ import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
-import { baseData } from "./bids-page";
+import { baseData } from "./page";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -25,7 +25,6 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     const [target, setTarget] = useState({...baseData})
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
-        console.log(target);
         onSave(target);
     };
     const simplifiedAreaQuery = useQuery({

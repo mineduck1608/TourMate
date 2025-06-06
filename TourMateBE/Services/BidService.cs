@@ -8,9 +8,9 @@ namespace Services
     {
         Bid GetBid(int id);
         IEnumerable<Bid> GetAll(int pageSize, int pageIndex);
-        Task CreateBid(Bid bid);
-        void UpdateBid(Bid bid);
-        bool DeleteBid(int id);
+        Task<bool> CreateBid(Bid bid);
+        Task<bool> UpdateBid(Bid bid);
+        Task<bool> DeleteBid(int id);
         Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex);
     }
 
@@ -28,20 +28,19 @@ namespace Services
             return BidRepository.GetAll(pageSize, pageIndex);
         }
 
-        public async Task CreateBid(Bid bid)
+        public async Task<bool> CreateBid(Bid bid)
         {
-            await BidRepository.CreateAsync(bid);
+            return await BidRepository.CreateAsync(bid);
         }
 
-        public void UpdateBid(Bid bid)
+        public async Task<bool> UpdateBid(Bid bid)
         {
-            BidRepository.Update(bid);
+            return await BidRepository.UpdateAsync(bid);
         }
 
-        public bool DeleteBid(int id)
+        public async Task<bool> DeleteBid(int id)
         {
-            BidRepository.Remove(id);
-            return true;
+            return await BidRepository.RemoveAsync(id);
         }
         public async Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
         {

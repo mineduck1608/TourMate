@@ -30,24 +30,24 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] BidCreateModel data)
+        public async Task<IActionResult> Create([FromBody] BidCreateModel data)
         {
             var bid = data.Convert();
-            _bidService.CreateBid(bid);
-            return CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid);
+            var result = await _bidService.CreateBid(bid);
+            return result ? CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid) : BadRequest();
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Bid bid)
+        public async Task<IActionResult> UpdateAsync([FromBody] Bid bid)
         {
-            _bidService.UpdateBid(bid);
-            return NoContent();
+            var result = await _bidService.UpdateBid(bid);
+            return result ? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _bidService.DeleteBid(id);
+            var result = await _bidService.DeleteBid(id);
             return result ? NoContent() : NotFound();
         }
         [HttpGet("tour/{tourBid}")]

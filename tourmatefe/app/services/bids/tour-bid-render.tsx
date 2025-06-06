@@ -13,7 +13,7 @@ import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const [open, setOpen] = useState(false)
-    const { setModalOpen, modalOpen, setTarget } = useContext(BidTaskContext) as BidTaskContextProp
+    const { setModalOpen, modalOpen, setTarget, signal, setSignal } = useContext(BidTaskContext) as BidTaskContextProp
     const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     const sanitizeContent = (html: string) => {
         // Only sanitize if window is available (client-side)
@@ -88,8 +88,13 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     __html: sanitizeContent(tourBid.content || ""),
                 }}
             />
-            <div className="grid grid-cols-2">
-                <FaHeart fill={tourBid.isLiked ? '#ff0000' : '#eeeeee'} />
+            <div className="flex *:mr-2">
+                <button onClick={() => {
+                    setTarget(tourBid)
+                    setSignal({...signal, likeOrUnlike: true})
+                }}>
+                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')}/>
+                </button>
                 <p>{tourBid.likeCount}</p>
             </div>
             <div className="border-2" />

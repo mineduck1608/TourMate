@@ -1,15 +1,13 @@
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { useQuery, useMutation } from '@tanstack/react-query';
-import { useContext, useState, useEffect, useRef } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { TourBid, TourBidListResult } from '@/types/tour-bid';
-import { getTourBids, addTourBid, updateTourBid, deleteTourBid } from '@/app/api/tour-bid.api';
+import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } from '@/app/api/tour-bid.api';
 import { BidTaskContext, BidTaskContextProp } from './bid-task-context';
-import { baseData } from './bids-page';
 import TourBidRender from './tour-bid-render';
-
-// Estimated height of each tour bid item in pixels
-const ITEM_HEIGHT_ESTIMATE = 200;
+import { CustomerSiteContext, CustomerSiteContextProp } from '../context';
+import { baseData } from './page';
 
 function BidList({ search }: { search: string }) {
   const pageSize = 3;
@@ -17,56 +15,37 @@ function BidList({ search }: { search: string }) {
   const [tourBids, setTourBids] = useState<TourBidListResult[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [resetTrigger, setResetTrigger] = useState(false);
-  const scrollPositionRef = useRef<{ index: number; top: number } | null>(null);
 
   const { setSignal, setTarget, signal, target, modalOpen, setModalOpen } =
     useContext(BidTaskContext) as BidTaskContextProp;
-
-  const saveScrollPosition = () => {
-    if (tourBids.length === 0) return;
-
-    const scrollTop = window.scrollY;
-    const currentIndex = Math.floor(scrollTop / ITEM_HEIGHT_ESTIMATE);
-    scrollPositionRef.current = {
-      index: currentIndex,
-      top: scrollTop - (currentIndex * ITEM_HEIGHT_ESTIMATE)
-    };
-  };
-
-  const restoreScrollPosition = () => {
-    if (!scrollPositionRef.current || tourBids.length === 0) return;
-
-    const { index, top } = scrollPositionRef.current;
-    const newIndex = Math.min(index, tourBids.length - 1);
-    const newPosition = newIndex * ITEM_HEIGHT_ESTIMATE + top;
-
-    window.scrollTo({
-      top: newPosition,
-      behavior: 'auto'
-    });
-
-    scrollPositionRef.current = null;
-  };
+  const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp;
 
   const tourBidQuery = useQuery({
     queryKey: ["tour-bids", pageSize, page, search, resetTrigger],
     queryFn: async () => {
-      const response = await getTourBids(page, pageSize, undefined, search);
+      const response = await getTourBids(accId, page, pageSize, undefined, search);
       return response;
     },
   });
 
   const resetData = async () => {
-    saveScrollPosition();
     setPage(1);
     setTourBids([]);
     setHasMore(true);
     setResetTrigger(prev => !prev);
   };
 
-  const handleMutationSuccess = async () => {
-    await resetData();
-    setTimeout(restoreScrollPosition, 100);
+  // Enhanced update function that handles all fields including placeRequested
+  const updateLocalBid = (updatedBid: TourBidListResult) => {
+    // const asSet = new Set(tourBids)
+    setTourBids(prevBids =>
+      prevBids.map(bid =>
+        bid.tourBidId === updatedBid.tourBidId ? { 
+          ...bid,
+          ...updatedBid // This spreads all updated properties including placeRequested and placeRequestedName
+        } : bid
+      )
+    );
   };
 
   const createTourBidMutation = useMutation({
@@ -77,8 +56,8 @@ function BidList({ search }: { search: string }) {
       toast.success("Tạo thành công");
       setSignal({ ...signal, create: false });
       setTarget({ ...baseData });
-      setModalOpen({ ...modalOpen, create: false })
-      handleMutationSuccess().then(() => {
+      setModalOpen({ ...modalOpen, create: false });
+      resetData().then(() => {
         if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
     },
@@ -92,13 +71,24 @@ function BidList({ search }: { search: string }) {
     mutationFn: async ({ data }: { data: TourBid | TourBidListResult }) => {
       return await updateTourBid(data);
     },
-    onSuccess: () => {
+    onMutate: async (variables) => {
+      // Optimistically update all fields including location
+      updateLocalBid(variables.data as TourBidListResult);
+    },
+    onSuccess: (data) => {
+      // Update with server response to ensure all fields are in sync
+      if (data?.result) {
+        updateLocalBid(data.result);
+      }
       toast.success("Cập nhật thành công");
-      handleMutationSuccess();
+      setSignal({ ...signal, edit: false });
+      setTarget({ ...baseData });
     },
     onError: (error) => {
       toast.error("Cập nhật thất bại");
       console.error(error);
+      // Revert to previous state
+      resetData();
     },
   });
 
@@ -108,11 +98,38 @@ function BidList({ search }: { search: string }) {
     },
     onSuccess: () => {
       toast.success("Xóa thành công");
-      handleMutationSuccess();
+      resetData();
     },
     onError: (error) => {
       toast.error("Xóa thất bại");
       console.error(error);
+    },
+  });
+
+  const likeOrUnlikeMutation = useMutation({
+    mutationFn: async ({ tourBidId }: { tourBidId: number }) => {
+      return await likeOrUnlike(accId, tourBidId);
+    },
+    onMutate: async (variables) => {
+      const currentBid = tourBids.find(b => b.tourBidId === variables.tourBidId);
+      if (currentBid) {
+        updateLocalBid({
+          ...currentBid,
+          isLiked: !currentBid.isLiked,
+          likeCount: currentBid.isLiked ? currentBid.likeCount - 1 : currentBid.likeCount + 1
+        });
+      }
+    },
+    onError: (error, variables) => {
+      const currentBid = tourBids.find(b => b.tourBidId === variables.tourBidId);
+      if (currentBid) {
+        updateLocalBid({
+          ...currentBid,
+          isLiked: currentBid.isLiked,
+          likeCount: currentBid.likeCount
+        });
+      }
+      toast.error("Có lỗi xảy ra khi thực hiện thao tác");
     },
   });
 
@@ -139,11 +156,6 @@ function BidList({ search }: { search: string }) {
     }
 
     setHasMore(page < totalPages);
-
-    // Restore scroll position after new data loads
-    if (scrollPositionRef.current) {
-      restoreScrollPosition();
-    }
   }, [tourBidQuery.data]);
 
   const loadMore = () => {
@@ -155,7 +167,7 @@ function BidList({ search }: { search: string }) {
   useEffect(() => {
     if (signal.create) {
       createTourBidMutation.mutate(target);
-      setSignal({...signal, create: false})
+      setSignal({ ...signal, create: false });
       setTarget({ ...baseData });
     }
   }, [signal.create]);
@@ -175,6 +187,14 @@ function BidList({ search }: { search: string }) {
       setTarget({ ...baseData });
     }
   }, [signal.delete]);
+
+  useEffect(() => {
+    if (signal.likeOrUnlike) {
+      likeOrUnlikeMutation.mutate({ tourBidId: target.tourBidId });
+      setSignal({ ...signal, likeOrUnlike: false });
+      setTarget({ ...baseData });
+    }
+  }, [signal.likeOrUnlike]);
 
   return (
     <div>
