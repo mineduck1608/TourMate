@@ -1,8 +1,7 @@
 import { FC, useState } from 'react';
-import { BadgeCheck, CalendarClock, Download} from "lucide-react";
+import { CalendarClock, Download, Send } from "lucide-react";
 import { TourSchedule } from '@/types/tour-schedule';
 import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { denyInvoice } from '@/app/api/invoice.api';
 import { toast } from 'react-toastify';
@@ -12,17 +11,11 @@ import Link from 'next/link';
 
 const statusStyles: Record<TourSchedule['status'], string> = {
   'Chờ xác nhận': 'bg-yellow-100 text-yellow-800 border border-yellow-300',
-  'Lịch hẹn sắp tới': 'bg-blue-100 text-blue-800 border border-blue-300',
-  'Tour đã hướng dẫn': 'bg-green-100 text-green-800 border border-green-300',
+  'Sắp diễn ra': 'bg-blue-100 text-blue-800 border border-blue-300',
+  'Đã hướng dẫn': 'bg-green-100 text-green-800 border border-green-300',
   'Từ chối': 'bg-red-100 text-red-800 border border-red-300',
 };
 
-const statusLabels: Record<TourSchedule['status'], string> = {
-  'Chờ xác nhận': 'Chờ xác nhận',
-  'Lịch hẹn sắp tới': 'Sắp diễn ra',
-  'Tour đã hướng dẫn': 'Đã hướng dẫn',
-  'Từ chối': 'Từ chối',
-};
 
 const ScheduleCard: FC<TourSchedule> = ({
   invoiceId,
@@ -91,7 +84,7 @@ const ScheduleCard: FC<TourSchedule> = ({
         <div className="flex items-center gap-2">
           <p className="text-md text-gray-500 whitespace-nowrap font-medium">Trạng thái:</p>
           <span className={`text-sm px-3 py-1 rounded-sm font-medium ${statusStyles[status]}`}>
-            {statusLabels[status]}
+            {status}
           </span>
         </div>
         <p className="text-md text-gray-500 whitespace-nowrap font-medium">
@@ -116,8 +109,8 @@ const ScheduleCard: FC<TourSchedule> = ({
         <p>📞 SĐT hướng dẫn viên: {tourGuidePhone}</p>
         <p>🌍 Khu vực: {areaName}</p>
         <p>
-          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm', { locale: vi })}
-          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm', { locale: vi })}` : ''}
+          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm')}
+          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm')}` : ''}
         </p>
 
         <p>👥 Số lượng người: {peopleAmount}</p>
@@ -140,14 +133,14 @@ const ScheduleCard: FC<TourSchedule> = ({
 
       <div className="flex pt-2">
         <div className="ml-auto flex gap-2">
-          {status === 'Lịch hẹn sắp tới' && (
-            <button className="bg-green-500 hover:bg-green-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center">
-              <BadgeCheck className="inline-block w-4 h-4 mr-1" />
-              Xác nhận lịch
+          {status === 'Sắp diễn ra' && (
+            <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center">
+              <Send className="inline-block w-4 h-4 mr-1" />
+              Liên hệ
             </button>
           )}
 
-          {status === 'Tour đã hướng dẫn' && (
+          {status === 'Đã hướng dẫn' && (
             <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center">
               <CalendarClock className="inline-block w-4 h-4 mr-1" />
               Đặt lại lịch
@@ -156,7 +149,7 @@ const ScheduleCard: FC<TourSchedule> = ({
           {status === 'Chờ xác nhận' && (
             <>
               <Link
-              href={`/payment/tour/${invoiceId}`}
+                href={`/payment/tour/${invoiceId}`}
                 className="bg-green-400 hover:bg-green-500 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center"
               >
                 💳 Thanh toán

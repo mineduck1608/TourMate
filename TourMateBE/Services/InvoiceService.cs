@@ -13,13 +13,12 @@ namespace Services
         bool DeleteInvoice(int id);
         Task<PagedResult<TourSchedule>> GetPagedAsync(string status, string search, int page, int pageSize, int accountId, string role);
         Task<TourSchedule> GetScheduleByInvoiceIdAsync(int invoiceId);
+        Task<Invoice> GetAccountByInvoice(int id);
     }
 
     public class InvoiceService : IInvoiceService
     {
         private InvoiceRepository InvoiceRepository { get; set; } = new();
-        private AccountRepository AccountRepository { get; set; } = new();
-
 
         public async Task<PagedResult<TourSchedule>> GetPagedAsync(string status, string search, int page, int pageSize, int accountId, string role)
         {
@@ -87,6 +86,11 @@ namespace Services
         public async Task<Invoice> GetInvoice(int id)
         {
             return await InvoiceRepository.GetByIdAsync(id);
+        }
+
+        public async Task<Invoice> GetAccountByInvoice(int id)
+        {
+            return await InvoiceRepository.GetAccountByInvoiceAsync(id);
         }
 
         public IEnumerable<Invoice> GetAll(int pageSize, int pageIndex)
