@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import { CalendarClock, Download, Send } from "lucide-react";
 import { TourSchedule } from '@/types/tour-schedule';
 import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { denyInvoice } from '@/app/api/invoice.api';
 import { toast } from 'react-toastify';

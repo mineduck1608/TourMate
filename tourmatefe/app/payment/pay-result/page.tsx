@@ -8,9 +8,6 @@ import MegaMenu from "@/components/mega-menu"
 import Footer from "@/components/Footer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchPaymentById } from "@/app/api/payment.api"
-import { fetchScheduleByInvoiceId } from "@/app/api/schedule.api"
-import { getInvoiceById } from "@/app/api/invoice.api"
-import { useEffect } from "react"
 
 export default function PaymentResult({
     searchParams,
@@ -29,13 +26,6 @@ export default function PaymentResult({
                 ? fetchPaymentById(Number(paymentId))
                 : null,
         enabled: isSuccess && !!paymentId && typeof paymentId === "string",
-    })
-
-    // Nếu id không phải Membership, fetch invoice detail
-    const { data: invoiceData } = useQuery({
-        queryKey: ["invoice", id],
-        queryFn: () => id && id !== "Membership" ? getInvoiceById(Number(id)) : null,
-        enabled: !!id && id !== "Membership",
     })
 
     const formatDateTime = (dateString: string) => {

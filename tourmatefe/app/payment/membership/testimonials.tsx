@@ -50,7 +50,7 @@ export function Testimonials() {
                                     <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                                 ))}
                             </div>
-                            <p className="text-gray-700 mb-6 italic">"{testimonial.content}"</p>
+                            <p className="text-gray-700 mb-6 italic">&quot;{testimonial.content}&quot;</p>
                             <div className="flex items-center gap-3">
                                 <img
                                     src={testimonial.avatar || "/placeholder.svg"}

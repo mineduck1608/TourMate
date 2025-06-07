@@ -40,7 +40,7 @@ public class PayOSController : ControllerBase
                 orderCode: int.Parse(DateTimeOffset.Now.ToString("ffffff")),
             amount: roundedAmount,
             description: $"Thanh toán {type}",
-            items: new List<ItemData> { new ItemData(type, 1, roundedAmount) },
+            items: [new(type, 1, roundedAmount)],
             returnUrl: _configuration["ReturnURL:Success"],
             cancelUrl: _configuration["ReturnURL:Failed"]
         );

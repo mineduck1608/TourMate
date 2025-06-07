@@ -7,6 +7,7 @@ import { ComparisonTable } from "./comparison-table"
 import { Testimonials } from "./testimonials"
 import { FAQSection } from "./fap-section"
 import Footer from "@/components/Footer"
+import Link from "next/link"
 
 
 
@@ -93,12 +94,12 @@ export default function MembershipPage() {
               Tham gia cùng hàng nghìn hướng dẫn viên đã thay đổi cuộc sống và sự nghiệp của họ
             </p>
             <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <button className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
+              <Link href="/" className="bg-white text-blue-600 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-colors shadow-lg">
                 Bắt đầu dùng thử miễn phí
-              </button>
-              <button className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
+              </Link>
+              <Link href="/contact" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white hover:text-blue-600 transition-colors">
                 Liên hệ tư vấn
-              </button>
+              </Link>
             </div>
           </div>
         </div>

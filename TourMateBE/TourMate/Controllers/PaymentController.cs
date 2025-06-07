@@ -53,7 +53,7 @@ namespace API.Controllers
         {
             var url = _vnPayService.CreatePaymentUrl(model, HttpContext);
 
-            return Ok(new { paymentUrl = url });
+            return Ok(new { checkoutUrl = url });
         }
 
         //[HttpGet("vnpay-return")]
@@ -151,6 +151,17 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromBody] PaymentCreateModel data)
         {
             var payment = data.Convert();
+
+            if(payment.InvoiceId != null)
+            {
+                               var invoice = await _invoiceService.GetInvoice((int)payment.InvoiceId);
+                if (invoice == null)
+                {
+                    return NotFound("Invoice not found");
+                }
+                invoice.Status = "Sắp diễn ra";
+                await _invoiceService.UpdateInvoice(invoice);
+            }
 
             var result = await _paymentService.CreatePayments(payment);
             if (result != null)
