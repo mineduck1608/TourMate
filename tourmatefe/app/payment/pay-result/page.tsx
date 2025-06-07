@@ -8,15 +8,14 @@ import MegaMenu from "@/components/mega-menu"
 import Footer from "@/components/Footer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchPaymentById } from "@/app/api/payment.api"
+import { useParams } from "next/navigation"
 
-export default function PaymentResult({
-    searchParams,
-}: {
-    searchParams: { [key: string]: string | string[] | undefined }
-}) {
-    const isSuccess = searchParams.success === "true"
-    const id = searchParams.id
-    const paymentId = searchParams.paymentId
+
+export default function PaymentResult() {
+    const params = useParams()
+    const isSuccess = params.success === "true"
+    const id = params.id
+    const paymentId =  params.paymentId
 
     // Nếu thành công, fetch payment detail
     const { data: paymentData } = useQuery({
@@ -31,7 +30,6 @@ export default function PaymentResult({
     const formatDateTime = (dateString: string) => {
         const date = new Date(dateString);
         const pad = (n: number) => n.toString().padStart(2, "0");
-
         const day = pad(date.getDate());
         const month = pad(date.getMonth() + 1); // Tháng bắt đầu từ 0
         const year = date.getFullYear();
