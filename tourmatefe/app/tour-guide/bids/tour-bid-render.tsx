@@ -45,8 +45,9 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                         alt={"profile"}
                     />
                     <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
-                        <h3 className="font-bold text-xl">
-                            {tourBid.customerName}
+                        <h3>
+                            <span className="font-bold text-xl">{tourBid.customerName}</span>
+                            {tourBid.accountId === accId && <span>&nbsp;(Bạn)</span>}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
                         <p className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
@@ -95,9 +96,9 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
             <div className="flex *:mr-2">
                 <button onClick={() => {
                     setTarget(tourBid)
-                    setSignal({...signal, likeOrUnlike: true})
+                    setSignal({ ...signal, likeOrUnlike: true })
                 }}>
-                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')}/>
+                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')} />
                 </button>
                 <p>{tourBid.likeCount}</p>
             </div>

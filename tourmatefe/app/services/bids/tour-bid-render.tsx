@@ -9,6 +9,7 @@ import BidCommentModal from "./bid-comment-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context"
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
+import { formatNumber } from "@/types/other"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
@@ -44,11 +45,15 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                         alt={"profile"}
                     />
                     <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
-                        <h3 className="font-bold text-xl">
-                            {tourBid.customerName}
+                        <h3>
+                            <span className="font-bold text-xl">{tourBid.customerName}</span>
+                            {tourBid.accountId === accId && <span>&nbsp;(Bạn)</span>}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
-                        <p className="lg:inline"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
+                        <p className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
+                        {
+                            tourBid.maxPrice && <p>Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</p>
+                        }
                     </div>
                 </div>
                 <div className="absolute right-0 top-0 lg:block text-end ">
@@ -91,9 +96,9 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
             <div className="flex *:mr-2">
                 <button onClick={() => {
                     setTarget(tourBid)
-                    setSignal({...signal, likeOrUnlike: true})
+                    setSignal({ ...signal, likeOrUnlike: true })
                 }}>
-                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')}/>
+                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')} />
                 </button>
                 <p>{tourBid.likeCount}</p>
             </div>

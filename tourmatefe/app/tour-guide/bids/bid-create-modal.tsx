@@ -81,7 +81,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm ({target.placeRequested})
+                                Địa điểm
                             </label>
                             <select
                                 id="placeRequested"

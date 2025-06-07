@@ -31,26 +31,40 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     const scrollRef = useRef<HTMLDivElement>(null)
     const [dataVersion, setDataVersion] = useState(0)
 
+    // Store bids in a ref to maintain between modal openings
+    const bidsRef = useRef<Bid[]>([])
+
     const bidData = useQuery({
         queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
         queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
-        staleTime: 60 * 1000,
+        enabled: isOpen,
     })
 
     const resetData = () => {
         setPage(1)
-        setBids([])
         setHasMore(true)
         setDataVersion(v => v + 1)
     }
 
+    // Initialize data when modal opens
+    useEffect(() => {
+        if (isOpen) {
+            // Always reset data when opening to ensure fresh data
+            resetData()
+        }
+    }, [isOpen])
+
     const addBidMutation = useMutation({
         mutationFn: ({ data }: { data: Bid }) => addBid(data),
-        onSuccess: () => {
+        onSuccess: (newBid) => {
             toast.success("Tạo thành công");
             setOpen(false)
-            resetData()
-            // Scroll to top when new bid is created
+            // Add new bid to both state and ref
+            setBids(prev => {
+                const updated = [newBid, ...prev]
+                bidsRef.current = updated
+                return updated
+            })
             setTimeout(() => {
                 if (scrollRef.current) {
                     scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
@@ -63,11 +77,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
         },
     })
 
-    useEffect(() => {
-        if (!isOpen) return
-        resetData()
-    }, [isOpen, tourBid.tourBidId])
-
+    // Handle new data from query
     useEffect(() => {
         if (!bidData.data) return
 
@@ -76,13 +86,14 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
 
         if (page === 1) {
             setBids(newItems)
+            bidsRef.current = newItems
         } else {
             setBids(prev => {
                 const existingIds = new Set(prev.map(b => b.bidId))
-                const filteredNewItems = newItems.filter(b =>
-                    !existingIds.has(b.bidId)
-                )
-                return [...prev, ...filteredNewItems]
+                const filteredNewItems = newItems.filter(b => !existingIds.has(b.bidId))
+                const updated = [...prev, ...filteredNewItems]
+                bidsRef.current = updated
+                return updated
             })
         }
 
@@ -96,17 +107,16 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     }
 
     return (
-        <div
-            className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
-                }`}
-        >
+        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}>
             <div
-                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"
-                    }`}
+                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"}`}
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[900px] overflow-y-auto">
+            <div
+                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[900px] overflow-y-auto"
+                style={{ overflowY: 'scroll' }}
+            >
                 <div className="flex justify-between items-center rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Đấu giá
@@ -136,7 +146,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                     className="max-h-[500px] overflow-y-auto"
                     ref={scrollRef}
                 >
-                    <InfiniteScroll 
+                    <InfiniteScroll
                         dataLength={bids.length}
                         next={loadMore}
                         hasMore={hasMore}
@@ -165,7 +175,34 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                         <SafeImage src={v.tourGuide?.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
                                         <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
                                     </div>
-                                    <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
+                                    <div>
+                                        <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
+                                        {/* {v.tourGuideId === id &&
+                                            <div className="flex justify-end">
+                                                <DropdownMenu>
+                                                    <DropdownMenuTrigger>
+                                                        <button
+                                                            className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
+                                                        >
+                                                            <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
+                                                            </svg>
+                                                        </button>
+                                                    </DropdownMenuTrigger>
+                                                    <DropdownMenuContent
+                                                        className="p-1 rounded-lg z-50 -translate-x-4 border-[1px] bg-[#fff] w-[125px]">
+                                                        <DropdownMenuItem
+                                                            className="hover:bg-gray-100 p-1 rounded-sm"
+                                                            onClick={() => { }}>
+                                                            Cập nhật
+                                                        </DropdownMenuItem>
+                                                        <DropdownMenuItem onClick={() => { }}
+                                                            className="hover:bg-gray-100 p-1 rounded-sm"
+                                                        >Xóa</DropdownMenuItem>
+                                                    </DropdownMenuContent>
+                                                </DropdownMenu>
+                                            </div>} */}
+                                    </div>
                                 </div>
                                 <div className="wrap-break-word mt-4">
                                     {v.comment}
@@ -185,7 +222,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 >
                     Tham gia đấu giá
                 </Button>
-                {open && <ParticipateBidModal 
+                {open && <ParticipateBidModal
                     isOpen
                     onClose={() => setOpen(false)}
                     tourBid={tourBid}

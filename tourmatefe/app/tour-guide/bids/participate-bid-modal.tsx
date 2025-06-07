@@ -32,7 +32,7 @@ const ParticipateBidModal: React.FC<BidCommentModalProps> = ({
         const t: Bid = {
             ...baseBidData,
             tourGuideId: id,
-            tourBidId: tourBid.tourBidId
+            tourBidId: tourBid.tourBidId,
         }
         setFormData(t)
     }, [])

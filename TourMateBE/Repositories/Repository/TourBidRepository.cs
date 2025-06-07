@@ -25,6 +25,8 @@ namespace Repositories.Repository
                 .Include(x => x.PlaceRequestedNavigation)
                 .Include(x => x.Account)
                 .ThenInclude(x => x.Customers)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.TourGuides)
                 .Include(x => x.UserLikeBids)
                 .Select(x => new TourBidListResult()
                 {
@@ -32,11 +34,11 @@ namespace Repositories.Repository
                     TourBidId = x.TourBidId,
                     Content = x.Content,
                     CreatedAt = x.CreatedAt,
-                    CustomerName = x.Account.Customers.FirstOrDefault().FullName,
+                    CustomerName = x.Account.Customers.FirstOrDefault().FullName ?? x.Account.TourGuides.FirstOrDefault().FullName,
                     PlaceRequested = x.PlaceRequested,
                     IsLiked = x.UserLikeBids.Any(y => y.AccountId == accountIdFrom),
                     LikeCount = x.UserLikeBids.Count,
-                    CustomerImg = x.Account.Customers.FirstOrDefault().Image,
+                    CustomerImg = x.Account.Customers.FirstOrDefault().Image ?? x.Account.TourGuides.FirstOrDefault().Image,
                     MaxPrice = x.MaxPrice,
                     PlaceRequestedName = x.PlaceRequestedNavigation.AreaName,
                     Status = x.Status
