@@ -5,8 +5,11 @@ using Repositories.Context;
 using Repositories.Repository;
 using Services;
 using Services.Utils;
+using Services.VnPay;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
+using Net.payOS;
+
 
 
 
@@ -99,6 +102,9 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<VnPayLibrary>();
+
 
 
 // Đăng ký DbContext
@@ -114,6 +120,16 @@ builder.Services.AddControllers().AddJsonOptions(options =>
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+builder.Services.AddSingleton(sp =>
+{
+    var config = builder.Configuration.GetSection("PayOS");
+    var clientId = config["ClientId"];
+    var apiKey = config["ApiKey"];
+    var checksumKey = config["ChecksumKey"];
+    return new PayOS(clientId!, apiKey!, checksumKey!);
+});
+
+
 var app = builder.Build();
 
 // Bật CORS trước khi routing
@@ -125,7 +141,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    //endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<ChatHub>("/chatHub");
     endpoints.MapControllers();
 });
 
