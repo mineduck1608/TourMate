@@ -85,7 +85,7 @@ namespace Services
 
         public async Task<Invoice> GetInvoice(int id)
         {
-            return await InvoiceRepository.GetByIdAsync(id);
+            return await InvoiceRepository.GetInvoiceById(id);
         }
 
         public async Task<Invoice> GetAccountByInvoice(int id)

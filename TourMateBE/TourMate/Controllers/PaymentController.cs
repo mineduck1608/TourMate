@@ -161,7 +161,7 @@ namespace API.Controllers
         {
             var payment = data.Convert();
 
-            if(payment.InvoiceId != null)
+            if(payment.PaymentType == "Đặt chuyến đi")
             {
                                var invoice = await _invoiceService.GetInvoice((int)payment.InvoiceId);
                 if (invoice == null)
@@ -187,7 +187,7 @@ namespace API.Controllers
             }
 
             var result = await _paymentService.CreatePayments(payment);
-            if (result != null && payment.MembershipPackageId != null)
+            if (result != null && payment.PaymentType == "Membership")
             {
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
                 var customer = await _customerService.GetCustomerFromAccount(payment.AccountId);
@@ -200,9 +200,8 @@ namespace API.Controllers
                 {
                     Console.WriteLine($"Email send failed: {ex.Message}");
                 }
-                return Ok(result);
             }
-            return BadRequest();
+            return Ok(result);
         }
     }
 }

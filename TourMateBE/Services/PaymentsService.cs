@@ -111,7 +111,7 @@ namespace Services
       <div class='info-box'>
         <p><strong>Tên tour:</strong> {invoice.TourName}</p>
         <p><strong>Mô tả:</strong> {invoice.TourDesc}</p>
-        <p><strong>Thời gian:</strong> {invoice.StartDate:dd/MM/yyyy} - {invoice.EndDate:dd/MM/yyyy}</p>
+<p><strong>Thời gian:</strong> {invoice.StartDate.AddHours(7):dd/MM/yyyy HH:mm} - {invoice.EndDate.AddHours(7):dd/MM/yyyy HH:mm}</p>
         <p><strong>Số lượng người:</strong> {invoice.PeopleAmount}</p>
         <p><strong>Tổng tiền:</strong> {invoice.Price:N0} VND</p>
         <p><strong>SĐT liên hệ:</strong> {invoice.CustomerPhone}</p>
@@ -195,7 +195,7 @@ namespace Services
       <div class='info-box'>
         <p><strong>Tên tour:</strong> {invoice.TourName}</p>
         <p><strong>Mô tả:</strong> {invoice.TourDesc}</p>
-        <p><strong>Thời gian:</strong> {invoice.StartDate:dd/MM/yyyy} - {invoice.EndDate:dd/MM/yyyy}</p>
+<p><strong>Thời gian:</strong> {invoice.StartDate.AddHours(7):dd/MM/yyyy HH:mm} - {invoice.EndDate.AddHours(7):dd/MM/yyyy HH:mm}</p>
         <p><strong>Khách hàng:</strong> {invoice.Customer.FullName}</p>
         <p><strong>SĐT khách:</strong> {invoice.CustomerPhone}</p>
         <p><strong>Số người:</strong> {invoice.PeopleAmount}</p>
@@ -326,7 +326,7 @@ namespace Services
 
       <div class='payment-info'>
         <p><strong>Số tiền:</strong> {price:N0} VND</p>
-        <p><strong>Ngày thanh toán:</strong> {completeDate:dd/MM/yyyy HH:mm}</p>
+<p><strong>Ngày thanh toán:</strong> {completeDate.AddHours(7):dd/MM/yyyy HH:mm}</p>
         <p><strong>Hình thức dịch vụ:</strong> {paymentType}</p>
       </div>
 
