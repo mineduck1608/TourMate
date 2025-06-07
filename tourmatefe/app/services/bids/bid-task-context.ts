@@ -27,3 +27,18 @@ export const baseModal: BidTaskModalType = {
     delete: false,
     create: false,
 }
+
+export const baseData: TourBidListResult = {
+    tourBidId: 0,
+    accountId: 0,
+    createdAt: "",
+    placeRequested: 0,
+    status: "",
+    content: "",
+    maxPrice: undefined,
+    customerName: "",
+    placeRequestedName: "",
+    likeCount: 0,
+    isLiked: false,
+    customerImg: ""
+}

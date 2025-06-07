@@ -35,7 +35,6 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
         queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
         queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
         staleTime: 60 * 1000,
-        keepPreviousData: true
     })
 
     const resetData = () => {

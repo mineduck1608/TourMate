@@ -7,7 +7,7 @@ import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } f
 import { BidTaskContext, BidTaskContextProp } from './bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { CustomerSiteContext, CustomerSiteContextProp } from '../context';
-import { baseData } from './page';
+import { baseData } from './bid-task-context';
 
 function BidList({ search }: { search: string }) {
   const pageSize = 3;

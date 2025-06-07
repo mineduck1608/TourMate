@@ -6,7 +6,7 @@ import { Customer } from "@/types/customer";
 import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
 import DeleteModal from "@/components/delete-modal";
 import BidEditModal from "./bid-edit-modal";
-import { baseData } from "./page";
+import { baseData } from "./bid-task-context";
 
 export default function Bids({ customer, search }: { customer?: Customer, search: string }) {
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp

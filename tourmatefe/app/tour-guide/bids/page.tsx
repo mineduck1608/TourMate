@@ -8,22 +8,8 @@ import Link from 'next/link'
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context'
 import Banner from '@/components/Banner'
 import { TourBid, TourBidListResult } from '@/types/tour-bid'
-import { BidTaskContext } from './bid-task-context'
+import { baseData, BidTaskContext } from './bid-task-context'
 import { getTourGuide } from '@/app/api/tour-guide.api'
-export const baseData: TourBidListResult = {
-    tourBidId: 0,
-    accountId: 0,
-    createdAt: "",
-    placeRequested: 0,
-    status: "",
-    content: "",
-    maxPrice: undefined,
-    customerName: "",
-    placeRequestedName: "",
-    likeCount: 0,
-    isLiked: false,
-    customerImg: ""
-}
 
 function BidPage() {
     const { id, accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps

@@ -11,21 +11,8 @@ import { AuthProvider } from '@/components/authProvider'
 import { CustomerContent } from '../customer-content'
 import Banner from '@/components/Banner'
 import { TourBid, TourBidListResult } from '@/types/tour-bid'
-import { BidTaskContext } from './bid-task-context'
-export const baseData: TourBidListResult = {
-    tourBidId: 0,
-    accountId: 0,
-    createdAt: "",
-    placeRequested: 0,
-    status: "",
-    content: "",
-    maxPrice: undefined,
-    customerName: "",
-    placeRequestedName: "",
-    likeCount: 0,
-    isLiked: false,
-    customerImg: ""
-}
+import { baseData, BidTaskContext } from './bid-task-context'
+
 
 function BidPage() {
     const { id } = useContext(CustomerSiteContext) as CustomerSiteContextProp
