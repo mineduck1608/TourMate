@@ -80,5 +80,13 @@ namespace Repositories.Repository
                 .FirstOrDefaultAsync(c => c.AccountId == accountId);
             return customer;
         }
+
+        public async Task<Customer> GetCustomerById(int customerId)
+        {
+            var customer = await _context.Customers
+                .Include(c => c.Account) // Bao gồm thông tin tài khoản
+                .FirstOrDefaultAsync(c => c.CustomerId == customerId);
+            return customer;
+        }
     }
 }

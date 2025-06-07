@@ -5,6 +5,7 @@ using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Repositories.VnPay;
 using Services;
+using Services.Utils;
 using Services.VnPay;
 
 namespace API.Controllers
@@ -17,13 +18,21 @@ namespace API.Controllers
         private readonly IConfiguration _config;
         private readonly IInvoiceService _invoiceService;
         private readonly IPaymentsService _paymentService;
+        private readonly ICustomerService _customerService;
+        private readonly IEmailSender _emailSender;
+        private readonly IAccountService _accountSerivce;
+        private readonly ITourGuideService _tourGuideService;
 
-        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService)
+        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService)
         {
             _vnPayService = vnPayService;
             _config = config;
             _invoiceService = invoiceService;
             _paymentService = paymentService;
+            _customerService = customerService; ;
+            _emailSender = emailSender;
+            _accountSerivce = accountSerivce;
+            _tourGuideService = tourGuideService;
         }
 
         [HttpGet("{id}")]
@@ -161,11 +170,36 @@ namespace API.Controllers
                 }
                 invoice.Status = "Sắp diễn ra";
                 await _invoiceService.UpdateInvoice(invoice);
+                string customerEmailBody = _paymentService.GenerateCustomerInvoiceEmail(invoice);
+                string tourGuideEmailBody = _paymentService.GenerateTourGuideInvoiceEmail(invoice);
+                var customerEmail = await _customerService.GetCustomer(invoice.CustomerId);
+                var tourGuideEmail = await _tourGuideService.GetTourGuide(invoice.TourGuideId);
+                try
+                {
+                    await _emailSender.SendEmailAsync(customerEmail.Account.Email, "✅ TourMate - Xác nhận thanh toán tour thành công!", customerEmailBody);
+                    await _emailSender.SendEmailAsync(tourGuideEmail.Account.Email, "📅 Bạn có một lịch trình mới từ khách hàng!", tourGuideEmailBody);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Email send failed: {ex.Message}");
+                }
+
             }
 
             var result = await _paymentService.CreatePayments(payment);
-            if (result != null)
+            if (result != null && payment.MembershipPackageId != null)
             {
+                var account = await _accountSerivce.GetAccount(payment.AccountId);
+                var customer = await _customerService.GetCustomerFromAccount(payment.AccountId);
+                var email = _paymentService.GenerateSuccessfulPaymentEmail(customer.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
+                try
+                {
+                    await _emailSender.SendEmailAsync(account.Email, "Thanh toán thành công - TourMate", email);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Email send failed: {ex.Message}");
+                }
                 return Ok(result);
             }
             return BadRequest();
