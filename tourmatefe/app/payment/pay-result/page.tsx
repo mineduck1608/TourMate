@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckCircle, XCircle, Home, RefreshCw } from "lucide-react"
+import { CheckCircle, XCircle, Home, RefreshCw, Loader2 } from "lucide-react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
@@ -9,9 +9,11 @@ import Footer from "@/components/Footer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchPaymentById } from "@/app/api/payment.api"
 import { useSearchParams } from "next/navigation";
+import { Suspense } from "react"
 
 
-export default function PaymentResult() {
+
+function PaymentResultContent() {
     const searchParams = useSearchParams();
 
     const isSuccess = searchParams.get("success") === "true";
@@ -46,7 +48,6 @@ export default function PaymentResult() {
 
     return (
         <>
-            <MegaMenu />
             <hr className="border-gray-200 sm:mx-auto" />
 
             <div className={`min-h-screen bg-gradient-to-br ${isSuccess ? "from-green-100 via-green to-green-500" : "from-red-200 via-red to-red-700"}  relative overflow-hidden`}>
@@ -209,6 +210,32 @@ export default function PaymentResult() {
                     </div>
                 </div>
             </div>
+        </>
+    )
+}
+
+// Loading component
+function PaymentResultLoading() {
+    return (
+        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 flex items-center justify-center">
+            <div className="text-center space-y-4">
+                <Loader2 className="h-12 w-12 animate-spin text-blue-600 mx-auto" />
+                <p className="text-lg text-gray-600">Đang tải thông tin thanh toán...</p>
+            </div>
+        </div>
+    )
+}
+
+// Main component
+export default function PaymentResult() {
+    return (
+        <>
+            <MegaMenu />
+            <hr className="border-gray-200 sm:mx-auto" />
+            
+            <Suspense fallback={<PaymentResultLoading />}>
+                <PaymentResultContent />
+            </Suspense>
 
             <Footer />
         </>
