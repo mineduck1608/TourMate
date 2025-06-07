@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.UpdateModals;
+using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 using Services.Utils;
@@ -50,6 +51,7 @@ namespace API.Controllers
 
             return Ok(response);
         }
+
         [HttpGet("from-account")]
         public async Task<ActionResult<Customer>> GetFromAccount(int accountId)
         {
@@ -60,6 +62,7 @@ namespace API.Controllers
             }
             return Ok(customer);
         }
+
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] Customer data)
         {
@@ -69,7 +72,7 @@ namespace API.Controllers
             if (!ValidInput.IsMailFormatted(data.Account.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
             if (!ValidInput.IsPasswordSecure(data.Account.Password))
-                return BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+                return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
@@ -120,8 +123,7 @@ namespace API.Controllers
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
             if (!ValidInput.IsMailFormatted((string)data.Email))
                 return base.BadRequest(new { msg = "Email không đúng định dạng!" });
-            if (!ValidInput.IsPasswordSecure((string?)data.Password))
-                return base.BadRequest(new { msg = "Mật khẩu chưa đủ bảo mật!" });
+           
 
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail((string)data.Email);
@@ -142,6 +144,8 @@ namespace API.Controllers
             }
             if (data.Password != account.Password)
             {
+                if (!ValidInput.IsPasswordSecure((string?)data.Password))
+                    return base.BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
                 account.Password = HashString.ToHashString(data.Password);
             }
 

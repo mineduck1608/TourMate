@@ -42,5 +42,13 @@ namespace Repositories.Repository
 
             return result;
         }
+        public new async Task<bool> RemoveAsync(int id)
+        {
+            var v = _context.TourServices.FirstOrDefault(x => x.ServiceId == id);
+            v.IsDeleted = true;
+            _context.TourServices.Update(v);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }

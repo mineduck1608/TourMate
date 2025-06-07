@@ -12,4 +12,5 @@ export type Invoice = {
   tourDesc: string;
   createdDate: string;
   customerPhone: string;
+  tourName: string;
 }

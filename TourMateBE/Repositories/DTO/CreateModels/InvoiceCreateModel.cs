@@ -24,6 +24,7 @@ namespace Repositories.DTO.CreateModels
 
         public string TourDesc { get; set; }
         public string CustomerPhone { get; set; }
+        public string TourName { get; set; }
 
 
         public DateTime CreatedDate { get; set; }
@@ -41,7 +42,8 @@ namespace Repositories.DTO.CreateModels
             Status = Status,
             Price = Price,
             CustomerPhone = CustomerPhone,
-            TourGuideId = TourGuideId
+            TourGuideId = TourGuideId,
+            TourName = TourName
         };
     }
 }

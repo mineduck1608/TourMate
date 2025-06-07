@@ -5,6 +5,8 @@ import { useQuery } from '@tanstack/react-query';
 import Link from 'next/link';
 import React, { use } from 'react'
 import TourServices from './posts';
+import Footer from '@/components/Footer';
+import MegaMenu from '@/components/mega-menu';
 export default function TourGuideProfileDetail({
     params,
 }: {
@@ -19,6 +21,8 @@ export default function TourGuideProfileDetail({
     })
     const tourGuide = data?.data
     return (
+        <>
+        <MegaMenu/>
         <div className='*:my-10 '>
             <div className='relative'>
                 <Banner imageUrl='/mountain.png' title='' height='200px' />
@@ -45,8 +49,8 @@ export default function TourGuideProfileDetail({
                     </div>                    
                 </div>
             </div>
-
-
         </div>
+        <Footer/>
+        </>
     )
 }

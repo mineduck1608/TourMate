@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -29,9 +30,19 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<Cvapplication>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<Cvapplication>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(_cvapplicationService.GetAll(pageSize, pageIndex));
+            // Gọi service để lấy dữ liệu đã lọc và phân trang
+            var result = await _cvapplicationService.GetAll(pageSize, pageIndex);
+            // Tạo đối tượng PagedResult để trả về cho client
+            var response = new PagedResult<Cvapplication>
+            {
+                Result = result.Result,  // Các Cvapplication đã lọc
+                TotalResult = result.TotalResult,  // Tổng số kết quả
+                TotalPage = result.TotalPage  // Tổng số trang
+            };
+
+            return Ok(response);  // Trả về dữ liệu dưới dạng OK response
         }
 
         [HttpPost]
@@ -39,7 +50,7 @@ namespace API.Controllers
         {
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
-
+            
             if (!ValidInput.IsMailFormatted(data.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
 
@@ -53,6 +64,9 @@ namespace API.Controllers
                 return Conflict(new { msg = "Số điện thoại này đã được sử dụng!" });
 
             var cvapplication = data.Convert();
+
+            cvapplication.Status = "Đang chờ duyệt";
+
             var result = await _cvapplicationService.CreateCvapplication(cvapplication);
             if (!result) return BadRequest(new { msg = "Tạo hồ sơ ứng tuyển thất bại." });
             return Ok(new { msg = "Tạo hồ sơ ứng tuyển thành công, bạn sẽ nhận được thông tin phản hồi trong thời gian sớm nhất." });
@@ -73,3 +87,85 @@ namespace API.Controllers
         }
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
