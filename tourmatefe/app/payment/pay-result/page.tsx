@@ -8,14 +8,18 @@ import MegaMenu from "@/components/mega-menu"
 import Footer from "@/components/Footer"
 import { useQuery } from "@tanstack/react-query"
 import { fetchPaymentById } from "@/app/api/payment.api"
-import { useParams } from "next/navigation"
+import { useSearchParams } from "next/navigation";
 
 
 export default function PaymentResult() {
-    const params = useParams()
-    const isSuccess = params.success === "true"
-    const id = params.id
-    const paymentId =  params.paymentId
+    const searchParams = useSearchParams();
+
+    const isSuccess = searchParams.get("success") === "true";
+    const id = searchParams.get("id");
+    const paymentId = searchParams.get("paymentId");
+    const type = searchParams.get("type");
+
+
 
     // Nếu thành công, fetch payment detail
     const { data: paymentData } = useQuery({
@@ -149,7 +153,7 @@ export default function PaymentResult() {
                                     </Button>
 
                                     {/* Nếu là Membership */}
-                                    {id === "Membership" ? (
+                                    {type === "membership" ? (
                                         <>
                                             {!isSuccess && (
                                                 <Button
