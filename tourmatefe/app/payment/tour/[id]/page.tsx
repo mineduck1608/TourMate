@@ -100,7 +100,7 @@ export default function TourPaymentPage() {
             setIsPaymentOpen(false)
             setCheckoutUrl(null)
             paymentOpenedRef.current = false
-            window.location.href = `/payment/pay-result?success=true&id=${invoiceId}&paymentId=${payment.paymentId}`
+            window.location.href = `/payment/pay-result?success=true&id=${invoiceId}&paymentId=${payment.paymentId}&type=invoice`
           }, 2000)
         }
       } catch (error) {
