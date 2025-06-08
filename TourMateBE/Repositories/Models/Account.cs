@@ -35,6 +35,8 @@ public partial class Account
 
     public virtual Role Role { get; set; }
 
+    public virtual ICollection<TourBidComment> TourBidComments { get; set; } = new List<TourBidComment>();
+
     public virtual ICollection<TourBid> TourBids { get; set; } = new List<TourBid>();
 
     public virtual ICollection<TourGuide> TourGuides { get; set; } = new List<TourGuide>();

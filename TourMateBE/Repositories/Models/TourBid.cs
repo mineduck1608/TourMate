@@ -31,5 +31,7 @@ public partial class TourBid
 
     public virtual ActiveArea PlaceRequestedNavigation { get; set; }
 
+    public virtual ICollection<TourBidComment> TourBidComments { get; set; } = new List<TourBidComment>();
+
     public virtual ICollection<UserLikeBid> UserLikeBids { get; set; } = new List<UserLikeBid>();
 }
