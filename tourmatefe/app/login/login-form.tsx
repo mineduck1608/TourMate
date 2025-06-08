@@ -33,7 +33,6 @@ export function LoginForm({
       setLoading(true);
       const result = await signInWithPopup(auth, provider);
       const idToken = await result.user.getIdToken(); // 👈 Token đúng để verify ở BE
-      
       console.log("Google ID Token:", idToken);
       // Gửi token lên backend
       const response = await googleLogin(idToken);
@@ -52,9 +51,8 @@ export function LoginForm({
       } else if (role === "Admin") {
         router.push("/admin/dashboard");
       }
-    } catch (error: any) {
+    } catch (error) {
       console.error("Google login error:", error);
-      setError(error.message || "Đăng nhập Google thất bại");
     } finally {
       setLoading(false);
     }
