@@ -33,6 +33,7 @@ namespace Services
         Task<bool> ResetPasswordAsync(string token, string newPassword);
         Task<Account?> GetByAccountAndRoleAsync(int id, string role);
         Task<string> ChangePasswordAsync(int accountId, string currentPassword, string newPassword);
+        Task<AuthResponse> GoogleLoginAsync(string email);
     }
 
         // Services/AuthService.cs
@@ -78,6 +79,53 @@ namespace Services
         public async Task<Account?> GetByAccountAndRoleAsync(int id, string role)
         {
             return await _repo.GetByAccountAndRoleAsync(id, role);
+        }
+
+        public async Task<AuthResponse> GoogleLoginAsync(string email)
+        {
+            var user = await _repo.GetAccountByEmail(email);
+            if (user == null)
+                return null;
+
+            if (user.Role.RoleName == "Customer")
+            {
+                var customer = await _customerService.GetCustomerByAccId(user.AccountId);
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, customer.FullName, "Customer");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "TourGuide")
+            {
+                var tourGuide = await _tourGuideService.GetTourGuideByAccId(user.AccountId);
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, tourGuide.FullName, "TourGuide");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            if (user.Role.RoleName == "Admin")
+            {
+                var accessToken = _tokenService.GenerateAccessToken(user.AccountId, "Admin", "Admin");
+                var refreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+                return new AuthResponse
+                {
+                    AccessToken = accessToken,
+                    RefreshToken = refreshToken
+                };
+            }
+
+            return null;
         }
 
         public async Task<AuthResponse> LoginAsync(string email, string password)

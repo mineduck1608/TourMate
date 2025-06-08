@@ -25,13 +25,13 @@ type CustomerSidebarProps = {
     onNavItemClick?: (label: string) => void;
 };
 
-const  CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
+const CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
     const router = useRouter();
     const [selectedNav, setSelectedNav] = useState("Chờ xác nhận");
 
     const token = useToken('accessToken')
-        const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
-        const accountId = Number(payLoad?.AccountId)
+    const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
+    const accountId = Number(payLoad?.AccountId)
 
     const [user, setUser] = useState<Customer>();
     console.log(user)
@@ -54,6 +54,14 @@ const  CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
         { label: "Đấu giá", icon: StretchHorizontalIcon, bgColor: "bg-emerald-500", href: "/tour-guide/bid" },
         { label: "Tin nhắn", icon: MessageCircleMore, bgColor: "bg-blue-500", href: "/chat" },
     ];
+
+    const labelToValueMap: Record<string, string> = {
+        'Chờ xác nhận': 'Chờ xác nhận',
+        'Lịch hẹn sắp tới': 'Sắp diễn ra',
+        'Tour đã hướng dẫn': 'Đã hướng dẫn',
+        'Từ chối': 'Từ chối',
+    };
+
 
     return (
         <div className="w-100 bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-6">
@@ -99,7 +107,8 @@ const  CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
                             type="button"
                             onClick={() => {
                                 setSelectedNav(item.label);
-                                onNavItemClick?.(item.label);
+                                const mappedValue = labelToValueMap[item.label] || item.label;
+                                onNavItemClick?.(mappedValue);
                             }}
                             className={`w-full flex items-center gap-3 px-4 py-3 mb-2 rounded-lg font-medium transition-colors duration-300
                 ${isSelected

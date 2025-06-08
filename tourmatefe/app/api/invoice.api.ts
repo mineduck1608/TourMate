@@ -10,3 +10,7 @@ export const deleteInvoice = async (id: number | string) => await http.delete<ob
 
 export const denyInvoice = async (id: number | string) => await http.put<object>(`invoices/deny/${id}`)
 
+export const getInvoiceById = async (id: number) => {
+  const response = await http.get<Invoice>(`invoices/${id}`)
+  return response.data
+} 

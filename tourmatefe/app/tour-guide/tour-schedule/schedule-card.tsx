@@ -2,7 +2,6 @@ import { FC, useState } from 'react';
 import { BadgeCheck, CalendarClock, Download, XCircle } from "lucide-react";
 import { TourSchedule } from '@/types/tour-schedule';
 import { format } from 'date-fns'
-import { vi } from 'date-fns/locale'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { deleteInvoice } from '@/app/api/invoice.api';
 import { toast } from 'react-toastify';
@@ -115,8 +114,8 @@ const ScheduleCard: FC<TourSchedule> = ({
         <p>📞 SĐT hướng dẫn viên: {tourGuidePhone}</p>
         <p>🌍 Khu vực: {areaName}</p>
         <p>
-          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm', { locale: vi })}
-          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm', { locale: vi })}` : ''}
+          📅 Thời gian: {format(new Date(startDate), 'dd/MM/yyyy HH:mm')}
+          {endDate ? ` - ${format(new Date(endDate), 'dd/MM/yyyy HH:mm')}` : ''}
         </p>
 
         <p>👥 Số lượng người: {peopleAmount}</p>

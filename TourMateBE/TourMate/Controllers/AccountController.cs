@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -35,6 +36,42 @@ namespace API.Controllers
             _emailSender = emailSender;
             _cvApplicationService = cvApplicationService;
         }
+
+        [HttpPost("google")]
+        public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] TokenRequest request)
+        {
+            try
+            {
+                var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.Token);
+                var uid = decodedToken.Uid;
+                var email = decodedToken.Claims["email"]?.ToString();
+
+                // (Optional) kiểm tra người dùng trong DB
+                var user = await _accountService.GetAccountByEmail(email);
+
+                if (user == null)
+                {
+                    // Có thể tạo mới user ở đây nếu muốn
+                    return Unauthorized(new { msg = "Vui lòng đăng ký tài khoản đề sử dụng tính năng này." });
+                }
+
+                var login = await _accountService.GoogleLoginAsync(email);
+
+                // Nếu đăng nhập không thành công, trả về BadRequest với thông báo lỗi
+                if (login == null)
+                {
+                    return BadRequest(new { msg = "Tài khoản hoặc mật khẩu không đúng." });
+                }
+
+                // Nếu đăng nhập thành công, trả về phản hồi đăng nhập
+                return Ok(login);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { msg = "Firebase token không hợp lệ", detail = ex.Message });
+            }
+        }
+
 
         [HttpPut("changepassword")]
         public async Task<IActionResult> ChangePassword(

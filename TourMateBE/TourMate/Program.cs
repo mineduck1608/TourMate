@@ -1,12 +1,17 @@
 ﻿
 // Add this to your Program.cs file in the Web API project
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using Net.payOS;
 using Repositories.Context;
 using Repositories.Repository;
 using Services;
 using Services.Utils;
+using Services.VnPay;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
+
 
 
 
@@ -99,6 +104,9 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
+builder.Services.AddScoped<IVnPayService, VnPayService>();
+builder.Services.AddScoped<VnPayLibrary>();
+
 
 
 // Đăng ký DbContext
@@ -111,8 +119,27 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+    });
+}
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+builder.Services.AddSingleton(sp =>
+{
+    var config = builder.Configuration.GetSection("PayOS");
+    var clientId = config["ClientId"];
+    var apiKey = config["ApiKey"];
+    var checksumKey = config["ChecksumKey"];
+    return new PayOS(clientId!, apiKey!, checksumKey!);
+});
+
+
 
 var app = builder.Build();
 

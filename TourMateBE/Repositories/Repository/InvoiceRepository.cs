@@ -60,5 +60,25 @@ namespace Repositories.Repository
             return data;
         }
 
+        public async Task<Invoice> GetInvoiceById(int invoiceId)
+        {
+            var query = _context.Invoices
+                .Include(c => c.Customer)
+                .Include(c => c.TourGuide)
+                .AsQueryable();
+            var data = await query.FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
+            return data;
+        }
+
+        public async Task<Invoice> GetAccountByInvoiceAsync(int invoiceId)
+        {
+            var query = _context.Invoices
+                .Include(c => c.Customer).ThenInclude(a => a.Account)
+                .AsQueryable();
+
+            var data = await query.FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
+            return data;
+        }
+
     }
 }
