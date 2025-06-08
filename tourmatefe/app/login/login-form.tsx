@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
-import { login } from "../api/account.api";
+import { googleLogin, login } from "../api/account.api";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
+import { auth, provider } from "@/firebaseConfig";
+import { signInWithPopup } from "firebase/auth";
 
 export function LoginForm({
   className,
@@ -23,6 +25,40 @@ export function LoginForm({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
+
+
+
+  async function handleGoogleLogin() {
+    try {
+      setLoading(true);
+      const result = await signInWithPopup(auth, provider);
+      const idToken = await result.user.getIdToken(); // 👈 Token đúng để verify ở BE
+      
+      console.log("Google ID Token:", idToken);
+      // Gửi token lên backend
+      const response = await googleLogin(idToken);
+
+      if (!response.accessToken || !response.refreshToken) {
+        throw new Error("Đăng nhập Google thất bại");
+      }
+
+      const decoded: MyJwtPayload | null = response.accessToken
+        ? jwtDecode<MyJwtPayload>(response.accessToken.toString())
+        : null;
+
+      const role = decoded?.Role;
+      if (role === "Customer" || role === "TourGuide") {
+        router.push("/");
+      } else if (role === "Admin") {
+        router.push("/admin/dashboard");
+      }
+    } catch (error: any) {
+      console.error("Google login error:", error);
+      setError(error.message || "Đăng nhập Google thất bại");
+    } finally {
+      setLoading(false);
+    }
+  }
 
 
   async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
@@ -134,7 +170,7 @@ export function LoginForm({
                   Hoặc tiếp tục với
                 </span>
               </div>
-              <Button variant="outline" className="w-full" disabled={loading}>
+              <Button onClick={handleGoogleLogin} variant="outline" className="w-full" disabled={loading}>
                 {/* SVG Google icon */}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

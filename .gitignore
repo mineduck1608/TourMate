@@ -57,3 +57,7 @@ nunit-*.xml
 # appsettings.json
 appsettings.Development.json
 appsettings.json
+
+
+# firebase
+firebase-adminsdk.json

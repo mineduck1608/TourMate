@@ -42,7 +42,8 @@ namespace Services
                 PaymentMethod = e.Payments.FirstOrDefault()?.PaymentMethod ?? "Chưa thanh toán",
                 Status = e.Status,
                 Note = e.Note,
-                CreatedDate = e.CreatedDate
+                CreatedDate = e.CreatedDate,
+                TourGuideAccountId = e.TourGuide.AccountId
             }).ToList();
 
             return new PagedResult<TourSchedule>
