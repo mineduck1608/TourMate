@@ -3,6 +3,7 @@ import http from "../utils/http";
 import { Account } from "@/types/account";
 import { Customer } from "@/types/customer";
 import axios from "axios";
+import { RejectCVRequest, ApprovedCVRequest } from "@/types/applications";
 
 export async function login(payload: LoginPayload): Promise<LoginResponse> {
   try {
@@ -136,12 +137,25 @@ export const changePassword = async (
   return response.data;
 };
 
-export const getAssociatedId = async (accId: number, role: 'Customer' | 'TourGuide') => {
+export const getAssociatedId = async (
+  accId: number,
+  role: "Customer" | "TourGuide"
+) => {
   const response = await http.get<number>(`/account/get-associated-id`, {
     params: {
       accountId: accId,
-      role
+      role,
     },
   });
   return response.data;
-}
+};
+
+export const rejectCVApplication = async (data: RejectCVRequest) => {
+  const response = await http.post("/account/rejectcv", data);
+  return response.data;
+};
+
+export const approveCVApplication = async (data: ApprovedCVRequest) => {
+  const response = await http.post("/account/registertourguide", data);
+  return response.data;
+};

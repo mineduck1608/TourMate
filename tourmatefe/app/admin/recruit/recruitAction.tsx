@@ -11,18 +11,18 @@ import {
 import React from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "react-toastify";
-import CVDetailModal from "./recruitDetailModal";
-import { Applications } from "@/types/applications";
-import { rejectCVApplication } from "@/app/api/cv-application.api";
-import { RejectCVRequest } from "@/types/applications";
 import {
-  Dialog,
-  DialogContent,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
-import { Textarea } from "@/components/ui/textarea";
+  Applications,
+  RejectCVRequest,
+  ApprovedCVRequest,
+} from "@/types/applications";
+import {
+  rejectCVApplication,
+  approveCVApplication,
+} from "@/app/api/account.api";
+import CVDetailModal from "./recruitDetailModal";
+import RejectModal from "./rejectModal";
+import ApproveModal from "./approveModal";
 
 interface RecruitActionsProps {
   data: Applications;
@@ -31,8 +31,46 @@ interface RecruitActionsProps {
 const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
   const [isDetailModalOpen, setIsDetailModalOpen] = React.useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
-  const [rejectReason, setRejectReason] = React.useState("");
+  const [isApproveModalOpen, setIsApproveModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
+
+  // Mutation for approving CV
+  const approveCVMutation = useMutation({
+    mutationFn: (approveData: ApprovedCVRequest) =>
+      approveCVApplication(approveData),
+    onSuccess: () => {
+      toast.success("Duyệt CV thành công");
+      queryClient.invalidateQueries({ queryKey: ["cv-applications"] });
+      handleCloseApprove();
+    },
+    onError: (error) => {
+      toast.error(
+        (error as { response?: { data?: { msg?: string } } })?.response?.data
+          ?.msg || "Duyệt CV thất bại"
+      );
+    },
+  });
+
+  const handleOpenApprove = () => setIsApproveModalOpen(true);
+  const handleCloseApprove = () => setIsApproveModalOpen(false);
+
+  const handleApprove = (response: string) => {
+    if (!data) return;
+
+    approveCVMutation.mutate({
+      cvApplicationId: data.cvApplicationId,
+      email: data.email,
+      fullName: data.fullName,
+      gender: data.gender,
+      phone: data.phone,
+      address: data.address,
+      image: data.image,
+      dateOfBirth: data.dateOfBirth,
+      description: data.description,
+      areaId: 1,
+      response: response,
+    });
+  };
 
   // Mutation for rejecting CV
   const rejectCVMutation = useMutation({
@@ -40,10 +78,8 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
       rejectCVApplication(rejectData),
     onSuccess: () => {
       toast.success("Từ chối CV thành công");
-      // Sửa cách invalidate query
       queryClient.invalidateQueries({ queryKey: ["cv-applications"] });
-      setIsRejectModalOpen(false);
-      setRejectReason("");
+      handleCloseReject();
     },
     onError: (error) => {
       toast.error(
@@ -57,20 +93,17 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
   const handleCloseDetail = () => setIsDetailModalOpen(false);
 
   const handleOpenReject = () => setIsRejectModalOpen(true);
-  const handleCloseReject = () => {
-    setIsRejectModalOpen(false);
-    setRejectReason("");
-  };
+  const handleCloseReject = () => setIsRejectModalOpen(false);
 
-  const handleReject = () => {
-    if (!rejectReason.trim()) {
-      toast.error("Vui lòng nhập lý do từ chối");
+  const handleReject = (reason: string) => {
+    if (!reason.trim()) {
+      toast.error("Vui lòng nhập lý do từ chối CV");
       return;
     }
 
     rejectCVMutation.mutate({
       cvApplicationId: data.cvApplicationId,
-      response: rejectReason,
+      response: reason,
     });
   };
 
@@ -92,6 +125,9 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
           <DropdownMenuItem onClick={handleOpenReject}>
             Từ chối CV
           </DropdownMenuItem>
+          <DropdownMenuItem onClick={handleOpenApprove}>
+            Duyệt CV
+          </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>
 
@@ -103,29 +139,20 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
         />
       )}
 
-      <Dialog open={isRejectModalOpen} onOpenChange={setIsRejectModalOpen}>
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Từ chối CV</DialogTitle>
-          </DialogHeader>
-          <div className="py-4">
-            <Textarea
-              placeholder="Nhập lý do từ chối..."
-              value={rejectReason}
-              onChange={(e) => setRejectReason(e.target.value)}
-              className="min-h-[100px]"
-            />
-          </div>
-          <DialogFooter>
-            <Button variant="outline" onClick={handleCloseReject}>
-              Hủy
-            </Button>
-            <Button onClick={handleReject}>Xác nhận</Button>
-          </DialogFooter>
-        </DialogContent>
-      </Dialog>
+      <RejectModal
+        isOpen={isRejectModalOpen}
+        onClose={handleCloseReject}
+        onConfirm={handleReject}
+        isLoading={rejectCVMutation.isPending}
+      />
+
+      <ApproveModal
+        isOpen={isApproveModalOpen}
+        onClose={handleCloseApprove}
+        onConfirm={handleApprove}
+        isLoading={approveCVMutation.isPending}
+      />
     </>
   );
 };
-
 export default RecruitActions;

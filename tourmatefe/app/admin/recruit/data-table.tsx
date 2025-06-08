@@ -194,7 +194,7 @@ export function DataTable<TData, TValue>({
             Trước
           </Button>
         ) : (
-          <Link href={`/admin/tour-guide?page=${page - 1}`}>
+          <Link href={`/admin/recruit?page=${page - 1}`}>
             <Button variant="outline" size="sm">
               Trước
             </Button>

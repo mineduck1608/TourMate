@@ -78,11 +78,24 @@ export const columns: ColumnDef<Applications>[] = [
     header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      return (
-        <Badge variant={status === "active" ? "secondary" : "destructive"}>
-          {status === "active" ? "Hoạt động" : "Không hoạt động"}
-        </Badge>
-      );
+      let variant: "default" | "secondary" | "destructive" = "default";
+      let displayText = "";
+
+      switch (status) {
+        case "Đang chờ duyệt":
+          variant = "default";
+          displayText = "Đang chờ duyệt";
+          break;
+        case "Đã xử lí":
+          variant = "secondary";
+          displayText = "Đã xử lí";
+          break;
+        case "Đã từ chối":
+          variant = "destructive";
+          displayText = "Đã Từ chối";
+      }
+
+      return <Badge variant={variant}>{displayText}</Badge>;
     },
   },
   {
