@@ -12,7 +12,7 @@ namespace Services
     public interface ICustomerService
     {
         Task<Customer> GetCustomerByAccId(int accId);
-        Customer GetCustomer(int id);
+        Task<Customer> GetCustomer(int id);
         Task<bool> CreateCustomer(Customer customer);
         Task<bool> UpdateCustomer(Customer customer);
         bool DeleteCustomer(int id);
@@ -39,9 +39,9 @@ namespace Services
             return await _repository.GetByPhone(phone);
         }
 
-        public Customer GetCustomer(int id)
+        public async Task<Customer> GetCustomer(int id)
         {
-            return _repository.GetById(id);
+            return await _repository.GetCustomerById(id);
         }
 
         public async Task<PagedResult<Customer>> GetAll(int pageSize, int pageIndex, string phone)

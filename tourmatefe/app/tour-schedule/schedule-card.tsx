@@ -7,6 +7,7 @@ import { denyInvoice } from '@/app/api/invoice.api';
 import { toast } from 'react-toastify';
 import DeleteModal from '@/components/delete-modal';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 
 const statusStyles: Record<TourSchedule['status'], string> = {
@@ -35,6 +36,7 @@ const ScheduleCard: FC<TourSchedule> = ({
   status,
   note,
   createdDate,
+  tourGuideAccountId
 }) => {
 
   const queryClient = useQueryClient();
@@ -64,6 +66,8 @@ const ScheduleCard: FC<TourSchedule> = ({
       });
     },
   });
+
+  const router = useRouter();
 
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-4">
@@ -134,7 +138,9 @@ const ScheduleCard: FC<TourSchedule> = ({
       <div className="flex pt-2">
         <div className="ml-auto flex gap-2">
           {status === 'Sắp diễn ra' && (
-            <button className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center">
+            <button onClick={() => {
+              router.push(`/chat?userId=${tourGuideAccountId}`);
+            }} className="bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium px-4 py-2 rounded-lg shadow-sm transition flex items-center">
               <Send className="inline-block w-4 h-4 mr-1" />
               Liên hệ
             </button>

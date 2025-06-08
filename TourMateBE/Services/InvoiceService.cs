@@ -42,7 +42,8 @@ namespace Services
                 PaymentMethod = e.Payments.FirstOrDefault()?.PaymentMethod ?? "Chưa thanh toán",
                 Status = e.Status,
                 Note = e.Note,
-                CreatedDate = e.CreatedDate
+                CreatedDate = e.CreatedDate,
+                TourGuideAccountId = e.TourGuide.AccountId
             }).ToList();
 
             return new PagedResult<TourSchedule>
@@ -85,7 +86,7 @@ namespace Services
 
         public async Task<Invoice> GetInvoice(int id)
         {
-            return await InvoiceRepository.GetByIdAsync(id);
+            return await InvoiceRepository.GetInvoiceById(id);
         }
 
         public async Task<Invoice> GetAccountByInvoice(int id)

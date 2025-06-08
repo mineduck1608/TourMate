@@ -16,3 +16,18 @@ export interface RejectCVRequest {
   cvApplicationId: Applications["cvApplicationId"];
   response: string;
 }
+
+export interface ApprovedCVRequest {
+  cvApplicationId: number;
+  email: string;
+  fullName: string;
+  gender: string;
+  phone: string;
+  address: string;
+  image: string;
+  dateOfBirth: string;
+  description: string;
+  areaId: number;
+  response?: string;
+}
+

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -35,6 +36,42 @@ namespace API.Controllers
             _emailSender = emailSender;
             _cvApplicationService = cvApplicationService;
         }
+
+        [HttpPost("google")]
+        public async Task<ActionResult<AuthResponse>> GoogleLogin([FromBody] TokenRequest request)
+        {
+            try
+            {
+                var decodedToken = await FirebaseAuth.DefaultInstance.VerifyIdTokenAsync(request.Token);
+                var uid = decodedToken.Uid;
+                var email = decodedToken.Claims["email"]?.ToString();
+
+                // (Optional) kiểm tra người dùng trong DB
+                var user = await _accountService.GetAccountByEmail(email);
+
+                if (user == null)
+                {
+                    // Có thể tạo mới user ở đây nếu muốn
+                    return Unauthorized(new { msg = "Vui lòng đăng ký tài khoản đề sử dụng tính năng này." });
+                }
+
+                var login = await _accountService.GoogleLoginAsync(email);
+
+                // Nếu đăng nhập không thành công, trả về BadRequest với thông báo lỗi
+                if (login == null)
+                {
+                    return BadRequest(new { msg = "Tài khoản hoặc mật khẩu không đúng." });
+                }
+
+                // Nếu đăng nhập thành công, trả về phản hồi đăng nhập
+                return Ok(login);
+            }
+            catch (Exception ex)
+            {
+                return Unauthorized(new { msg = "Firebase token không hợp lệ", detail = ex.Message });
+            }
+        }
+
 
         [HttpPut("changepassword")]
         public async Task<IActionResult> ChangePassword(
@@ -188,9 +225,6 @@ namespace API.Controllers
             if (!ValidInput.IsMailFormatted(email))
                 return BadRequest(new { msg = "Email is not properly formatted" });
 
-            if (!ValidInput.IsPasswordSecure(password))
-                return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
-
             // Kiểm tra tài khoản đã tồn tại
             var existingAccount = await _accountService.GetAccountByEmail(email);
             if (existingAccount != null)
@@ -226,11 +260,11 @@ namespace API.Controllers
                 Image = image
             };
 
-        
+
 
             // Lưu khách hàng
             var isTourGuideCreated = await _tourGuideService.CreateTourGuide(tourGuide);
-            if (isTourGuideCreated)
+            if (!isTourGuideCreated)
                 return StatusCode(500, "An error occurred while registering the tourguide.");
 
             var tourGuideDesc = new TourGuideDesc
@@ -245,7 +279,7 @@ namespace API.Controllers
                 return StatusCode(500, "An error occurred while registering the tourguide desc.");
 
             var cvApplication = await _cvApplicationService.GetCvapplication(cvApplicationId);
-            cvApplication.Status = "Đã chấp nhận";
+            cvApplication.Status = "Đã xử lí";
             await _cvApplicationService.UpdateCvapplication(cvApplication);
 
             string emailBody = GenerateTourGuideApprovalEmail(fullName, email, password, cvApplication?.Response);
@@ -415,41 +449,71 @@ namespace API.Controllers
         [HttpPost("rejectcv")]
         public async Task<ActionResult> RejectCvApplication([FromBody] dynamic request)
         {
-            var jsonElement = (JsonElement)request;
-
-            int cvApplicationId = jsonElement.GetProperty("cvApplicationId").GetInt32();
-            string response = jsonElement.GetProperty("response").GetString();
-
-            if (string.IsNullOrWhiteSpace(response))
-                return BadRequest("Response (lý do từ chối) không được để trống.");
-
-            var cvApplication = await _cvApplicationService.GetCvapplication(cvApplicationId);
-            if (cvApplication == null)
-                return NotFound("Không tìm thấy đơn ứng tuyển.");
-
-            // Update trạng thái từ chối và lưu phản hồi
-            cvApplication.Status = "Đã từ chối";
-            cvApplication.Response = response;
-            await _cvApplicationService.UpdateCvapplication(cvApplication);
-
-            // Lấy email và tên ứng viên để gửi mail
-            string email = cvApplication.Email; // Giả sử có trường Email trong cvApplication
-            string fullName = cvApplication.FullName; // Giả sử có trường FullName trong cvApplication
-
-            // Tạo email từ chối
-            string emailBody = GenerateTourGuideRejectionEmail(fullName, response);
-
             try
             {
-                await _emailSender.SendEmailAsync(email, "Thông báo từ chối đơn ứng tuyển TourMate", emailBody);
+                var jsonElement = (JsonElement)request;
+
+                int cvApplicationId;
+                string response;
+
+                try
+                {
+                    cvApplicationId = jsonElement.GetProperty("cvApplicationId").GetInt32();
+                    response = jsonElement.GetProperty("response").GetString();
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { msg = "Dữ liệu đầu vào không hợp lệ.", error = ex.Message });
+                }
+
+                if (string.IsNullOrWhiteSpace(response))
+                    return BadRequest(new { msg = "Response (lý do từ chối) không được để trống." });
+
+                var cvApplication = await _cvApplicationService.GetCvapplication(cvApplicationId);
+                if (cvApplication == null)
+                    return NotFound(new { msg = "Không tìm thấy đơn ứng tuyển." });
+
+                // Update trạng thái từ chối và lưu phản hồi
+                cvApplication.Status = "Đã từ chối";
+                cvApplication.Response = response;
+
+
+
+                var updateResult = await _cvApplicationService.UpdateCvapplication(cvApplication);
+                if (!updateResult)
+                    return StatusCode(500, new { msg = "Không thể cập nhật trạng thái đơn ứng tuyển." });
+
+                // Lấy email và tên ứng viên để gửi mail
+                string email = cvApplication.Email; // Giả sử có trường Email trong cvApplication
+                string fullName = cvApplication.FullName; // Giả sử có trường FullName trong cvApplication
+
+                if (string.IsNullOrWhiteSpace(email) || string.IsNullOrWhiteSpace(fullName))
+                    return StatusCode(500, new { msg = "Thiếu thông tin email hoặc họ tên ứng viên." });
+
+                // Tạo email từ chối
+                string emailBody = GenerateTourGuideRejectionEmail(fullName, response);
+
+                try
+                {
+                    await _emailSender.SendEmailAsync(email, "Thông báo từ chối đơn ứng tuyển TourMate", emailBody);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { msg = "Không thể gửi email thông báo.", error = ex.Message });
+                }
+
+                return Ok(new { msg = "Từ chối đơn ứng tuyển thành công và email đã được gửi." });
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Email send failed: {ex.Message}");
+                return StatusCode(500, new
+                {
+                    msg = "Đã xảy ra lỗi không xác định trong quá trình xử lý.",
+                    error = ex.Message
+                });
             }
-
-            return Ok(new { msg = "Từ chối đơn ứng tuyển thành công và email đã được gửi." });
         }
+
 
         private string GenerateTourGuideRejectionEmail(string fullName, string response)
         {
@@ -591,7 +655,7 @@ namespace API.Controllers
         public async Task<IActionResult> LockAccount(int id)
         {
             var result = await _accountService.LockAccount(id);
-            if(result == true)
+            if (result == true)
             {
                 return Ok();
             }

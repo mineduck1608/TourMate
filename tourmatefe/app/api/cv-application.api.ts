@@ -1,4 +1,4 @@
-import { Applications, RejectCVRequest } from "@/types/applications";
+import { Applications } from "@/types/applications";
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
 
@@ -28,10 +28,5 @@ export const updateCVApplication = async (
   data: Partial<Applications>
 ) => {
   const response = await http.put(`/cv-applications/${id}`, data);
-  return response.data;
-};
-
-export const rejectCVApplication = async (data: RejectCVRequest) => {
-  const response = await http.post("/account/reject", data);
   return response.data;
 };

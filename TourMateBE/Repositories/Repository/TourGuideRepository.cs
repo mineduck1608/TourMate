@@ -12,6 +12,14 @@ namespace Repositories.Repository
         {
         }
 
+        public async Task<TourGuide> GetTourGuideById(int tourGuideId)
+        {
+            var tourGuide = await _context.TourGuides
+                .Include(c => c.Account) // Bao gồm thông tin tài khoản
+                .FirstOrDefaultAsync(c => c.TourGuideId == tourGuideId);
+            return tourGuide;
+        }
+
         public async Task<TourGuideIdAndName> GetTourGuideByAccountIdAsync(int accountId)
         {
             return await _context.TourGuides
