@@ -177,7 +177,7 @@ export function DataTable<TData, TValue>({
 
         {/* Page Numbers */}
         <span className="text-sm text-muted-foreground">
-          Trang {table.getState().pagination.pageIndex + 1} trên {totalPages}
+          Trang {page} trên {totalPages}
         </span>
 
         {/* Next Button */}
