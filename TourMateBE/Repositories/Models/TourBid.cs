@@ -28,4 +28,8 @@ public partial class TourBid
     public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();
 
     public virtual ActiveArea PlaceRequestedNavigation { get; set; } = null!;
+
+    public virtual ICollection<TourBidComment> TourBidComments { get; set; } = new List<TourBidComment>();
+
+    public virtual ICollection<UserLikeBid> UserLikeBids { get; set; } = new List<UserLikeBid>();
 }

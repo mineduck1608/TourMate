@@ -11,6 +11,8 @@ using Services.Utils;
 using Services.VnPay;
 using System.Text.Json.Serialization;
 using TourMate.MessageHub;
+using TourMate.Mappings;
+
 
 
 
@@ -101,11 +103,18 @@ builder.Services.AddScoped<ITourGuideRevenueService, TourGuideRevenueService>();
 
 builder.Services.AddScoped<TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();
+
+builder.Services.AddScoped<RevenueRepository>();
+builder.Services.AddScoped<IRevenueService, RevenueService>();
+
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<VnPayLibrary>();
+
+// AutoMapper
+builder.Services.AddAutoMapper(typeof(RevenueProfile));
 
 
 

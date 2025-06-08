@@ -49,11 +49,15 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
+    public virtual DbSet<Revenue> Revenues { get; set; }
+
     public virtual DbSet<Role> Roles { get; set; }
 
     public virtual DbSet<SystemRevenue> SystemRevenues { get; set; }
 
     public virtual DbSet<TourBid> TourBids { get; set; }
+
+    public virtual DbSet<TourBidComment> TourBidComments { get; set; }
 
     public virtual DbSet<TourGuide> TourGuides { get; set; }
 
@@ -63,7 +67,7 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<TourService> TourServices { get; set; }
 
-    public virtual DbSet<UserLikeTourBid> UserLikeTourBids { get; set; }
+    public virtual DbSet<UserLikeBid> UserLikeBids { get; set; }
 
     public static string GetConnectionString(string connectionStringName)
     {
@@ -71,12 +75,12 @@ public partial class TourmateContext : DbContext
             .SetBasePath(AppDomain.CurrentDomain.BaseDirectory)
             .AddJsonFile("appsettings.json")
             .Build();
-
         string connectionString = config.GetConnectionString(connectionStringName);
         return connectionString;
     }
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
        => optionsBuilder.UseSqlServer(GetConnectionString("DefaultConnection"));
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Account>(entity =>
@@ -580,6 +584,25 @@ public partial class TourmateContext : DbContext
                 .HasConstraintName("FKRefreshTok914650");
         });
 
+        modelBuilder.Entity<Revenue>(entity =>
+        {
+            entity.HasKey(e => e.RevenueId).HasName("PK__Revenue__275F16DDB67A94B6");
+
+            entity.ToTable("Revenue");
+
+            entity.Property(e => e.ActualReceived).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+            entity.Property(e => e.PlatformCommission).HasColumnType("decimal(18, 2)");
+            entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.TourGuide).WithMany(p => p.Revenues)
+                .HasForeignKey(d => d.TourGuideId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK_Revenue_TourGuide");
+        });
+
         modelBuilder.Entity<Role>(entity =>
         {
             entity.HasKey(e => e.RoleId).HasName("PK__Role__CD98462A1DFD6468");
@@ -645,6 +668,34 @@ public partial class TourmateContext : DbContext
                 .HasForeignKey(d => d.PlaceRequested)
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKTourBid682696");
+        });
+
+        modelBuilder.Entity<TourBidComment>(entity =>
+        {
+            entity.HasKey(e => e.CommentId).HasName("PK__TourBidC__CDDE919DBDFA69C7");
+
+            entity.ToTable("TourBidComment");
+
+            entity.Property(e => e.CommentId).HasColumnName("commentId");
+            entity.Property(e => e.AccountId).HasColumnName("accountId");
+            entity.Property(e => e.Content)
+                .HasMaxLength(255)
+                .HasColumnName("content");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+            entity.Property(e => e.TourBidId).HasColumnName("tourBidId");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.TourBidComments)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKTourBidCom910846");
+
+            entity.HasOne(d => d.TourBid).WithMany(p => p.TourBidComments)
+                .HasForeignKey(d => d.TourBidId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKTourBidCom405023");
         });
 
         modelBuilder.Entity<TourGuide>(entity =>
@@ -775,22 +826,25 @@ public partial class TourmateContext : DbContext
                 .HasConstraintName("FKTourServic281225");
         });
 
-        modelBuilder.Entity<UserLikeTourBid>(entity =>
+        modelBuilder.Entity<UserLikeBid>(entity =>
         {
-            entity
-                .HasNoKey()
-                .ToTable("UserLikeTourBid");
+            entity.HasKey(e => e.LikeId).HasName("PK__UserLike__4FC592DB5B73A8A1");
 
+            entity.ToTable("UserLikeBid");
+
+            entity.Property(e => e.LikeId).HasColumnName("likeId");
             entity.Property(e => e.AccountId).HasColumnName("accountId");
             entity.Property(e => e.TourBidId).HasColumnName("tourBidId");
 
-            entity.HasOne(d => d.Account).WithMany()
+            entity.HasOne(d => d.Account).WithMany(p => p.UserLikeBids)
                 .HasForeignKey(d => d.AccountId)
-                .HasConstraintName("FK__UserLikeT__accou__03F0984C");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKUserLikeBi622082");
 
-            entity.HasOne(d => d.TourBid).WithMany()
+            entity.HasOne(d => d.TourBid).WithMany(p => p.UserLikeBids)
                 .HasForeignKey(d => d.TourBidId)
-                .HasConstraintName("FK__UserLikeT__tourB__02FC7413");
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKUserLikeBi116259");
         });
 
         OnModelCreatingPartial(modelBuilder);

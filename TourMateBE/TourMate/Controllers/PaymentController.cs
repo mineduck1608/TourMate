@@ -22,8 +22,9 @@ namespace API.Controllers
         private readonly IEmailSender _emailSender;
         private readonly IAccountService _accountSerivce;
         private readonly ITourGuideService _tourGuideService;
+        private readonly IRevenueService _revenueService;
 
-        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService)
+        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService, IRevenueService revenueService)
         {
             _vnPayService = vnPayService;
             _config = config;
@@ -33,6 +34,7 @@ namespace API.Controllers
             _emailSender = emailSender;
             _accountSerivce = accountSerivce;
             _tourGuideService = tourGuideService;
+            _revenueService = revenueService;
         }
 
         [HttpGet("{id}")]
@@ -160,16 +162,41 @@ namespace API.Controllers
         public async Task<IActionResult> Create([FromBody] PaymentCreateModel data)
         {
             var payment = data.Convert();
+            var result = await _paymentService.CreatePayments(payment);
 
-            if(payment.PaymentType == "Đặt chuyến đi")
+            if (result == null)
             {
-                               var invoice = await _invoiceService.GetInvoice((int)payment.InvoiceId);
+                return BadRequest("Payment creation failed");
+            }
+
+            if (payment.PaymentType == "Đặt chuyến đi")
+            {
+                var invoice = await _invoiceService.GetInvoice((int)payment.InvoiceId);
                 if (invoice == null)
                 {
                     return NotFound("Invoice not found");
                 }
                 invoice.Status = "Sắp diễn ra";
                 await _invoiceService.UpdateInvoice(invoice);
+
+                // Chuyển float sang decimal
+                decimal totalAmount = Convert.ToDecimal(payment.Price);
+                decimal platformCommission = totalAmount * 0.15m; // ví dụ: 15% hoa hồng
+                decimal actualReceived = totalAmount - platformCommission;
+
+                var revenue = new Revenue
+                {
+                    TourGuideId = invoice.TourGuideId,
+                    TotalAmount = totalAmount,
+                    PlatformCommission = platformCommission,
+                    ActualReceived = actualReceived,
+                    CreatedAt = DateTime.UtcNow,
+                    PaymentStatus = false // Chưa thanh toán lại cho hướng dẫn viên
+                };
+
+                await _revenueService.CreateRevenue(revenue);
+
+
                 string customerEmailBody = _paymentService.GenerateCustomerInvoiceEmail(invoice);
                 string tourGuideEmailBody = _paymentService.GenerateTourGuideInvoiceEmail(invoice);
                 var customerEmail = await _customerService.GetCustomer(invoice.CustomerId);
@@ -186,7 +213,6 @@ namespace API.Controllers
 
             }
 
-            var result = await _paymentService.CreatePayments(payment);
             if (result != null && payment.PaymentType == "Membership")
             {
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
