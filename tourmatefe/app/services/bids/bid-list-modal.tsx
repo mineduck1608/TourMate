@@ -6,6 +6,8 @@ import { BidListResult } from "@/types/bid";
 import SafeImage from "@/components/safe-image";
 import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
+import Link from "next/link";
+import dayjs from "dayjs";
 type BidCommentModalProps = {
     isOpen: boolean;
     onClose: () => void;
@@ -91,9 +93,13 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                 <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm">
                                     <div className=" flex   items-center justify-between">
                                         <div className="flex items-center">
-                                            <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                            <p className="ml-2 font-semibold">{v.fullName}</p>
-
+                                            <Link href={'/services/tour-guide/' + v.tourGuideId}>
+                                                <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                            </Link>
+                                            <div className="ml-2">
+                                                <p className="font-semibold">{v.fullName}</p>
+                                                <p>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
+                                            </div>
                                         </div>
                                         <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
                                     </div>

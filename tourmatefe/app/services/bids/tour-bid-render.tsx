@@ -3,7 +3,7 @@ import { cn } from "@/lib/utils"
 import { TourBidListResult } from "@/types/tour-bid"
 import dayjs from "dayjs"
 import { useContext, useState } from "react"
-import { FaHeart, FaMapMarkerAlt } from "react-icons/fa"
+import { FaHeart, FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify";
 import BidCommentModal from "./bid-list-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
@@ -93,14 +93,19 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     __html: sanitizeContent(tourBid.content || ""),
                 }}
             />
-            <div className="flex *:mr-2">
-                <button onClick={() => {
-                    setTarget(tourBid)
-                    setSignal({ ...signal, likeOrUnlike: true })
-                }}>
-                    <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')} />
+            <div className="flex *:mr-4">
+                <div className="flex *:mr-1">
+                    <button onClick={() => {
+                        setTarget(tourBid)
+                        setSignal({ ...signal, likeOrUnlike: true })
+                    }}>
+                        <FaHeart className={cn("hover:fill-red-500", tourBid.isLiked ? 'fill-[#ff0000]' : ' fill-[#888888]')} />
+                    </button>
+                    <p>{tourBid.likeCount}</p>
+                </div>
+                <button className="cursor-pointer" onClick={() => { }}>
+                    <FaRegCommentDots className="inline" /> Bình luận
                 </button>
-                <p>{tourBid.likeCount}</p>
             </div>
             <div className="border-2" />
             <div className="mt-5 w-full">

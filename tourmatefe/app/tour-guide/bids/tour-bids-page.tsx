@@ -4,7 +4,7 @@ import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./tour-bid-create-modal";
 import { baseData, BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 import DeleteModal from "@/components/delete-modal";
-import BidEditModal from "./tour-bid-edit-modal";
+import TourBidEditModal from "./tour-bid-edit-modal";
 import { TourGuide } from "@/types/tour-guide";
 
 export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, search: string }) {
@@ -50,7 +50,7 @@ export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, sea
           setModalOpen({ ...modalOpen, delete: false })
         }}
         message="Xóa cuộc đấu giá này?" />
-      {modalOpen.edit && <BidEditModal isOpen
+      {modalOpen.edit && <TourBidEditModal isOpen
         onClose={() => {
           setModalOpen({ ...modalOpen, edit: false })
         }}

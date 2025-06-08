@@ -119,25 +119,25 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-if (FirebaseApp.DefaultInstance == null)
-{
-    FirebaseApp.Create(new AppOptions()
-    {
-        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-    });
-}
+//if (FirebaseApp.DefaultInstance == null)
+//{
+//    FirebaseApp.Create(new AppOptions()
+//    {
+//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+//    });
+//}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton(sp =>
-{
-    var config = builder.Configuration.GetSection("PayOS");
-    var clientId = config["ClientId"];
-    var apiKey = config["ApiKey"];
-    var checksumKey = config["ChecksumKey"];
-    return new PayOS(clientId!, apiKey!, checksumKey!);
-});
+//builder.Services.AddSingleton(sp =>
+//{
+//    var config = builder.Configuration.GetSection("PayOS");
+//    var clientId = config["ClientId"];
+//    var apiKey = config["ApiKey"];
+//    var checksumKey = config["ChecksumKey"];
+//    return new PayOS(clientId!, apiKey!, checksumKey!);
+//});
 
 
 

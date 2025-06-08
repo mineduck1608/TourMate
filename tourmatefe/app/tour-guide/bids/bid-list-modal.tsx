@@ -12,101 +12,139 @@ import ParticipateBidModal from "./participate-bid-modal";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
+import Link from "next/link";
+import dayjs from "dayjs";
+import BidEditModal from "./bid-edit-modal";
 
 type BidCommentModalProps = {
     isOpen: boolean;
     onClose: () => void;
     tourBid: TourBid | TourBidListResult
 };
-
+const baseData: BidListResult = {
+    bidId: 0,
+    tourBidId: 0,
+    tourGuideId: 0,
+    amount: 0,
+    createdAt: "",
+    status: "",
+    fullName: "",
+    image: ""
+}
 const BidCommentModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
     tourBid
 }) => {
-    const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
-    const pageSize = 4
-    const [page, setPage] = useState(1)
-    const [bids, setBids] = useState<BidListResult[]>([])
-    const [hasMore, setHasMore] = useState(true)
-    const [open, setOpen] = useState(false)
-    const scrollRef = useRef<HTMLDivElement>(null)
-    const [dataVersion, setDataVersion] = useState(0)
-    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
-    // Store bids in a ref to maintain between modal openings
-    const bidsRef = useRef<BidListResult[]>([])
+    const isOnGoing = tourBid.status === 'Hoạt động' ? true : false;
+    const pageSize = 4;
+    const [page, setPage] = useState(1);
+    const [bids, setBids] = useState<BidListResult[]>([]);
+    const [hasMore, setHasMore] = useState(true);
+    const [target, setTarget] = useState<BidListResult>(baseData)
+    const [modalOpen, setModalOpen] = useState({
+        create: false,
+        edit: false,
+        delete: false
+    });
+    const scrollRef = useRef<HTMLDivElement>(null);
+    const [dataVersion, setDataVersion] = useState(0);
+    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
+    const bidsRef = useRef<BidListResult[]>([]);
+    const modalRef = useRef<HTMLDivElement>(null);
+    // Calculate scrollbar width and lock body scroll
+    useEffect(() => {
+        if (isOpen) {
+            // Calculate scrollbar width
+            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+
+            // Apply styles to body
+            document.body.style.overflow = 'hidden';
+            document.body.style.paddingRight = `${scrollbarWidth}px`;
+
+            // Apply to modal wrapper if exists
+            const modalWrapper = document.querySelector('.modal-wrapper');
+            if (modalWrapper) {
+                (modalWrapper as HTMLElement).style.paddingRight = `${scrollbarWidth}px`;
+            }
+
+            return () => {
+                document.body.style.overflow = '';
+                document.body.style.paddingRight = '';
+                if (modalWrapper) {
+                    (modalWrapper as HTMLElement).style.paddingRight = '';
+                }
+            };
+        }
+    }, [isOpen]);
 
     const bidData = useQuery({
         queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
         queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
         enabled: isOpen,
-    })
+    });
 
     const resetData = () => {
-        setPage(1)
-        setHasMore(true)
-        setDataVersion(v => v + 1)
-    }
+        setPage(1);
+        setHasMore(true);
+        setDataVersion(v => v + 1);
+    };
 
-    // Initialize data when modal opens
     useEffect(() => {
         if (isOpen) {
-            // Always reset data when opening to ensure fresh data
-            resetData()
+            resetData();
         }
-    }, [isOpen])
+    }, [isOpen]);
 
     const addBidMutation = useMutation({
         mutationFn: ({ data }: { data: Bid }) => addBid(data),
         onSuccess: (newBid) => {
             toast.success("Tạo thành công");
-            setOpen(false)
-            // Add new bid to both state and ref
+            setModalOpen(p => ({ ...p, create: false }));
             setBids(prev => {
-                const updated = [newBid, ...prev]
-                bidsRef.current = updated
-                return updated
-            })
+                const updated = [newBid, ...prev];
+                bidsRef.current = updated;
+                return updated;
+            });
             setTimeout(() => {
                 if (scrollRef.current) {
-                    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })
+                    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
                 }
-            }, 100)
+            }, 100);
         },
         onError: (error) => {
             toast.error("Tạo thất bại");
             console.error(error);
         },
-    })
+    });
 
-    // Handle new data from query
     useEffect(() => {
-        if (!bidData.data) return
+        if (!bidData.data) return;
 
-        const newItems = bidData.data.result
-        const totalPages = bidData.data.totalPage ?? 0
+        const newItems = bidData.data.result;
+        const totalPages = bidData.data.totalPage ?? 0;
 
         if (page === 1) {
-            setBids(newItems)
-            bidsRef.current = newItems
+            setBids(newItems);
+            bidsRef.current = newItems;
         } else {
             setBids(prev => {
-                const existingIds = new Set(prev.map(b => b.bidId))
-                const filteredNewItems = newItems.filter(b => !existingIds.has(b.bidId))
-                const updated = [...prev, ...filteredNewItems]
-                bidsRef.current = updated
-                return updated
-            })
+                const existingIds = new Set(prev.map(b => b.bidId));
+                const filteredNewItems = newItems.filter(b => !existingIds.has(b.bidId));
+                const updated = [...prev, ...filteredNewItems];
+                bidsRef.current = updated;
+                return updated;
+            });
         }
 
-        setHasMore(page < totalPages)
-    }, [bidData.data])
+        setHasMore(page < totalPages);
+    }, [bidData.data]);
 
     const loadMore = () => {
         if (!bidData.isFetching && hasMore) {
-            setPage(prev => prev + 1)
+            setPage(prev => prev + 1);
         }
-    }
+    };
 
     return (
         <div className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}>
@@ -115,9 +153,13 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 onClick={onClose}
             ></div>
 
+            {/* Main modal container */}
             <div
-                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[900px] overflow-y-auto"
-                style={{ overflowY: 'scroll' }}
+                ref={modalRef}
+                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[90vh] overflow-y-auto modal-wrapper"
+                style={{
+                    scrollbarGutter: 'stable',
+                }}
             >
                 <div className="flex justify-between items-center rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
@@ -171,18 +213,23 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                         scrollableTarget="scrollableDiv"
                     >
                         {bids.map((v) => (
-                            <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center ">
+                            <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center">
                                 <div className="flex justify-between">
                                     <div className="flex items-center">
-                                        <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                        <p className="ml-2 font-semibold">{v.fullName}</p>
+                                        <Link href={'/services/tour-guide/' + v.tourGuideId}>
+                                            <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                        </Link>
+                                        <div className="ml-2">
+                                            <p className="font-semibold">{v.fullName}</p>
+                                            <p>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
+                                        </div>
                                     </div>
                                     <div>
                                         <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
                                         {v.tourGuideId === id &&
-                                            <div className="flex justify-end">
+                                            <div className="flex justify-end relative">
                                                 <DropdownMenu>
-                                                    <DropdownMenuTrigger>
+                                                    <DropdownMenuTrigger asChild>
                                                         <button
                                                             className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
                                                         >
@@ -192,15 +239,32 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                                         </button>
                                                     </DropdownMenuTrigger>
                                                     <DropdownMenuContent
-                                                        className="p-1 rounded-lg z-50 -translate-x-4 border-[1px] bg-[#fff] w-[125px]">
+                                                        side="left"
+                                                        align="end"
+                                                        className="p-1 rounded-lg z-[100] border border-gray-200 bg-white w-[125px] shadow-lg -translate-x-[75px]"
+                                                        style={{
+                                                            position: 'fixed',
+                                                            //marginRight: '0.5rem' // Small margin to prevent touching edge
+                                                        }}
+                                                    >
                                                         <DropdownMenuItem
-                                                            className="hover:bg-gray-100 p-1 rounded-sm"
-                                                            onClick={() => { }}>
+                                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
+                                                            onClick={() => {
+                                                                setTarget(v)
+                                                                setModalOpen(p => ({ ...p, edit: true }))
+                                                            }}
+                                                        >
                                                             Cập nhật
                                                         </DropdownMenuItem>
-                                                        <DropdownMenuItem onClick={() => { }}
-                                                            className="hover:bg-gray-100 p-1 rounded-sm"
-                                                        >Xóa</DropdownMenuItem>
+                                                        <DropdownMenuItem
+                                                            onClick={() => {
+                                                                setTarget(v)
+                                                                setModalOpen(p => ({ ...p, delete: true }))
+                                                            }}
+                                                            className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
+                                                        >
+                                                            Xóa
+                                                        </DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
                                             </div>}
@@ -218,20 +282,29 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 }
                 <div className="my-4 mt-0 border-t-[1px]" />
                 <Button
-                    onClick={() => setOpen(true)}
+                    onClick={() => setModalOpen(p => ({ ...p, create: true }))}
                     disabled={!isOnGoing}
                     className="mt-4 w-full text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                 >
                     Tham gia đấu giá
                 </Button>
-                {open && <ParticipateBidModal
+                {modalOpen.create && <ParticipateBidModal
                     isOpen
-                    onClose={() => setOpen(false)}
+                    onClose={() => setModalOpen(p => ({ ...p, create: false }))}
                     tourBid={tourBid}
                     onSave={(b) => {
                         addBidMutation.mutate({ data: b })
                     }}
                 />}
+                {
+                    modalOpen.edit && <BidEditModal
+                        isOpen
+                        onClose={() => setModalOpen(p => ({ ...p, edit: false }))}
+                        onSave={() => { }}
+                        bid={target}
+                        tourBid={tourBid}
+                    />
+                }
             </div>
         </div>
     );

@@ -14,7 +14,7 @@ type BidEditModalProps = {
     onSave: (tourBidData: TourBid | TourBidListResult) => void;
 };
 
-const BidEditModal: React.FC<BidEditModalProps> = ({
+const TourBidEditModal: React.FC<BidEditModalProps> = ({
     isOpen,
     onClose,
     onSave,
@@ -174,4 +174,4 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
     );
 };
 
-export default BidEditModal;
+export default TourBidEditModal;
