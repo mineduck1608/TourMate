@@ -1,8 +1,8 @@
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useContext } from "react";
 import "react-quill-new/dist/quill.snow.css";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { addBid, getBidsOfTourBid } from "@/app/api/bid.api";
-import { Bid } from "@/types/bid";
+import { Bid, BidListResult } from "@/types/bid";
 import SafeImage from "@/components/safe-image";
 import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -10,6 +10,8 @@ import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import { toast } from "react-toastify";
 import ParticipateBidModal from "./participate-bid-modal";
 import { Button } from "@/components/ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
+import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
 
 type BidCommentModalProps = {
     isOpen: boolean;
@@ -25,14 +27,14 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const pageSize = 4
     const [page, setPage] = useState(1)
-    const [bids, setBids] = useState<Bid[]>([])
+    const [bids, setBids] = useState<BidListResult[]>([])
     const [hasMore, setHasMore] = useState(true)
     const [open, setOpen] = useState(false)
     const scrollRef = useRef<HTMLDivElement>(null)
     const [dataVersion, setDataVersion] = useState(0)
-
+    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     // Store bids in a ref to maintain between modal openings
-    const bidsRef = useRef<Bid[]>([])
+    const bidsRef = useRef<BidListResult[]>([])
 
     const bidData = useQuery({
         queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
@@ -172,12 +174,12 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                             <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center ">
                                 <div className="flex justify-between">
                                     <div className="flex items-center">
-                                        <SafeImage src={v.tourGuide?.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                        <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
+                                        <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                        <p className="ml-2 font-semibold">{v.fullName}</p>
                                     </div>
                                     <div>
                                         <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
-                                        {/* {v.tourGuideId === id &&
+                                        {v.tourGuideId === id &&
                                             <div className="flex justify-end">
                                                 <DropdownMenu>
                                                     <DropdownMenuTrigger>
@@ -201,7 +203,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                                         >Xóa</DropdownMenuItem>
                                                     </DropdownMenuContent>
                                                 </DropdownMenu>
-                                            </div>} */}
+                                            </div>}
                                     </div>
                                 </div>
                                 <div className="wrap-break-word mt-4">

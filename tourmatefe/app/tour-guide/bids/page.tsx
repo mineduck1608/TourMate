@@ -1,14 +1,14 @@
 'use client'
 import React, { Suspense, useContext, useEffect, useState } from 'react'
 import Profile from './profile'
-import Bids from './bids-page'
+import Bids from './tour-bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context'
 import Banner from '@/components/Banner'
 import { TourBid, TourBidListResult } from '@/types/tour-bid'
-import { baseData, BidTaskContext } from './bid-task-context'
+import { baseData, BidTaskContext } from './tour-bid-task-context'
 import { getTourGuide } from '@/app/api/tour-guide.api'
 
 function BidPage() {

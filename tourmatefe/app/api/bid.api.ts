@@ -1,9 +1,9 @@
 import http from "../utils/http";
 import { PagedResult } from "@/types/pagedResult";
-import { Bid } from "@/types/bid";
+import { Bid, BidListResult } from "@/types/bid";
 
 export const getBidsOfTourBid = async (tourBid: number | string, page: number | string, limit: number | string, signal?: AbortSignal) => {
-    const res = await http.get<PagedResult<Bid>>('bids/tour/' + tourBid, {
+    const res = await http.get<PagedResult<BidListResult>>('bids/tour/' + tourBid, {
         params: {
             pageSize: limit,
             pageIndex: page,

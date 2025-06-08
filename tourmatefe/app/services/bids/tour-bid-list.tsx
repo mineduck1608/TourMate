@@ -4,10 +4,10 @@ import { useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 import { TourBid, TourBidListResult } from '@/types/tour-bid';
 import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } from '@/app/api/tour-bid.api';
-import { BidTaskContext, BidTaskContextProp } from './bid-task-context';
+import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
-import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
-import { baseData } from './bid-task-context';
+import { CustomerSiteContext, CustomerSiteContextProp } from '../context';
+import { baseData } from './tour-bid-task-context';
 
 function BidList({ search }: { search: string }) {
   const pageSize = 3;
@@ -18,7 +18,7 @@ function BidList({ search }: { search: string }) {
 
   const { setSignal, setTarget, signal, target, modalOpen, setModalOpen } =
     useContext(BidTaskContext) as BidTaskContextProp;
-  const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
+  const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp;
 
   const tourBidQuery = useQuery({
     queryKey: ["tour-bids", pageSize, page, search, resetTrigger],

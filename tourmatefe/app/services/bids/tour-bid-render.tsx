@@ -5,9 +5,9 @@ import dayjs from "dayjs"
 import { useContext, useState } from "react"
 import { FaHeart, FaMapMarkerAlt } from "react-icons/fa"
 import DOMPurify from "dompurify";
-import BidCommentModal from "./bid-comment-modal"
+import BidCommentModal from "./bid-list-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context"
+import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 import { formatNumber } from "@/types/other"
 

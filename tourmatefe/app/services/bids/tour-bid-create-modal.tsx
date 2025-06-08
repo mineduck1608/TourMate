@@ -1,25 +1,28 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid, TourBidListResult } from "@/types/tour-bid";
+import { TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
+import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
+import { baseData } from "./tour-bid-task-context";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
-type BidEditModalProps = {
+type BidCreateModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    onSave: (tourBidData: TourBid | TourBidListResult) => void;
+    onSave: (tourBidData: TourBidListResult) => void;
 };
 
-const BidEditModal: React.FC<BidEditModalProps> = ({
+const BidCreateModal: React.FC<BidCreateModalProps> = ({
     isOpen,
     onClose,
     onSave,
 }) => {
-    const { target, setTarget } = useContext(BidTaskContext) as BidTaskContextProp
+    const { modalOpen } = useContext(BidTaskContext) as BidTaskContextProp
+    const [target, setTarget] = useState({...baseData})
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         onSave(target);
@@ -29,6 +32,11 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
         queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
+    const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
+    useEffect(() => {
+        const u: TourBidListResult = { ...baseData, accountId: accId }
+        setTarget(u)
+    }, [modalOpen.create])
     const areas = simplifiedAreaQuery.data?.data ?? []
     return (
         <div
@@ -44,7 +52,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
             <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Chỉnh sửa bài đăng
+                        Tạo bài đăng
                     </h3>
                     <button
                         type="button"
@@ -73,7 +81,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm
+                                Địa điểm ({target.placeRequested})
                             </label>
                             <select
                                 id="placeRequested"
@@ -81,20 +89,19 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                 required
                                 onChange={(e) => {
-                                    const id = Number(e.target.value);
-                                    const selectedArea = areas.find(x => x.areaId === id);
-                                    setTarget({
-                                        ...target,
-                                        placeRequested: id,
-                                        placeRequestedName: selectedArea?.areaName || ''
-                                    });
+                                    setTarget({ ...target, placeRequested: Number(e.target.value) })
                                 }}
                                 value={target.placeRequested}
                             >
-                                <option value={0} disabled>Chọn khu vực</option>
-                                {areas.map((v, i) => (
-                                    <option value={v.areaId} key={'area' + i}>{v.areaName}</option>
-                                ))}
+                                <option value={0} disabled >
+                                    Chọn khu vực
+                                </option>
+                                {
+                                    areas.map((v, i) =>
+                                        <option value={v.areaId} key={'area' + i}
+                                        >{v.areaName}</option>
+                                    )
+                                }
                             </select>
                         </div>
                         <div className="sm:col-span-1">
@@ -174,4 +181,4 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
     );
 };
 
-export default BidEditModal;
+export default BidCreateModal;

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "react-quill-new/dist/quill.snow.css";
 import { useQuery } from "@tanstack/react-query";
 import { getBidsOfTourBid } from "@/app/api/bid.api";
-import { Bid } from "@/types/bid";
+import { BidListResult } from "@/types/bid";
 import SafeImage from "@/components/safe-image";
 import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
@@ -19,7 +19,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
 }) => {
     const pageSize = 10
     const [page, setPage] = useState(1)
-    const [bids, setBids] = useState<Bid[]>([])
+    const [bids, setBids] = useState<BidListResult[]>([])
     const bidData = useQuery({
         queryKey: ['bids-of', tourBidId, pageSize, page],
         queryFn: () => getBidsOfTourBid(tourBidId, page, pageSize),
@@ -88,13 +88,16 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                     >
                         {
                             bids.map((v) => (
-                                <div key={v.bidId} className="bg-[#F8FAFC] flex p-3 my-2 rounded-sm items-center justify-between">
-                                    <div className="flex items-center">
-                                        <SafeImage src={v.tourGuide?.image} alt="pfp" className="w-[75px] h-[75px] rounded-full" />
-                                        <p className="ml-2 font-semibold">{v.tourGuide?.fullName}</p>
+                                <div key={v.bidId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm">
+                                    <div className=" flex   items-center justify-between">
+                                        <div className="flex items-center">
+                                            <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                            <p className="ml-2 font-semibold">{v.fullName}</p>
 
+                                        </div>
+                                        <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
                                     </div>
-                                    <p className="font-semibold text-blue-700">{formatNumber(v.amount)} VND</p>
+                                    <div className="wrap-break-word mt-4">{v.comment}</div>
                                 </div>
                             ))
                         }

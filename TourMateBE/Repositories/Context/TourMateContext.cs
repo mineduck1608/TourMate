@@ -57,6 +57,8 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<TourBid> TourBids { get; set; }
 
+    public virtual DbSet<TourBidComment> TourBidComments { get; set; }
+
     public virtual DbSet<TourGuide> TourGuides { get; set; }
 
     public virtual DbSet<TourGuideDesc> TourGuideDescs { get; set; }
@@ -519,7 +521,7 @@ public partial class TourmateContext : DbContext
 
         modelBuilder.Entity<MessageType>(entity =>
         {
-            entity.HasKey(e => e.MessageTypeId).HasName("PK__MessageT__9BA1E2BA14A2291A");
+            entity.HasKey(e => e.MessageTypeId).HasName("PK__MessageT__9BA1E2BA3A60699E");
 
             entity.ToTable("MessageType");
 
@@ -702,6 +704,35 @@ public partial class TourmateContext : DbContext
                 .HasConstraintName("FKTourBid682696");
         });
 
+        modelBuilder.Entity<TourBidComment>(entity =>
+        {
+            entity.HasKey(e => e.CommentId).HasName("PK__TourBidC__CDDE919DBDFA69C7");
+
+            entity.ToTable("TourBidComment");
+
+            entity.Property(e => e.CommentId).HasColumnName("commentId");
+            entity.Property(e => e.AccountId).HasColumnName("accountId");
+            entity.Property(e => e.Content)
+                .IsRequired()
+                .HasMaxLength(255)
+                .HasColumnName("content");
+            entity.Property(e => e.CreatedAt)
+                .HasColumnType("datetime")
+                .HasColumnName("createdAt");
+            entity.Property(e => e.IsDeleted).HasColumnName("isDeleted");
+            entity.Property(e => e.TourBidId).HasColumnName("tourBidId");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.TourBidComments)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKTourBidCom910846");
+
+            entity.HasOne(d => d.TourBid).WithMany(p => p.TourBidComments)
+                .HasForeignKey(d => d.TourBidId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FKTourBidCom405023");
+        });
+
         modelBuilder.Entity<TourGuide>(entity =>
         {
             entity.HasKey(e => e.TourGuideId).HasName("PK__TourGuid__D466D4A2812B0FFF");
@@ -847,7 +878,7 @@ public partial class TourmateContext : DbContext
 
         modelBuilder.Entity<UserLikeBid>(entity =>
         {
-            entity.HasKey(e => e.LikeId).HasName("PK__UserLike__4FC592DB518CB159");
+            entity.HasKey(e => e.LikeId).HasName("PK__UserLike__4FC592DB5B73A8A1");
 
             entity.ToTable("UserLikeBid");
 

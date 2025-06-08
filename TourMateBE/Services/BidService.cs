@@ -11,7 +11,7 @@ namespace Services
         Task<bool> CreateBid(Bid bid);
         Task<bool> UpdateBid(Bid bid);
         Task<bool> DeleteBid(int id);
-        Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex);
+        Task<PagedResult<BidListResult>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex);
     }
 
     public class BidService : IBidService
@@ -42,7 +42,7 @@ namespace Services
         {
             return await BidRepository.RemoveAsync(id);
         }
-        public async Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
+        public async Task<PagedResult<BidListResult>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
         {
             return await BidRepository.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
         }

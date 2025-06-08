@@ -4,7 +4,7 @@ import "react-quill-new/dist/quill.snow.css";
 import { TourBid, TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
+import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -73,7 +73,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm ({target.placeRequested})
+                                Địa điểm
                             </label>
                             <select
                                 id="placeRequested"

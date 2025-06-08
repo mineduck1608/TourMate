@@ -1,12 +1,12 @@
 import React, { useContext } from "react";
-import BidList from "./bid-list";
+import BidList from "./tour-bid-list";
 import SafeImage from "@/components/safe-image";
-import BidCreateModal from "./bid-create-modal";
+import BidCreateModal from "./tour-bid-create-modal";
 import { Customer } from "@/types/customer";
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
+import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 import DeleteModal from "@/components/delete-modal";
-import BidEditModal from "./bid-edit-modal";
-import { baseData } from "./bid-task-context";
+import BidEditModal from "./tour-bid-edit-modal";
+import { baseData } from "./tour-bid-task-context";
 
 export default function Bids({ customer, search }: { customer?: Customer, search: string }) {
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp

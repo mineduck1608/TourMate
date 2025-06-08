@@ -4,9 +4,9 @@ import "react-quill-new/dist/quill.snow.css";
 import { TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
-import { BidTaskContext, BidTaskContextProp } from "./bid-task-context";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
-import { baseData } from "./bid-task-context";
+import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
+import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
+import { baseData } from "./tour-bid-task-context";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -32,7 +32,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
         queryFn: () => getSimplifiedAreas(),
         staleTime: 24 * 3600 * 1000
     })
-    const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
+    const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     useEffect(() => {
         const u: TourBidListResult = { ...baseData, accountId: accId }
         setTarget(u)
@@ -81,7 +81,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm ({target.placeRequested})
+                                Địa điểm
                             </label>
                             <select
                                 id="placeRequested"

@@ -51,7 +51,7 @@ namespace API.Controllers
             return result ? NoContent() : NotFound();
         }
         [HttpGet("tour/{tourBid}")]
-        public async Task<ActionResult<PagedResult<Bid>>> GetBidsOfTourBid(int tourBid, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<BidListResult>>> GetBidsOfTourBid(int tourBid, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
             var result = await _bidService.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
             return Ok(result);

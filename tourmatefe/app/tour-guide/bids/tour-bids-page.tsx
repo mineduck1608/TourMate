@@ -1,10 +1,10 @@
 import React, { useContext } from "react";
-import BidList from "./bid-list";
+import BidList from "./tour-bid-list";
 import SafeImage from "@/components/safe-image";
-import BidCreateModal from "./bid-create-modal";
-import { baseData, BidTaskContext, BidTaskContextProp } from "./bid-task-context";
+import BidCreateModal from "./tour-bid-create-modal";
+import { baseData, BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 import DeleteModal from "@/components/delete-modal";
-import BidEditModal from "./bid-edit-modal";
+import BidEditModal from "./tour-bid-edit-modal";
 import { TourGuide } from "@/types/tour-guide";
 
 export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, search: string }) {

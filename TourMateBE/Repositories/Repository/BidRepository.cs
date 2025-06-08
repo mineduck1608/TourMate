@@ -7,7 +7,7 @@ namespace Repositories.Repository
 {
     public class BidRepository : GenericRepository<Bid>
     {
-        public async Task<PagedResult<Bid>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
+        public async Task<PagedResult<BidListResult>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
         {
             var query = _context.Bids
                 .Where(x => x.TourBidId == tourBid)
@@ -18,8 +18,20 @@ namespace Repositories.Repository
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .Include(x => x.TourGuide)
+                .Select(x => new BidListResult()
+                {
+                    BidId = x.BidId,
+                    TourBidId = x.TourBidId,
+                    TourGuideId = x.TourGuideId,
+                    FullName = x.TourGuide.FullName,
+                    Image = x.TourGuide.Image,
+                    Amount = x.Amount,
+                    Comment = x.Comment,
+                    Status = x.Status,
+                    CreatedAt = x.CreatedAt
+                })
                 .ToListAsync();
-            return new PagedResult<Bid>
+            return new ()
             {
                 Result = result,
                 TotalResult = totalItems,

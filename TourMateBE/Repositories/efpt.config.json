@@ -91,6 +91,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[TourBidComment]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[TourGuide]",
          "ObjectType": 0
       },
