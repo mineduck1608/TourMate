@@ -24,6 +24,10 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState, useEffect } from "react"
 import { revenueApi } from "@/app/api/revenue.api"
+import { useToken } from "@/components/getToken"
+import { MyJwtPayload } from "@/types/JwtPayload"
+import { jwtDecode } from "jwt-decode"
+import { getByAccountId } from "@/app/api/tour-guide.api"
 
 
 // Types based on .NET API DTOs
@@ -52,10 +56,21 @@ interface RevenueStatsDto {
 export default function Component() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-  const [tourGuideId] = useState(1) // Hardcoded for demo, should come from auth
   const [revenueStats, setRevenueStats] = useState<RevenueStatsDto | null>(null)
   const [loading, setLoading] = useState(false)
+    const [tourGuideId, setTourGuideId] = useState<number>(0)
 
+
+  const token = useToken('accessToken')
+  const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
+  const accountId = Number(payLoad?.AccountId)
+
+// Fetch tourGuideId khi có accountId
+  useEffect(() => {
+    if (accountId) {
+      getByAccountId(accountId).then((id) => setTourGuideId(id.tourGuideId))
+    }
+  }, [accountId])
 
   // Cập nhật fetchRevenueStats function
   const fetchRevenueStats = async (month: number, year: number) => {
@@ -72,7 +87,7 @@ export default function Component() {
         netRevenue: 0,
         totalRecords: 0,
         completedPayments: 0,
-        pendingPayments:0,
+        pendingPayments: 0,
         monthlyGrowth: 0,
         revenueList: [],
       })
@@ -92,7 +107,9 @@ export default function Component() {
 
   // Load data when month/year changes
   useEffect(() => {
-    fetchRevenueStats(selectedMonth, selectedYear)
+    if (accountId != null && accountId != undefined) {
+      fetchRevenueStats(selectedMonth, selectedYear)
+    }
   }, [selectedMonth, selectedYear])
 
   const formatCurrency = (amount: number) => {
