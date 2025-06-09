@@ -1,7 +1,7 @@
 import { useContext } from "react";
 import dynamic from 'next/dynamic';
 import "react-quill-new/dist/quill.snow.css";
-import { TourBid, TourBidListResult } from "@/types/tour-bid";
+import { codeToStatus, statusToCode, TourBid, TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
@@ -67,17 +67,17 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                     </button>
                 </div>
                 <form onSubmit={handleSubmit}>
-                    <div className="grid gap-4 mb-4 sm:grid-cols-2">
+                    <div className="grid gap-4 mb-4 sm:grid-cols-3">
                         <div className="sm:col-span-1">
                             <label
                                 htmlFor="placeRequested"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Địa điểm ({target.placeRequested})
+                                Địa điểm
                             </label>
                             <select
-                                id="placeRequested"
-                                name="placeRequested"
+                                id="status"
+                                name="status"
                                 className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
                                 required
                                 onChange={(e) => {
@@ -134,6 +134,31 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                                 }}
                             />
                         </div>
+                        <div className="sm:col-span-1">
+                            <label
+                                htmlFor="placeRequested"
+                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+                            >
+                                Trạng thái
+                            </label>
+                            <select
+                                id="placeRequested"
+                                name="placeRequested"
+                                className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+                                required
+                                onChange={(e) => {
+                                    const value = Number(e.target.value);
+                                    setTarget({
+                                        ...target,
+                                        status: codeToStatus(value)
+                                    });
+                                }}
+                                value={statusToCode(target.status)}
+                            >
+                                <option value={1}>Hoạt động</option>
+                                <option value={2}>Chấm dứt</option>
+                            </select>
+                        </div>
                     </div>
                     <div className="grid gap-4 mb-4 sm:grid-cols-1">
                         <div className="sm:col-span-1">
@@ -165,7 +190,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >
-                            Đăng bài viết
+                            Cập nhật bài viết
                         </button>
                     </div>
                 </form>

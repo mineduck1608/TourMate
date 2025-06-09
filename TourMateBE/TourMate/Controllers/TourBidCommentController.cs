@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.ResultModels;
+using Repositories.DTO.UpdateModels;
 using Services;
 
 namespace TourMate.Controllers
@@ -27,6 +28,19 @@ namespace TourMate.Controllers
             var comment = data.Convert();
             var result = await service.Create(comment);
             return result ? CreatedAtAction(nameof(Create), new { id = comment.CommentId }, comment) : BadRequest("Failed to create comment.");
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update(CommentUpdateModel data)
+        {
+            var comment = data.Convert();
+            var result = await service.Update(comment);
+            return result ? Ok(comment) : BadRequest("Failed to update comment.");
+        }
+        [HttpDelete("{commentId}")]
+        public async Task<IActionResult> DeleteComment(int commentId)
+        {
+            var result = await service.DeleteComment(commentId);
+            return result ? NoContent() : NotFound("Comment not found or already deleted.");
         }
     }
 }

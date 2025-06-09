@@ -5,15 +5,16 @@ import dayjs from "dayjs"
 import { useContext, useState } from "react"
 import { FaHeart, FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify";
-import BidCommentModal from "./bid-list-modal"
+import BidListModal from "./bid-list-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 import { formatNumber } from "@/types/other"
+import BidCommentModal from "./bid-comment-modal"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState({ bid: false, comment: false })
     const { setModalOpen, modalOpen, setTarget, signal, setSignal } = useContext(BidTaskContext) as BidTaskContextProp
     const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     const sanitizeContent = (html: string) => {
@@ -103,7 +104,8 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     </button>
                     <p>{tourBid.likeCount}</p>
                 </div>
-                <button className="cursor-pointer" onClick={() => { }}>
+                <button className="cursor-pointer"
+                    onClick={() => setOpen(p => ({ ...p, comment: true }))}>
                     <FaRegCommentDots className="inline" /> Bình luận
                 </button>
             </div>
@@ -114,14 +116,15 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     {/* {tourBid.maxPrice && <span >Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</span>} */}
                     <button
                         type="submit"
-                        onClick={() => setOpen(true)}
+                        onClick={() => setOpen(p => ({ ...p, bid: true }))}
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                     >
                         Xem
                     </button>
                 </div>
 
-                <BidCommentModal isOpen={open} onClose={() => setOpen(false)} tourBidId={tourBid.tourBidId} />
+                <BidListModal isOpen={open.bid} onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBidId={tourBid.tourBidId} />
+                {open.comment && <BidCommentModal isOpen onClose={() => setOpen(p => ({ ...p, comment: false }))} tourBidId={tourBid.tourBidId} />}
             </div>
         </div>
     );

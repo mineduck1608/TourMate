@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import BidList from "./tour-bid-list";
+import TourBidList from "./tour-bid-list";
 import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./tour-bid-create-modal";
 import { baseData, BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
@@ -28,7 +28,7 @@ export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, sea
           </div>
         </div>
       </div>
-      <BidList search={search} />
+      <TourBidList search={search} />
 
       {modalOpen.create && <BidCreateModal
         isOpen={modalOpen.create}

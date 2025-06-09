@@ -28,3 +28,20 @@ export interface TourBidListResult {
   isLiked: boolean;
   customerImg: string
 }
+
+export function statusToCode(s: string){
+  s = s.trim().toLowerCase()
+  switch(s){
+    case 'hoạt động': return 1;
+    case 'chấm dứt': return 2;
+  }
+  return -1
+}
+
+export function codeToStatus(s: number){
+  switch(s){
+    case 1: return 'Hoạt động';
+    case 2: return 'Chấm dứt';
+  }
+  return ''
+}

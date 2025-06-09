@@ -23,9 +23,9 @@ namespace Repositories.Repository
                 .Where(c => c.TourBidId == tourBidId && !c.IsDeleted);
             var count = await query.CountAsync();
             var result = await query
+                .OrderByDescending(x => x.CreatedAt)
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
-                .OrderByDescending(x => x.CreatedAt)
                 .Include(c => c.Account) // Include Account details if needed
                 .ThenInclude(x => x.Customers) // Include Customers details if needed
                 .Include(c => c.Account)
@@ -48,7 +48,7 @@ namespace Repositories.Repository
                 TotalResult = count
             };
         }
-        public async Task<bool> DeleteCommentAsync(int commentId)
+        public new async Task<bool> RemoveAsync(int commentId)
         {
             try
             {
@@ -66,6 +66,23 @@ namespace Repositories.Repository
                 return false;
             }
 
+        }
+        public new async Task<bool> UpdateAsync(TourBidComment comment)
+        {
+            try
+            {
+                var c = await _context.TourBidComments.FirstOrDefaultAsync(x => x.CommentId == comment.CommentId);
+                if (c == null) return false;
+                comment.IsDeleted = c.IsDeleted;
+                comment.CreatedAt = c.CreatedAt;
+                _context.Entry(c).CurrentValues.SetValues(comment);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }

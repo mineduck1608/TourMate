@@ -15,7 +15,8 @@ namespace Services
         // For example:
         Task<PagedResult<CommentListResult>> GetCommentsByTourBidIdAsync(int tourBidId, int pageSize, int pageIndex);
         Task<bool> Create(TourBidComment comment);
-        // Task DeleteCommentAsync(int commentId);
+        Task<bool> Update(TourBidComment comment);
+        Task<bool> DeleteComment(int commentId);
     }
     public class TourBidCommentService : ITourBidCommentService
     {
@@ -32,6 +33,14 @@ namespace Services
         public async Task<bool> Create(TourBidComment comment)
         {
             return await TourBidCommentRepository.CreateAsync(comment);
+        }
+        public async Task<bool> Update(TourBidComment comment)
+        {
+            return await TourBidCommentRepository.UpdateAsync(comment);
+        }
+        public async Task<bool> DeleteComment(int commentId)
+        {
+            return await TourBidCommentRepository.RemoveAsync(commentId);
         }
     }
 }

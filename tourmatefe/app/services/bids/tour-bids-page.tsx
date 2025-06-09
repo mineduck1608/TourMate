@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import BidList from "./tour-bid-list";
+import TourBidList from "./tour-bid-list";
 import SafeImage from "@/components/safe-image";
 import BidCreateModal from "./tour-bid-create-modal";
 import { Customer } from "@/types/customer";
@@ -8,7 +8,7 @@ import DeleteModal from "@/components/delete-modal";
 import BidEditModal from "./tour-bid-edit-modal";
 import { baseData } from "./tour-bid-task-context";
 
-export default function Bids({ customer, search }: { customer?: Customer, search: string }) {
+export default function TourBidPage({ customer, search }: { customer?: Customer, search: string }) {
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp
   return (
     <div>
@@ -29,7 +29,7 @@ export default function Bids({ customer, search }: { customer?: Customer, search
           </div>
         </div>
       </div>
-      <BidList search={search} />
+      <TourBidList search={search} />
 
       {modalOpen.create && <BidCreateModal
         isOpen={modalOpen.create}

@@ -64,14 +64,15 @@ function UserRender({ customer }: { customer?: Customer }) {
     return (
         <div className='px-6 pt-5 pb-1'>
             <div className='lg:flex gap-5'>
-                <SafeImage src={customer?.image}
+                <SafeImage 
+                    src={customer?.image}
                     className='w-[75px] h-[75px] rounded-full aspect-square border-2'
                     alt={'profile'}
                 />
-                <div className='xl:ml-4 *:mb-2 '>
+                <div className='xl:ml-4 *:mb-2 w-full overflow-hidden'>
                     <h4 className="text-2xl font-medium leading-none">Cá nhân</h4>
-                    <p>{customer?.fullName}</p>
-                    <p>{customer?.account?.email}</p>
+                    <div className='break-words'>{customer?.fullName}</div>
+                    <div className='break-words'>{customer?.account?.email}</div>
                 </div>
             </div>
         </div>

@@ -1,236 +1,103 @@
-import { useEffect, useState, useRef, useContext } from "react";
+import { FormEvent, useContext, useEffect, useState, useRef } from "react";
 import "react-quill-new/dist/quill.snow.css";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { addBid, deleteBid, getBidsOfTourBid, updateBid } from "@/app/api/bid.api";
-import { Bid, BidListResult } from "@/types/bid";
+import { useQuery, useMutation } from "@tanstack/react-query";
 import SafeImage from "@/components/safe-image";
-import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { TourBid, TourBidListResult } from "@/types/tour-bid";
-import { toast } from "react-toastify";
-import ParticipateBidModal from "./participate-bid-modal";
-import { Button } from "@/components/ui/button";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
-import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
-import Link from "next/link";
 import dayjs from "dayjs";
-import BidEditModal from "./bid-edit-modal";
-import DeleteModal from "@/components/delete-modal";
+import { TourBidCommentCreateModel, TourBidCommentListResult } from "@/types/tour-bid-comment";
+import { getTourBidCommentsFrom, addTourBidComment } from "@/app/api/tour-bid-comment";
+import { FaRegPaperPlane } from "react-icons/fa";
+import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
 
 type BidCommentModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    tourBid: TourBid | TourBidListResult
+    tourBidId: number
 };
-const baseData: BidListResult = {
-    bidId: 0,
+
+const baseData: TourBidCommentCreateModel = {
+    accountId: 0,
     tourBidId: 0,
-    tourGuideId: 0,
-    amount: 0,
-    createdAt: "",
-    status: "",
-    fullName: "",
-    image: ""
+    content: ""
 }
+
 const BidCommentModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
-    tourBid
+    tourBidId
 }) => {
-    const isOnGoing = tourBid.status === 'Hoạt động' ? true : false;
-    const pageSize = 20;
-    const [page, setPage] = useState(1);
-    const [bids, setBids] = useState<BidListResult[]>([]);
-    const [hasMore, setHasMore] = useState(true);
-    const [target, setTarget] = useState<BidListResult>(baseData)
-    const [modalOpen, setModalOpen] = useState({
-        create: false,
-        edit: false,
-        delete: false
-    });
-    const [cachedEdits, setCachedEdits] = useState<Record<number, BidListResult>>({});
-    const scrollRef = useRef<HTMLDivElement>(null);
-    const [dataVersion, setDataVersion] = useState(0);
-    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
-    const bidsRef = useRef<BidListResult[]>([]);
-    const modalRef = useRef<HTMLDivElement>(null);
-    // Calculate scrollbar width and lock body scroll
+    const pageSize = 10
+    const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
+    const [page, setPage] = useState(1)
+    const [comments, setComments] = useState<TourBidCommentListResult[]>([])
+    const scrollableDivRef = useRef<HTMLDivElement>(null)
+
+    const commentData = useQuery({
+        queryKey: ['comments-of', tourBidId, pageSize, page],
+        queryFn: () => getTourBidCommentsFrom(tourBidId, page, pageSize),
+        staleTime: 60 * 1000
+    })
+
+    const addCommentMutation = useMutation({
+        mutationFn: (comment: TourBidCommentCreateModel) => addTourBidComment(comment),
+        onSuccess: () => {
+            // Reset form and refetch comments
+            setFormData({ ...baseData, accountId: accId, tourBidId: tourBidId })
+            //queryClient.invalidateQueries(['comments-of', tourBidId])
+            setPage(1) // Reset to first page
+            setComments([]) // Clear comments to trigger reload
+            commentData.refetch()
+        }
+    })
+
+    const [formData, setFormData] = useState(baseData)
+
     useEffect(() => {
-        if (isOpen) {
-            // Calculate scrollbar width
-            const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
+        setComments([])
+        setFormData(p => ({ ...p, accountId: accId, tourBidId: tourBidId }))
+        setPage(1)
+    }, [accId, tourBidId])
 
-            // Apply styles to body
-            document.body.style.overflow = 'hidden';
-            document.body.style.paddingRight = `${scrollbarWidth}px`;
-
-            // Apply to modal wrapper if exists
-            const modalWrapper = document.querySelector('.modal-wrapper');
-            if (modalWrapper) {
-                (modalWrapper as HTMLElement).style.paddingRight = `${scrollbarWidth}px`;
+    useEffect(() => {
+        if (commentData.data) {
+            setComments(b => [...b, ...commentData.data.result])
+            // Scroll to top when new data is loaded (especially after adding a comment)
+            if (page === 1 && scrollableDivRef.current) {
+                scrollableDivRef.current.scrollTo({ top: 0, behavior: 'smooth' })
             }
-
-            return () => {
-                document.body.style.overflow = '';
-                document.body.style.paddingRight = '';
-                if (modalWrapper) {
-                    (modalWrapper as HTMLElement).style.paddingRight = '';
-                }
-            };
         }
-    }, [isOpen]);
+    }, [commentData.data])
 
-    const bidData = useQuery({
-        queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
-        queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
-        enabled: isOpen,
-    });
+    const totalPage = commentData.data?.totalPage ?? 0
 
-    const resetData = () => {
-        setPage(1);
-        setHasMore(true);
-        setDataVersion(v => v + 1);
-    };
+    function handleSubmit(event: FormEvent<HTMLFormElement>): void {
+        event.preventDefault()
+        console.log(formData);
+        
+        addCommentMutation.mutate(formData)
+    }
 
-    useEffect(() => {
-        if (isOpen) {
-            resetData();
+    const loadMoreComments = () => {
+        if (totalPage !== 0 && page < totalPage) {
+            setPage(p => Math.min(p + 1, totalPage))
         }
-    }, [isOpen]);
-
-    const addBidMutation = useMutation({
-        mutationFn: ({ data }: { data: Bid }) => addBid(data),
-        onSuccess: (newBid) => {
-            toast.success("Tạo thành công");
-            setModalOpen(p => ({ ...p, create: false }));
-            setBids(prev => {
-                const updated = [newBid, ...prev];
-                bidsRef.current = updated;
-                return updated;
-            });
-            setTimeout(() => {
-                if (scrollRef.current) {
-                    scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' });
-                }
-            }, 100);
-        },
-        onError: (error) => {
-            toast.error("Tạo thất bại");
-            console.error(error);
-        },
-    });
-    const deleteBidMutation = useMutation({
-        mutationFn: ({ id }: { id: number }) => deleteBid(id),
-        onSuccess: (_, variables) => {
-            toast.success("Xóa thành công");
-            setModalOpen(p => ({ ...p, delete: false }));
-
-            // Remove the deleted bid from local state
-            setBids(prev => prev.filter(bid => bid.bidId !== variables.id));
-
-            // Optional: Refetch data to ensure consistency
-            setDataVersion(v => v + 1);
-        },
-        onError: (error) => {
-            toast.error("Xóa thất bại");
-            console.error(error);
-        },
-    });
-
-    const updateBidMutation = useMutation({
-        mutationFn: ({ data }: { data: Bid }) => updateBid(data),
-        onSuccess: (_, variables) => {
-            toast.success("Cập nhật thành công");
-            setModalOpen(p => ({ ...p, edit: false }));
-
-            // Use the cached edit data if available
-            const cachedEdit = cachedEdits[variables.data.bidId];
-
-            setBids(prev => {
-                // If we have cached data, use it
-                if (cachedEdit) {
-                    return prev.map(bid =>
-                        bid.bidId === variables.data.bidId ? cachedEdit : bid
-                    );
-                }
-
-                // Fallback to optimistic update
-                return prev.map(bid =>
-                    bid.bidId === variables.data.bidId
-                        ? { ...bid, ...variables.data }
-                        : bid
-                );
-            });
-
-            // Clean up the cache
-            setCachedEdits(prev => {
-                const newCache = { ...prev };
-                delete newCache[variables.data.bidId];
-                return newCache;
-            });
-
-            // Optional: Refetch data to ensure consistency
-            setDataVersion(v => v + 1);
-        },
-        onError: (error, variables) => {
-            toast.error("Cập nhật thất bại");
-            console.error(error);
-
-            // Clean up the cache on error
-            setCachedEdits(prev => {
-                const newCache = { ...prev };
-                delete newCache[variables.data.bidId];
-                return newCache;
-            });
-        },
-    });
-
-    useEffect(() => {
-        if (!bidData.data) return;
-
-        const newItems = bidData.data.result;
-        const totalPages = bidData.data.totalPage ?? 0;
-
-        if (page === 1) {
-            setBids(newItems);
-            bidsRef.current = newItems;
-        } else {
-            setBids(prev => {
-                const existingIds = new Set(prev.map(b => b.bidId));
-                const filteredNewItems = newItems.filter(b => !existingIds.has(b.bidId));
-                const updated = [...prev, ...filteredNewItems];
-                bidsRef.current = updated;
-                return updated;
-            });
-        }
-
-        setHasMore(page < totalPages);
-    }, [bidData.data]);
-
-    const loadMore = () => {
-        if (!bidData.isFetching && hasMore) {
-            setPage(prev => prev + 1);
-        }
-    };
+    }
 
     return (
-        <div className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}>
+        <div
+            className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+                }`}
+        >
             <div
-                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"}`}
+                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"
+                    }`}
                 onClick={onClose}
             ></div>
 
-            {/* Main modal container */}
-            <div
-                ref={modalRef}
-                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[90vh] overflow-y-auto modal-wrapper"
-                style={{
-                    //scrollbarGutter: 'stable',
-                }}
-            >
-                <div className="flex justify-between items-center rounded-t border-b sm:mb-5 dark:border-gray-600 w-full">
+            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[91vh] overflow-y-auto">
+                <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        Đấu giá
+                        Bình luận
                     </h3>
                     <button
                         type="button"
@@ -254,145 +121,53 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 </div>
                 <div
                     id="scrollableDiv"
-                    className="max-h-[500px] overflow-y-auto"
-                    ref={scrollRef}
+                    ref={scrollableDivRef}
+                    className="max-h-[75vh] overflow-y-auto"
                 >
                     <InfiniteScroll
-                        dataLength={bids.length}
-                        next={loadMore}
-                        hasMore={hasMore}
-                        loader={
-                            <div className="flex justify-center py-4">
-                                {bidData.isFetching && bids.length > 0 ? (
-                                    <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
-                                ) : null}
-                            </div>
-                        }                        
+                        dataLength={comments.length}
+                        next={loadMoreComments}
+                        hasMore={page < totalPage}
+                        loader={<p>Loading...</p>}
                         scrollableTarget="scrollableDiv"
+                        onScroll={(e) => {
+                            console.log(e);
+                            
+                        }}
                     >
-                        {bids.map((v) => {
-                            const displayBid = cachedEdits[v.bidId] || v;
-                            return (
-                                <div key={v.bidId} id={`bid-${v.bidId}`} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center">
-                                    <div className="flex justify-between">
-                                        <div className="flex items-center">
-                                            <Link href={'/services/tour-guide/' + displayBid.tourGuideId}>
-                                                <SafeImage src={displayBid.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                            </Link>
-                                            <div className="ml-2">
-                                                <p className="font-semibold">{displayBid.fullName}</p>
-                                                <p>{dayjs(displayBid.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
-                                            </div>
-                                        </div>
-                                        <div>
-                                            <p className="font-semibold text-blue-700">{formatNumber(displayBid.amount)} VND</p>
-                                            {v.tourGuideId === id &&
-                                                <div className="flex justify-end relative">
-                                                    <DropdownMenu>
-                                                        <DropdownMenuTrigger asChild>
-                                                            <button
-                                                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
-                                                            >
-                                                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                                                </svg>
-                                                            </button>
-                                                        </DropdownMenuTrigger>
-                                                        <DropdownMenuContent
-                                                            side="left"
-                                                            align="end"
-                                                            className="p-1 rounded-lg z-[100] border border-gray-200 bg-white w-[125px] shadow-lg -translate-x-[75px]"
-                                                            style={{
-                                                                position: 'fixed',
-                                                                //marginRight: '0.5rem' // Small margin to prevent touching edge
-                                                            }}
-                                                        >
-                                                            <DropdownMenuItem
-                                                                className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
-                                                                onClick={() => {
-                                                                    setTarget(v)
-                                                                    setModalOpen(p => ({ ...p, edit: true }))
-                                                                }}
-                                                            >
-                                                                Cập nhật
-                                                            </DropdownMenuItem>
-                                                            <DropdownMenuItem
-                                                                onClick={() => {
-                                                                    setTarget(v)
-                                                                    setModalOpen(p => ({ ...p, delete: true }))
-                                                                }}
-                                                                className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
-                                                            >
-                                                                Xóa
-                                                            </DropdownMenuItem>
-                                                        </DropdownMenuContent>
-                                                    </DropdownMenu>
-                                                </div>}
-                                        </div>
-                                    </div>
-                                    <div className="wrap-break-word mt-4">
-                                        {v.comment}
+                        {comments.map((v) => (
+                            <div key={v.commentId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm">
+                                <div className="flex items-center">
+                                    <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                    <div className="ml-2">
+                                        <p className="font-semibold">{v.fullName}</p>
+                                        <p>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
                                     </div>
                                 </div>
-                            )
-                        })}
+                                <div className="wrap-break-word mt-4">{v.content}</div>
+                            </div>
+                        ))}
                     </InfiniteScroll>
                 </div>
-                {bids.length === 0 && !bidData.isFetching &&
-                    <p className="text-center py-4 text-gray-500">Không có lượt đấu giá nào</p>
+                {comments.length === 0 && !commentData.isFetching &&
+                    <p>Không có bình luận nào</p>
                 }
-                <div className="my-4 mt-0 border-t-[1px]" />
-                <Button
-                    onClick={() => setModalOpen(p => ({ ...p, create: true }))}
-                    disabled={!isOnGoing}
-                    className="mt-4 w-full text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
-                >
-                    Tham gia đấu giá
-                </Button>
-                {modalOpen.create && <ParticipateBidModal
-                    isOpen
-                    onClose={() => setModalOpen(p => ({ ...p, create: false }))}
-                    tourBid={tourBid}
-                    onSave={(b) => {
-                        addBidMutation.mutate({ data: b })
-                    }}
-                />}
-                {
-                    modalOpen.edit && (
-                        <BidEditModal
-                            isOpen
-                            onClose={() => setModalOpen(p => ({ ...p, edit: false }))}
-                            onSave={(updatedBid) => {
-                                // Cache the edited data immediately
-                                setCachedEdits(prev => ({
-                                    ...prev,
-                                    [updatedBid.bidId]: {
-                                        ...target,
-                                        ...updatedBid,
-                                        // Ensure all required BidListResult fields are included
-                                        fullName: target.fullName,
-                                        image: target.image,
-                                        createdAt: target.createdAt
-                                    }
-                                }));
-                                // Then trigger the mutation
-                                updateBidMutation.mutate({ data: updatedBid });
-                            }}
-                            bid={target}
-                            tourBid={tourBid}
-                        />
-                    )
-                }
-                {
-                    modalOpen.delete && <DeleteModal
-                        isOpen
-                        message="Xóa đấu giá này?"
-                        onClose={() => { setModalOpen(p => ({ ...p, delete: false })) }}
-                        onConfirm={() => {
-                            deleteBidMutation.mutate({ id: target.bidId });
-                        }}
+                <form className="flex gap-4" onSubmit={handleSubmit}>
+                    <input
+                        value={formData.content}
+                        placeholder="Nhập bình luận..."
+                        onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                    // disabled={addCommentMutation.isLoading}
                     />
-                }
+                    <button
+                        type="submit"
+                        disabled={!formData.content.trim()}
+                        className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
+                    >
+                        <FaRegPaperPlane />
+                    </button>
+                </form>
             </div>
         </div>
     );

@@ -36,7 +36,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
 
             {/* Main modal container */}
             <div
-                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[90vh] overflow-y-auto modal-wrapper"
+                className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[91vh] overflow-y-auto modal-wrapper"
                 style={{
                     scrollbarGutter: 'stable',
                 }}

@@ -9,8 +9,8 @@ import TourBidRender from './tour-bid-render';
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
 import { baseData } from './tour-bid-task-context';
 
-function BidList({ search }: { search: string }) {
-  const pageSize = 3;
+function TourBidList({ search }: { search: string }) {
+  const pageSize = 10;
   const [page, setPage] = useState(1);
   const [tourBids, setTourBids] = useState<TourBidListResult[]>([]);
   const [hasMore, setHasMore] = useState(true);
@@ -231,4 +231,4 @@ function BidList({ search }: { search: string }) {
   );
 }
 
-export default BidList;
+export default TourBidList;

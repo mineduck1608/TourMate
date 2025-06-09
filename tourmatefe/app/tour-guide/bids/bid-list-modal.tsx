@@ -38,7 +38,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
     tourBid
 }) => {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false;
-    const pageSize = 10;
+    const pageSize = 5;
     const [page, setPage] = useState(1);
     const [bids, setBids] = useState<BidListResult[]>([]);
     const [hasMore, setHasMore] = useState(true);

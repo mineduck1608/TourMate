@@ -14,12 +14,12 @@ type BidCommentModalProps = {
     tourBidId: number
 };
 
-const BidCommentModal: React.FC<BidCommentModalProps> = ({
+const BidListModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
     tourBidId
 }) => {
-    const pageSize = 10
+    const pageSize = 5
     const [page, setPage] = useState(1)
     const [bids, setBids] = useState<BidListResult[]>([])
     const bidData = useQuery({
@@ -47,7 +47,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[700px] overflow-y-auto">
+            <div className="relative p-4 w-full max-w-2xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[91vh] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Đấu giá
@@ -74,7 +74,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 </div>
                 <div
                     id="scrollableDiv"
-                    className="max-h-[500px] overflow-y-auto"
+                    className="max-h-[75vh] overflow-y-auto"
                     onScroll={(e) => {
                         const { scrollHeight, scrollTop, clientHeight } = e.currentTarget
                         if (scrollHeight - scrollTop === clientHeight && totalPage !== 0 && page < totalPage) {
@@ -117,4 +117,4 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     );
 };
 
-export default BidCommentModal;
+export default BidListModal;

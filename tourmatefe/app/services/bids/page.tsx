@@ -1,7 +1,7 @@
 'use client'
 import React, { Suspense, useContext, useEffect, useState } from 'react'
 import Profile from './profile'
-import Bids from './tour-bids-page'
+import TourBidPage from './tour-bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
@@ -14,7 +14,7 @@ import { TourBid, TourBidListResult } from '@/types/tour-bid'
 import { baseData, BidTaskContext } from './tour-bid-task-context'
 
 
-function BidPage() {
+function TourBidPageMain() {
     const { id } = useContext(CustomerSiteContext) as CustomerSiteContextProp
     const customerQueryData = useQuery({
         queryFn: () => getCustomer(id),
@@ -76,7 +76,7 @@ function BidPage() {
                         <Profile customer={customer} />
                     </div>
                     <div className='w-full lg:w-[45%] px-5 py-5'>
-                        <Bids customer={customer} search={content} />
+                        <TourBidPage customer={customer} search={content} />
                     </div>
                     <div className='hidden lg:block lg:w-[20%] px-5 py-5 sticky top-0 h-screen overflow-y-auto'>
                         <div className='rounded-md border shadow-lg p-5'>
@@ -108,7 +108,7 @@ export default function BidDriver() {
         <AuthProvider>
             <CustomerContent>
                 <Suspense fallback={<p>Loading...</p>}>
-                    <BidPage />
+                    <TourBidPageMain />
                 </Suspense>
             </CustomerContent>
         </AuthProvider>

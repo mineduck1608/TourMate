@@ -11,7 +11,7 @@ import { TourBid, TourBidListResult } from '@/types/tour-bid'
 import { baseData, BidTaskContext } from './tour-bid-task-context'
 import { getTourGuide } from '@/app/api/tour-guide.api'
 
-function BidPage() {
+function TourBidPageMain() {
     const { id, accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     const tourGuideQueryData = useQuery({
         queryFn: () => getTourGuide(id),
@@ -103,7 +103,7 @@ function BidPage() {
 export default function BidDriver() {
     return (
         <Suspense fallback={<p>Loading...</p>}>
-            <BidPage />
+            <TourBidPageMain />
         </Suspense>
     )
 }
