@@ -25,6 +25,16 @@ namespace Services
         {
             var (entities, totalCount) = await InvoiceRepository.GetPagedAsync(status, search, page, pageSize, accountId, role);
 
+            foreach (var e in entities)
+            {
+                if (e.Status == "Sắp diễn ra" && e.EndDate < DateTime.Now)
+                {
+                    e.Status = "Đã hướng dẫn";
+                    // Cập nhật vào DB
+                    await InvoiceRepository.UpdateStatusAsync(e.InvoiceId, "Đã hướng dẫn");
+                }
+            }
+
             var items = entities.Select(e => new TourSchedule
             {
                 InvoiceId = e.InvoiceId,
@@ -44,7 +54,8 @@ namespace Services
                 Status = e.Status,
                 Note = e.Note,
                 CreatedDate = e.CreatedDate,
-                TourGuideAccountId = e.TourGuide.AccountId
+                TourGuideAccountId = e.TourGuide.AccountId,
+                CustomerAccountId = e.Customer.AccountId
             }).ToList();
 
             return new PagedResult<TourSchedule>

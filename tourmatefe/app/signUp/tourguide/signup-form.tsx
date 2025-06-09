@@ -102,9 +102,11 @@ export function SignupForm({
   };
 
   const handleDescriptionChange = (value: string) => {
+
+    const cleanText = value.replace(/<\/?p>/g, "").trim();
     setFormData((prev) => ({
       ...prev,
-      description: value,
+      description: cleanText,
     }));
   };
 

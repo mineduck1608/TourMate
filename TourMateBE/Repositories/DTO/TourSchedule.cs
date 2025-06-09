@@ -26,5 +26,6 @@ namespace Repositories.DTO
         public string Note { get; set; } = string.Empty;
         public DateTime CreatedDate { get; set; }
         public int TourGuideAccountId { get; set; }
+        public int CustomerAccountId { get; set; }
     }
 }

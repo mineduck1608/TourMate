@@ -6,6 +6,16 @@ namespace Repositories.Repository
 {
     public class InvoiceRepository : GenericRepository<Invoice>
     {
+        public async Task UpdateStatusAsync(int invoiceId, string newStatus)
+        {
+            var invoice = await _context.Invoices.FindAsync(invoiceId);
+            if (invoice != null)
+            {
+                invoice.Status = newStatus;
+                await _context.SaveChangesAsync();
+            }
+        }
+
         public async Task<(List<Invoice>, int)> GetPagedAsync(string status, string search, int page, int pageSize, int accountId, string role)
         {
             var query = _context.Invoices

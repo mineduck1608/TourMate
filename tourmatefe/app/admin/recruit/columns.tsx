@@ -78,21 +78,21 @@ export const columns: ColumnDef<Applications>[] = [
     header: "Trạng thái",
     cell: ({ row }) => {
       const status = row.getValue("status") as string;
-      let variant: "default" | "secondary" | "destructive" = "default";
+      let variant: "pending" | "secondary" | "destructive" = "pending";
       let displayText = "";
 
       switch (status) {
         case "Đang chờ duyệt":
-          variant = "default";
+          variant = "pending";
           displayText = "Đang chờ duyệt";
           break;
         case "Đã xử lí":
           variant = "secondary";
-          displayText = "Đã xử lí";
+          displayText = "Đã duyệt";
           break;
         case "Đã từ chối":
           variant = "destructive";
-          displayText = "Đã Từ chối";
+          displayText = "Đã từ chối";
       }
 
       return <Badge variant={variant}>{displayText}</Badge>;

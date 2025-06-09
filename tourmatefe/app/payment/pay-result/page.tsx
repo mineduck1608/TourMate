@@ -49,7 +49,6 @@ function PaymentResultContent() {
     return (
         <>
             <hr className="border-gray-200 sm:mx-auto" />
-
             <div className={`min-h-screen bg-gradient-to-br ${isSuccess ? "from-green-100 via-green to-green-500" : "from-red-200 via-red to-red-700"}  relative overflow-hidden`}>
                 <div className="absolute inset-0 opacity-10">
                     <div className="absolute top-20 left-10 w-32 h-32 bg-blue-200 rounded-full blur-xl"></div>
@@ -230,9 +229,7 @@ function PaymentResultLoading() {
 export default function PaymentResult() {
     return (
         <>
-            <MegaMenu />
-            <hr className="border-gray-200 sm:mx-auto" />
-            
+            <MegaMenu />            
             <Suspense fallback={<PaymentResultLoading />}>
                 <PaymentResultContent />
             </Suspense>
