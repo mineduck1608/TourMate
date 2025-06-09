@@ -35,7 +35,6 @@ export default function TourSchedulePage() {
   });
 
 
-  console.log("data", data)
   const schedules: TourSchedule[] = data?.result ?? []
   const totalPages = data?.totalPage ?? 1
 
