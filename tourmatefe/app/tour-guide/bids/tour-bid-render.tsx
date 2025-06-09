@@ -5,7 +5,7 @@ import dayjs from "dayjs"
 import { useContext, useState } from "react"
 import { FaHeart, FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify";
-import BidCommentModal from "./bid-list-modal"
+import BidListModal from "./bid-list-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context"
@@ -121,7 +121,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     </button>
                 </div>
 
-                {open && <BidCommentModal isOpen onClose={() => setOpen(false)} tourBid={tourBid} />}
+                {open && <BidListModal isOpen onClose={() => setOpen(false)} tourBid={tourBid} />}
             </div>
         </div>
     );

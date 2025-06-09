@@ -49,7 +49,7 @@ interface RevenueStatsDto {
   revenueList: RevenueDto[]
 }
 
-interface MonthlyRevenueDto {
+export interface MonthlyRevenueDto {
   month: number
   year: number
   totalRevenue: number

@@ -32,13 +32,13 @@ const baseData: BidListResult = {
     fullName: "",
     image: ""
 }
-const BidListModal: React.FC<BidCommentModalProps> = ({
+const BidCommentModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
     tourBid
 }) => {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false;
-    const pageSize = 10;
+    const pageSize = 20;
     const [page, setPage] = useState(1);
     const [bids, setBids] = useState<BidListResult[]>([]);
     const [hasMore, setHasMore] = useState(true);
@@ -398,4 +398,4 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
     );
 };
 
-export default BidListModal;
+export default BidCommentModal;

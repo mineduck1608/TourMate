@@ -38,5 +38,20 @@ namespace Repositories.Repository
                 TotalPage = (int)Math.Ceiling((double)totalItems / pageSize)
             };
         }
+        public new async Task<bool> UpdateAsync(Bid bid)
+        {
+            try
+            {
+                var existingBid = _context.Bids.FirstOrDefault(x => x.BidId == bid.BidId);
+                bid.CreatedAt = existingBid.CreatedAt;
+                _context.Entry(existingBid).CurrentValues.SetValues(bid);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
     }
 }

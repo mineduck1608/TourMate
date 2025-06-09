@@ -21,3 +21,19 @@ export const addBid = async (data: Bid, signal?: AbortSignal) => {
 
     return res.data;
 };
+
+export const updateBid = async (data: Bid, signal?: AbortSignal) => {
+    const res = await http.put('bids', data, {
+        signal
+    });
+
+    return res.data;
+};
+
+export const deleteBid = async (id: number, signal?: AbortSignal) => {
+    const res = await http.delete('bids/' + id, {
+        signal
+    });
+
+    return res.data;
+};

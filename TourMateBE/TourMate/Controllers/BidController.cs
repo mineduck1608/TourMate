@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 
@@ -38,9 +39,9 @@ namespace API.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> UpdateAsync([FromBody] Bid bid)
+        public async Task<IActionResult> UpdateAsync([FromBody] BidUpdateModel bid)
         {
-            var result = await _bidService.UpdateBid(bid);
+            var result = await _bidService.UpdateBid(bid.Convert());
             return result ? NoContent() : BadRequest();
         }
 

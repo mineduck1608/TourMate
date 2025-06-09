@@ -16,13 +16,15 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
     isOpen,
     onClose,
     bid,
-    tourBid
+    tourBid,
+    onSave
 }) => {
     const [formData, setFormData] = useState({ ...bid })
 
 
     function handleSubmit(event: FormEvent<HTMLFormElement>): void {
         event.preventDefault()
+        onSave(formData)
     }
 
     return (
