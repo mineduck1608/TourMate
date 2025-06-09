@@ -72,15 +72,14 @@ export default function Component() {
     }
   }, [accountId])
 
-  // Cập nhật fetchRevenueStats function
-  const fetchRevenueStats = async (month: number, year: number) => {
+  // Sửa fetchRevenueStats để nhận tourGuideId làm tham số
+  const fetchRevenueStats = async (month: number, year: number, tgId: number) => {
     setLoading(true)
     try {
-      const data = await revenueApi.getStats(tourGuideId, month, year)
+      const data = await revenueApi.getStats(tgId, month, year)
       setRevenueStats(data)
     } catch (error) {
       console.error("Error fetching revenue stats:", error)
-      // Fallback to mock data for demo
       setRevenueStats({
         totalRevenue: 0,
         platformFee: 0,
@@ -96,8 +95,8 @@ export default function Component() {
     }
   }
 
-  // Cập nhật exportToExcel function
   const exportToExcel = async () => {
+    if (!tourGuideId) return
     try {
       await revenueApi.exportExcel(tourGuideId, selectedMonth, selectedYear)
     } catch (error) {
@@ -105,12 +104,14 @@ export default function Component() {
     }
   }
 
+
   // Load data when month/year changes
   useEffect(() => {
-    if (accountId != null && accountId != undefined) {
-      fetchRevenueStats(selectedMonth, selectedYear)
+    if (tourGuideId) {
+      fetchRevenueStats(selectedMonth, selectedYear, tourGuideId)
     }
-  }, [selectedMonth, selectedYear])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMonth, selectedYear, tourGuideId])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -266,7 +267,7 @@ export default function Component() {
               <Button
                 size="sm"
                 className="bg-white text-blue-600 hover:bg-gray-100"
-                onClick={() => fetchRevenueStats(selectedMonth, selectedYear)}
+                onClick={() => fetchRevenueStats(selectedMonth, selectedYear, tourGuideId)}
                 disabled={loading}
               >
                 {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Eye className="w-4 h-4 mr-2" />}
