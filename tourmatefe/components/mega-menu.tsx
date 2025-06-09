@@ -271,6 +271,7 @@ const MegaMenu = () => {
           onClose={() => setIsModalOpen(false)}
         />
       </div>
+      <hr className="border-gray-200 sm:mx-auto" />
     </nav>
   );
 };

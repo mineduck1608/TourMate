@@ -49,18 +49,6 @@ interface RevenueStatsDto {
   revenueList: RevenueDto[]
 }
 
-interface MonthlyRevenueDto {
-  month: number
-  year: number
-  totalRevenue: number
-  platformFee: number
-  netRevenue: number
-  totalRecords: number
-  completedPayments: number
-  pendingPayments: number
-  growthPercentage: number
-}
-
 export default function Component() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
@@ -79,13 +67,13 @@ export default function Component() {
       console.error("Error fetching revenue stats:", error)
       // Fallback to mock data for demo
       setRevenueStats({
-        totalRevenue: 125430000,
-        platformFee: 18814500,
-        netRevenue: 106615500,
-        totalRecords: 28,
-        completedPayments: 23,
-        pendingPayments: 5,
-        monthlyGrowth: 12.5,
+        totalRevenue: 0,
+        platformFee: 0,
+        netRevenue: 0,
+        totalRecords: 0,
+        completedPayments: 0,
+        pendingPayments:0,
+        monthlyGrowth: 0,
         revenueList: [],
       })
     } finally {
@@ -172,7 +160,7 @@ export default function Component() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-5 md:p-10">
       <div className="mx-auto space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
