@@ -1,6 +1,9 @@
 import { Applications } from "@/types/applications";
 import React, { useState, useEffect } from "react";
 import { Badge } from "@/components/ui/badge";
+import { stripHtmlTags } from "@/lib/utils";
+import { Download } from "lucide-react";
+
 type CVDetailModalProps = {
   isOpen: boolean;
   onClose: () => void;
@@ -149,7 +152,7 @@ const CVDetailModal: React.FC<CVDetailModalProps> = ({
           <div>
             <label className="block mb-1 font-medium">Mô tả</label>
             <textarea
-              value={formData.description}
+              value={stripHtmlTags(formData.description)}
               readOnly
               className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900"
               rows={4}
@@ -158,14 +161,27 @@ const CVDetailModal: React.FC<CVDetailModalProps> = ({
           <div>
             <label className="block mb-1 font-medium">CV</label>
             {formData.link ? (
-              <a
-                href={formData.link}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-block px-4 py-2 bg-blue-100 text-blue-600 rounded-md hover:bg-blue-200 transition-colors"
-              >
-                Xem CV
-              </a>
+              <div className="border rounded-lg overflow-hidden">
+                <div className="relative" style={{ height: "500px" }}>
+                  <iframe
+                    src={`${formData.link}#toolbar=0`}
+                    className="w-full h-full"
+                    title="CV Preview"
+                  />
+                </div>
+                <div className="p-3 bg-gray-50 border-t flex justify-end gap-2">
+                  <a
+                    href={formData.link}
+                    download
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Tải về
+                  </a>
+                </div>
+              </div>
             ) : (
               <span className="text-gray-500">Không có CV</span>
             )}
