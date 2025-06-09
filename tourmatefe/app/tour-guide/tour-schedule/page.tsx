@@ -35,7 +35,6 @@ export default function TourSchedulePage() {
   });
 
 
-  console.log("data", data)
   const schedules: TourSchedule[] = data?.result ?? []
   const totalPages = data?.totalPage ?? 1
 
@@ -53,7 +52,6 @@ export default function TourSchedulePage() {
   return (
     <>
       <MegaMenu />
-      <hr className="border-gray-200 sm:mx-auto" />
       <div className="flex text-gray-900 bg-gray-50">
         <div className="p-10 flex flex-col sticky top-10 h-fit self-start">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />

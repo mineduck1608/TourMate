@@ -10,17 +10,11 @@ import DeleteModal from '@/components/delete-modal';
 
 const statusStyles: Record<TourSchedule['status'], string> = {
   'Chờ xác nhận': 'bg-yellow-100 text-yellow-800 border border-yellow-300',
-  'Lịch hẹn sắp tới': 'bg-blue-100 text-blue-800 border border-blue-300',
-  'Tour đã hướng dẫn': 'bg-green-100 text-green-800 border border-green-300',
+  'Sắp diễn ra': 'bg-blue-100 text-blue-800 border border-blue-300',
+  'Đã hướng dẫn': 'bg-green-100 text-green-800 border border-green-300',
   'Từ chối': 'bg-red-100 text-red-800 border border-red-300',
 };
 
-const statusLabels: Record<TourSchedule['status'], string> = {
-  'Chờ xác nhận': 'Chờ xác nhận',
-  'Lịch hẹn sắp tới': 'Sắp diễn ra',
-  'Tour đã hướng dẫn': 'Đã hướng dẫn',
-  'Từ chối': 'Từ chối',
-};
 
 const ScheduleCard: FC<TourSchedule> = ({
   invoiceId,
@@ -89,7 +83,7 @@ const ScheduleCard: FC<TourSchedule> = ({
         <div className="flex items-center gap-2">
           <p className="text-md text-gray-500 whitespace-nowrap font-medium">Trạng thái:</p>
           <span className={`text-sm px-3 py-1 rounded-sm font-medium ${statusStyles[status]}`}>
-            {statusLabels[status]}
+            {status}
           </span>
         </div>
         <p className="text-md text-gray-500 whitespace-nowrap font-medium">

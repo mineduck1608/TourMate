@@ -24,6 +24,10 @@ import {
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { useState, useEffect } from "react"
 import { revenueApi } from "@/app/api/revenue.api"
+import { useToken } from "@/components/getToken"
+import { MyJwtPayload } from "@/types/JwtPayload"
+import { jwtDecode } from "jwt-decode"
+import { getByAccountId } from "@/app/api/tour-guide.api"
 
 
 // Types based on .NET API DTOs
@@ -49,43 +53,41 @@ interface RevenueStatsDto {
   revenueList: RevenueDto[]
 }
 
-interface MonthlyRevenueDto {
-  month: number
-  year: number
-  totalRevenue: number
-  platformFee: number
-  netRevenue: number
-  totalRecords: number
-  completedPayments: number
-  pendingPayments: number
-  growthPercentage: number
-}
-
 export default function Component() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1)
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear())
-  const [tourGuideId] = useState(1) // Hardcoded for demo, should come from auth
   const [revenueStats, setRevenueStats] = useState<RevenueStatsDto | null>(null)
   const [loading, setLoading] = useState(false)
+    const [tourGuideId, setTourGuideId] = useState<number>(0)
 
 
-  // Cập nhật fetchRevenueStats function
-  const fetchRevenueStats = async (month: number, year: number) => {
+  const token = useToken('accessToken')
+  const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
+  const accountId = Number(payLoad?.AccountId)
+
+// Fetch tourGuideId khi có accountId
+  useEffect(() => {
+    if (accountId) {
+      getByAccountId(accountId).then((id) => setTourGuideId(id.tourGuideId))
+    }
+  }, [accountId])
+
+  // Sửa fetchRevenueStats để nhận tourGuideId làm tham số
+  const fetchRevenueStats = async (month: number, year: number, tgId: number) => {
     setLoading(true)
     try {
-      const data = await revenueApi.getStats(tourGuideId, month, year)
+      const data = await revenueApi.getStats(tgId, month, year)
       setRevenueStats(data)
     } catch (error) {
       console.error("Error fetching revenue stats:", error)
-      // Fallback to mock data for demo
       setRevenueStats({
-        totalRevenue: 125430000,
-        platformFee: 18814500,
-        netRevenue: 106615500,
-        totalRecords: 28,
-        completedPayments: 23,
-        pendingPayments: 5,
-        monthlyGrowth: 12.5,
+        totalRevenue: 0,
+        platformFee: 0,
+        netRevenue: 0,
+        totalRecords: 0,
+        completedPayments: 0,
+        pendingPayments: 0,
+        monthlyGrowth: 0,
         revenueList: [],
       })
     } finally {
@@ -93,8 +95,8 @@ export default function Component() {
     }
   }
 
-  // Cập nhật exportToExcel function
   const exportToExcel = async () => {
+    if (!tourGuideId) return
     try {
       await revenueApi.exportExcel(tourGuideId, selectedMonth, selectedYear)
     } catch (error) {
@@ -102,10 +104,14 @@ export default function Component() {
     }
   }
 
+
   // Load data when month/year changes
   useEffect(() => {
-    fetchRevenueStats(selectedMonth, selectedYear)
-  }, [selectedMonth, selectedYear])
+    if (tourGuideId) {
+      fetchRevenueStats(selectedMonth, selectedYear, tourGuideId)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedMonth, selectedYear, tourGuideId])
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat("vi-VN", {
@@ -172,7 +178,7 @@ export default function Component() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-4 md:p-6">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50 p-5 md:p-10">
       <div className="mx-auto space-y-6">
         {/* Header */}
         <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-xl shadow-lg p-6 text-white">
@@ -261,7 +267,7 @@ export default function Component() {
               <Button
                 size="sm"
                 className="bg-white text-blue-600 hover:bg-gray-100"
-                onClick={() => fetchRevenueStats(selectedMonth, selectedYear)}
+                onClick={() => fetchRevenueStats(selectedMonth, selectedYear, tourGuideId)}
                 disabled={loading}
               >
                 {loading ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : <Eye className="w-4 h-4 mr-2" />}

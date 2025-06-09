@@ -69,7 +69,6 @@ export default function MembershipPage() {
   return (
     <>
       <MegaMenu />
-      <hr className="border-gray-200 sm:mx-auto" />
 
       {/* Clean background with subtle gradient */}
       <div className="min-h-screen bg-gradient-to-br from-gray-100 to-white">

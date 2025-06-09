@@ -55,6 +55,14 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
         { label: "Tin nhắn", icon: MessageCircleMore, bgColor: "bg-blue-500", href: "/chat" },
     ];
 
+    const labelToValueMap: Record<string, string> = {
+        'Chờ xác nhận': 'Chờ xác nhận',
+        'Lịch hẹn sắp tới': 'Sắp diễn ra',
+        'Tour đã hướng dẫn': 'Đã hướng dẫn',
+        'Từ chối': 'Từ chối',
+    };
+
+
     return (
         <div className="w-100 bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-6">
             {/* User */}
@@ -99,7 +107,8 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
                             type="button"
                             onClick={() => {
                                 setSelectedNav(item.label);
-                                onNavItemClick?.(item.label);
+                                const mappedValue = labelToValueMap[item.label] || item.label;
+                                onNavItemClick?.(mappedValue);
                             }}
                             className={`w-full flex items-center gap-3 px-4 py-3 mb-2 rounded-lg font-medium transition-colors duration-300
                 ${isSelected
