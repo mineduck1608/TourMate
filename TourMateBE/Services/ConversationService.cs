@@ -1,6 +1,6 @@
 ﻿using Repositories.Models;
-using Repositories.DTO;
 using Repositories.Repository;
+using Repositories.DTO.ResultModels;
 
 namespace Services
 {

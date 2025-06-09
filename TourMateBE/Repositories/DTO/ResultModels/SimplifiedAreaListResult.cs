@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.DTO
+namespace Repositories.DTO.ResultModels
 {
     public class SimplifiedAreaListResult
     {

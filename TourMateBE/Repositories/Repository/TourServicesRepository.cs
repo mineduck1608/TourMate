@@ -1,7 +1,7 @@
 ﻿using Repositories.Models;
 using Repositories.GenericRepository;
-using Repositories.DTO;
 using Microsoft.EntityFrameworkCore;
+using Repositories.DTO.ResultModels;
 
 namespace Repositories.Repository
 {

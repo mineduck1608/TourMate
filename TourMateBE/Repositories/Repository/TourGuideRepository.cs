@@ -1,5 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using Repositories.DTO;
+using Repositories.DTO.ResultModels;
 using Repositories.GenericRepository;
 using Repositories.Models;
 using static System.Runtime.InteropServices.JavaScript.JSType;

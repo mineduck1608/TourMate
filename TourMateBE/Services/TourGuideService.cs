@@ -1,4 +1,4 @@
-﻿using Repositories.DTO;
+﻿using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.Repository;
 using System;

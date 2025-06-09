@@ -113,6 +113,9 @@ builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<VnPayLibrary>();
 
+builder.Services.AddScoped<TourBidCommentRepository>();
+builder.Services.AddScoped<ITourBidCommentService, TourBidCommentService>();
+
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(RevenueProfile));
 

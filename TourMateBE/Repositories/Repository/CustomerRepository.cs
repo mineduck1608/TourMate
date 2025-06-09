@@ -2,9 +2,9 @@
 using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Repositories.DTO;
 using Azure;
 using System.Collections.Generic;
+using Repositories.DTO.ResultModels;
 
 namespace Repositories.Repository
 {
