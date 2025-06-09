@@ -17,4 +17,6 @@ export interface TourSchedule {
   note: string;
   createdDate: string; // hoặc Date
   tourGuideAccountId: number; // Thêm tourGuideId nếu cần
+  customerAccountId: number; // Thêm tourGuideId nếu cần
+
 }
