@@ -31,6 +31,8 @@ public partial class TourGuide
 
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
+    public virtual ICollection<Revenue> Revenues { get; set; } = new List<Revenue>();
+
     public virtual ICollection<TourGuideDesc> TourGuideDescs { get; set; } = new List<TourGuideDesc>();
 
     public virtual ICollection<TourGuideRevenue> TourGuideRevenues { get; set; } = new List<TourGuideRevenue>();
