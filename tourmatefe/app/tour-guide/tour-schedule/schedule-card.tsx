@@ -1,5 +1,5 @@
 import { FC, useState } from 'react';
-import { BadgeCheck, CalendarClock, Download, Send, XCircle } from "lucide-react";
+import { Download, Send, XCircle } from "lucide-react";
 import { TourSchedule } from '@/types/tour-schedule';
 import { format } from 'date-fns'
 import { useMutation, useQueryClient } from '@tanstack/react-query';
