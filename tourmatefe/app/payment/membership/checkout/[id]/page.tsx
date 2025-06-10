@@ -83,7 +83,7 @@ export default function MembershipPaymentPage() {
 
             try {
                 const payment = await addPayment({
-                    membershipId: Number(membershipId),
+                    membershipPackageId: Number(membershipId),
                     accountId: Number(accountId),
                     price: membership?.price || 0,
                     paymentMethod: "PayOS",
