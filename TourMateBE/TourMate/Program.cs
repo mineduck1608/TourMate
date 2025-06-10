@@ -107,6 +107,9 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<RevenueRepository>();
 builder.Services.AddScoped<IRevenueService, RevenueService>();
 
+builder.Services.AddScoped<AdminDashboardRepository>();
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
