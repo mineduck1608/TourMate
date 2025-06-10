@@ -107,14 +107,14 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<RevenueRepository>();
 builder.Services.AddScoped<IRevenueService, RevenueService>();
 
+builder.Services.AddScoped<AdminDashboardRepository>();
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IVnPayService, VnPayService>();
 builder.Services.AddScoped<VnPayLibrary>();
-
-builder.Services.AddScoped<TourBidCommentRepository>();
-builder.Services.AddScoped<ITourBidCommentService, TourBidCommentService>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(RevenueProfile));
@@ -131,25 +131,25 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-//if (FirebaseApp.DefaultInstance == null)
-//{
-//    FirebaseApp.Create(new AppOptions()
-//    {
-//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-//    });
-//}
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+    });
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-//builder.Services.AddSingleton(sp =>
-//{
-//    var config = builder.Configuration.GetSection("PayOS");
-//    var clientId = config["ClientId"];
-//    var apiKey = config["ApiKey"];
-//    var checksumKey = config["ChecksumKey"];
-//    return new PayOS(clientId!, apiKey!, checksumKey!);
-//});
+builder.Services.AddSingleton(sp =>
+{
+    var config = builder.Configuration.GetSection("PayOS");
+    var clientId = config["ClientId"];
+    var apiKey = config["ApiKey"];
+    var checksumKey = config["ChecksumKey"];
+    return new PayOS(clientId!, apiKey!, checksumKey!);
+});
 
 
 
@@ -162,11 +162,11 @@ app.UseRouting();
 
 app.UseAuthorization();
 
-//app.UseEndpoints(endpoints =>
-//{
-//    endpoints.MapHub<ChatHub>("/chatHub");
-//    endpoints.MapControllers();
-//});
+app.UseEndpoints(endpoints =>
+{
+    //endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapControllers();
+});
 
 app.UseSwagger();
 app.UseSwaggerUI();
