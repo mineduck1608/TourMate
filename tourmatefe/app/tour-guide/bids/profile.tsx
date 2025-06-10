@@ -68,10 +68,10 @@ function UserRender({ tourGuide }: { tourGuide?: TourGuide }) {
                     className='w-[75px] h-[75px] rounded-full aspect-square border-2'
                     alt={'profile'}
                 />
-                <div className='xl:ml-4 *:mb-2 '>
+                <div className='xl:ml-4 *:mb-2 w-full overflow-hidden'>
                     <h4 className="text-2xl font-medium leading-none">Cá nhân</h4>
-                    <p>{tourGuide?.fullName}</p>
-                    <p>{tourGuide?.account?.email}</p>
+                    <div className='break-words'>{tourGuide?.fullName}</div>
+                    <div className='break-words'>{tourGuide?.account?.email}</div>
                 </div>
             </div>
         </div>

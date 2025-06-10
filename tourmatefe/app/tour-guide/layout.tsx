@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { useQuery } from '@tanstack/react-query';
 import { getAssociatedId } from '../api/account.api';
 import { TourGuideSiteContext } from './context';
+import { getTourGuide } from '../api/tour-guide.api';
 
 function TourGuideContent({ children }: { children: ReactNode }) {
   const { role } = useAuth();
@@ -15,17 +16,25 @@ function TourGuideContent({ children }: { children: ReactNode }) {
   const token = useToken('accessToken')
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accId = Number(payLoad?.AccountId)
-  const { data } = useQuery({
+  const query = useQuery({
     queryKey: ['id-of', accId],
     queryFn: () => getAssociatedId(accId, 'TourGuide'),
     staleTime: 24 * 3600 * 1000
   })
+  const tourGuideId = query.data
+  const tourGuideQueryData = useQuery({
+    queryFn: () => getTourGuide(tourGuideId ?? -1),
+    queryKey: ['tourGuide', tourGuideId],
+    staleTime: 24 * 3600 * 1000,
+    enabled: !Object.is(tourGuideId, undefined)
+  })
+  const tourGuide = tourGuideQueryData.data?.data
   const [, setTourGuideId] = useState<number | undefined>()
   useEffect(() => {
-    if (data) {
-      setTourGuideId(data)
+    if (tourGuideId) {
+      setTourGuideId(tourGuideId)
     }
-  }, [data])
+  }, [tourGuideId])
 
   if (isLoading) {
     return (
@@ -56,7 +65,7 @@ function TourGuideContent({ children }: { children: ReactNode }) {
 
 
   return <>
-    {data && <TourGuideSiteContext.Provider value={{ id: data, accId }}>
+    {tourGuideId && <TourGuideSiteContext.Provider value={{ id: tourGuideId, accId, tourGuide }}>
       {children}
     </TourGuideSiteContext.Provider>}
   </>;

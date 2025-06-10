@@ -40,10 +40,19 @@ function TourBidList({ search }: { search: string }) {
     // const asSet = new Set(tourBids)
     setTourBids(prevBids =>
       prevBids.map(bid =>
-        bid.tourBidId === updatedBid.tourBidId ? { 
+        bid.tourBidId === updatedBid.tourBidId ? {
           ...bid,
           ...updatedBid // This spreads all updated properties including placeRequested and placeRequestedName
         } : bid
+      )
+    );
+  };
+  const setTourBidState = (tourBidId: number, state: boolean) => {
+    setTourBids(prevBids =>
+      prevBids.map(bid =>
+        bid.tourBidId === tourBidId
+          ? { ...bid, isBid: state }
+          : bid
       )
     );
   };
@@ -223,7 +232,7 @@ function TourBidList({ search }: { search: string }) {
       >
         <div className="*:my-5">
           {tourBids.map((v) => (
-            <TourBidRender tourBid={v} key={v.tourBidId} />
+            <TourBidRender tourBid={v} key={v.tourBidId} onCreateOrDelete={setTourBidState}/>
           ))}
         </div>
       </InfiniteScroll>

@@ -3,14 +3,15 @@ import "react-quill-new/dist/quill.snow.css";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import SafeImage from "@/components/safe-image";
 import InfiniteScroll from "react-infinite-scroll-component";
-import dayjs from "dayjs";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
 import { TourBidCommentCreateModel, TourBidCommentListResult } from "@/types/tour-bid-comment";
-import { getTourBidCommentsFrom, addTourBidComment, updateTourBidComment } from "@/app/api/tour-bid-comment";
+import { getTourBidCommentsFrom, addTourBidComment, updateTourBidComment, deleteTourBidComment } from "@/app/api/tour-bid-comment";
 import { FaRegPaperPlane } from "react-icons/fa";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
-import { cn } from "@/lib/utils";
 import ClickAwayListener from "react-click-away-listener";
+import { cn } from "@/lib/utils";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
+import dayjs from "dayjs";
+import DeleteModal from "@/components/delete-modal";
 
 type BidCommentModalProps = {
     isOpen: boolean;
@@ -46,7 +47,8 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     const modalRef = useRef<HTMLDivElement>(null)
     const [changeDataFor, setChangeDataFor] = useState({
         id: -1,
-        value: ''
+        value: '',
+        mode: 0, //0 = none, 1 = edit, 2 = delete
     })
     const [updateCache, setUpdateCache] = useState<TourBidCommentListResult>(cacheInit)
 
@@ -91,7 +93,17 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                     comment.commentId === updateCache.commentId ? updateCache : comment
                 )
             );
-            setChangeDataFor({ id: -1, value: '' });
+            setChangeDataFor({ id: -1, value: '', mode: 0 });
+        }
+    });
+
+    const deleteCommentMutation = useMutation({
+        mutationFn: (commentId: number) => deleteTourBidComment(commentId),
+        onSuccess: () => {
+            setComments(prevComments =>
+                prevComments.filter(comment => comment.commentId !== changeDataFor.id)
+            );
+            setChangeDataFor({ id: -1, value: '', mode: 0 });
         }
     });
 
@@ -110,7 +122,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
     };
     const handleClickAway = () => {
         if (changeDataFor.id !== -1) {
-            setChangeDataFor({ id: -1, value: '' });
+            setChangeDataFor({ id: -1, value: '', mode: 0 });
         }
     };
 
@@ -189,7 +201,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                 >
                     <InfiniteScroll
                         dataLength={comments.length}
-                        next={() => {}}
+                        next={() => { }}
                         hasMore={page < totalPage}
                         loader={
                             <div className="flex justify-center py-4">
@@ -202,22 +214,68 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                         style={{ overflow: 'visible' }}
                     >
                         {comments.map((v) => (
-                            <div key={v.commentId} className="bg-[#F8FAFC] p-3 my-2 rounded-sm">
-                                <div className="flex justify-between">
-                                    <div className="flex items-center">
-                                        <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
-                                        <div className="ml-2">
-                                            <p className="font-semibold">{v.fullName}</p>
-                                            <p>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
+                            <div key={v.commentId} className="mb-4 overflow-x-hidden">
+                                <div className="flex w-full gap-2 items-start"> {/* Changed to items-start for better alignment */}
+                                    <SafeImage src={v.image} alt="pfp" className="w-[65px] h-[65px] rounded-full flex-shrink-0" />
+
+                                    <div className="flex-1 min-w-0"> {/* Container for both comment and edit input */}
+                                        {/* Comment text container - always present but conditionally shown */}
+                                        <div
+                                            className={cn(`bg-[#F8FAFC] p-2 rounded-sm`, (changeDataFor.id !== v.commentId || changeDataFor.mode !== 1) ? 'block' : 'hidden')}
+                                        >
+                                            <p className="text-lg font-semibold">
+                                                {v.fullName}
+                                            </p>
+                                            <p className={cn("break-words overflow-wrap-anywhere whitespace-pre-wrap",
+
+                                            )}>
+                                                {v.content}
+                                            </p>
                                         </div>
+                                        <p className={cn(
+                                            "text-sm ml-2",
+                                            (changeDataFor.id !== v.commentId || changeDataFor.mode !== 1) ? 'block' : 'hidden'
+                                        )}>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY')}</p>
+                                        {/* Edit input container - always present but conditionally shown */}
+                                        {changeDataFor.id === v.commentId && changeDataFor.mode === 1 && (
+                                            <ClickAwayListener onClickAway={handleClickAway}>
+                                                <div className="rounded-sm p-2"> {/* Same styling as comment container */}
+                                                    <div className="flex gap-2 w-full">
+                                                        <input
+                                                            autoFocus
+                                                            className={cn(
+                                                                "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg",
+                                                                "focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5",
+                                                                "dark:bg-gray-700 dark:border-gray-600 dark:text-white",
+                                                                "dark:focus:ring-primary-500 dark:focus:border-primary-500"
+                                                            )}
+                                                            value={changeDataFor.value}
+                                                            onChange={(e) => setChangeDataFor({ ...changeDataFor, value: e.target.value })}
+                                                            onKeyDown={(e) => {
+                                                                if (e.key === 'Escape') {
+                                                                    setChangeDataFor({ id: -1, value: '', mode: 0 });
+                                                                }
+                                                            }}
+                                                        />
+                                                        <button
+                                                            onClick={handleUpdateComment}
+                                                            disabled={!changeDataFor.value.trim()}
+                                                            className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-3 py-2 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500 flex-shrink-0"
+                                                        >
+                                                            <FaRegPaperPlane />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </ClickAwayListener>
+                                        )}
                                     </div>
+
+                                    {/* Dropdown menu (positioned absolutely) */}
                                     {v.accountId === accId && changeDataFor.id === -1 && (
-                                        <div className="relative">
+                                        <div className="relative self-start mt-2"> {/* Adjusted positioning */}
                                             <DropdownMenu>
                                                 <DropdownMenuTrigger asChild>
-                                                    <button
-                                                        className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
-                                                    >
+                                                    <button className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors">
                                                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                                             <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                                                         </svg>
@@ -226,11 +284,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                                 <DropdownMenuContent
                                                     side="left"
                                                     align="end"
-                                                    className="p-1 rounded-lg z-[100] border border-gray-200 bg-white w-[125px] shadow-lg -translate-x-[75px]"
-                                                    style={{
-                                                        position: 'fixed',
-                                                        //right: `${scrollbarWidth + 16}px` // Position accounting for scrollbar
-                                                    }}
+                                                    className="p-1 rounded-lg z-[100] border border-gray-200 bg-white w-[125px] shadow-lg absolute right-0"
                                                 >
                                                     <DropdownMenuItem
                                                         className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
@@ -238,14 +292,17 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                                             setChangeDataFor(
                                                                 {
                                                                     id: v.commentId,
-                                                                    value: v.content
+                                                                    value: v.content,
+                                                                    mode: 1
                                                                 })
                                                         }}
                                                     >
                                                         Cập nhật
                                                     </DropdownMenuItem>
                                                     <DropdownMenuItem
-                                                        onClick={() => { }}
+                                                        onClick={() => {
+                                                            setChangeDataFor({ ...changeDataFor, id: v.commentId, mode: 2 })
+                                                        }}
                                                         className="hover:bg-gray-100 p-1 rounded-sm cursor-pointer px-2"
                                                     >
                                                         Xóa
@@ -255,40 +312,12 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                         </div>
                                     )}
                                 </div>
-                                <div className="mt-4">
-                                    <p className={`wrap-break-word ${changeDataFor.id !== v.commentId ? 'block' : 'hidden'}`}>{v.content}</p>
-                                    {changeDataFor.id === v.commentId &&
-                                        <ClickAwayListener onClickAway={handleClickAway}>
-                                            <div className="relative">
-                                                <input
-                                                    autoFocus
-                                                    className={cn("bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500")}
-                                                    value={changeDataFor.value}
-                                                    onChange={(e) => setChangeDataFor({ ...changeDataFor, value: e.target.value })}
-                                                    onKeyDown={(e) => {
-                                                        if (e.key === 'Enter' && changeDataFor.value.trim()) {
-                                                            setChangeDataFor({ id: -1, value: '' });
-                                                        } else if (e.key === 'Escape') {
-                                                            setChangeDataFor({ id: -1, value: '' });
-                                                        }
-                                                    }}
-                                                />
-                                                <button
-                                                    onClick={handleUpdateComment}
-                                                    disabled={!changeDataFor.value.trim()}
-                                                    className="z-10 absolute right-0 translate-y-1 text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
-                                                >
-                                                    Cập nhật
-                                                </button>
-                                            </div>
-                                        </ClickAwayListener>
-                                    }
-                                </div>
                             </div>
                         ))}
                     </InfiniteScroll>
                 </div>
-                {comments.length === 0 && !commentData.isFetching &&
+                {
+                    comments.length === 0 && !commentData.isFetching &&
                     <p>Không có bình luận nào</p>
                 }
                 <form className="flex gap-4" onSubmit={handleSubmit}>
@@ -306,9 +335,20 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                         <FaRegPaperPlane />
                     </button>
                 </form>
-            </div>
-        </div>
+                <DeleteModal
+                    isOpen={changeDataFor.mode === 2}
+                    message="Xóa bình luận này?"
+                    onClose={() => {
+                        setChangeDataFor(p => ({ ...p, id: -1, mode: 0 }))
+                    }}
+                    onConfirm={() => {
+                        deleteCommentMutation.mutate(changeDataFor.id)
+                    }}
+                />
+            </div >
+        </div >
     );
 };
 
 export default BidCommentModal;
+

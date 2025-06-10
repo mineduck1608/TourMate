@@ -25,4 +25,5 @@ public partial class TourBidListResult
     public int LikeCount { get; set; }
     public bool IsLiked { get; set; }
     public string CustomerImg { get; set; }
+    public bool IsBid { get; set; }
 }

@@ -26,7 +26,8 @@ export interface TourBidListResult {
   maxPrice?: number;
   likeCount: number;
   isLiked: boolean;
-  customerImg: string
+  customerImg: string,
+  isBid: boolean
 }
 
 export function statusToCode(s: string){

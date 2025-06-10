@@ -6,7 +6,7 @@ import { Bid, BidListResult } from "@/types/bid";
 import SafeImage from "@/components/safe-image";
 import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
-import { TourBid, TourBidListResult } from "@/types/tour-bid";
+import { TourBidListResult } from "@/types/tour-bid";
 import { toast } from "react-toastify";
 import ParticipateBidModal from "./participate-bid-modal";
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,8 @@ import DeleteModal from "@/components/delete-modal";
 type BidCommentModalProps = {
     isOpen: boolean;
     onClose: () => void;
-    tourBid: TourBid | TourBidListResult
+    tourBid: TourBidListResult,
+    onCreateOrDelete: (id: number, state: boolean) => void
 };
 const baseData: BidListResult = {
     bidId: 0,
@@ -35,9 +36,11 @@ const baseData: BidListResult = {
 const BidListModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
-    tourBid
+    tourBid,
+    onCreateOrDelete
 }) => {
-    const isOnGoing = tourBid.status === 'Hoạt động' ? true : false;
+    const [innerTourBid, setInnerTourBid] = useState(tourBid)
+    const isOnGoing = innerTourBid.status === 'Hoạt động' ? true : false;
     const pageSize = 5;
     const [page, setPage] = useState(1);
     const [bids, setBids] = useState<BidListResult[]>([]);
@@ -51,10 +54,11 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
     const [cachedEdits, setCachedEdits] = useState<Record<number, BidListResult>>({});
     const scrollRef = useRef<HTMLDivElement>(null);
     const [dataVersion, setDataVersion] = useState(0);
-    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
+    const { id, tourGuide } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
     const bidsRef = useRef<BidListResult[]>([]);
     const modalRef = useRef<HTMLDivElement>(null);
     // Calculate scrollbar width and lock body scroll
+
     useEffect(() => {
         if (isOpen) {
             // Calculate scrollbar width
@@ -81,8 +85,8 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
     }, [isOpen]);
 
     const bidData = useQuery({
-        queryKey: ['bids-of', tourBid.tourBidId, pageSize, page, dataVersion],
-        queryFn: () => getBidsOfTourBid(tourBid.tourBidId, page, pageSize),
+        queryKey: ['bids-of', innerTourBid.tourBidId, pageSize, page, dataVersion],
+        queryFn: () => getBidsOfTourBid(innerTourBid.tourBidId, page, pageSize),
         enabled: isOpen,
     });
 
@@ -102,7 +106,12 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
         mutationFn: ({ data }: { data: Bid }) => addBid(data),
         onSuccess: (newBid) => {
             toast.success("Tạo thành công");
+            newBid.image = tourGuide?.image
+            newBid.fullName = tourGuide?.fullName
+            console.log(newBid);
+            
             setModalOpen(p => ({ ...p, create: false }));
+            setInnerTourBid({ ...innerTourBid, isBid: true })
             setBids(prev => {
                 const updated = [newBid, ...prev];
                 bidsRef.current = updated;
@@ -267,7 +276,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-500"></div>
                                 ) : null}
                             </div>
-                        }                        
+                        }
                         scrollableTarget="scrollableDiv"
                     >
                         {bids.map((v) => {
@@ -344,7 +353,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                 <div className="my-4 mt-0 border-t-[1px]" />
                 <Button
                     onClick={() => setModalOpen(p => ({ ...p, create: true }))}
-                    disabled={!isOnGoing}
+                    disabled={!isOnGoing || innerTourBid.isBid}
                     className="mt-4 w-full text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                 >
                     Tham gia đấu giá
@@ -355,6 +364,8 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                     tourBid={tourBid}
                     onSave={(b) => {
                         addBidMutation.mutate({ data: b })
+                        onCreateOrDelete(tourBid.tourBidId, true)
+                        setInnerTourBid({ ...innerTourBid, isBid: true })
                     }}
                 />}
                 {
@@ -390,6 +401,8 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                         onClose={() => { setModalOpen(p => ({ ...p, delete: false })) }}
                         onConfirm={() => {
                             deleteBidMutation.mutate({ id: target.bidId });
+                            onCreateOrDelete(tourBid.tourBidId, false)
+                            setInnerTourBid({ ...innerTourBid, isBid: false })
                         }}
                     />
                 }

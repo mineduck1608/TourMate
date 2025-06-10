@@ -23,3 +23,8 @@ export const updateTourBidComment = async (tourBidComment: TourBidComment | Tour
   const res = await http.put('comments', tourBidComment);
   return res.data;
 }
+
+export const deleteTourBidComment = async (id: number) => {
+  const res = await http.delete('comments/' + id);
+  return res.data;
+}

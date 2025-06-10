@@ -13,6 +13,7 @@ namespace Repositories.Repository
         public async Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex)
         {
             content = content != null ? content.Trim().ToLower() : "";
+            var tourGuide = await _context.TourGuides.FirstOrDefaultAsync(x => x.AccountId == accountIdFrom);
             var query = _context.TourBids
                 .Where(x =>
                 !x.IsDeleted &&
@@ -29,6 +30,7 @@ namespace Repositories.Repository
                 .Include(x => x.Account)
                 .ThenInclude(x => x.TourGuides)
                 .Include(x => x.UserLikeBids)
+                .Include(x => x.Bids)
                 .Select(x => new TourBidListResult()
                 {
                     AccountId = x.AccountId,
@@ -42,7 +44,8 @@ namespace Repositories.Repository
                     CustomerImg = x.Account.Customers.FirstOrDefault().Image ?? x.Account.TourGuides.FirstOrDefault().Image,
                     MaxPrice = x.MaxPrice,
                     PlaceRequestedName = x.PlaceRequestedNavigation.AreaName,
-                    Status = x.Status
+                    Status = x.Status,
+                    IsBid = tourGuide != null && x.Bids.Any(b => b.TourGuideId == tourGuide.TourGuideId)
                 }).ToListAsync()
                 ;
             return new PagedResult<TourBidListResult>

@@ -9,16 +9,9 @@ import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context'
 import Banner from '@/components/Banner'
 import { TourBid, TourBidListResult } from '@/types/tour-bid'
 import { baseData, BidTaskContext } from './tour-bid-task-context'
-import { getTourGuide } from '@/app/api/tour-guide.api'
 
 function TourBidPageMain() {
-    const { id, accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
-    const tourGuideQueryData = useQuery({
-        queryFn: () => getTourGuide(id),
-        queryKey: ['tourGuide', id],
-        staleTime: 24 * 3600 * 1000,
-    })
-    const tourGuide = tourGuideQueryData.data?.data
+    const { accId,tourGuide } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     const simplifiedAreaQuery = useQuery({
         queryKey: ['most-popular-area'],
         queryFn: () => getMostPopularAreas(),

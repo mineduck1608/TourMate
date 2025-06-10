@@ -11,8 +11,7 @@ import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context"
 import { formatNumber } from "@/types/other"
 import BidCommentModal from "./bid-comment-modal"
-
-export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
+export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: TourBidListResult, onCreateOrDelete: (id: number, state: boolean) => void }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const [open, setOpen] = useState({
         bid: false,
@@ -124,7 +123,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     </button>
                 </div>
 
-                {open.bid && <BidListModal isOpen onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBid={tourBid} />}
+                {open.bid && <BidListModal isOpen onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBid={tourBid} onCreateOrDelete={onCreateOrDelete}/>}
                 {open.comment && <BidCommentModal isOpen onClose={() => setOpen(p => ({...p, comment: false}))} tourBidId={tourBid.tourBidId}/>}
             </div>
         </div>

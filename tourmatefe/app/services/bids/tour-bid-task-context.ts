@@ -40,5 +40,6 @@ export const baseData: TourBidListResult = {
     placeRequestedName: "",
     likeCount: 0,
     isLiked: false,
-    customerImg: ""
+    customerImg: "",
+    isBid: false
 }
