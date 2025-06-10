@@ -93,6 +93,8 @@ export default function MembershipPaymentPage() {
                     status: "Thành công"
                 })
 
+                console.log("Payment added:", payment)
+
                 if (payment) {
                     // Add delay to show processing state
                     setTimeout(() => {
