@@ -235,8 +235,8 @@ namespace API.Controllers
                 await _accountMembershipService.CreateAccountMembership(accountMembership);
 
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
-                var customer = await _customerService.GetCustomerFromAccount(payment.AccountId);
-                var email = _paymentService.GenerateSuccessfulPaymentEmail(customer.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
+                var tourGuide = await _tourGuideService.GetTourGuideByAccountIdAsync(payment.AccountId);
+                var email = _paymentService.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
                 try
                 {
                     await _emailSender.SendEmailAsync(account.Email, "Thanh toán thành công - TourMate", email);
