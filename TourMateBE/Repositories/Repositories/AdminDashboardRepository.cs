@@ -326,10 +326,10 @@ namespace Repositories.Repository
 
             foreach (var package in packages)
             {
-                var filteredPayments = package.Payments?
+                var filteredPayments = package.Payments
                     .Where(p =>
                         (!fromDate.HasValue || p.CompleteDate >= fromDate.Value) &&
-                        (!toDate.HasValue || p.CompleteDate <= toDate.Value))
+                        (!toDate.HasValue || p.CompleteDate <= toDate.Value) && p.PaymentType == "Membership")
                     .ToList() ?? new List<Payment>();
 
                 var durationText = FormatDuration(package.Duration);
@@ -393,7 +393,7 @@ namespace Repositories.Repository
             }
             else
             {
-                return durationInDays == 1 ? "1 ngày" : $"{durationInDays} ngày";
+                return durationInDays == 1 ? "1 tháng" : $"{durationInDays} tháng";
             }
         }
     }
