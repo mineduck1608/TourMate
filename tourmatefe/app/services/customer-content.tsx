@@ -7,6 +7,7 @@ import { ReactNode, useState, useEffect } from "react";
 import { getAssociatedId } from "../api/account.api";
 import { CustomerSiteContext } from "./context";
 import Link from "next/link";
+import { getCustomer } from "../api/customer.api";
 
 export function CustomerContent({ children }: { children: ReactNode }) {
   const { role } = useAuth();
@@ -19,6 +20,12 @@ export function CustomerContent({ children }: { children: ReactNode }) {
     queryFn: () => getAssociatedId(accId, 'Customer'),
     staleTime: 24 * 3600 * 1000
   })
+  const customerQueryData = useQuery({
+    queryFn: () => getCustomer(data ?? -1),
+    queryKey: ['customer', data],
+    staleTime: 24 * 3600 * 1000,
+  })
+  const customer = customerQueryData.data
   const [, setId] = useState<number | undefined>()
   const [, setAccId] = useState<number | undefined>()
   useEffect(() => {
@@ -57,7 +64,7 @@ export function CustomerContent({ children }: { children: ReactNode }) {
 
 
   return <>
-    {data && <CustomerSiteContext.Provider value={{ id: data, accId }}>
+    {data && <CustomerSiteContext.Provider value={{ id: data, accId, customer }}>
       {children}
     </CustomerSiteContext.Provider>}
   </>;

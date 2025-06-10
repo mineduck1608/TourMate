@@ -94,7 +94,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     __html: sanitizeContent(tourBid.content || ""),
                 }}
             />
-            <div className="flex *:mr-4">
+            <div className="flex *:mr-4 mb-2">
                 <div className="flex *:mr-1">
                     <button onClick={() => {
                         setTarget(tourBid)
@@ -110,7 +110,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                 </button>
             </div>
             <div className="border-2" />
-            <div className="mt-5 w-full">
+            <div className="mt-2 w-full">
                 <div className="font-semibold text-lg flex justify-between">
                     <span >Bảng đấu giá</span>
                     {/* {tourBid.maxPrice && <span >Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</span>} */}
@@ -123,7 +123,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                     </button>
                 </div>
 
-                <BidListModal isOpen={open.bid} onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBidId={tourBid.tourBidId} />
+                <BidListModal isOpen={open.bid} onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBid={tourBid} />
                 {open.comment && <BidCommentModal isOpen onClose={() => setOpen(p => ({ ...p, comment: false }))} tourBidId={tourBid.tourBidId} />}
             </div>
         </div>

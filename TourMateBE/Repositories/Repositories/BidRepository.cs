@@ -1,4 +1,4 @@
-using Repositories.Models;
+﻿using Repositories.Models;
 using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using Repositories.DTO.ResultModels;
@@ -28,10 +28,11 @@ namespace Repositories.Repository
                     Amount = x.Amount,
                     Comment = x.Comment,
                     Status = x.Status,
-                    CreatedAt = x.CreatedAt
+                    CreatedAt = x.CreatedAt,
+                    TourGuideAccountId = x.TourGuide.AccountId
                 })
                 .ToListAsync();
-            return new ()
+            return new()
             {
                 Result = result,
                 TotalResult = totalItems,
@@ -45,6 +46,39 @@ namespace Repositories.Repository
                 var existingBid = _context.Bids.FirstOrDefault(x => x.BidId == bid.BidId);
                 bid.CreatedAt = existingBid.CreatedAt;
                 _context.Entry(existingBid).CurrentValues.SetValues(bid);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+        public async Task<bool> AcceptBid(int bidId)
+        {
+            try
+            {
+                var bid = await _context.Bids
+                    .Include(x => x.TourBid)
+                    .FirstOrDefaultAsync(x => x.BidId == bidId);
+                if (bid == null || bid.TourBid.Status != "Hoạt động") return false;
+                var tourBid = bid.TourBid.TourBidId;
+                var currentAcceptedBid = await _context.Bids
+                    .FirstOrDefaultAsync(x => x.TourBidId == tourBid && x.Status == "Chấp nhận");
+                if (currentAcceptedBid != null && currentAcceptedBid.BidId != bidId)
+                {
+                    currentAcceptedBid.Status = "Từ chối";
+                    _context.Entry(currentAcceptedBid).State = EntityState.Modified;
+                }
+                if (bid.Status == "Chấp nhận")
+                {
+                    bid.Status = "1";
+                }
+                else
+                {
+                    bid.Status = "Chấp nhận";
+                }
+                _context.Entry(bid).State = EntityState.Modified;
                 await _context.SaveChangesAsync();
                 return true;
             }

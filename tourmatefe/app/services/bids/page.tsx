@@ -5,7 +5,6 @@ import TourBidPage from './tour-bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
-import { getCustomer } from '@/app/api/customer.api'
 import { CustomerSiteContext, CustomerSiteContextProp } from '../context'
 import { AuthProvider } from '@/components/authProvider'
 import { CustomerContent } from '../customer-content'
@@ -15,13 +14,8 @@ import { baseData, BidTaskContext } from './tour-bid-task-context'
 
 
 function TourBidPageMain() {
-    const { id } = useContext(CustomerSiteContext) as CustomerSiteContextProp
-    const customerQueryData = useQuery({
-        queryFn: () => getCustomer(id),
-        queryKey: ['customer', id],
-        staleTime: 24 * 3600 * 1000,
-    })
-    const customer = customerQueryData.data
+    const { customer } = useContext(CustomerSiteContext) as CustomerSiteContextProp
+
     const simplifiedAreaQuery = useQuery({
         queryKey: ['most-popular-area'],
         queryFn: () => getMostPopularAreas(),
@@ -46,7 +40,7 @@ function TourBidPageMain() {
     useEffect(() => {
         setTarget({ ...target, accountId: customer?.accountId ?? 0 });
     }, [customer?.accountId]);
-    function refetch(){
+    function refetch() {
         setTimeout(() => {
             simplifiedAreaQuery.refetch()
         }, 500);

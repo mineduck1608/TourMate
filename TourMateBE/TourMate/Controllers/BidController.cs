@@ -57,5 +57,11 @@ namespace API.Controllers
             var result = await _bidService.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
             return Ok(result);
         }
+        [HttpPost("accept/{bidId}")]
+        public async Task<IActionResult> AcceptBid(int bidId)
+        {
+            var result = await _bidService.AcceptBid(bidId);
+            return result ? NoContent() : NotFound();
+        }
     }
 }

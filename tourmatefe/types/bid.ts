@@ -21,4 +21,5 @@ export type BidListResult = {
     status: string,
     fullName: string,
     image: string,
+    tourGuideAccountId: number
 }

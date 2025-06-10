@@ -31,7 +31,8 @@ const baseData: BidListResult = {
     createdAt: "",
     status: "",
     fullName: "",
-    image: ""
+    image: "",
+    tourGuideAccountId: 0
 }
 const BidListModal: React.FC<BidCommentModalProps> = ({
     isOpen,
@@ -286,7 +287,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                                     <div className="flex justify-between">
                                         <div className="flex items-center">
                                             <Link href={'/services/tour-guide/' + displayBid.tourGuideId}>
-                                                <SafeImage src={displayBid.image} alt="pfp" className="w-[65px] h-[65px] rounded-full" />
+                                                <SafeImage src={displayBid.image} alt="pfp" className="w-15 h-15 rounded-full" />
                                             </Link>
                                             <div className="ml-2">
                                                 <p className="font-semibold">{displayBid.fullName}</p>

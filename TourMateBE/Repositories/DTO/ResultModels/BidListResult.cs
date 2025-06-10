@@ -13,6 +13,7 @@ namespace Repositories.DTO.ResultModels
         public int TourBidId { get; set; }
 
         public int TourGuideId { get; set; }
+        public int TourGuideAccountId { get; set; }
 
         public float Amount { get; set; }
 

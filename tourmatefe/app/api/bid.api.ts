@@ -37,3 +37,8 @@ export const deleteBid = async (id: number, signal?: AbortSignal) => {
 
     return res.data;
 };
+
+export const acceptBid = async (id: number) => {
+    const res = await http.post('bids/accept/' + id)
+    return res.data
+}
