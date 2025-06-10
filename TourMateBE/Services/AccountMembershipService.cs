@@ -7,7 +7,7 @@ namespace Services
     {
         AccountMembership GetAccountMembership(int id);
         IEnumerable<AccountMembership> GetAll(int pageSize, int pageIndex);
-        void CreateAccountMembership(AccountMembership accountmembership);
+        Task<bool> CreateAccountMembership(AccountMembership accountmembership);
         void UpdateAccountMembership(AccountMembership accountmembership);
         bool DeleteAccountMembership(int id);
     }
@@ -26,9 +26,9 @@ namespace Services
             return AccountMembershipRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateAccountMembership(AccountMembership accountmembership)
+        public async Task<bool> CreateAccountMembership(AccountMembership accountmembership)
         {
-            AccountMembershipRepository.Create(accountmembership);
+            return await AccountMembershipRepository.CreateAsync(accountmembership);
         }
 
         public void UpdateAccountMembership(AccountMembership accountmembership)

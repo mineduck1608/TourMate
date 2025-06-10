@@ -16,9 +16,9 @@ namespace Services
     {
         private MembershipPackagesRepository MembershipPackagesRepository { get; set; } = new();
 
-        public Task<MembershipPackage> GetMembershipPackages(int id)
+        public async Task<MembershipPackage> GetMembershipPackages(int id)
         {
-            return MembershipPackagesRepository.GetByIdAsync(id);
+            return await MembershipPackagesRepository.GetByIdAsync(id);
         }
 
         public IEnumerable<MembershipPackage> GetAll(int pageSize, int pageIndex)

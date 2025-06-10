@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
@@ -17,9 +17,13 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<MembershipPackage> Get(int id)
+        public async Task<ActionResult<MembershipPackage>> Get(int id)
         {
-            return Ok(_membershippackageService.GetMembershipPackages(id));
+            var membership = await _membershippackageService.GetMembershipPackages(id);
+            if (membership == null)
+                return NotFound(new { message = "Không tìm thấy gói thành viên." });
+
+            return Ok(membership);
         }
 
         [HttpGet]
