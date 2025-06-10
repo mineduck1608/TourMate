@@ -24,6 +24,7 @@ const pricingPlans = [
       "Hỗ trợ qua email",
       "Truy cập cộng đồng hướng dẫn viên",
     ],
+    id: 1
   },
   {
     title: "TourMate Guide Plus",
@@ -41,6 +42,7 @@ const pricingPlans = [
     ],
     isPopular: true,
     discount: "Tiết kiệm 22%",
+    id: 2
   },
   {
     title: "TourMate Guide Pro",
@@ -59,6 +61,7 @@ const pricingPlans = [
       "Tăng tần xuất giới thiệu",
     ],
     discount: "Tiết kiệm 30%",
+    id: 3
   },
 ]
 

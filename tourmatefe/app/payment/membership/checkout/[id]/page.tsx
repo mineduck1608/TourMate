@@ -23,7 +23,6 @@ import {
     TimerIcon,
     BoxesIcon,
 } from "lucide-react"
-import { fetchScheduleByInvoiceId } from "@/app/api/schedule.api"
 import Footer from "@/components/Footer"
 import MegaMenu from "@/components/mega-menu"
 import type { MyJwtPayload } from "@/types/JwtPayload"

@@ -2,6 +2,7 @@ import { Check, Star } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
+import Link from "next/link"
 
 interface PricingCardProps {
   title: string
@@ -12,6 +13,7 @@ interface PricingCardProps {
   features: string[]
   isPopular?: boolean
   discount?: string
+  id: number // Optional id for the link
 }
 
 export function PricingCard({
@@ -23,6 +25,7 @@ export function PricingCard({
   features,
   isPopular = false,
   discount,
+  id
 }: PricingCardProps) {
   return (
     <Card
@@ -72,6 +75,7 @@ export function PricingCard({
       </CardContent>
 
       <CardFooter>
+        <Link href={`/payment/membership/checkout/${id}`} className="w-full">
         <Button
           className={`w-full h-12 text-base font-semibold transition-all duration-200 ${
             isPopular
@@ -81,6 +85,7 @@ export function PricingCard({
         >
           Chọn gói {title}
         </Button>
+        </Link>
       </CardFooter>
     </Card>
   )
