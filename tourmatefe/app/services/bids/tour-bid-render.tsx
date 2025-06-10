@@ -11,6 +11,7 @@ import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
 import { formatNumber } from "@/types/other"
 import BidCommentModal from "./bid-comment-modal"
+import Link from "next/link"
 
 export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
@@ -51,7 +52,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                             {tourBid.accountId === accId && <span>&nbsp;(Bạn)</span>}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
-                        <p className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
+                        <Link href={'/services/active-area/detail?id=' + tourBid.placeRequested} className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</Link>
                         {
                             tourBid.maxPrice && <p>Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</p>
                         }

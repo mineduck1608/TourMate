@@ -8,7 +8,7 @@ import { formatNumber } from "@/types/other";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { TourBidListResult } from "@/types/tour-bid";
 import { toast } from "react-toastify";
-import ParticipateBidModal from "./participate-bid-modal";
+import BidCreateModal from "./bid-create-modal";
 import { Button } from "@/components/ui/button";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@radix-ui/react-dropdown-menu";
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context";
@@ -359,7 +359,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                 >
                     Tham gia đấu giá
                 </Button>
-                {modalOpen.create && <ParticipateBidModal
+                {modalOpen.create && <BidCreateModal
                     isOpen
                     onClose={() => setModalOpen(p => ({ ...p, create: false }))}
                     tourBid={tourBid}

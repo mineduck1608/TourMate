@@ -2,33 +2,28 @@ import SafeImage from '@/components/safe-image'
 import { TourGuide } from '@/types/tour-guide'
 import Link from 'next/link'
 import React, { JSX } from 'react'
-import { FaBell, FaComment, FaPowerOff, FaUser } from 'react-icons/fa'
+import {  FaRegComment,  FaRegMap,  FaRegNewspaper,  FaRegUser } from 'react-icons/fa'
 export default function Profile({ tourGuide }: { tourGuide?: TourGuide }) {
     const tags: { icon: JSX.Element, title: string, link: string }[] = [
         {
-            icon: <FaUser />,
+            icon: <FaRegUser />,
             title: 'Tìm Tour guide',
-            link: 'tour-guide'
+            link: '/services/tour-guide'
         },
         {
-            icon: <FaComment />,
-            title: 'Diễn đàn',
-            link: ''
-        },
-        {
-            icon: <FaBell />,
-            title: 'Thông báo',
-            link: ''
-        },
-        {
-            icon: <FaComment />,
+            icon: <FaRegComment />,
             title: 'Tin nhắn',
             link: '/chat'
         },
         {
-            icon: <FaPowerOff />,
-            title: 'Lịch sử giao dịch',
-            link: ''
+            icon: <FaRegMap />,
+            title: 'Địa điểm',
+            link: '/services/active-area'
+        },
+        {
+            icon: <FaRegNewspaper />,
+            title: 'Tin tức',
+            link: '/news'
         },
     ]
     return (

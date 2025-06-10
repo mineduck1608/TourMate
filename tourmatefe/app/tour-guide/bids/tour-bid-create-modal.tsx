@@ -16,7 +16,7 @@ type BidCreateModalProps = {
     onSave: (tourBidData: TourBidListResult) => void;
 };
 
-const BidCreateModal: React.FC<BidCreateModalProps> = ({
+const TourBidCreateModal: React.FC<BidCreateModalProps> = ({
     isOpen,
     onClose,
     onSave,
@@ -181,4 +181,4 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
     );
 };
 
-export default BidCreateModal;
+export default TourBidCreateModal;

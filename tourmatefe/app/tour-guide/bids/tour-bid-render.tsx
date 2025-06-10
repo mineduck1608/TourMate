@@ -11,6 +11,7 @@ import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context"
 import { formatNumber } from "@/types/other"
 import BidCommentModal from "./bid-comment-modal"
+import Link from "next/link"
 export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: TourBidListResult, onCreateOrDelete: (id: number, state: boolean) => void }) {
     const isOnGoing = tourBid.status === 'Hoạt động' ? true : false
     const [open, setOpen] = useState({
@@ -41,7 +42,7 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
     return (
         <div className="shadow-lg p-5 rounded-lg">
             <div className="relative lg:flex grid-cols-2">
-                <div className="lg:flex w-full">
+                <div className="lg:flex w-full">                    
                     <SafeImage
                         src={tourBid.customerImg}
                         className="w-[75px] rounded-full h-[75px]"
@@ -53,7 +54,7 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
                             {tourBid.accountId === accId && <span>&nbsp;(Bạn)</span>}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
-                        <p className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</p>
+                        <Link href={'/services/active-area/detail?id=' + tourBid.placeRequested} className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</Link>
                         {
                             tourBid.maxPrice && <p>Giá mong đợi: {formatNumber(tourBid.maxPrice)} VND</p>
                         }
@@ -106,7 +107,7 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
                     </button>
                     <p>{tourBid.likeCount}</p>
                 </div>
-                <button className="cursor-pointer" onClick={() => {setOpen(p => ({...p, comment: true}))}}>
+                <button className="cursor-pointer" onClick={() => { setOpen(p => ({ ...p, comment: true })) }}>
                     <FaRegCommentDots className="inline" /> Bình luận
                 </button>
             </div>
@@ -123,8 +124,8 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
                     </button>
                 </div>
 
-                {open.bid && <BidListModal isOpen onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBid={tourBid} onCreateOrDelete={onCreateOrDelete}/>}
-                {open.comment && <BidCommentModal isOpen onClose={() => setOpen(p => ({...p, comment: false}))} tourBidId={tourBid.tourBidId}/>}
+                {open.bid && <BidListModal isOpen onClose={() => setOpen(p => ({ ...p, bid: false }))} tourBid={tourBid} onCreateOrDelete={onCreateOrDelete} />}
+                {open.comment && <BidCommentModal isOpen onClose={() => setOpen(p => ({ ...p, comment: false }))} tourBidId={tourBid.tourBidId} />}
             </div>
         </div>
     );

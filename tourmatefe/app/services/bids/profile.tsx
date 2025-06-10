@@ -2,33 +2,28 @@ import SafeImage from '@/components/safe-image'
 import { Customer } from '@/types/customer'
 import Link from 'next/link'
 import React, { JSX } from 'react'
-import { FaBell, FaComment, FaPowerOff, FaUser } from 'react-icons/fa'
+import { FaRegUser, FaRegComment, FaRegMap, FaRegNewspaper } from 'react-icons/fa'
 export default function Profile({ customer }: { customer?: Customer }) {
     const tags: { icon: JSX.Element, title: string, link: string }[] = [
         {
-            icon: <FaUser />,
+            icon: <FaRegUser />,
             title: 'Tìm Tour guide',
-            link: 'tour-guide'
+            link: '/services/tour-guide'
         },
         {
-            icon: <FaComment />,
-            title: 'Diễn đàn',
-            link: ''
-        },
-        {
-            icon: <FaBell />,
-            title: 'Thông báo',
-            link: ''
-        },
-        {
-            icon: <FaComment />,
+            icon: <FaRegComment />,
             title: 'Tin nhắn',
             link: '/chat'
         },
         {
-            icon: <FaPowerOff />,
-            title: 'Lịch sử giao dịch',
-            link: ''
+            icon: <FaRegMap />,
+            title: 'Địa điểm',
+            link: '/services/active-area'
+        },
+        {
+            icon: <FaRegNewspaper />,
+            title: 'Tin tức',
+            link: '/news'
         },
     ]
     return (
@@ -64,7 +59,7 @@ function UserRender({ customer }: { customer?: Customer }) {
     return (
         <div className='px-6 pt-5 pb-1'>
             <div className='lg:flex gap-5'>
-                <SafeImage 
+                <SafeImage
                     src={customer?.image}
                     className='w-[75px] h-[75px] rounded-full aspect-square border-2'
                     alt={'profile'}

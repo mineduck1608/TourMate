@@ -20,7 +20,7 @@ const baseBidData: Bid = {
     status: ""
 }
 
-const ParticipateBidModal: React.FC<BidCommentModalProps> = ({
+const BidCreateModal: React.FC<BidCommentModalProps> = ({
     isOpen,
     onClose,
     tourBid,
@@ -80,8 +80,8 @@ const ParticipateBidModal: React.FC<BidCommentModalProps> = ({
                 <div className="my-4 mt-0 border-t-[1px]" />
                 <form onSubmit={handleSubmit}>
                     {<div className="grid">
-                        <div className=" col-span-2 ">
-                            <label htmlFor="amount" className="block text-sm font-medium text-gray-700">
+                        <div className=" col-span-2 mb-4">
+                            <label htmlFor="amount" className="block text-sm font-bold text-gray-700">
                                 Số tiền
                             </label>
                             <input
@@ -91,23 +91,26 @@ const ParticipateBidModal: React.FC<BidCommentModalProps> = ({
                                 required
                                 min="1"
                                 max={tourBid?.maxPrice || undefined}
-                                value={formData.amount}
-                                onChange={(e) => setFormData({ ...formData, amount: parseInt(e.target.value) || 0 })}
-                                className="p-1 mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                value={formData.amount.toString()}
+                                onChange={(e) => {
+                                    const v = parseInt(e.target.value) || 0
+                                    setFormData({ ...formData, amount: v })
+                                }}
+                                className="flex-1 w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             />
                         </div>
                         {/* Comment field */}
                         <div className="col-span-2">
-                            <label htmlFor="comment" className="block text-sm font-medium text-gray-700">
+                            <label htmlFor="comment" className="block text-sm font-bold text-gray-700">
                                 Ghi chú
                             </label>
                             <textarea
                                 id="comment"
                                 name="comment"
-                                rows={3}
+                                rows={12}
                                 value={formData.comment || ''}
                                 onChange={(e) => setFormData({ ...formData, comment: e.target.value })}
-                                className="mt-1 p-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+                                className="flex-1 w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                             />
                         </div>
 
@@ -124,4 +127,4 @@ const ParticipateBidModal: React.FC<BidCommentModalProps> = ({
     );
 };
 
-export default ParticipateBidModal;
+export default BidCreateModal;

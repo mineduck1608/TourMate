@@ -1,7 +1,7 @@
 import React, { useContext } from "react";
 import TourBidList from "./tour-bid-list";
 import SafeImage from "@/components/safe-image";
-import BidCreateModal from "./tour-bid-create-modal";
+import TourBidCreateModal from "./tour-bid-create-modal";
 import { baseData, BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 import DeleteModal from "@/components/delete-modal";
 import TourBidEditModal from "./tour-bid-edit-modal";
@@ -11,11 +11,11 @@ export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, sea
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp
   return (
     <div>
-      <div className="z-10 bg-white pt-4 pb-2">
+      <div className="z-10 bg-white pb-2">
         <div className="flex h-min">
           <SafeImage
             src={tourGuide?.image}
-            className="w-[100px] h-[100px] rounded-full"
+            className="w-[100px] h-[100px] rounded-full object-cover aspect-square"
             alt={"profile"}
           />
           <div className="ml-4 w-full flex items-center">
@@ -30,7 +30,7 @@ export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, sea
       </div>
       <TourBidList search={search} />
 
-      {modalOpen.create && <BidCreateModal
+      {modalOpen.create && <TourBidCreateModal
         isOpen={modalOpen.create}
         onClose={() => {
           setTarget({ ...baseData })

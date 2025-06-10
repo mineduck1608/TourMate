@@ -64,15 +64,14 @@ function TourBidPageMain() {
         <BidTaskContext.Provider value={{ signal, setSignal, modalOpen, setModalOpen, setTarget, target }}>
             <div>
                 <Banner title='Đấu giá' imageUrl='/travel.jpg' />
-                <div className='lg:flex justify-between'>
-
-                    <div className='hidden lg:block lg:w-[25%] px-5 py-5 sticky top-0 h-screen overflow-y-auto'>
+                <div className='lg:flex justify-evenly pt-10'>
+                    <div className='hidden lg:block lg:w-[32%] px-5 sticky top-0 h-screen overflow-y-auto'>
                         <Profile customer={customer} />
                     </div>
-                    <div className='w-full lg:w-[45%] px-5 py-5'>
+                    <div className='w-full lg:w-[32%] '>
                         <TourBidPage customer={customer} search={content} />
                     </div>
-                    <div className='hidden lg:block lg:w-[20%] px-5 py-5 sticky top-0 h-screen overflow-y-auto'>
+                    <div className='hidden lg:block lg:w-[32%] px-5 sticky top-0 h-screen overflow-y-auto'>
                         <div className='rounded-md border shadow-lg p-5'>
                             <input
                                 className='p-1 w-full mb-2 border-2 rounded-sm'

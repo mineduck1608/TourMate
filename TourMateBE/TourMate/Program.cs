@@ -118,7 +118,8 @@ builder.Services.AddScoped<VnPayLibrary>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(RevenueProfile));
-
+builder.Services.AddScoped<TourBidCommentRepository>();
+builder.Services.AddScoped<ITourBidCommentService, TourBidCommentService>();
 
 
 // Đăng ký DbContext
@@ -131,13 +132,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-if (FirebaseApp.DefaultInstance == null)
-{
-    FirebaseApp.Create(new AppOptions()
-    {
-        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-    });
-}
+//if (FirebaseApp.DefaultInstance == null)
+//{
+//    FirebaseApp.Create(new AppOptions()
+//    {
+//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+//    });
+//}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

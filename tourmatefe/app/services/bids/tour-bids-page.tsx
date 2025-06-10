@@ -16,7 +16,7 @@ export default function TourBidPage({ customer, search }: { customer?: Customer,
         <div className="flex h-min">
           <SafeImage
             src={customer?.image}
-            className="w-[100px] h-[100px] rounded-full"
+            className="w-[100px] h-[100px] rounded-full object-cover aspect-square"
             alt={"profile"}
           />
           <div className="ml-4 w-full flex items-center">
