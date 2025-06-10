@@ -122,10 +122,30 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
             Xem chi tiết
           </DropdownMenuItem>
           <DropdownMenuSeparator />
-          <DropdownMenuItem onClick={handleOpenReject}>
+          <DropdownMenuItem
+            onClick={handleOpenReject}
+            disabled={
+              data.status === "Đã từ chối" || data.status === "Đã xử lí"
+            }
+            className={
+              data.status === "Đã từ chối" || data.status === "Đã xử lí"
+                ? "cursor-not-allowed opacity-50"
+                : ""
+            }
+          >
             Từ chối CV
           </DropdownMenuItem>
-          <DropdownMenuItem onClick={handleOpenApprove}>
+          <DropdownMenuItem
+            onClick={handleOpenApprove}
+            disabled={
+              data.status === "Đã từ chối" || data.status === "Đã xử lí"
+            }
+            className={
+              data.status === "Đã từ chối" || data.status === "Đã xử lí"
+                ? "cursor-not-allowed opacity-50"
+                : ""
+            }
+          >
             Duyệt CV
           </DropdownMenuItem>
         </DropdownMenuContent>
