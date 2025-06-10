@@ -6,7 +6,7 @@ const testimonials = [
         name: "Nguyễn Minh Anh",
         role: "Hướng dẫn viên tại Hà Nội",
         content:
-            "Từ khi sử dụng gói Chuyên nghiệp, thu nhập của tôi tăng 300%. Các công cụ marketing và khóa học rất hữu ích!",
+            "Từ khi sử dụng gói Plus, thu nhập của tôi tăng 300%. Các công cụ marketing và khóa học rất hữu ích!",
         rating: 5,
         avatar: "https://kienthucnganhdulich.edu.vn/wp-content/uploads/2024/07/Vi-Tri-Huong-Dan-Vien-Du-Lich-Tour-Guide.jpg",
     },
@@ -14,7 +14,7 @@ const testimonials = [
         name: "Trần Văn Hùng",
         role: "Hướng dẫn viên tại TP.HCM",
         content:
-            "Gói Cao cấp giúp tôi tiếp cận được nhiều khách hàng quốc tế hơn. Mentor 1-1 rất chuyên nghiệp và tận tâm.",
+            "Gói Pro giúp tôi tiếp cận được nhiều khách hàng quốc tế hơn. Mentor 1-1 rất chuyên nghiệp và tận tâm.",
         rating: 5,
         avatar: "https://bachkhoasaigon.edu.vn/wp-content/uploads/2021/07/ngoai-hinh-nguoi-huong-dan-vien-du-lich.jpg",
 
