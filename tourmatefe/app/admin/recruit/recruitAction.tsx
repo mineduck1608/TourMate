@@ -29,45 +29,26 @@ interface RecruitActionsProps {
 }
 
 const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
+  const [isDropdownOpen, setIsDropdownOpen] = React.useState(false);
   const [isDetailModalOpen, setIsDetailModalOpen] = React.useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = React.useState(false);
   const [isApproveModalOpen, setIsApproveModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
 
-  // Simplified modal handlers with useCallback
-  const handleViewDetail = React.useCallback(
-    () => setIsDetailModalOpen(true),
-    []
-  );
-  const handleCloseDetail = React.useCallback(
-    () => setIsDetailModalOpen(false),
-    []
-  );
+  const handleOpenModal = (openModal: () => void) => {
+    setIsDropdownOpen(false);
+    setTimeout(() => {
+      openModal();
+    }, 10); // delay nhẹ để DropdownMenu đóng hoàn toàn
+  };
 
-  const handleOpenReject = React.useCallback(
-    () => setIsRejectModalOpen(true),
-    []
-  );
-  const handleCloseReject = React.useCallback(() => {
-    setIsRejectModalOpen(false);
-  }, []);
-
-  const handleOpenApprove = React.useCallback(
-    () => setIsApproveModalOpen(true),
-    []
-  );
-  const handleCloseApprove = React.useCallback(() => {
-    setIsApproveModalOpen(false);
-  }, []);
-
-  // Mutation for approving CV
   const approveCVMutation = useMutation({
     mutationFn: (approveData: ApprovedCVRequest) =>
       approveCVApplication(approveData),
     onSuccess: () => {
       toast.success("Duyệt CV thành công");
       queryClient.invalidateQueries({ queryKey: ["cv-applications"] });
-      handleCloseApprove();
+      setIsApproveModalOpen(false);
     },
     onError: (error) => {
       toast.error(
@@ -95,14 +76,13 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
     });
   };
 
-  // Mutation for rejecting CV
   const rejectCVMutation = useMutation({
     mutationFn: (rejectData: RejectCVRequest) =>
       rejectCVApplication(rejectData),
     onSuccess: () => {
       toast.success("Từ chối CV thành công");
       queryClient.invalidateQueries({ queryKey: ["cv-applications"] });
-      handleCloseReject();
+      setIsRejectModalOpen(false);
     },
     onError: (error) => {
       toast.error(
@@ -126,7 +106,7 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
 
   return (
     <>
-      <DropdownMenu>
+      <DropdownMenu open={isDropdownOpen} onOpenChange={setIsDropdownOpen}>
         <DropdownMenuTrigger asChild>
           <Button variant="ghost" className="h-8 w-8 p-0">
             <span className="sr-only">Open menu</span>
@@ -135,28 +115,16 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Hành động</DropdownMenuLabel>
-          <DropdownMenuItem onClick={handleViewDetail}>
+
+          <DropdownMenuItem onClick={() => handleOpenModal(() => setIsDetailModalOpen(true))}>
             Xem chi tiết
           </DropdownMenuItem>
+
           <DropdownMenuSeparator />
-          <DropdownMenuItem
-            onClick={handleOpenReject}
-            disabled={
-              data.status === "Đã từ chối" || data.status === "Đã xử lí"
-            }
-            className={
-              data.status === "Đã từ chối" || data.status === "Đã xử lí"
-                ? "cursor-not-allowed opacity-50"
-                : ""
-            }
-          >
-            Từ chối CV
-          </DropdownMenuItem>
-          <DropdownMenuItem
-            onClick={handleOpenApprove}
-            disabled={
-              data.status === "Đã từ chối" || data.status === "Đã xử lí"
-            }
+
+           <DropdownMenuItem
+            onClick={() => handleOpenModal(() => setIsApproveModalOpen(true))}
+            disabled={data.status === "Đã từ chối" || data.status === "Đã xử lí"}
             className={
               data.status === "Đã từ chối" || data.status === "Đã xử lí"
                 ? "cursor-not-allowed opacity-50"
@@ -165,31 +133,46 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
           >
             Duyệt CV
           </DropdownMenuItem>
+
+          <DropdownMenuItem
+            onClick={() => handleOpenModal(() => setIsRejectModalOpen(true))}
+            disabled={data.status === "Đã từ chối" || data.status === "Đã xử lí"}
+            className={
+              data.status === "Đã từ chối" || data.status === "Đã xử lí"
+                ? "cursor-not-allowed opacity-50"
+                : ""
+            }
+          >
+            Từ chối CV
+          </DropdownMenuItem>
+
+         
         </DropdownMenuContent>
       </DropdownMenu>
 
       {isDetailModalOpen && (
         <CVDetailModal
           isOpen={isDetailModalOpen}
-          onClose={handleCloseDetail}
+          onClose={() => setIsDetailModalOpen(false)}
           currentCV={data}
         />
       )}
 
       <RejectModal
         isOpen={isRejectModalOpen}
-        onClose={handleCloseReject}
+        onClose={() => setIsRejectModalOpen(false)}
         onConfirm={handleReject}
         isLoading={rejectCVMutation.isPending}
       />
 
       <ApproveModal
         isOpen={isApproveModalOpen}
-        onClose={handleCloseApprove}
+        onClose={() => setIsApproveModalOpen(false)}
         onConfirm={handleApprove}
         isLoading={approveCVMutation.isPending}
       />
     </>
   );
 };
+
 export default RecruitActions;
