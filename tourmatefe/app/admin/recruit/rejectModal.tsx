@@ -24,27 +24,29 @@ const RejectModal: React.FC<RejectModalProps> = ({
   isLoading = false,
 }) => {
   const [rejectReason, setRejectReason] = React.useState("");
-  const firstFocusableElement = React.useRef<HTMLTextAreaElement>(null);
 
-  // Handle close without preventing events
-  const handleClose = () => {
-    setRejectReason("");
-    onClose();
-  };
-
-  // Handle confirm without preventing events
-  const handleConfirm = () => {
-    onConfirm(rejectReason);
-  };
-
+  // Reset form on close
   React.useEffect(() => {
-    if (isOpen && firstFocusableElement.current) {
-      firstFocusableElement.current.focus();
+    if (!isOpen) {
+      setRejectReason("");
     }
   }, [isOpen]);
 
+  const handleClose = React.useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  const handleConfirm = React.useCallback(() => {
+    onConfirm(rejectReason);
+  }, [onConfirm, rejectReason]);
+
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) handleClose();
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Từ chối CV</DialogTitle>
@@ -52,7 +54,6 @@ const RejectModal: React.FC<RejectModalProps> = ({
         </DialogHeader>
         <div className="py-4">
           <Textarea
-            ref={firstFocusableElement}
             placeholder="Nhập lý do từ chối..."
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}

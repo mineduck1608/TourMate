@@ -25,17 +25,27 @@ const ApproveModal: React.FC<ApproveModalProps> = ({
 }) => {
   const [response, setResponse] = React.useState("");
 
-  const handleClose = () => {
-    setResponse("");
-    onClose();
-  };
+  React.useEffect(() => {
+    if (!isOpen) {
+      setResponse("");
+    }
+  }, [isOpen]);
 
-  const handleConfirm = () => {
+  const handleClose = React.useCallback(() => {
+    onClose();
+  }, [onClose]);
+
+  const handleConfirm = React.useCallback(() => {
     onConfirm(response);
-  };
+  }, [onConfirm, response]);
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) handleClose();
+      }}
+    >
       <DialogContent className="sm:max-w-[425px]">
         <DialogHeader>
           <DialogTitle>Chấp thuận CV</DialogTitle>

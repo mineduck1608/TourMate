@@ -3,6 +3,7 @@ import { useQueryString } from "../../utils/utils";
 import { DataTable } from "./data-table";
 import { columns } from "./columns";
 import { getCVApplications } from "@/app/api/cv-application.api";
+import { RecruitmentStats } from "./recruitmentStats";
 
 const LIMIT = 10;
 
@@ -16,7 +17,7 @@ export default function CVApplicationsPage() {
       const controller = new AbortController();
       setTimeout(() => {
         controller.abort();
-      }, 5000);
+      }, 500);
       const response = await getCVApplications(page, LIMIT, controller.signal);
       console.log("API response:", response);
       return response;
@@ -36,14 +37,18 @@ export default function CVApplicationsPage() {
   if (error) return <div>Error loading data</div>;
 
   return (
-    <div>
-      <DataTable
-        columns={columns}
-        data={data?.result ?? []}
-        totalResults={data?.totalResult ?? 0}
-        totalPages={data?.totalPage ?? 0}
-        page={page}
-      />
+    <div className="container mx-auto py-2">
+      <RecruitmentStats applications={data?.result || []} />
+
+      <div className="rounded-md border p-3">
+        <DataTable
+          columns={columns}
+          data={data?.result || []}
+          totalResults={data?.totalResult || 0}
+          totalPages={data?.totalPage || 0}
+          page={page}
+        />
+      </div>
     </div>
   );
 }
