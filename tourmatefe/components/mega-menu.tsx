@@ -33,6 +33,11 @@ const MegaMenu = () => {
     }
   }, []);
 
+  const handleUnauthorizedAccess = (e: React.MouseEvent, service: string) => {
+    e.preventDefault();
+    alert(`Vui lòng đăng nhập để sử dụng dịch vụ ${service}`);
+  };
+
   if (!isMounted) return null;
   return (
     <nav className="bg-white border-gray-200">
@@ -207,52 +212,98 @@ const MegaMenu = () => {
                 <div className="p-4 pb-0 text-gray-900 md:pb-4">
                   <ul className="space-y-4">
                     <li>
-                      <Link
-                        href="/chat"
-                        className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
-                      >
-                        <span className="sr-only">Diễn đàn trao đổi</span>
-                        <span className="sr-only">Tin nhắn</span>
-
-                        <svg
-                          xmlns="http://www.w3.org/2000/svg"
-                          width="24"
-                          height="24"
-                          viewBox="1 -5 35 35"
-                          fill="none"
-                          stroke="currentColor"
-                          strokeWidth="2"
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
-                          aria-hidden="true"
+                      {token ? (
+                        <Link
+                          href="/chat"
+                          className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
                         >
-                          <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
-                          <path d="M8 12h.01" />
-                          <path d="M12 12h.01" />
-                          <path d="M16 12h.01" />
-                        </svg>
-                        Tin nhắn
-                      </Link>
-
+                          <span className="sr-only">Tin nhắn</span>
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="1 -5 35 35"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
+                            aria-hidden="true"
+                          >
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                            <path d="M8 12h.01" />
+                            <path d="M12 12h.01" />
+                            <path d="M16 12h.01" />
+                          </svg>
+                          Tin nhắn
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
+                          className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
+                        >
+                          {/* Same SVG and text as above */}
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="24"
+                            height="24"
+                            viewBox="1 -5 35 35"
+                            fill="none"
+                            stroke="currentColor"
+                            strokeWidth="2"
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            className="w-6 h-6 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
+                            aria-hidden="true"
+                          >
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" />
+                            <path d="M8 12h.01" />
+                            <path d="M12 12h.01" />
+                            <path d="M16 12h.01" />
+                          </svg>
+                          Tin nhắn
+                        </a>
+                      )}
                     </li>
                     <li>
-                      <Link
-                        href={`/${role === 'TourGuide' ? 'tour-guide' : 'services'}/bids`}
-                        className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
-                      >
-                        <span className="sr-only">Đấu giá Tour</span>
-                        <svg
-                          className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
-                          aria-hidden="true"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="currentColor"
-                          viewBox="0 0 14 20"
+                      {token ? (
+                        <Link
+                          href={`/${role === 'TourGuide' ? 'tour-guide' : 'services'}/bids`}
+                          className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
                         >
-                          <path d="M13.383.076a1 1 0 0 0-1.09.217L11 1.586 9.707.293a1 1 0 0 0-1.414 0L7 1.586 5.707.293a1 1 0 0 0-1.414 0L3 1.586 1.707.293A1 1 0 0 0 0 1v18a1 1 0 0 0 1.707.707L3 18.414l1.293 1.293a1 1 0 0 0 1.414 0L7 18.414l1.293 1.293a1 1 0 0 0 1.414 0L11 18.414l1.293 1.293A1 1 0 0 0 14 19V1a1 1 0 0 0-.617-.924ZM10 15H4a1 1 0 1 1 0-2h6a1 1 0 0 1 0 2Zm0-4H4a1 1 0 1 1 0-2h6a1 1 0 1 1 0 2Zm0-4H4a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z" />
-                        </svg>
-                        Đấu giá Tour
-                      </Link>
+                          <span className="sr-only">Đấu giá Tour</span>
+                          <svg
+                            className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 14 20"
+                          >
+                            <path d="M13.383.076a1 1 0 0 0-1.09.217L11 1.586 9.707.293a1 1 0 0 0-1.414 0L7 1.586 5.707.293a1 1 0 0 0-1.414 0L3 1.586 1.707.293A1 1 0 0 0 0 1v18a1 1 0 0 0 1.707.707L3 18.414l1.293 1.293a1 1 0 0 0 1.414 0L7 18.414l1.293 1.293a1 1 0 0 0 1.414 0L11 18.414l1.293 1.293A1 1 0 0 0 14 19V1a1 1 0 0 0-.617-.924ZM10 15H4a1 1 0 1 1 0-2h6a1 1 0 0 1 0 2Zm0-4H4a1 1 0 1 1 0-2h6a1 1 0 1 1 0 2Zm0-4H4a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z" />
+                          </svg>
+                          Đấu giá Tour
+                        </Link>
+                      ) : (
+                        <a
+                          href="#"
+                          onClick={(e) => handleUnauthorizedAccess(e, "đấu giá tour")}
+                          className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
+                        >
+                          {/* Same SVG and text as above */}
+                          <svg
+                            className="w-3 h-3 me-2 text-gray-400 dark:text-gray-500 group-hover:text-blue-600 dark:group-hover:text-blue-500"
+                            aria-hidden="true"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            viewBox="0 0 14 20"
+                          >
+                            <path d="M13.383.076a1 1 0 0 0-1.09.217L11 1.586 9.707.293a1 1 0 0 0-1.414 0L7 1.586 5.707.293a1 1 0 0 0-1.414 0L3 1.586 1.707.293A1 1 0 0 0 0 1v18a1 1 0 0 0 1.707.707L3 18.414l1.293 1.293a1 1 0 0 0 1.414 0L7 18.414l1.293 1.293a1 1 0 0 0 1.414 0L11 18.414l1.293 1.293A1 1 0 0 0 14 19V1a1 1 0 0 0-.617-.924ZM10 15H4a1 1 0 1 1 0-2h6a1 1 0 0 1 0 2Zm0-4H4a1 1 0 1 1 0-2h6a1 1 0 1 1 0 2Zm0-4H4a1 1 0 0 1 0-2h6a1 1 0 1 1 0 2Z" />
+                          </svg>
+                          Đấu giá Tour
+                        </a>
+                      )}
                     </li>
                   </ul>
                 </div>
