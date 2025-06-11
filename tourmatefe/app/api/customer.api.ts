@@ -52,6 +52,12 @@ export const getCustomerWithAcc = async (id: number) => {
   })
   return response.data
 }
+export const getCustomer = async (id: number) => {
+  const response = await http.get<Customer>('customer/' + id, {
+    params:{accountId: id}
+  })
+  return response.data
+}
 
 export const getCustomerByPhone = async (phone: string) => {
   const response = await http.get<Customer>(`customer/by-phone/${phone}`)

@@ -8,6 +8,7 @@ import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { RoleSelectionModal } from "@/components/role-selection-modal";
 import ActionMenu from "./action-menu";
+import { getUserRole } from "./getToken";
 
 const MegaMenu = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -15,6 +16,7 @@ const MegaMenu = () => {
   const [token, setToken] = useState<string | null>(null); // token state
   const currentRoute = usePathname();
   const [isOpen, setIsOpen] = useState(false);
+  const [role, setRole] = useState<string | null>('')
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const toggleDropdown = () => setIsOpen(!isOpen);
@@ -25,6 +27,10 @@ const MegaMenu = () => {
 
     const storedToken = sessionStorage.getItem("accessToken");
     setToken(storedToken);
+    if (storedToken) {
+      const userRole = getUserRole(storedToken);
+      setRole(userRole);
+    }
   }, []);
 
   if (!isMounted) return null;
@@ -232,7 +238,7 @@ const MegaMenu = () => {
                     </li>
                     <li>
                       <Link
-                        href="/services/bids"
+                        href={`/${role === 'TourGuide' ? 'tour-guide' : 'services'}/bids`}
                         className="flex items-center text-gray-500 dark:text-gray-400 hover:text-blue-600 dark:hover:text-blue-500 group"
                       >
                         <span className="sr-only">Đấu giá Tour</span>

@@ -1,5 +1,6 @@
 using Microsoft.Identity.Client;
 using Repositories.DTO;
+using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.Repository;
 using System.Threading.Tasks;
@@ -10,10 +11,11 @@ namespace Services
     {
         Task<TourBid> GetTourBid(int id);
         Task<PagedResult<TourBid>> GetBidsOf(int accountId, int pageSize, int pageIndex);
-        Task CreateTourBid(TourBid tourbid);
-        Task UpdateTourBid(TourBid tourbid);
+        Task<bool> CreateTourBid(TourBid tourbid);
+        Task<bool> UpdateTourBid(TourBid tourbid);
         Task<bool> DeleteTourBid(int id);
-        Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex);
+        Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex);
+        Task<bool> LikeOrUnlikeBid(int accountId, int tourBidId);
     }
 
     public class TourBidService : ITourBidService
@@ -30,14 +32,14 @@ namespace Services
             return await TourBidRepository.GetBidsOf(accountId, pageSize, pageIndex);
         }
 
-        public async Task CreateTourBid(TourBid tourbid)
+        public async Task<bool> CreateTourBid(TourBid tourbid)
         {
-            await TourBidRepository.CreateAsync(tourbid);
+            return await TourBidRepository.CreateAsync(tourbid);
         }
 
-        public async Task UpdateTourBid(TourBid tourbid)
+        public async Task<bool> UpdateTourBid(TourBid tourbid)
         {
-            await TourBidRepository.UpdateAsync(tourbid);
+            return await TourBidRepository.UpdateAsync(tourbid);
         }
 
         public async Task<bool> DeleteTourBid(int id)
@@ -46,9 +48,14 @@ namespace Services
             return true;
         }
 
-        public async Task<PagedResult<TourBid>> GetBids(int? areaId, int pageSize, int pageIndex)
+        public async Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex)
         {
-            return await TourBidRepository.GetBids(areaId, pageSize, pageIndex);
+            return await TourBidRepository.GetBids(content, accountIdFrom, pageSize, pageIndex);
+        }
+
+        public async Task<bool> LikeOrUnlikeBid(int accountId, int tourBidId)
+        {
+            return await TourBidRepository.LikeOrUnlikeBid(accountId, tourBidId);
         }
     }
 }

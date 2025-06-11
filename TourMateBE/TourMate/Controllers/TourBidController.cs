@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.ResultModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
@@ -32,24 +33,24 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<PagedResult<TourBid>>> GetBidsAsync(int? areaId, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<TourBidListResult>>> GetBidsAsync(string? content, int accountIdFrom, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            return Ok(await _tourbidService.GetBids(areaId, pageSize, pageIndex));
+            return Ok(await _tourbidService.GetBids(content, accountIdFrom, pageSize, pageIndex));
         }
 
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] TourBidCreateModel data)
         {
             var tourbid = data.Convert();
-            await _tourbidService.CreateTourBid(tourbid);
-            return CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid);
+            var r = await _tourbidService.CreateTourBid(tourbid);
+            return r ? CreatedAtAction(nameof(Get), new { id = tourbid.TourBidId }, tourbid) : BadRequest();
         }
 
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] TourBidUpdateModel tourbid)
         {
-            await _tourbidService.UpdateTourBid(tourbid.Convert());
-            return NoContent();
+            var r = await _tourbidService.UpdateTourBid(tourbid.Convert());
+            return r ? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]
@@ -57,6 +58,12 @@ namespace API.Controllers
         {
             var result = await _tourbidService.DeleteTourBid(id);
             return result ? NoContent() : NotFound();
+        }
+        [HttpPost("like-or-unlike")]
+        public async Task<IActionResult> LikeOrUnlikeBid(int accountId, int tourBidId)
+        {
+            var result = await _tourbidService.LikeOrUnlikeBid(accountId, tourBidId);
+            return result ? NoContent() : BadRequest();
         }
     }
 }

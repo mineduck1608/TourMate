@@ -23,8 +23,10 @@ namespace API.Controllers
         private readonly IAccountService _accountSerivce;
         private readonly ITourGuideService _tourGuideService;
         private readonly IRevenueService _revenueService;
+        private readonly IMembershipPackagesService _membershipPackageService;
+        private readonly IAccountMembershipService _accountMembershipService;
 
-        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService, IRevenueService revenueService)
+        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService, IRevenueService revenueService, IMembershipPackagesService membershipPackageService, IAccountMembershipService accountMembershipService)
         {
             _vnPayService = vnPayService;
             _config = config;
@@ -35,6 +37,8 @@ namespace API.Controllers
             _accountSerivce = accountSerivce;
             _tourGuideService = tourGuideService;
             _revenueService = revenueService;
+            _membershipPackageService = membershipPackageService;
+            _accountMembershipService = accountMembershipService;
         }
 
         [HttpGet("{id}")]
@@ -215,9 +219,24 @@ namespace API.Controllers
 
             if (result != null && payment.PaymentType == "Membership")
             {
+                var today = DateOnly.FromDateTime(DateTime.Today);
+
+                var membershipPackage = await _membershipPackageService.GetMembershipPackages((int)payment.MembershipPackageId);
+
+                var accountMembership = new AccountMembership
+                {
+                    AccountId = payment.AccountId,
+                    MembershipPackageId = (int)payment.MembershipPackageId,
+                    StartDate = today,
+                    EndDate = today.AddMonths(membershipPackage.Duration),
+                    IsActive = true
+                };
+
+                await _accountMembershipService.CreateAccountMembership(accountMembership);
+
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
-                var customer = await _customerService.GetCustomerFromAccount(payment.AccountId);
-                var email = _paymentService.GenerateSuccessfulPaymentEmail(customer.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
+                var tourGuide = await _tourGuideService.GetTourGuideByAccountIdAsync(payment.AccountId);
+                var email = _paymentService.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
                 try
                 {
                     await _emailSender.SendEmailAsync(account.Email, "Thanh toán thành công - TourMate", email);

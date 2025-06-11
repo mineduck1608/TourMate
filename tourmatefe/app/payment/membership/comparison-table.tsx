@@ -14,21 +14,23 @@ const features = [
   {
     category: "Công cụ marketing",
     items: [
+      { name: "Quảng cáo ưu tiên trên nền tảng", basic: false, premium: true, pro: true },
+      { name: "Phân tích thống kê chi tiết", basic: false, premium: true, pro: true },
       { name: "Tạo portfolio tour chuyên nghiệp", basic: false, premium: true, pro: true },
-      { name: "Quảng cáo ưu tiên trên nền tảng", basic: false, premium: false, pro: true },
-      { name: "Tích hợp mạng xã hội", basic: false, premium: true, pro: true },
-      { name: "Phân tích thống kê chi tiết", basic: false, premium: false, pro: true },
+      { name: "Quảng cáo Google & Facebook", basic: false, premium: true, pro: true },
       { name: "Email marketing tự động", basic: false, premium: false, pro: true },
+      { name: "Quảng cáo bằng Banner", basic: false, premium: false, pro: true },
     ],
   },
   {
     category: "Hỗ trợ & Đào tạo",
     items: [
-      { name: "Khóa học kỹ năng hướng dẫn viên", basic: false, premium: true, pro: true },
-      { name: "Webinar hàng tháng", basic: false, premium: true, pro: true },
-      { name: "Hỗ trợ 24/7", basic: false, premium: false, pro: true },
-      { name: "Mentor 1-1 cá nhân", basic: false, premium: false, pro: true },
+      { name: "Tạo video quảng cáo xuất hiện cùng Influencer", basic: false, premium: true, pro: true },
+      { name: "Hỗ trợ 24/7", basic: false, premium: true, pro: true },
+      { name: "Hỗ trợ ưu tiên", basic: false, premium: true, pro: true },
+      { name: "Đào tạo nâng cao kỹ năng hướng dẫn", basic: false, premium: false, pro: true },
       { name: "Chứng chỉ hướng dẫn viên", basic: false, premium: false, pro: true },
+      { name: "Được chủ động kết nối với khách hàng", basic: false, premium: false, pro: true },
     ],
   },
 ]

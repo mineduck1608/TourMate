@@ -1,4 +1,5 @@
 ﻿using Repositories.DTO;
+using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.Repository;
 
@@ -24,17 +25,26 @@ namespace Services
         {
             var (entities, totalCount) = await InvoiceRepository.GetPagedAsync(status, search, page, pageSize, accountId, role);
 
-            foreach (var e in entities)
+            // B1: Tìm những cái cần cập nhật
+            var expiredItems = entities
+                .Where(e => e.Status == "Sắp diễn ra" && e.EndDate < DateTime.Now)
+                .ToList();
+
+            // B2: Nếu có thì cập nhật
+            if (expiredItems.Any())
             {
-                if (e.Status == "Sắp diễn ra" && e.EndDate < DateTime.Now)
+                foreach (var e in expiredItems)
                 {
-                    e.Status = "Đã hướng dẫn";
-                    // Cập nhật vào DB
                     await InvoiceRepository.UpdateStatusAsync(e.InvoiceId, "Đã hướng dẫn");
                 }
             }
 
-            var items = entities.Select(e => new TourSchedule
+            // B3: Lọc danh sách trả về
+            var validEntities = entities
+                .Where(e => !(e.Status == "Sắp diễn ra" && e.EndDate < DateTime.Now))
+                .ToList();
+
+            var items = validEntities.Select(e => new TourSchedule
             {
                 InvoiceId = e.InvoiceId,
                 TourGuideName = e.TourGuide.FullName,
@@ -57,12 +67,16 @@ namespace Services
                 CustomerAccountId = e.Customer.AccountId
             }).ToList();
 
+            // Trừ số lượng bị lọc ra nếu muốn chính xác
+            int adjustedTotal = totalCount - expiredItems.Count;
+
             return new PagedResult<TourSchedule>
             {
                 Result = items,
-                TotalPage = (int)Math.Ceiling((double)totalCount / pageSize)
+                TotalPage = (int)Math.Ceiling((double)adjustedTotal / pageSize)
             };
         }
+
 
         public async Task<TourSchedule> GetScheduleByInvoiceIdAsync(int invoiceId)
         {

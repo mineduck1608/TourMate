@@ -107,6 +107,9 @@ builder.Services.AddScoped<ITourServicesService, TourServicesService>();
 builder.Services.AddScoped<RevenueRepository>();
 builder.Services.AddScoped<IRevenueService, RevenueService>();
 
+builder.Services.AddScoped<AdminDashboardRepository>();
+builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+
 builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddScoped<IEmailSender, EmailSender>();
@@ -115,7 +118,8 @@ builder.Services.AddScoped<VnPayLibrary>();
 
 // AutoMapper
 builder.Services.AddAutoMapper(typeof(RevenueProfile));
-
+builder.Services.AddScoped<TourBidCommentRepository>();
+builder.Services.AddScoped<ITourBidCommentService, TourBidCommentService>();
 
 
 // Đăng ký DbContext
@@ -128,13 +132,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-if (FirebaseApp.DefaultInstance == null)
-{
-    FirebaseApp.Create(new AppOptions()
-    {
-        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-    });
-}
+//if (FirebaseApp.DefaultInstance == null)
+//{
+//    FirebaseApp.Create(new AppOptions()
+//    {
+//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+//    });
+//}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -161,7 +165,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    endpoints.MapHub<ChatHub>("/chatHub");
+    //endpoints.MapHub<ChatHub>("/chatHub");
     endpoints.MapControllers();
 });
 

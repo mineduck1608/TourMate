@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
-using Repositories.DTO;
+using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;

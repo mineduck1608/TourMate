@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Repositories.DTO;
+using Repositories.DTO.ResultModels;
 using Repositories.DTO.UpdateModals;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
@@ -32,9 +32,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Customer> Get(int id)
+        public async Task<ActionResult<Customer>> GetAsync(int id)
         {
-            return Ok(_customerService.GetCustomer(id));
+            return Ok(await _customerService.GetCustomer(id));
         }
 
         [HttpGet]

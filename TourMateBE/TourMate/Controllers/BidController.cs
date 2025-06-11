@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Repositories.DTO;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.ResultModels;
+using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 
@@ -30,31 +31,37 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] BidCreateModel data)
+        public async Task<IActionResult> Create([FromBody] BidCreateModel data)
         {
             var bid = data.Convert();
-            _bidService.CreateBid(bid);
-            return CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid);
+            var result = await _bidService.CreateBid(bid);
+            return result ? CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid) : BadRequest();
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] Bid bid)
+        public async Task<IActionResult> UpdateAsync([FromBody] BidUpdateModel bid)
         {
-            _bidService.UpdateBid(bid);
-            return NoContent();
+            var result = await _bidService.UpdateBid(bid.Convert());
+            return result ? NoContent() : BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> DeleteAsync(int id)
         {
-            var result = _bidService.DeleteBid(id);
+            var result = await _bidService.DeleteBid(id);
             return result ? NoContent() : NotFound();
         }
         [HttpGet("tour/{tourBid}")]
-        public async Task<ActionResult<PagedResult<Bid>>> GetBidsOfTourBid(int tourBid, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        public async Task<ActionResult<PagedResult<BidListResult>>> GetBidsOfTourBid(int tourBid, [FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
             var result = await _bidService.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
             return Ok(result);
+        }
+        [HttpPost("accept/{bidId}")]
+        public async Task<IActionResult> AcceptBid(int bidId)
+        {
+            var result = await _bidService.AcceptBid(bidId);
+            return result ? NoContent() : NotFound();
         }
     }
 }
