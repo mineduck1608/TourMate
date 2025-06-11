@@ -34,6 +34,32 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
   const [isApproveModalOpen, setIsApproveModalOpen] = React.useState(false);
   const queryClient = useQueryClient();
 
+  // Simplified modal handlers with useCallback
+  const handleViewDetail = React.useCallback(
+    () => setIsDetailModalOpen(true),
+    []
+  );
+  const handleCloseDetail = React.useCallback(
+    () => setIsDetailModalOpen(false),
+    []
+  );
+
+  const handleOpenReject = React.useCallback(
+    () => setIsRejectModalOpen(true),
+    []
+  );
+  const handleCloseReject = React.useCallback(() => {
+    setIsRejectModalOpen(false);
+  }, []);
+
+  const handleOpenApprove = React.useCallback(
+    () => setIsApproveModalOpen(true),
+    []
+  );
+  const handleCloseApprove = React.useCallback(() => {
+    setIsApproveModalOpen(false);
+  }, []);
+
   // Mutation for approving CV
   const approveCVMutation = useMutation({
     mutationFn: (approveData: ApprovedCVRequest) =>
@@ -50,9 +76,6 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
       );
     },
   });
-
-  const handleOpenApprove = () => setIsApproveModalOpen(true);
-  const handleCloseApprove = () => setIsApproveModalOpen(false);
 
   const handleApprove = (response: string) => {
     if (!data) return;
@@ -88,12 +111,6 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
       );
     },
   });
-
-  const handleViewDetail = () => setIsDetailModalOpen(true);
-  const handleCloseDetail = () => setIsDetailModalOpen(false);
-
-  const handleOpenReject = () => setIsRejectModalOpen(true);
-  const handleCloseReject = () => setIsRejectModalOpen(false);
 
   const handleReject = (reason: string) => {
     if (!reason.trim()) {
