@@ -102,14 +102,13 @@ export function SignupForm({
   };
 
   const handleDescriptionChange = (value: string) => {
-
-    const cleanText = value.replace(/<\/?p>/g, "").trim();
+    // Không xóa tags <p>, chỉ trim whitespace
+    const cleanText = value.trim();
     setFormData((prev) => ({
       ...prev,
       description: cleanText,
     }));
   };
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
