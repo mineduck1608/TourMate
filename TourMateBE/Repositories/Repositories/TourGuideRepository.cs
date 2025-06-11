@@ -201,7 +201,6 @@ namespace Repositories.Repository
             try
             {
                 var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
-                
                 _context.Entry(c).CurrentValues.SetValues(c);
                 await _context.SaveChangesAsync();
                 return true;
@@ -220,8 +219,6 @@ namespace Repositories.Repository
     .Include(td => td.TourGuideDescs)  // Đảm bảo TourGuideDescs được tải ra
     .Take(pageSize)  // Giới hạn số lượng kết quả theo pageSize
     .ToListAsync();
-
-
             return result;
         }
 

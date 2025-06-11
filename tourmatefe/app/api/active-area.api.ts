@@ -57,7 +57,7 @@ export const getSimplifiedAreas = async () => await http.get<SimplifiedActiveAre
 export const getMostPopularAreas = async () => await http.get<MostPopularArea[]>('active-area/most-popular')
 
 export const getRandomActiveArea = async (size: number, signal?: AbortSignal) => {
-  const res = await http.get<ActiveArea>('active-area/random', {
+  const res = await http.get<ActiveArea[]>('active-area/random', {
     params: {
       size: size,
     },
@@ -67,7 +67,7 @@ export const getRandomActiveArea = async (size: number, signal?: AbortSignal) =>
 };
 
 export const getOtherActiveArea = async (currentActiveAreaId: number, size: number, signal?: AbortSignal) => {
-  const res = await http.get<ActiveArea>('active-area/other', {
+  const res = await http.get<ActiveArea[]>('active-area/other', {
     params: {
       currentActiveAreaId: currentActiveAreaId,
       size: size

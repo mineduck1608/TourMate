@@ -51,7 +51,6 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
                     <div className="lg:ml-4 mt-4 lg:mt-0 w-full ">
                         <h3>
                             <span className="font-bold text-xl">{tourBid.customerName}</span>
-                            {tourBid.accountId === accId && <span>&nbsp;(Bạn)</span>}
                         </h3>
                         <p className="lg:inline">{dayjs(tourBid.createdAt).format('DD [tháng] MM, YYYY')}&nbsp;</p>
                         <Link href={'/services/active-area/detail?id=' + tourBid.placeRequested} className="lg:inline lg:ml-2"><FaMapMarkerAlt className="inline" />{tourBid.placeRequestedName}</Link>

@@ -11,7 +11,7 @@ import { baseData } from "./tour-bid-task-context";
 export default function TourBidPage({ customer, search }: { customer?: Customer, search: string }) {
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp
   return (
-    <div>
+    <div className="rounded-md border shadow-lg p-5">
       <div className="z-10 bg-white pt-4 pb-2">
         <div className="flex h-min">
           <SafeImage

@@ -7,10 +7,10 @@ import DeleteModal from "@/components/delete-modal";
 import TourBidEditModal from "./tour-bid-edit-modal";
 import { TourGuide } from "@/types/tour-guide";
 
-export default function Bids({ tourGuide, search }: { tourGuide?: TourGuide, search: string }) {
+export default function TourBidPage({ tourGuide, search }: { tourGuide?: TourGuide, search: string }) {
   const { modalOpen, setModalOpen, setSignal, setTarget, signal } = useContext(BidTaskContext) as BidTaskContextProp
   return (
-    <div>
+    <div className="rounded-md border shadow-lg p-5">
       <div className="z-10 bg-white pb-2">
         <div className="flex h-min">
           <SafeImage
