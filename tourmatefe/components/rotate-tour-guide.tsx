@@ -16,7 +16,7 @@ export default function RotatingTourGuide({ excludeId = -1 }: RotatingTourGuideP
             const response = await getOtherTourGuides(excludeId, 1)
             return response && response.length > 0 ? response[0] : null
         },
-        refetchInterval: 5000,
+        refetchInterval: 10000,
         refetchOnWindowFocus: false,
         refetchOnReconnect: false,
     })
