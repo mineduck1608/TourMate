@@ -11,6 +11,7 @@ import { jwtDecode } from "jwt-decode";
 import { apiHub } from "@/types/constants";
 import { useToken } from "@/components/getToken";
 import { ConversationResponse } from "@/types/conversation";
+import { Phone, Video } from "lucide-react";
 
 const PAGE_SIZE = 20;
 
@@ -194,16 +195,34 @@ function ConversationHeader({ conversationResponse }: { conversationResponse?: C
     "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"; // mặc định, thay đổi nếu cần
 
   return (
-    <div className="flex items-center p-4 border-b border-gray-300">
-      <img
-        src={conversationResponse?.account2Img || avatarUrl}
-        alt="Conversation Avatar"
-        className="w-12 h-12 rounded-full"
-      />
-      <div className="ml-4">
-        <h2 className="text-lg font-semibold">
-          {conversationResponse?.accountName2 || "Người dùng"}
-        </h2>
+    <div className="flex items-center p-4 border-b border-gray-300 justify-between">
+      <div className="flex items-center">
+        <img
+          src={conversationResponse?.account2Img || avatarUrl}
+          alt="Conversation Avatar"
+          className="w-12 h-12 rounded-full"
+        />
+        <div className="ml-4">
+          <h2 className="text-lg font-semibold">
+            {conversationResponse?.accountName2 || "Người dùng"}
+          </h2>
+        </div>
+      </div>
+      <div className="flex gap-3">
+        <button
+          title="Gọi thoại"
+          className="p-2 rounded-full hover:bg-blue-100 transition"
+          onClick={() => alert("Tính năng gọi thoại sẽ sớm ra mắt!")}
+        >
+          <Phone className="w-6 h-6 text-blue-600" />
+        </button>
+        <button
+          title="Gọi video"
+          className="p-2 rounded-full hover:bg-blue-100 transition"
+          onClick={() => alert("Tính năng gọi video sẽ sớm ra mắt!")}
+        >
+          <Video className="w-6 h-6 text-blue-600" />
+        </button>
       </div>
     </div>
   );

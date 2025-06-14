@@ -23,7 +23,6 @@ public class ChatHub : Hub
         _tourGuideService = tourGuideService;
     }
 
-    // ✅ Client sẽ gọi method này để join group theo conversationId
     public async Task JoinConversation(int conversationId)
     {
         var connectionId = Context.ConnectionId;
@@ -41,7 +40,6 @@ public class ChatHub : Hub
                 throw new HubException("Failed to save message");
             }
 
-            // ✅ Gửi tin nhắn đến tất cả client trong group (conversation)
             await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
         }
         catch (Exception ex)
@@ -49,6 +47,22 @@ public class ChatHub : Hub
             Console.WriteLine($"SendMessage error: {ex}");
             throw new HubException($"SendMessage error: {ex.Message}");
         }
+    }
+
+    // SignalR cho Video Call:
+    public async Task SendOffer(int conversationId, string offer)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveOffer", Context.ConnectionId, offer);
+    }
+
+    public async Task SendAnswer(int conversationId, string answer)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveAnswer", Context.ConnectionId, answer);
+    }
+
+    public async Task SendIceCandidate(int conversationId, string candidate)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveIceCandidate", Context.ConnectionId, candidate);
     }
 
     public override Task OnConnectedAsync()
