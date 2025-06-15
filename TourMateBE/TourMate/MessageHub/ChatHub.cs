@@ -23,6 +23,24 @@ public class ChatHub : Hub
         _tourGuideService = tourGuideService;
     }
 
+    // Gửi offer từ caller đến callee
+    public async Task SendOffer(int conversationId, int toAccountId, object offer)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveOffer", toAccountId, offer);
+    }
+
+    // Gửi answer từ callee đến caller
+    public async Task SendAnswer(int conversationId, int toAccountId, object answer)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveAnswer", toAccountId, answer);
+    }
+
+    // Gửi ICE candidate
+    public async Task SendIceCandidate(int conversationId, int toAccountId, object candidate)
+    {
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveIceCandidate", toAccountId, candidate);
+    }
+
     // ✅ Client sẽ gọi method này để join group theo conversationId
     public async Task JoinConversation(int conversationId)
     {

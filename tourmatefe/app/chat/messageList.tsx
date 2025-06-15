@@ -11,6 +11,8 @@ import { jwtDecode } from "jwt-decode";
 import { apiHub } from "@/types/constants";
 import { useToken } from "@/components/getToken";
 import { ConversationResponse } from "@/types/conversation";
+import { Phone, Video } from "lucide-react";
+import CallModal from "./CallModal";
 
 const PAGE_SIZE = 20;
 
@@ -22,6 +24,8 @@ type Props = {
 export default function MessageList({ conversationId, conversationResponse }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
+  const [callType, setCallType] = useState<"voice" | "video" | null>(null);
+
 
   // Lấy token và decode AccountId
   const token = useToken("accessToken");
@@ -141,9 +145,22 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
 
   return (
     <div className="flex flex-col h-full">
+      {/* Hiển thị modal gọi nếu đang gọi */}
+      {callType && currentAccountId !== undefined && conversationResponse?.conversation.account2Id !== undefined && (
+        <CallModal
+          type={callType}
+          conversationId={conversationId}
+          onClose={() => setCallType(null)}
+          peerId={conversationResponse.conversation.account2Id}
+          currentAccountId={currentAccountId}
+        />
+      )}
       {/* Header chứa avatar và đường kẻ ngang */}
-      <ConversationHeader conversationResponse={conversationResponse} />
-
+      <ConversationHeader
+        conversationResponse={conversationResponse}
+        onVoiceCall={() => setCallType("voice")}
+        onVideoCall={() => setCallType("video")}
+      />
       <div
         id="scrollableDiv"
         className="flex-1 overflow-auto p-4 flex flex-col-reverse"
@@ -188,8 +205,15 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
   );
 }
 
-function ConversationHeader({ conversationResponse }: { conversationResponse?: ConversationResponse }) {
-  // Ở đây bạn có thể tùy chỉnh lại nguồn dữ liệu của avatar, ví dụ lấy từ conversation info
+function ConversationHeader({
+  conversationResponse,
+  onVoiceCall,
+  onVideoCall,
+}: {
+  conversationResponse?: ConversationResponse;
+  onVoiceCall?: () => void;
+  onVideoCall?: () => void;
+}) {  // Ở đây bạn có thể tùy chỉnh lại nguồn dữ liệu của avatar, ví dụ lấy từ conversation info
   const avatarUrl =
     "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"; // mặc định, thay đổi nếu cần
 
@@ -200,10 +224,26 @@ function ConversationHeader({ conversationResponse }: { conversationResponse?: C
         alt="Conversation Avatar"
         className="w-12 h-12 rounded-full"
       />
-      <div className="ml-4">
+      <div className="ml-4 flex-1">
         <h2 className="text-lg font-semibold">
           {conversationResponse?.accountName2 || "Người dùng"}
         </h2>
+      </div>
+      <div className="flex gap-2">
+        <button
+          title="Gọi thoại"
+          onClick={onVoiceCall}
+          className="p-2 rounded-full hover:bg-blue-100"
+        >
+          <Phone />
+        </button>
+        <button
+          title="Gọi video"
+          onClick={onVideoCall}
+          className="p-2 rounded-full hover:bg-blue-100"
+        >
+          <Video />
+        </button>
       </div>
     </div>
   );
@@ -223,9 +263,8 @@ function MessageItem({
   return (
     <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
       <div
-        className={`flex items-end gap-2 ${
-          isSender ? "flex-row-reverse" : "flex-row"
-        }`}
+        className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"
+          }`}
       >
         {showAvatar ? (
           <img
@@ -240,16 +279,14 @@ function MessageItem({
           <div className="w-10 h-10" />
         )}
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-          }`}
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+            }`}
           style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
           <div>{message.messageText}</div>
           <div
-            className={`text-xs mt-1 ${
-              isSender ? "text-white text-right" : "text-gray-500 text-left"
-            }`}
+            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
+              }`}
           >
             {new Date(message.sendAt).toLocaleTimeString()}
           </div>
