@@ -2,8 +2,8 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { useQuery, useMutation } from '@tanstack/react-query';
 import { useContext, useState, useEffect } from 'react';
 import { toast } from 'react-toastify';
-import { TourBid, TourBidListResult } from '@/types/tour-bid';
-import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } from '@/app/api/tour-bid.api';
+import { TourBidListResult } from '@/types/tour-bid';
+import { getTourBids, likeOrUnlike } from '@/app/api/tour-bid.api';
 import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../context';
@@ -16,7 +16,7 @@ function TourBidList({ search }: { search: string }) {
   const [hasMore, setHasMore] = useState(true);
   const [resetTrigger, setResetTrigger] = useState(false);
 
-  const { setSignal, setTarget, signal, target, modalOpen, setModalOpen } =
+  const { setSignal, setTarget, signal, target } =
     useContext(BidTaskContext) as BidTaskContextProp;
   const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps;
 
@@ -56,64 +56,6 @@ function TourBidList({ search }: { search: string }) {
       )
     );
   };
-
-  const createTourBidMutation = useMutation({
-    mutationFn: async (data: TourBid | TourBidListResult) => {
-      return await addTourBid(data);
-    },
-    onSuccess: () => {
-      toast.success("Tạo thành công");
-      setSignal({ ...signal, create: false });
-      setTarget({ ...baseData });
-      setModalOpen({ ...modalOpen, create: false });
-      resetData().then(() => {
-        if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-    },
-    onError: (error) => {
-      toast.error("Tạo thất bại");
-      console.error(error);
-    },
-  });
-
-  const updateTourBidMutation = useMutation({
-    mutationFn: async ({ data }: { data: TourBid | TourBidListResult }) => {
-      return await updateTourBid(data);
-    },
-    onMutate: async (variables) => {
-      // Optimistically update all fields including location
-      updateLocalBid(variables.data as TourBidListResult);
-    },
-    onSuccess: (data) => {
-      // Update with server response to ensure all fields are in sync
-      if (data?.result) {
-        updateLocalBid(data.result);
-      }
-      toast.success("Cập nhật thành công");
-      setSignal({ ...signal, edit: false });
-      setTarget({ ...baseData });
-    },
-    onError: (error) => {
-      toast.error("Cập nhật thất bại");
-      console.error(error);
-      // Revert to previous state
-      resetData();
-    },
-  });
-
-  const deleteTourBidMutation = useMutation({
-    mutationFn: async ({ data }: { data: number }) => {
-      return await deleteTourBid(data);
-    },
-    onSuccess: () => {
-      toast.success("Xóa thành công");
-      resetData();
-    },
-    onError: (error) => {
-      toast.error("Xóa thất bại");
-      console.error(error);
-    },
-  });
 
   const likeOrUnlikeMutation = useMutation({
     mutationFn: async ({ tourBidId }: { tourBidId: number }) => {
@@ -172,30 +114,6 @@ function TourBidList({ search }: { search: string }) {
       setPage(prev => prev + 1);
     }
   };
-
-  useEffect(() => {
-    if (signal.create) {
-      createTourBidMutation.mutate(target);
-      setSignal({ ...signal, create: false });
-      setTarget({ ...baseData });
-    }
-  }, [signal.create]);
-
-  useEffect(() => {
-    if (signal.edit) {
-      updateTourBidMutation.mutate({ data: target });
-      setSignal({ ...signal, edit: false });
-      setTarget({ ...baseData });
-    }
-  }, [signal.edit]);
-
-  useEffect(() => {
-    if (signal.delete) {
-      deleteTourBidMutation.mutate({ data: target.tourBidId });
-      setSignal({ ...signal, delete: false });
-      setTarget({ ...baseData });
-    }
-  }, [signal.delete]);
 
   useEffect(() => {
     if (signal.likeOrUnlike) {
