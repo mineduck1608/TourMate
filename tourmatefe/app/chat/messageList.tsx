@@ -25,6 +25,10 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
   const [connection, setConnection] = useState<HubConnection | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [callType, setCallType] = useState<"voice" | "video" | null>(null);
+  const [incomingCall, setIncomingCall] = useState<{
+    type: "voice" | "video";
+    fromAccountId: number;
+  } | null>(null);
 
 
   // Lấy token và decode AccountId
@@ -90,7 +94,6 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
 
     newConnection.on("ReceiveMessage", (message: Message) => {
       if (message.conversationId === conversationId) {
-        // Kiểm tra tránh duplicate
         setMessages((prev) =>
           prev.some((m) => m.messageId === message.messageId)
             ? prev
@@ -99,11 +102,20 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
       }
     });
 
+    // Thêm các handler rỗng để tránh cảnh báo
+    newConnection.on("ReceiveOffer", () => { });
+    newConnection.on("ReceiveAnswer", () => { });
+    newConnection.on("ReceiveIceCandidate", () => { });
+
     return () => {
       newConnection.off("ReceiveMessage");
+      newConnection.off("ReceiveOffer");
+      newConnection.off("ReceiveAnswer");
+      newConnection.off("ReceiveIceCandidate");
       newConnection.stop();
     };
   }, [conversationId]);
+
 
   // Load thêm tin nhắn khi scroll đến đầu
   const loadMoreMessages = () => {
@@ -111,6 +123,22 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
       fetchNextPage();
     }
   };
+
+  useEffect(() => {
+    if (!connection) return;
+
+    const handleReceiveOffer = (toAccountId: number, offer: any, fromAccountId: number, callType: "voice" | "video") => {
+      if (toAccountId === currentAccountId) {
+        setIncomingCall({ type: callType, fromAccountId });
+      }
+    };
+
+    connection.on("ReceiveOffer", handleReceiveOffer);
+
+    return () => {
+      connection.off("ReceiveOffer", handleReceiveOffer);
+    };
+  }, [connection, currentAccountId]);
 
   // Gửi tin nhắn qua SignalR
   const sendMessage = async (text: string) => {
@@ -143,16 +171,27 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
     );
   }
 
+  console.log(conversationResponse)
+
   return (
     <div className="flex flex-col h-full">
       {/* Hiển thị modal gọi nếu đang gọi */}
-      {callType && currentAccountId !== undefined && conversationResponse?.conversation.account2Id !== undefined && (
+      {(callType || incomingCall) && currentAccountId !== undefined && conversationResponse?.conversation.account2Id !== undefined && (
         <CallModal
-          type={callType}
+          type={callType || incomingCall?.type!}
           conversationId={conversationId}
-          onClose={() => setCallType(null)}
-          peerId={conversationResponse.conversation.account2Id}
+          onClose={() => {
+            setCallType(null);
+            setIncomingCall(null);
+          }}
+          peerId={
+            currentAccountId === conversationResponse.conversation.account1Id
+              ? conversationResponse.conversation.account2Id
+              : conversationResponse.conversation.account1Id
+          }
           currentAccountId={currentAccountId}
+          connection={connection ?? undefined}
+          isCaller={!!callType} // true nếu là người bấm gọi, false nếu là người nhận
         />
       )}
       {/* Header chứa avatar và đường kẻ ngang */}

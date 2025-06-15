@@ -24,21 +24,22 @@ public class ChatHub : Hub
     }
 
     // Gửi offer từ caller đến callee
-    public async Task SendOffer(int conversationId, int toAccountId, object offer)
+    public async Task SendOffer(int conversationId, int toAccountId, object offer, int fromAccountId, string callType)
     {
-        await Clients.Group(conversationId.ToString()).SendAsync("receiveoffer", toAccountId, offer);
+        await Clients.Group(conversationId.ToString())
+            .SendAsync("ReceiveOffer", toAccountId, offer, fromAccountId, callType);
     }
 
     // Gửi answer từ callee đến caller
     public async Task SendAnswer(int conversationId, int toAccountId, object answer)
     {
-        await Clients.Group(conversationId.ToString()).SendAsync("receiveanswer", toAccountId, answer);
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveAnswer", toAccountId, answer);
     }
 
     // Gửi ICE candidate
     public async Task SendIceCandidate(int conversationId, int toAccountId, object candidate)
     {
-        await Clients.Group(conversationId.ToString()).SendAsync("receiveicecandidate", toAccountId, candidate);
+        await Clients.Group(conversationId.ToString()).SendAsync("ReceiveIceCandidate", toAccountId, candidate);
     }
 
     // ✅ Client sẽ gọi method này để join group theo conversationId
