@@ -62,7 +62,7 @@ export default function CallModal({
         };
 
         // 5. Nhận offer/answer/candidate từ SignalR
-        connection.on("ReceiveOffer", async (toAccountId, offer, fromAccountId, callType) => {
+        connection.on("ReceiveOffer", async (toAccountId, offer) => {
             if (toAccountId === currentAccountId) {
                 await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(offer));
                 const answer = await peerConnection.current?.createAnswer();
@@ -89,7 +89,8 @@ export default function CallModal({
             if (isCaller) {
                 const offer = await peerConnection.current?.createOffer();
                 await peerConnection.current?.setLocalDescription(offer);
-                connection.invoke("SendOffer", conversationId, peerId, offer, currentAccountId, type); // <-- đủ 5 tham số
+                console.log("SendOffer params:", conversationId, peerId, offer, currentAccountId, type);
+                connection.invoke("SendOffer", conversationId, peerId, offer, currentAccountId, type);
             }
         });
 

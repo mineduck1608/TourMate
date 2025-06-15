@@ -127,7 +127,7 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
   useEffect(() => {
     if (!connection) return;
 
-    const handleReceiveOffer = (toAccountId: number, offer: any, fromAccountId: number, callType: "voice" | "video") => {
+    const handleReceiveOffer = (toAccountId: number, fromAccountId: number, callType: "voice" | "video") => {
       if (toAccountId === currentAccountId) {
         setIncomingCall({ type: callType, fromAccountId });
       }
