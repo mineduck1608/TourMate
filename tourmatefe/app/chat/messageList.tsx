@@ -187,9 +187,7 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
               setIncomingCall(null);
             }}
             peerId={
-              currentAccountId === conversationResponse.conversation.account1Id
-                ? conversationResponse.conversation.account2Id
-                : conversationResponse.conversation.account1Id
+              conversationResponse.conversation.account2Id
             }
             currentAccountId={currentAccountId}
             connection={connection ?? undefined}
