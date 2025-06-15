@@ -69,7 +69,7 @@ export default function CallModal({
     };
 
     // 6. Xử lý nhận offer/answer/candidate từ SignalR
-    hub.on("ReceiveOffer", async (toAccountId, offer) => {
+    hub.on("receiveoffer", async (toAccountId, offer) => {
       if (toAccountId === currentAccountId) {
         await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(offer));
         const answer = await peerConnection.current?.createAnswer();
@@ -78,13 +78,13 @@ export default function CallModal({
       }
     });
 
-    hub.on("ReceiveAnswer", async (toAccountId, answer) => {
+    hub.on("receiveanswer", async (toAccountId, answer) => {
       if (toAccountId === currentAccountId) {
         await peerConnection.current?.setRemoteDescription(new RTCSessionDescription(answer));
       }
     });
 
-    hub.on("ReceiveIceCandidate", async (toAccountId, candidate) => {
+    hub.on("receiveicecandidate", async (toAccountId, candidate) => {
       if (toAccountId === currentAccountId) {
         await peerConnection.current?.addIceCandidate(new RTCIceCandidate(candidate));
       }
