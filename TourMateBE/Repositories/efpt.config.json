@@ -51,6 +51,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[FileStorage]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Invoice]",
          "ObjectType": 0
       },
@@ -76,6 +80,10 @@
       },
       {
          "Name": "[dbo].[RefreshToken]",
+         "ObjectType": 0
+      },
+      {
+         "Name": "[dbo].[Revenue]",
          "ObjectType": 0
       },
       {

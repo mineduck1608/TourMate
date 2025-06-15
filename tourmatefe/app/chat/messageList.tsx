@@ -12,6 +12,7 @@ import { apiHub } from "@/types/constants";
 import { useToken } from "@/components/getToken";
 import { ConversationResponse } from "@/types/conversation";
 import { Phone, Video } from "lucide-react";
+import OtherButtons from "./other-buttons";
 
 const PAGE_SIZE = 20;
 
@@ -242,9 +243,8 @@ function MessageItem({
   return (
     <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
       <div
-        className={`flex items-end gap-2 ${
-          isSender ? "flex-row-reverse" : "flex-row"
-        }`}
+        className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"
+          }`}
       >
         {showAvatar ? (
           <img
@@ -259,16 +259,14 @@ function MessageItem({
           <div className="w-10 h-10" />
         )}
         <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-          }`}
+          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
+            }`}
           style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
         >
           <div>{message.messageText}</div>
           <div
-            className={`text-xs mt-1 ${
-              isSender ? "text-white text-right" : "text-gray-500 text-left"
-            }`}
+            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
+              }`}
           >
             {new Date(message.sendAt).toLocaleTimeString()}
           </div>
@@ -290,20 +288,23 @@ function MessageInput({ onSend }: { onSend: (text: string) => void }) {
   };
 
   return (
-    <div className="flex p-3 border-t">
+    <div className="flex items-center p-3 border-t bg-white dark:bg-gray-900">
+      {/* Messenger-style buttons */}
+      <OtherButtons />
+      {/* Input */}
       <input
         ref={inputRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Nhập tin nhắn..."
-        className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800"
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSend();
         }}
       />
       <button
         onClick={handleSend}
-        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2"
+        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2 transition"
       >
         Gửi
       </button>
