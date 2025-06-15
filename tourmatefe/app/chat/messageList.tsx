@@ -176,24 +176,26 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
   return (
     <div className="flex flex-col h-full">
       {/* Hiển thị modal gọi nếu đang gọi */}
-      {(callType || incomingCall) && currentAccountId !== undefined && conversationResponse?.conversation.account2Id !== undefined && (
-        <CallModal
-          type={callType || incomingCall?.type!}
-          conversationId={conversationId}
-          onClose={() => {
-            setCallType(null);
-            setIncomingCall(null);
-          }}
-          peerId={
-            currentAccountId === conversationResponse.conversation.account1Id
-              ? conversationResponse.conversation.account2Id
-              : conversationResponse.conversation.account1Id
-          }
-          currentAccountId={currentAccountId}
-          connection={connection ?? undefined}
-          isCaller={!!callType} // true nếu là người bấm gọi, false nếu là người nhận
-        />
-      )}
+      {currentAccountId !== undefined &&
+        conversationResponse?.conversation.account2Id !== undefined &&
+        (callType ?? incomingCall?.type) !== undefined && (
+          <CallModal
+            type={(callType ?? incomingCall?.type) as "voice" | "video"}
+            conversationId={conversationId}
+            onClose={() => {
+              setCallType(null);
+              setIncomingCall(null);
+            }}
+            peerId={
+              currentAccountId === conversationResponse.conversation.account1Id
+                ? conversationResponse.conversation.account2Id
+                : conversationResponse.conversation.account1Id
+            }
+            currentAccountId={currentAccountId}
+            connection={connection ?? undefined}
+            isCaller={!!callType}
+          />
+        )}
       {/* Header chứa avatar và đường kẻ ngang */}
       <ConversationHeader
         conversationResponse={conversationResponse}
