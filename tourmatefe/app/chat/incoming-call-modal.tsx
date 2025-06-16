@@ -14,7 +14,7 @@ export default function IncomingCallModal({ type, callerName, callerAvatar, onAc
   const defaultAvatar = "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50">
+    <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-8 flex flex-col items-center max-w-sm w-full mx-4 shadow-2xl">
         {/* Caller Info */}
         <div className="text-center mb-8">
