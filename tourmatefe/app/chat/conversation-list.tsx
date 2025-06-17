@@ -9,7 +9,6 @@ import { fetchConversations } from "../api/conversation.api"
 import { Search } from "lucide-react"
 import { jwtDecode } from "jwt-decode"
 import * as signalR from "@microsoft/signalr"
-import { apiHub } from "@/types/constants"
 import { useToken } from "@/components/getToken"
 import { MyJwtPayload } from "@/types/JwtPayload"
 
@@ -17,11 +16,12 @@ type Props = {
   onSelect: (conversation: ConversationResponse) => void
   selectedId?: number
   onConversationsChange?: (conversations: ConversationResponse[]) => void
+  hubConnection: signalR.HubConnection | null // 👈 thêm dòng này
 }
 
 const PAGE_SIZE = 10
 
-export default function ConversationList({ onSelect, selectedId, onConversationsChange }: Props) {
+export default function ConversationList({ onSelect, selectedId, onConversationsChange, hubConnection }: Props) {
   const [searchTerm, setSearchTerm] = useState("")
   const [debouncedTerm, setDebouncedTerm] = useState("")
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([])
@@ -41,25 +41,25 @@ export default function ConversationList({ onSelect, selectedId, onConversations
     enabled: !!currentAccountId,
   })
 
-  // SignalR connection
-  const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null)
+  // // SignalR connection
+  // const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null)
 
-  useEffect(() => {
-    if (!currentAccountId) return
+  // useEffect(() => {
+  //   if (!currentAccountId) return
 
-    const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/chatHub`).withAutomaticReconnect().build()
+  //   const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/chatHub`).withAutomaticReconnect().build()
 
-    setHubConnection(connection)
+  //   setHubConnection(connection)
 
-    connection
-      .start()
-      .then(() => console.log("SignalR connected"))
-      .catch((err) => console.error("SignalR connection error:", err))
+  //   connection
+  //     .start()
+  //     .then(() => console.log("SignalR connected"))
+  //     .catch((err) => console.error("SignalR connection error:", err))
 
-    return () => {
-      connection.stop()
-    }
-  }, [currentAccountId])
+  //   return () => {
+  //     connection.stop()
+  //   }
+  // }, [currentAccountId])
 
   // Track joined conversations to prevent duplicate joins
   const [joinedConversations, setJoinedConversations] = useState<Set<number>>(new Set())
@@ -240,9 +240,8 @@ function ConversationItem({
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer p-3 border-b hover:bg-gray-100 flex items-center gap-3 ${
-        selected ? "bg-blue-100 font-semibold" : ""
-      }`}
+      className={`cursor-pointer p-3 border-b hover:bg-gray-100 flex items-center gap-3 ${selected ? "bg-blue-100 font-semibold" : ""
+        }`}
     >
       {/* Avatar */}
       <img

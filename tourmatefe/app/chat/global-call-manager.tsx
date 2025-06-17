@@ -5,7 +5,7 @@ import type { HubConnection } from "@microsoft/signalr"
 import IncomingCallModal from "./incoming-call-modal"
 import CallModal from "./call-modal"
 import type { ConversationResponse } from "@/types/conversation"
-import ModalPortal from "./modal-portal"
+import ModalPortal from "./modal-controller"
 
 type CallState = {
   type: "voice" | "video" | null
@@ -206,6 +206,25 @@ const GlobalCallManager = forwardRef<GlobalCallManagerRef | null, Props>(
 
       console.log("✅ All call management handlers registered")
 
+      const tryJoinConversations = async () => {
+    if (connection.state === "Connected") {
+      console.log("✅ Connection ready. Joining all conversations...")
+      for (const conv of conversations) {
+        try {
+          await connection.invoke("JoinConversation", conv.conversation.conversationId)
+          console.log(`✅ Joined conversation group: ${conv.conversation.conversationId}`)
+        } catch (err) {
+          console.error(`❌ Failed to join conversation ${conv.conversation.conversationId}:`, err)
+        }
+      }
+    } else {
+      console.log("⏳ Waiting for SignalR connection to be ready...")
+      setTimeout(tryJoinConversations, 500)
+    }
+  }
+
+  tryJoinConversations()
+  
       return () => {
         console.log("🧹 Cleaning up call management handlers")
         connection.off("ReceiveCallOffer", handleReceiveCallOffer)

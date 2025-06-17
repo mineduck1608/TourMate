@@ -87,6 +87,7 @@ function ChatContent() {
           onSelect={handleSelectConversation}
           selectedId={selectedConversation?.conversation.conversationId}
           onConversationsChange={setAllConversations}
+          hubConnection={hubConnection} // 👈 truyền xuống đây
         />
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
