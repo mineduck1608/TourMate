@@ -3,7 +3,7 @@ import { FileStorage } from "@/types/file";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-const MAX_FILE_SIZE = 512 * 1024; // 512 KB
+const MAX_FILE_SIZE = 256 * 1024 * 1024; // 256 MB
 interface FileUpload {
   onFileUpload: (fileInfo: FileStorage) => void;  // Callback to handle the image URL
 }
@@ -19,7 +19,7 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
     setError(null);
 
     if (file.size > MAX_FILE_SIZE) {
-      setError("Kích thước file không được vượt quá 512 KB");
+      setError("Kích thước file không được vượt quá 256 MB");
       return;
     }
 
@@ -113,7 +113,7 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
       <div>
         <p style={{ marginBottom: "10px", fontSize: "16px" }}>Tải file</p>
         <p style={{ fontSize: "12px", color: "#666" }}>
-          Bấm hoặc kéo thả để tải file lên (tối đa 512 KB)
+          Bấm hoặc kéo thả để tải file lên (tối đa 256 MB)
         </p>
         {isUploading ? (
           // ...existing spinner code...

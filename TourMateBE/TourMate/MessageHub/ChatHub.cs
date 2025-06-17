@@ -80,6 +80,8 @@ public class ChatHub : Hub
         public int SenderId { get; set; }
         public string SenderName { get; set; } = string.Empty;
         public string SenderAvatarUrl { get; set; } = string.Empty;
+        public string DownloadUrl { get; set; }
+        public string FileName { get; set; }
     }
 
     // ======================== Call Flow ============================
@@ -202,7 +204,7 @@ public class ChatHub : Hub
                 throw new HubException("Failed to save message with file");
             }
             message.MessageText = $"{message.MessageText}"; // Append file URL to message text
-            await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessageWithFile", message);
+            await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessage", message);
         }
         catch (Exception ex)
         {
@@ -296,17 +298,4 @@ public class ChatHub : Hub
             FileName = data.FileName
         };
     }
-}
-
-public class MessageDto
-{
-    public int MessageId { get; set; }
-    public int ConversationId { get; set; }
-    public string MessageText { get; set; }
-    public DateTime SendAt { get; set; }
-    public int SenderId { get; set; }
-    public string SenderName { get; set; }
-    public string SenderAvatarUrl { get; set; }
-    public string? FileName { get; set; }
-    public string? DownloadUrl { get; set; }
 }

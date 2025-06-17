@@ -1,6 +1,6 @@
 "use client"
 
-import React, { useEffect, useState } from "react"
+import React, { useContext, useEffect, useState } from "react"
 import { useInfiniteQuery } from "@tanstack/react-query"
 import InfiniteScroll from "react-infinite-scroll-component"
 import { type HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr"
@@ -13,6 +13,11 @@ import { Phone, Video } from "lucide-react"
 import type { GlobalCallManagerRef } from "./global-call-manager"
 import { MyJwtPayload } from "@/types/JwtPayload"
 import { useToken } from "@/components/getToken"
+import OtherButtons from "./other-buttons"
+import SafeImage from "@/components/safe-image"
+import FileUploadRender from "./file-upload-render"
+import { FileUploadContext, FileUploadContextProps } from "./file-upload-context"
+import { baseFileTemplate } from "@/types/file"
 
 const PAGE_SIZE = 20
 
@@ -25,7 +30,7 @@ type Props = {
 export default function MessageList({ conversationId, conversationResponse, globalCallManager }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
-
+  const { file, setFile } = useContext(FileUploadContext) as FileUploadContextProps
   const token = useToken("accessToken")
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null
   const currentAccountId = decoded?.AccountId ? Number(decoded.AccountId) : undefined
@@ -112,7 +117,25 @@ export default function MessageList({ conversationId, conversationResponse, glob
     }
 
     try {
-      await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber)
+      if (file.downloadUrl.trim().length > 0) {
+        await connection.invoke(
+          "SendWithFile",
+          conversationId,
+          text.trim(),
+          currentAccountIdNumber,
+          file.fileName,
+          file.downloadUrl
+        )
+        setFile({ ...baseFileTemplate })
+      }
+      else {
+        await connection.invoke(
+          "SendMessage",
+          conversationId,
+          text.trim(),
+          currentAccountIdNumber
+        )
+      }
     } catch (error) {
       console.error("Send message error:", error)
     }
@@ -172,7 +195,7 @@ export default function MessageList({ conversationId, conversationResponse, glob
           })}
         </InfiniteScroll>
       </div>
-
+      <FileUploadRender />
       {/* Message Input */}
       <MessageInput onSend={sendMessage} />
     </div>
@@ -194,7 +217,7 @@ function ConversationHeader({
 
   return (
     <div className="flex items-center p-4 border-b border-gray-300">
-      <img
+      <SafeImage
         src={conversationResponse?.account2Img || avatarUrl}
         alt="Conversation Avatar"
         className="w-12 h-12 rounded-full"
@@ -207,9 +230,8 @@ function ConversationHeader({
           title="Gọi thoại"
           onClick={onVoiceCall}
           disabled={isCallActive}
-          className={`p-2 rounded-full transition-colors ${
-            isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
-          }`}
+          className={`p-2 rounded-full transition-colors ${isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
+            }`}
         >
           <Phone size={20} />
         </button>
@@ -217,9 +239,8 @@ function ConversationHeader({
           title="Gọi video"
           onClick={onVideoCall}
           disabled={isCallActive}
-          className={`p-2 rounded-full transition-colors ${
-            isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
-          }`}
+          className={`p-2 rounded-full transition-colors ${isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
+            }`}
         >
           <Video size={20} />
         </button>
@@ -233,23 +254,27 @@ function MessageItem({
   currentAccountId,
   showAvatar,
 }: {
-  message: Message
-  currentAccountId?: number
-  showAvatar: boolean
+  message: Message;
+  currentAccountId?: number;
+  showAvatar: boolean;
 }) {
-  const isSender = currentAccountId == message.senderId
+  const isSender = currentAccountId == message.senderId;
+  const isImage = (fileName?: string) =>
+    !!fileName && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName);
+  const isVideo = (fileName?: string) =>
+    !!fileName && /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(fileName);
+
 
   return (
-    <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
-      <div className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"}`}>
+    <div className={`flex mb-4 ${isSender ? "justify-end" : "justify-start"}`}>
+      <div
+        className={`flex items-end ${isSender ? "flex-row-reverse" : "flex-row"} gap-2`}
+      >
         {showAvatar ? (
-          <img
+          <SafeImage
             src={
               message.senderAvatarUrl ||
-              "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg" ||
-              "/placeholder.svg" ||
-              "/placeholder.svg" ||
-              "/placeholder.svg"
+              "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
             }
             alt="avatar"
             className="w-10 h-10 rounded-full"
@@ -257,48 +282,128 @@ function MessageItem({
         ) : (
           <div className="w-10 h-10" />
         )}
-        <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${
-            isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-          }`}
-          style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
-        >
-          <div>{message.messageText}</div>
-          <div className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"}`}>
-            {new Date(message.sendAt).toLocaleTimeString()}
+
+        <div className="flex flex-col max-w-xs">
+          {/* Image */}
+          {message.fileName && message.downloadUrl && isImage(message.fileName) && (
+            <div
+              className={`${isSender ? "bg-blue-100" : "bg-gray-100"} p-2 rounded mb-1`}
+              style={{
+                maxWidth: "40vw",
+                alignSelf: isSender ? "flex-end" : "flex-start",
+              }}
+            >
+              <SafeImage
+                src={message.downloadUrl}
+                alt="image"
+                style={{
+                  maxWidth: "40vw",
+                  maxHeight: "40vw",
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  background: "#fff",
+                  display: "block",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Video */}
+          {message.fileName && message.downloadUrl && isVideo(message.fileName) && (
+            <div
+              className={`${isSender ? "bg-blue-100" : "bg-gray-100"} p-2 rounded mb-1`}
+              style={{
+                maxWidth: "40vw",
+                alignSelf: isSender ? "flex-end" : "flex-start",
+              }}
+            >
+              <video
+                controls
+                src={message.downloadUrl}
+                style={{
+                  maxWidth: "40vw",
+                  maxHeight: "40vw",
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  background: "#fff",
+                  display: "block",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Message content */}
+          <div
+            className={`${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"} p-2 rounded mt-1 break-words`}
+            style={{
+              maxWidth: 320,
+              minWidth: 48,
+              alignSelf: isSender ? "flex-end" : "flex-start",
+            }}
+          >
+            {message.fileName && message.downloadUrl && !isImage(message.fileName) && !isVideo(message.fileName) && (
+              <div className="flex items-center gap-2 mb-1">
+                <svg width="20" height="24" viewBox="0 0 24 24" fill={isSender ? "#fff" : "#888"}>
+                  <path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.83A2 2 0 0 0 19.41 7.41l-4.83-4.83A2 2 0 0 0 13.17 2H6zm7 1.5V8a1 1 0 0 0 1 1h4.5L13 3.5z" />
+                </svg>
+                <a
+                  href={message.downloadUrl}
+                  download={message.fileName}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className={isSender ? "text-white underline font-medium" : "text-blue-700 underline font-medium"}
+                  style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  title={message.fileName}
+                >
+                  {message.fileName}
+                </a>
+              </div>
+            )}
+            {/* Message text */}
+            {message.messageText}
+            {/* Example: do not remove time */}
+            <div className="text-xs text-right opacity-80 mt-1">
+              {new Date(message.sendAt).toLocaleTimeString()}
+            </div>
           </div>
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function MessageInput({ onSend }: { onSend: (text: string) => void }) {
-  const [text, setText] = React.useState("")
-  const inputRef = React.useRef<HTMLInputElement>(null)
+  const [text, setText] = React.useState("");
+  const inputRef = React.useRef<HTMLInputElement>(null);
 
   const handleSend = () => {
-    if (text.trim() === "") return
-    onSend(text)
-    setText("")
-    inputRef.current?.focus()
-  }
+    if (text.trim() === "") return;
+    onSend(text);
+    setText("");
+    inputRef.current?.focus();
+  };
 
   return (
-    <div className="flex p-3 border-t">
+    <div className="flex items-center p-3 border-t bg-white dark:bg-gray-900">
+      {/* Messenger-style buttons */}
+      <OtherButtons />
+      {/* Input */}
       <input
         ref={inputRef}
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Nhập tin nhắn..."
-        className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+        className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800"
         onKeyDown={(e) => {
-          if (e.key === "Enter") handleSend()
+          if (e.key === "Enter") handleSend();
         }}
       />
-      <button onClick={handleSend} className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2">
+      <button
+        onClick={handleSend}
+        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2 transition"
+      >
         Gửi
       </button>
     </div>
-  )
+  );
 }

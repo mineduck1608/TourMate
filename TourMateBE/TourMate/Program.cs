@@ -38,7 +38,6 @@ builder.Services.AddCors(options =>
 // Đăng ký Azure SignalR Service
 //builder.Services.AddSignalR()
 //    .AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
-//builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
 
 builder.Services.AddSignalR();
 
