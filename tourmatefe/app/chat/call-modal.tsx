@@ -77,34 +77,15 @@ export default function CallModal({
       try {
         peerConnection.current = new RTCPeerConnection({
           iceServers: [
-            // STUN servers (miễn phí)
             { urls: "stun:stun.l.google.com:19302" },
             { urls: "stun:stun1.l.google.com:19302" },
-
-            // Metered TURN (miễn phí 50GB/tháng)
+            { urls: "stun:stun2.l.google.com:19302" },
             {
-              urls: "turn:a.relay.metered.ca:80",
-              username: "openrelayproject",
-              credential: "openrelayproject",
-            },
-            {
-              urls: "turn:a.relay.metered.ca:80?transport=tcp",
-              username: "openrelayproject",
-              credential: "openrelayproject",
-            },
-            {
-              urls: "turn:a.relay.metered.ca:443",
-              username: "openrelayproject",
-              credential: "openrelayproject",
-            },
-            {
-              urls: "turn:a.relay.metered.ca:443?transport=tcp",
-              username: "openrelayproject",
-              credential: "openrelayproject",
-            },
-          ],
-          iceCandidatePoolSize: 10,
-          iceTransportPolicy: "all" as RTCIceTransportPolicy,
+              urls: "turn:global.relay.metered.ca:80",
+              username: "openai",
+              credential: "webrtc"
+            }
+          ]
         })
 
         const pc = peerConnection.current
