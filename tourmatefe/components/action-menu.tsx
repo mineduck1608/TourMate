@@ -9,7 +9,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
-import { Settings, LogOut, MapPin, CalendarCheck2, PackageOpen } from "lucide-react";
+import { Settings, LogOut, MapPin, CalendarCheck2, PackageOpen, History } from "lucide-react";
 import { useToken } from "./getToken";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
@@ -81,7 +81,7 @@ export default function ActionMenu() {
                 <CalendarCheck2 size={18} />
                 Quản lý lịch trình
               </Link>
-               <Link
+              <Link
                 href={`/payment/membership`}
                 className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
               >
@@ -98,7 +98,13 @@ export default function ActionMenu() {
               Thông tin tài khoản
             </button>
           )}
-
+          <Link
+            href={`/payment/history`}
+            className="w-full flex items-center gap-3 text-gray-800 hover:bg-gray-100 px-4 py-2 rounded-md"
+          >
+            <History size={18} />
+            Lịch sử thanh toán
+          </Link>
           <ResetPass />
           <button
             className="w-full flex items-center gap-3 text-red-600 hover:bg-red-100 px-4 py-2 rounded-md font-semibold"

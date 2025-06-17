@@ -5,13 +5,14 @@ using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
 using Net.payOS;
 using Repositories.Context;
+using Repositories.Repositories;
 using Repositories.Repository;
 using Services;
 using Services.Utils;
 using Services.VnPay;
 using System.Text.Json.Serialization;
-using TourMate.MessageHub;
 using TourMate.Mappings;
+using TourMate.MessageHub;
 
 
 
@@ -37,6 +38,8 @@ builder.Services.AddCors(options =>
 // Đăng ký Azure SignalR Service
 //builder.Services.AddSignalR()
 //    .AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+//builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+
 builder.Services.AddSignalR();
 
 builder.Services.AddScoped<AccountRepository>();
@@ -110,6 +113,9 @@ builder.Services.AddScoped<IRevenueService, RevenueService>();
 
 builder.Services.AddScoped<AdminDashboardRepository>();
 builder.Services.AddScoped<IAdminDashboardService, AdminDashboardService>();
+
+builder.Services.AddScoped<PlatformFeedbackRepository>();
+builder.Services.AddScoped<IPlatformFeedbackService, PlatformFeedbackService>();
 
 builder.Services.AddScoped<TokenService>();
 

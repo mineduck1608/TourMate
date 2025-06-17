@@ -21,6 +21,8 @@ public partial class ActiveArea
 
     public DateTime? CreatedAt { get; set; }
 
+    public virtual ICollection<Cvapplication> Cvapplications { get; set; } = new List<Cvapplication>();
+
     public virtual ICollection<Invoice> Invoices { get; set; } = new List<Invoice>();
 
     public virtual ICollection<TourBid> TourBids { get; set; } = new List<TourBid>();

@@ -13,12 +13,17 @@ namespace Services
         public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime completeDate, string paymentType);
         public string GenerateTourGuideInvoiceEmail(Invoice invoice);
         public string GenerateCustomerInvoiceEmail(Invoice invoice);
+        Task<List<Payment>> GetByAccountId(int accountId);
     }
 
     public class PaymentsService : IPaymentsService
     {
         private PaymentsRepository PaymentsRepository { get; set; } = new();
 
+        public async Task<List<Payment>>GetByAccountId(int accountId)
+        {
+            return await PaymentsRepository.GetByAccountId(accountId);
+        }
         public async Task<Payment> GetPayments(int id)
         {
             return await PaymentsRepository.GetByIdAsync(id);

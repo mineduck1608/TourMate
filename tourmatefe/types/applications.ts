@@ -8,6 +8,7 @@ export interface Applications {
   address: string;
   description: string;
   image: string;
+  areaId: number;
   link: string;
   status: string;
 }

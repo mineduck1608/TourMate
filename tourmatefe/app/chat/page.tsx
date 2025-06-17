@@ -1,71 +1,110 @@
-"use client";
+"use client"
 
-import React, { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import ConversationList from "./conversationList";
-import MessageList from "./messageList";
-import MegaMenu from "@/components/mega-menu";
-import { ConversationResponse } from "@/types/conversation";
-import { fetchMarkRead, fetchOrCreateConversation } from "../api/conversation.api";
-import { jwtDecode } from "jwt-decode";
-import { MyJwtPayload } from "@/types/JwtPayload";
-import { useToken } from "@/components/getToken";
-import { baseFileTemplate } from "@/types/file";
-import { FileUploadContext } from "./file-upload-context";
+import { useEffect, useState, Suspense, useRef } from "react"
+import { useSearchParams } from "next/navigation"
+import ConversationList from "./conversation-list"
+import MessageList from "./message-list"
+import MegaMenu from "@/components/mega-menu"
+import type { ConversationResponse } from "@/types/conversation"
+import { fetchMarkRead, fetchOrCreateConversation } from "../api/conversation.api"
+import { jwtDecode } from "jwt-decode"
+import GlobalCallManager from "./global-call-manager"
+import * as signalR from "@microsoft/signalr"
+import { apiHub } from "@/types/constants"
+import { MyJwtPayload } from "@/types/JwtPayload"
+import { useToken } from "@/components/getToken"
+import { baseFileTemplate } from "@/types/file"
+import { FileUploadContext } from "./file-upload-context"
+
+interface GlobalCallManagerRef {
+  initiateCall: (type: "voice" | "video", conversationId: number, toAccountId: number) => Promise<void>
+}
 
 function ChatContent() {
-  const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null);
-  const searchParams = useSearchParams();
-  const userId = searchParams.get("userId");
+  const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null)
+  const searchParams = useSearchParams()
+  const userId = searchParams.get("userId")
+  const [allConversations, setAllConversations] = useState<ConversationResponse[]>([])
+  const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null)
 
-  const token = useToken("accessToken");
-  const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
-  const currentUserId = decoded?.AccountId;
+  const globalCallManagerRef = useRef<GlobalCallManagerRef | null>(null)
+
+  const token = useToken("accessToken")
+  const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null
+  const currentUserId = decoded?.AccountId ? Number(decoded.AccountId) : undefined
+
+  // Setup global SignalR connection
+  useEffect(() => {
+    if (!currentUserId) return
+
+    const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/chatHub`).withAutomaticReconnect().build()
+
+    setHubConnection(connection)
+
+    connection
+      .start()
+      .then(() => console.log("Global SignalR connected"))
+      .catch((err) => console.error("Global SignalR connection error:", err))
+
+    return () => {
+      connection.stop()
+    }
+  }, [currentUserId])
 
   useEffect(() => {
     const loadFromUserId = async () => {
       if (userId && !selectedConversation && currentUserId) {
         try {
-          const conv = await fetchOrCreateConversation(currentUserId, Number(userId));
-          setSelectedConversation(conv);
+          const conv = await fetchOrCreateConversation(currentUserId, Number(userId))
+          setSelectedConversation(conv)
         } catch (error) {
-          console.error("Không thể mở cuộc trò chuyện:", error);
+          console.error("Không thể mở cuộc trò chuyện:", error)
         }
       }
-    };
+    }
 
-    loadFromUserId();
-  }, [userId, selectedConversation, currentUserId]);
+    loadFromUserId()
+  }, [userId, selectedConversation, currentUserId])
 
   const handleSelectConversation = async (conv: ConversationResponse) => {
-    setSelectedConversation(conv);
+    setSelectedConversation(conv)
     try {
-      await fetchMarkRead(conv.conversation.conversationId, conv.conversation.account2Id);
+      await fetchMarkRead(conv.conversation.conversationId, conv.conversation.account2Id)
     } catch (error) {
-      console.error("Lỗi đánh dấu đã đọc:", error);
+      console.error("Lỗi đánh dấu đã đọc:", error)
     }
-  };
+  }
 
   return (
     <>
       <MegaMenu />
+      <GlobalCallManager
+        ref={globalCallManagerRef}
+        connection={hubConnection}
+        currentAccountId={currentUserId || 0}
+        conversations={allConversations}
+      />
       <div className="flex h-[100vh] mx-auto border rounded shadow">
         <ConversationList
           onSelect={handleSelectConversation}
           selectedId={selectedConversation?.conversation.conversationId}
+          onConversationsChange={setAllConversations}
+          hubConnection={hubConnection} // 👈 truyền xuống đây
         />
         <div className="flex-1 flex flex-col">
           {selectedConversation ? (
-            <MessageList conversationId={selectedConversation.conversation.conversationId} conversationResponse={selectedConversation} />
+            <MessageList
+              conversationId={selectedConversation.conversation.conversationId}
+              conversationResponse={selectedConversation}
+              globalCallManager={globalCallManagerRef}
+            />
           ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-400">
-              Vui lòng chọn cuộc trò chuyện
-            </div>
+            <div className="flex-1 flex items-center justify-center text-gray-400">Vui lòng chọn cuộc trò chuyện</div>
           )}
         </div>
       </div>
     </>
-  );
+  )
 }
 
 export default function ChatPage() {
@@ -76,5 +115,5 @@ export default function ChatPage() {
         <ChatContent />
       </FileUploadContext.Provider>
     </Suspense>
-  );
+  )
 }

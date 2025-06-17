@@ -29,6 +29,8 @@ public partial class Account
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
+    public virtual ICollection<PlatformFeedback> PlatformFeedbacks { get; set; } = new List<PlatformFeedback>();
+
     public virtual ICollection<RefreshToken> RefreshTokens { get; set; } = new List<RefreshToken>();
 
     public virtual Role Role { get; set; } = null!;

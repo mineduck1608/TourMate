@@ -30,4 +30,8 @@ public partial class Cvapplication
     public string? Response { get; set; }
 
     public DateTime CreatedAt { get; set; }
+
+    public int? AreaId { get; set; }
+
+    public virtual ActiveArea? Area { get; set; }
 }

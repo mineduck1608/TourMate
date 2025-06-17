@@ -102,7 +102,14 @@ namespace Repositories.Repository
 
                                           select new
                                           {
-                                              Conversation = q.Conversation,
+                                              Conversation = new Conversation
+                                              {
+                                                  ConversationId = q.Conversation.ConversationId,
+                                                  // Nếu userId là Account1Id trong DB thì giữ nguyên, nếu là Account2Id thì tráo vị trí
+                                                  Account1Id = userId,
+                                                  Account2Id = (q.Conversation.Account1Id == userId) ? q.Conversation.Account2Id : q.Conversation.Account1Id,
+                                                  CreatedAt = q.Conversation.CreatedAt,
+                                              },
                                               AccountName1 = name1,
                                               AccountName2 = name2,
                                               LatestSendAt = latest != null ? latest.LatestSendAt : (DateTime?)null,

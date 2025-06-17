@@ -1,4 +1,4 @@
-interface ApiError {
+export interface ApiError {
   response?: {
     data?: {
       msg?: string;
@@ -7,7 +7,7 @@ interface ApiError {
 }
 
 
-interface ChangePasswordResponse {
+export interface ChangePasswordResponse {
   msg: string;
   // ... có thể có thêm các trường khác
 }

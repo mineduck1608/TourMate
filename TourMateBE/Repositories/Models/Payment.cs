@@ -35,6 +35,8 @@ public partial class Payment
 
     public virtual MembershipPackage? MembershipPackage { get; set; }
 
+    public virtual ICollection<PlatformFeedback> PlatformFeedbacks { get; set; } = new List<PlatformFeedback>();
+
     public virtual ICollection<SystemRevenue> SystemRevenues { get; set; } = new List<SystemRevenue>();
 
     public virtual ICollection<TourGuideRevenue> TourGuideRevenues { get; set; } = new List<TourGuideRevenue>();

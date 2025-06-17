@@ -51,6 +51,8 @@ public partial class TourmateContext : DbContext
 
     public virtual DbSet<Payment> Payments { get; set; }
 
+    public virtual DbSet<PlatformFeedback> PlatformFeedbacks { get; set; }
+
     public virtual DbSet<RefreshToken> RefreshTokens { get; set; }
 
     public virtual DbSet<Revenue> Revenues { get; set; }
@@ -325,6 +327,7 @@ public partial class TourmateContext : DbContext
                 .IsRequired()
                 .HasMaxLength(255)
                 .HasColumnName("address");
+            entity.Property(e => e.AreaId).HasColumnName("areaId");
             entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
                 .HasColumnName("createdAt");
@@ -360,6 +363,10 @@ public partial class TourmateContext : DbContext
                 .IsRequired()
                 .HasMaxLength(50)
                 .HasColumnName("status");
+
+            entity.HasOne(d => d.Area).WithMany(p => p.Cvapplications)
+                .HasForeignKey(d => d.AreaId)
+                .HasConstraintName("FK__CVApplica__areaI__14270015");
         });
 
         modelBuilder.Entity<Feedback>(entity =>
@@ -635,6 +642,27 @@ public partial class TourmateContext : DbContext
             entity.HasOne(d => d.MembershipPackage).WithMany(p => p.Payments)
                 .HasForeignKey(d => d.MembershipPackageId)
                 .HasConstraintName("FKPayment16775");
+        });
+
+        modelBuilder.Entity<PlatformFeedback>(entity =>
+        {
+            entity.HasKey(e => e.FeedbackId).HasName("PK__Platform__6A4BEDD6D8B0277D");
+
+            entity.ToTable("PlatformFeedback");
+
+            entity.Property(e => e.CreatedAt)
+                .HasDefaultValueSql("(getdate())")
+                .HasColumnType("datetime");
+
+            entity.HasOne(d => d.Account).WithMany(p => p.PlatformFeedbacks)
+                .HasForeignKey(d => d.AccountId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PlatformF__Accou__19DFD96B");
+
+            entity.HasOne(d => d.Payment).WithMany(p => p.PlatformFeedbacks)
+                .HasForeignKey(d => d.PaymentId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
+                .HasConstraintName("FK__PlatformF__Payme__18EBB532");
         });
 
         modelBuilder.Entity<RefreshToken>(entity =>
