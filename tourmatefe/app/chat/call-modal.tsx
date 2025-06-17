@@ -75,11 +75,9 @@ export default function CallModal({
 
     const setupWebRTC = async () => {
       try {
+        // 🔧 TURN Server — KHÔNG dùng STUN nếu NAT khó
         peerConnection.current = new RTCPeerConnection({
           iceServers: [
-            { urls: "stun:stun.l.google.com:19302" },
-            { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun2.l.google.com:19302" },
             {
               urls: "turn:global.relay.metered.ca:80",
               username: "openai",
@@ -90,62 +88,44 @@ export default function CallModal({
 
         const pc = peerConnection.current
 
+        // 🎧 Khi nhận remote stream
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
-            console.log("🎵 Received remote stream:", event.streams[0])
-
-            if (type === "video" && remoteVideo.current) {
-              remoteVideo.current.srcObject = event.streams[0]
-              remoteVideo.current.play().catch(console.error)
-            } else if (type === "voice" && remoteAudio.current) {
+            console.log("🎵 Remote stream:", event.streams[0])
+            if (remoteAudio.current) {
               remoteAudio.current.srcObject = event.streams[0]
-              // Force audio to play with user gesture
+              remoteAudio.current.muted = false // quan trọng
               remoteAudio.current
                 .play()
-                .then(() => {
-                  console.log("🎵 Remote audio started playing")
-                })
-                .catch((error) => {
-                  console.error("🎵 Audio play failed:", error)
-                  // Try to play again after user interaction
-                  const playAudio = () => {
-                    remoteAudio.current
-                      ?.play()
-                      .then(() => {
-                        console.log("🎵 Audio started after user interaction")
-                        document.removeEventListener("click", playAudio)
-                      })
-                      .catch(console.error)
-                  }
-                  document.addEventListener("click", playAudio, { once: true })
+                .then(() => console.log("🔊 Remote audio playing"))
+                .catch((e) => {
+                  console.warn("🔈 Autoplay blocked, waiting for click")
+                  document.addEventListener("click", () => {
+                    remoteAudio.current?.play()
+                  }, { once: true })
                 })
             }
-            setConnectionStatus("Đã kết nối")
           }
         }
 
+        // 🧊 ICE Candidate
         pc.onicecandidate = async (event) => {
           if (event.candidate && !isCleanedUp) {
-            try {
-              await connection.invoke("SendIceCandidate", conversationId, peerId, event.candidate)
-            } catch (err) {
-              console.error("SendIceCandidate failed:", err)
-            }
+            await connection.invoke("SendIceCandidate", conversationId, peerId, event.candidate)
           }
         }
 
-        pc.onconnectionstatechange = () => {
-          const state = pc.connectionState
-          if (isCleanedUp) return
-          if (state === "connected") setConnectionStatus("Đã kết nối")
-          else if (state === "disconnected") setConnectionStatus("Mất kết nối")
-          else if (state === "failed") setError("Kết nối thất bại")
+        // 📡 Trạng thái ICE
+        pc.oniceconnectionstatechange = () => {
+          console.log("🔁 ICE state:", pc.iceConnectionState)
+          if (pc.iceConnectionState === "connected") setConnectionStatus("Đã kết nối")
+          if (pc.iceConnectionState === "failed") setError("Kết nối thất bại")
         }
 
-        // Lấy media local
+        // 🎙️ Lấy mic
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: type === "video" ? { width: 640, height: 480 } : false,
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          video: false,
+          audio: { echoCancellation: true, noiseSuppression: true }
         })
 
         if (isCleanedUp) {
@@ -153,100 +133,45 @@ export default function CallModal({
           return
         }
 
+        // ✅ Gán vào local ref
         localStreamRef.current = stream
-        if (localVideo.current && type === "video") {
-          localVideo.current.srcObject = stream
-        }
 
+        // 🛑 Tắt phát local stream nếu đang gán nhầm
+        if (remoteAudio.current) remoteAudio.current.muted = true
+
+        // 🎤 Add track vào peerConnection
         stream.getTracks().forEach((track) => pc.addTrack(track, stream))
+
         setMediaReady(true)
         setConnectionStatus(isCaller ? "Đang gọi..." : "Đang kết nối...")
 
         if (isCaller) {
           await new Promise((r) => setTimeout(r, 300))
-          const offer = await pc.createOffer({
-            offerToReceiveAudio: true,
-            offerToReceiveVideo: type === "video",
-          })
-
+          const offer = await pc.createOffer({ offerToReceiveAudio: true })
           await pc.setLocalDescription(offer)
-          const compressedSdp = compressSdp(offer.sdp ?? "")
-          const offerDto = { type: offer.type, sdp: compressedSdp }
-          await connection.invoke("SendOffer", conversationId, peerId, offerDto, currentAccountId, type)
+          await connection.invoke("SendOffer", conversationId, peerId, {
+            type: offer.type,
+            sdp: compressSdp(offer.sdp || "")
+          }, currentAccountId, "voice")
         }
       } catch (err) {
         console.error(err)
-        setError("Không thể truy cập camera/microphone")
+        setError("Không thể truy cập microphone")
       }
     }
 
-    // Xử lý SignalR
-    const handleReceiveOffer = async (toAccountId: number, offerDto: OfferDTO, fromAccountId: number) => {
-      if (toAccountId !== currentAccountId || isCleanedUp) return
-      const pc = peerConnection.current
-      if (!pc) return
-
-      const remoteOffer = new RTCSessionDescription({
-        type: offerDto.type,
-        sdp: decompressSdp(offerDto.sdp),
-      })
-
-      await pc.setRemoteDescription(remoteOffer)
-      for (const c of pendingCandidates.current) await pc.addIceCandidate(c).catch(console.error)
-      pendingCandidates.current = []
-
-      const answer = await pc.createAnswer()
-      await pc.setLocalDescription(answer)
-      const compressedAnswerSdp = compressSdp(answer.sdp ?? "")
-      const answerDto = { type: answer.type, sdp: compressedAnswerSdp }
-      await connection.invoke("SendAnswer", conversationId, fromAccountId, answerDto)
-    }
-
-    const handleReceiveAnswer = async (toAccountId: number, answerDto: OfferDTO) => {
-      if (toAccountId !== currentAccountId || isCleanedUp) return
-      const pc = peerConnection.current
-      if (!pc) return
-
-      const remoteDesc = new RTCSessionDescription({
-        type: answerDto.type,
-        sdp: decompressSdp(answerDto.sdp),
-      })
-
-      await pc.setRemoteDescription(remoteDesc)
-      for (const c of pendingCandidates.current) await pc.addIceCandidate(c).catch(console.error)
-      pendingCandidates.current = []
-    }
-
-    const handleReceiveIceCandidate = async (toAccountId: number, candidate: IceCandidateDTO) => {
-      if (toAccountId !== currentAccountId || isCleanedUp) return
-      const pc = peerConnection.current
-      if (!pc) return
-
-      const iceCandidate = new RTCIceCandidate(candidate)
-      if (pc.remoteDescription) {
-        await pc.addIceCandidate(iceCandidate).catch(console.error)
-      } else {
-        pendingCandidates.current.push(candidate)
-      }
-    }
-
-    // Đăng ký SignalR listener
-    connection.on("ReceiveOffer", handleReceiveOffer)
-    connection.on("ReceiveAnswer", handleReceiveAnswer)
-    connection.on("ReceiveIceCandidate", handleReceiveIceCandidate)
-
+    // 🚀 Setup WebRTC
     setupWebRTC()
 
+    // 🧹 Cleanup
     return () => {
       isCleanedUp = true
-      connection.off("ReceiveOffer", handleReceiveOffer)
-      connection.off("ReceiveAnswer", handleReceiveAnswer)
-      connection.off("ReceiveIceCandidate", handleReceiveIceCandidate)
       peerConnection.current?.close()
       peerConnection.current = null
       localStreamRef.current?.getTracks().forEach((t) => t.stop())
     }
-  }, [type, conversationId, peerId, currentAccountId, connection, isCaller, callStatus])
+  }, [conversationId, peerId, currentAccountId, connection, isCaller])
+
 
   const toggleMute = () => {
     if (localStreamRef.current) {
