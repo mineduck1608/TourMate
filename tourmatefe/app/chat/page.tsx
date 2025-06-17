@@ -109,9 +109,11 @@ function ChatContent() {
 
 export default function ChatPage() {
   const [currentFile, setCurrentFile] = useState({...baseFileTemplate})
+  const [isUploading, setIsUploading] = useState(false)
+  const [currentProgress, setCurrentProgress] = useState<number | undefined>(undefined)
   return (
     <Suspense fallback={<div>Đang tải...</div>}>
-      <FileUploadContext.Provider value={{ file: currentFile, setFile: setCurrentFile }}>
+      <FileUploadContext.Provider value={{ file: currentFile, setFile: setCurrentFile, isUploading, setIsUploading, currentProgress, setCurrentProgress }}>
         <ChatContent />
       </FileUploadContext.Provider>
     </Suspense>

@@ -3,6 +3,7 @@ import { FileStorage } from "@/types/file";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import SafeImage from "./safe-image";
 const MAX_FILE_SIZE = 256 * 1024 * 1024; // 256 MB
 interface FileUpload {
   onFileUpload: (fileInfo: FileStorage) => void;  // Callback to handle the image URL
@@ -126,7 +127,7 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
           <div style={{ marginTop: "20px", display: "flex", alignItems: "center", gap: "12px", justifyContent: "center" }}>
             {/* File icon */}
             {fileType && fileType.startsWith("image/") ? (
-              <img
+              <SafeImage
                 src={filePreview}
                 alt="Preview"
                 style={{
