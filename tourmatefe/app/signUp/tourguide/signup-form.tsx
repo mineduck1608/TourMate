@@ -11,7 +11,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import { fetchAreaIdAndName } from "@/app/api/active-area.api";
-import { AreaIdAndName } from "@/types/active-area";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
 import { Upload } from "lucide-react";
@@ -37,7 +36,7 @@ export function SignupForm({
     dateOfBirth: "",
     gender: "",
     address: "",
-    areaId: "",
+    areaId: 0,
     email: "",
     phone: "",
     link: "",
@@ -118,10 +117,14 @@ export function SignupForm({
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    setFormData({
+    const value =
+      e.target.id === "areaId" ? Number(e.target.value) : e.target.value;
+    const v = {
       ...formData,
-      [e.target.id]: e.target.value,
-    });
+      [e.target.id]: value,
+    };
+    setFormData(v);
+    console.log(v);
   };
 
   const handleDescriptionChange = (value: string) => {
@@ -306,7 +309,7 @@ export function SignupForm({
               id="areaId"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
-              value={formData.areaId}
+              value={formData.areaId} // Convert to string for select value
               onChange={handleChange}
               disabled={areasMutation.isPending}
             >
