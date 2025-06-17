@@ -17,20 +17,22 @@ type Props = {
 }
 
 type OfferDTO = {
-  type: RTCSdpType,
+  type: RTCSdpType
   sdp: string
 }
 
 type IceCandidateDTO = {
-  candidate: string,
-  sdpMid: string,
+  candidate: string
+  sdpMid: string
   sdpMLineIndex: number
 }
 
 // SDP compress/decompress
 function compressSdp(sdp: string): string {
   const compressed = pako.deflate(sdp)
-  const binaryString = Array.from(compressed).map(b => String.fromCharCode(b)).join("")
+  const binaryString = Array.from(compressed)
+    .map((b) => String.fromCharCode(b))
+    .join("")
   return btoa(binaryString)
 }
 
@@ -42,7 +44,14 @@ function decompressSdp(compressedSdp: string): string {
 }
 
 export default function CallModal({
-  type, conversationId, peerId, currentAccountId, onClose, connection, isCaller, callStatus
+  type,
+  conversationId,
+  peerId,
+  currentAccountId,
+  onClose,
+  connection,
+  isCaller,
+  callStatus,
 }: Props) {
   const localVideo = useRef<HTMLVideoElement>(null)
   const remoteVideo = useRef<HTMLVideoElement>(null)
@@ -102,12 +111,33 @@ export default function CallModal({
 
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
+            console.log("🎵 Received remote stream:", event.streams[0])
+
             if (type === "video" && remoteVideo.current) {
               remoteVideo.current.srcObject = event.streams[0]
               remoteVideo.current.play().catch(console.error)
             } else if (type === "voice" && remoteAudio.current) {
               remoteAudio.current.srcObject = event.streams[0]
-              remoteAudio.current.play().catch(console.error)
+              // Force audio to play with user gesture
+              remoteAudio.current
+                .play()
+                .then(() => {
+                  console.log("🎵 Remote audio started playing")
+                })
+                .catch((error) => {
+                  console.error("🎵 Audio play failed:", error)
+                  // Try to play again after user interaction
+                  const playAudio = () => {
+                    remoteAudio.current
+                      ?.play()
+                      .then(() => {
+                        console.log("🎵 Audio started after user interaction")
+                        document.removeEventListener("click", playAudio)
+                      })
+                      .catch(console.error)
+                  }
+                  document.addEventListener("click", playAudio, { once: true })
+                })
             }
             setConnectionStatus("Đã kết nối")
           }
@@ -117,7 +147,9 @@ export default function CallModal({
           if (event.candidate && !isCleanedUp) {
             try {
               await connection.invoke("SendIceCandidate", conversationId, peerId, event.candidate)
-            } catch (err) { console.error("SendIceCandidate failed:", err) }
+            } catch (err) {
+              console.error("SendIceCandidate failed:", err)
+            }
           }
         }
 
@@ -132,11 +164,11 @@ export default function CallModal({
         // Lấy media local
         const stream = await navigator.mediaDevices.getUserMedia({
           video: type === "video" ? { width: 640, height: 480 } : false,
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         })
 
         if (isCleanedUp) {
-          stream.getTracks().forEach(t => t.stop())
+          stream.getTracks().forEach((t) => t.stop())
           return
         }
 
@@ -145,15 +177,15 @@ export default function CallModal({
           localVideo.current.srcObject = stream
         }
 
-        stream.getTracks().forEach(track => pc.addTrack(track, stream))
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream))
         setMediaReady(true)
         setConnectionStatus(isCaller ? "Đang gọi..." : "Đang kết nối...")
 
         if (isCaller) {
-          await new Promise(r => setTimeout(r, 300))
+          await new Promise((r) => setTimeout(r, 300))
           const offer = await pc.createOffer({
             offerToReceiveAudio: true,
-            offerToReceiveVideo: type === "video"
+            offerToReceiveVideo: type === "video",
           })
 
           await pc.setLocalDescription(offer)
@@ -161,7 +193,6 @@ export default function CallModal({
           const offerDto = { type: offer.type, sdp: compressedSdp }
           await connection.invoke("SendOffer", conversationId, peerId, offerDto, currentAccountId, type)
         }
-
       } catch (err) {
         console.error(err)
         setError("Không thể truy cập camera/microphone")
@@ -176,7 +207,7 @@ export default function CallModal({
 
       const remoteOffer = new RTCSessionDescription({
         type: offerDto.type,
-        sdp: decompressSdp(offerDto.sdp)
+        sdp: decompressSdp(offerDto.sdp),
       })
 
       await pc.setRemoteDescription(remoteOffer)
@@ -197,7 +228,7 @@ export default function CallModal({
 
       const remoteDesc = new RTCSessionDescription({
         type: answerDto.type,
-        sdp: decompressSdp(answerDto.sdp)
+        sdp: decompressSdp(answerDto.sdp),
       })
 
       await pc.setRemoteDescription(remoteDesc)
@@ -232,7 +263,7 @@ export default function CallModal({
       connection.off("ReceiveIceCandidate", handleReceiveIceCandidate)
       peerConnection.current?.close()
       peerConnection.current = null
-      localStreamRef.current?.getTracks().forEach(t => t.stop())
+      localStreamRef.current?.getTracks().forEach((t) => t.stop())
     }
   }, [type, conversationId, peerId, currentAccountId, connection, isCaller, callStatus])
 
@@ -269,11 +300,24 @@ export default function CallModal({
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
       <div className="bg-white rounded-2xl p-6 flex flex-col items-center max-w-4xl w-full mx-4 shadow-2xl border border-gray-300 transition-all duration-300">
         {/* Hidden audio element for voice calls */}
-        {type === "voice" && <audio ref={remoteAudio} autoPlay />}
+        {type === "voice" && (
+          <audio
+            ref={remoteAudio}
+            autoPlay
+            playsInline
+            controls={false}
+            style={{ display: "none" }}
+            onLoadedMetadata={() => console.log("🎵 Remote audio metadata loaded")}
+            onPlay={() => console.log("🎵 Remote audio started playing")}
+            onError={(e) => console.error("🎵 Remote audio error:", e)}
+          />
+        )}
 
         {/* Header */}
         <div className="text-center mb-6">
-          <h2 className="text-2xl font-bold mb-2 text-gray-900">{type === "voice" ? "Cuộc gọi thoại" : "Cuộc gọi video"}</h2>
+          <h2 className="text-2xl font-bold mb-2 text-gray-900">
+            {type === "voice" ? "Cuộc gọi thoại" : "Cuộc gọi video"}
+          </h2>
           <div className="text-lg text-gray-500">{connectionStatus}</div>
           {error && <div className="text-red-600 mt-2 bg-red-100 p-2 rounded">{error}</div>}
           <div className="text-sm text-gray-500 mt-2">
@@ -317,9 +361,7 @@ export default function CallModal({
                 Đối phương
               </div>
               {!remoteVideo.current?.srcObject && (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-500">
-                  Đang chờ video...
-                </div>
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500">Đang chờ video...</div>
               )}
             </div>
           </div>
@@ -336,9 +378,33 @@ export default function CallModal({
               <div className="text-sm text-gray-500 mt-1">
                 {remoteAudio.current?.srcObject ? "Đang phát âm thanh" : "Đang chờ âm thanh..."}
               </div>
+              {/* Add audio debug info */}
+              <div className="text-xs text-gray-400 mt-1">
+                Audio: {remoteAudio.current?.paused === false ? "Playing" : "Paused"} | Volume:{" "}
+                {remoteAudio.current?.volume || 0}
+              </div>
             </div>
           </div>
         )}
+
+        {/* Add this after the Voice Call Display section */}
+        {/* {type === "voice" && remoteAudio.current?.srcObject && (
+          <button
+            onClick={() => {
+              remoteAudio.current
+                ?.play()
+                .then(() => {
+                  console.log("🎵 Manual audio play successful")
+                })
+                .catch((error) => {
+                  console.error("🎵 Manual audio play failed:", error)
+                })
+            }}
+            className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          >
+            🔊 Test Audio Play
+          </button>
+        )} */}
 
         {/* Controls */}
         <div className="flex gap-4 items-center">
