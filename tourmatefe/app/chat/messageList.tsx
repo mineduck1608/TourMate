@@ -16,7 +16,6 @@ import OtherButtons from "./other-buttons";
 import FileUploadRender from "./file-upload-render";
 import { FileUploadContext, FileUploadContextProps } from "./file-upload-context";
 import { baseFileTemplate } from "@/types/file";
-import SafeImage from "@/components/safe-image";
 
 const PAGE_SIZE = 20;
 
