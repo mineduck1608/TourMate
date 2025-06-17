@@ -55,7 +55,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center space-x-2">
               <FaEnvelope />
-              <span>tourmat2025@gmail.com</span>
+              <span>tourmate2025@gmail.com</span>
             </div>
           </div>
         </div>
