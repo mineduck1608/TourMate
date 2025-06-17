@@ -54,3 +54,10 @@ export const addPayment = async (data: Payment) => {
   const response = await http.post('/payment', data);
   return response.data;
 };
+
+// API gọi backend sẽ trả về Payment[]
+export const getPaymentByAccountId = async (accountId: number) => {
+  const response = await http.get<Payment[]>(`/payment/byaccount/${accountId}`)
+  return response.data
+}
+

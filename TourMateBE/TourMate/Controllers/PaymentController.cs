@@ -47,12 +47,11 @@ namespace API.Controllers
             return Ok( await _paymentService.GetPayments(id));
         }
 
-        //[HttpGet("create")]
-        //public IActionResult CreatePayment(decimal amount, string orderId)
-        //{
-        //    var url = _vnPayService.CreatePaymentUrl(HttpContext, amount, orderId);
-        //    return Ok(new { paymentUrl = url });
-        //}
+        [HttpGet("byaccount/{id}")]
+        public async Task<List<Payment>> CreatePaymentUrlVnpay(int id)
+        {
+            return await _paymentService.GetByAccountId(id);
+        }
 
         [HttpGet("create")]
         public async Task<IActionResult> CreatePaymentUrlVnpay(decimal amount, string orderId, string orderType)

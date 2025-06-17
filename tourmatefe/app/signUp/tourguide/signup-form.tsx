@@ -2,7 +2,7 @@
 
 import type React from "react";
 import { useState, useEffect } from "react";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,7 +11,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
 import { fetchAreaIdAndName } from "@/app/api/active-area.api";
-import { AreaIdAndName } from "@/types/active-area";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
 import { Upload } from "lucide-react";
