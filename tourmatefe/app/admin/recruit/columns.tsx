@@ -57,6 +57,15 @@ export const columns: ColumnDef<Applications>[] = [
     },
   },
   {
+    accessorKey: "areaId",
+    header: "Khu vực",
+    cell: ({ row }) => (
+      <div className="max-w-[200px] whitespace-normal break-words">
+        {row.getValue("areaId")}
+      </div>
+    ),
+  },
+  {
     accessorKey: "address",
     header: "Địa chỉ",
     cell: ({ row }) => (

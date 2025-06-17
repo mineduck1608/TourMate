@@ -79,6 +79,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[Revenue]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[Role]",
          "ObjectType": 0
       },

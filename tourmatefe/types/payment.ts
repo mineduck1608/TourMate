@@ -1,3 +1,6 @@
+import { Invoice } from "./invoice";
+import { MembershipPackage } from "./membership-package";
+
 export type Payment = {
     paymentId: number;
     price: GLfloat;
@@ -8,4 +11,6 @@ export type Payment = {
     accountId: number;
     membershipPackageId?: number;
     invoiceId?: number;
+    invoice?: Invoice;
+    membershipPackage?: MembershipPackage
 }

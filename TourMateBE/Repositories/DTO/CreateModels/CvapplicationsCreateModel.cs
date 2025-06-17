@@ -20,6 +20,8 @@ namespace Repositories.DTO.CreateModels
 
         public string Image { get; set; }
 
+        public int AreaId { get; set; }
+
         public string Description { get; set; }
 
         public string Status { get; set; }
@@ -32,6 +34,7 @@ namespace Repositories.DTO.CreateModels
             Address = Address,
             Email = Email,
             Phone = Phone,
+            AreaId = AreaId,
             Link = Link,
             Image = Image,
             Description = Description,

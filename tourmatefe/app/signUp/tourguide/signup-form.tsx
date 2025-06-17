@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -10,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import Image from "next/image";
 import Link from "next/link";
 import { createCVApplication } from "@/app/api/cv-application.api";
+import { fetchAreaIdAndName } from "@/app/api/active-area.api";
 import PdfUploader from "@/components/pdf-uploader";
 import dynamic from "next/dynamic";
 import { Upload } from "lucide-react";
@@ -35,6 +36,7 @@ export function SignupForm({
     dateOfBirth: "",
     gender: "",
     address: "",
+    areaId: 0,
     email: "",
     phone: "",
     link: "",
@@ -54,10 +56,30 @@ export function SignupForm({
       }, 800);
     },
     onError: (error: ApiError) => {
-      setError(error.response?.data?.msg || "Đăng ký thất bại. Vui lòng thử lại sau.");
-      alert(error.response?.data?.msg || "Đăng ký thất bại. Vui lòng thử lại sau.");
+      setError(
+        error.response?.data?.msg || "Đăng ký thất bại. Vui lòng thử lại sau."
+      );
+      alert(
+        error.response?.data?.msg || "Đăng ký thất bại. Vui lòng thử lại sau."
+      );
     },
   });
+
+  const areasMutation = useMutation({
+    mutationFn: fetchAreaIdAndName,
+    onSuccess: (data) => {
+      // Use the data directly in the component
+      console.log("Areas loaded:", data);
+    },
+    onError: (error) => {
+      console.error("Error fetching areas:", error);
+      setError("Không thể tải danh sách khu vực. Vui lòng thử lại sau.");
+    },
+  });
+
+  useEffect(() => {
+    areasMutation.mutate();
+  }, []);
 
   const handleImageUpload = async (
     event: React.ChangeEvent<HTMLInputElement>
@@ -95,10 +117,14 @@ export function SignupForm({
       HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
     >
   ) => {
-    setFormData({
+    const value =
+      e.target.id === "areaId" ? Number(e.target.value) : e.target.value;
+    const v = {
       ...formData,
-      [e.target.id]: e.target.value,
-    });
+      [e.target.id]: value,
+    };
+    setFormData(v);
+    console.log(v);
   };
 
   const handleDescriptionChange = (value: string) => {
@@ -264,15 +290,39 @@ export function SignupForm({
           />
         </div>
 
-        <div className="grid gap-4">
-          <Label htmlFor="address">Địa chỉ</Label>
-          <Input
-            id="address"
-            placeholder="123 Main St"
-            value={formData.address}
-            onChange={handleChange}
-            required
-          />
+        {/* Replace existing address div with this */}
+        <div className="grid grid-cols-2 gap-4">
+          <div className="grid gap-2">
+            <Label htmlFor="address">Địa chỉ</Label>
+            <Input
+              id="address"
+              placeholder="123 Main St"
+              value={formData.address}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="areaId">Khu vực hoạt động</Label>
+            <select
+              id="areaId"
+              className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
+              required
+              value={formData.areaId} // Convert to string for select value
+              onChange={handleChange}
+              disabled={areasMutation.isPending}
+            >
+              <option value="" disabled>
+                {areasMutation.isPending ? "Đang tải..." : "Chọn khu vực"}
+              </option>
+              {areasMutation.data?.map((area) => (
+                <option key={area.areaId} value={area.areaId}>
+                  {area.areaName}
+                </option>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
