@@ -38,8 +38,10 @@ export function SignupForm({
         router.push("/login");
       }, 500);
     },
-    onError: (error: ApiError) => {
-      setError(error.response?.data?.msg || "Đăng ký thất bại");
+    onError: (error) => {
+      console.log(error);
+      
+      setError(error.message || "Đăng ký thất bại");
     },
   });
 
