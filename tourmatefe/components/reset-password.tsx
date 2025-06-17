@@ -19,6 +19,7 @@ import { MyJwtPayload } from "@/types/JwtPayload"
 import { jwtDecode } from "jwt-decode"
 import { useMutation } from "@tanstack/react-query"
 import { changePassword } from "@/app/api/account.api"
+import { ApiError, ChangePasswordResponse } from "@/types/response"
 
 export function ResetPass() {
     const [open, setOpen] = useState(false);
