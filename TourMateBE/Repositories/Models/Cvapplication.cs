@@ -27,6 +27,8 @@ public partial class Cvapplication
 
     public string Status { get; set; } = null!;
 
+    public int AreaId { get; set; }
+
     public string? Response { get; set; }
 
     public DateTime CreatedAt { get; set; }
