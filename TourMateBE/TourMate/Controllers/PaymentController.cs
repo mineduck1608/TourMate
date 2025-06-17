@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.VnPay;
 using Services;
@@ -45,6 +46,13 @@ namespace API.Controllers
         public async Task<ActionResult<Payment>> Get(int id)
         {
             return Ok( await _paymentService.GetPayments(id));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<Payment>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        {
+            var result =  _paymentService.GetAll(pageSize, pageIndex);
+            return Ok(result);
         }
 
         [HttpGet("byaccount/{id}")]
