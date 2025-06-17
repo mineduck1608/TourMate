@@ -1,4 +1,5 @@
 import { Payment } from "@/types/payment";
+import { PagedResult } from "@/types/pagedResult";
 import http from "../utils/http";
 
 export interface PaymentResponse {
@@ -22,8 +23,8 @@ export const createEmbeddedPaymentLink = async (
     null, // POST nhưng không có body
     {
       headers: {
-        'Content-Type': 'application/json',
-      },  
+        "Content-Type": "application/json",
+      },
       signal,
     }
   );
@@ -38,7 +39,7 @@ export const getCreatePaymentUrl = async (
   orderType: string,
   signal?: AbortSignal
 ): Promise<string> => {
-  const res = await http.get<PaymentResponse>('payment/create', {
+  const res = await http.get<PaymentResponse>("payment/create", {
     params: { amount, orderId, orderType },
     signal,
   });
@@ -51,13 +52,25 @@ export const fetchPaymentById = async (id: number) => {
 };
 
 export const addPayment = async (data: Payment) => {
-  const response = await http.post('/payment', data);
+  const response = await http.post("/payment", data);
   return response.data;
 };
 
 // API gọi backend sẽ trả về Payment[]
 export const getPaymentByAccountId = async (accountId: number) => {
-  const response = await http.get<Payment[]>(`/payment/byaccount/${accountId}`)
-  return response.data
-}
+  const response = await http.get<Payment[]>(`/payment/byaccount/${accountId}`);
+  return response.data;
+};
 
+export const getAllPayments = async (
+  pageSize: number = 10,
+  pageIndex: number = 1
+) => {
+  const response = await http.get<PagedResult<Payment>>("payment", {
+    params: {
+      pageSize,
+      pageIndex,
+    },
+  });
+  return response.data;
+};

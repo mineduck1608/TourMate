@@ -10,6 +10,7 @@ import {
   Settings2,
   ContactRound,
   UserPlus,
+  CreditCard,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -129,10 +130,15 @@ const data = {
       url: "/admin/contact",
       icon: Send,
     },
-     {
+    {
       name: "Tuyển dụng",
       url: "/admin/recruit",
       icon: UserPlus,
+    },
+    {
+      name: "Lịch sử giao dịch",
+      url: "/admin/payment",
+      icon: CreditCard,
     },
   ],
 };
