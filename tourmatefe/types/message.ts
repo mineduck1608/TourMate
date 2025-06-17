@@ -7,6 +7,8 @@ export type Message = {
     sendAt: string;
     conversationId: number;
     senderAvatarUrl: string;
+    downloadUrl?: string,
+    fileName?: string,
 }
 
 export type ApiResponse = {

@@ -177,7 +177,9 @@ namespace API.Controllers
                     SendAt = sendAtVN, // ⚠️ Gán thời gian đã chuyển múi giờ
                     message.SenderId,
                     senderName,
-                    senderAvatarUrl
+                    senderAvatarUrl,
+                    message.File?.FileName,
+                    message.File?.DownloadUrl,
                 });
             }
 

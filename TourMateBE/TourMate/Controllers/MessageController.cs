@@ -44,7 +44,14 @@ namespace API.Controllers
         public async Task<IActionResult> CreateMessage([FromBody] MessageCreateModel data)
         {
             var message = data.Convert();
-            _messageService.CreateMessages(message);
+            await _messageService.CreateMessages(message);
+            return CreatedAtAction(nameof(Get), new { id = message.MessageId }, message);
+        }
+        [HttpPost("with-file")]
+        public async Task<IActionResult> CreateMessage([FromBody] MessageWithFile data)
+        {
+            var message = data.Convert();
+            await _messageService.CreateMessageWithFile(message);
             return CreatedAtAction(nameof(Get), new { id = message.MessageId }, message);
         }
 

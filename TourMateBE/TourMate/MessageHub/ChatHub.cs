@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.SignalR;
+using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Services;
 
@@ -46,6 +47,30 @@ public class ChatHub : Hub
         {
             Console.WriteLine($"SendMessage error: {ex}");
             throw new HubException($"SendMessage error: {ex.Message}");
+        }
+    }
+    [HubMethodName("SendWithFile")]
+    public async Task SendWithFile(int conversationId, string messageText, int senderId, string fileName, string downloadUrl)
+    {
+        var fileUpload = new FileUploadModel()
+        {
+            DownloadUrl = downloadUrl,
+            FileName = fileName
+        };
+        try
+        {
+            var message = await SaveMessageToDb(conversationId, messageText, senderId, fileUpload);
+            if (message == null)
+            {
+                throw new HubException("Failed to save message with file");
+            }
+            message.MessageText = $"{message.MessageText}"; // Append file URL to message text
+            await Clients.Group(conversationId.ToString()).SendAsync("ReceiveMessageWithFile", message);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"SendWithFile error: {ex}");
+            throw new HubException($"SendWithFile error: {ex.Message}");
         }
     }
 
@@ -125,6 +150,54 @@ public class ChatHub : Hub
             SenderAvatarUrl = avatar
         };
     }
+    private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId, FileUploadModel data)
+    {
+        var file = data.Convert();
+        var message = new Message
+        {
+            ConversationId = conversationId,
+            SenderId = senderId,
+            MessageText = text,
+            SendAt = DateTime.UtcNow,
+            IsRead = false,
+            IsDeleted = false,
+            IsEdited = false,
+            File = file
+        };
+
+        var result = await _messageService.CreateMessages(message);
+        if (result == null) return null;
+
+        var account = await _accountService.GetAccount(senderId);
+        var name = "Người dùng";
+        var avatar = "";
+
+        if (account.RoleId == 2)
+        {
+            var customer = await _customerService.GetCustomerByAccId(senderId);
+            name = customer.FullName;
+            avatar = customer.Image;
+        }
+        else if (account.RoleId == 3)
+        {
+            var tourGuide = await _tourGuideService.GetTourGuideByAccId(senderId);
+            name = tourGuide.FullName;
+            avatar = tourGuide.Image;
+        }
+
+        return new MessageDto
+        {
+            MessageId = result.MessageId,
+            ConversationId = conversationId,
+            MessageText = text,
+            SendAt = result.SendAt,
+            SenderId = senderId,
+            SenderName = name,
+            SenderAvatarUrl = avatar,
+            DownloadUrl = data.DownloadUrl,
+            FileName = data.FileName
+        };
+    }
 }
 
 public class MessageDto
@@ -136,4 +209,6 @@ public class MessageDto
     public int SenderId { get; set; }
     public string SenderName { get; set; }
     public string SenderAvatarUrl { get; set; }
+    public string? FileName { get; set; }
+    public string? DownloadUrl { get; set; }
 }

@@ -81,5 +81,21 @@ namespace Repositories.Repository
                 await _context.SaveChangesAsync();
             }
         }
+
+        public async Task<Message> CreateMessageWithFile(Message messages)
+        {
+            try
+            {
+                var file = messages.File;
+                _context.FileStorages.Add(file);
+                _context.Messages.Add(messages);
+                await _context.SaveChangesAsync();
+                return messages;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
     }
 }

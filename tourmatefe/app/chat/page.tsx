@@ -10,6 +10,8 @@ import { fetchMarkRead, fetchOrCreateConversation } from "../api/conversation.ap
 import { jwtDecode } from "jwt-decode";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { useToken } from "@/components/getToken";
+import { baseFileTemplate } from "@/types/file";
+import { FileUploadContext } from "./file-upload-context";
 
 function ChatContent() {
   const [selectedConversation, setSelectedConversation] = useState<ConversationResponse | null>(null);
@@ -67,9 +69,12 @@ function ChatContent() {
 }
 
 export default function ChatPage() {
+  const [currentFile, setCurrentFile] = useState({...baseFileTemplate})
   return (
     <Suspense fallback={<div>Đang tải...</div>}>
-      <ChatContent />
+      <FileUploadContext.Provider value={{ file: currentFile, setFile: setCurrentFile }}>
+        <ChatContent />
+      </FileUploadContext.Provider>
     </Suspense>
   );
 }

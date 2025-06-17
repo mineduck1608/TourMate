@@ -1,10 +1,11 @@
 import { storage } from "@/firebaseConfig";
+import { FileStorage } from "@/types/file";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
 const MAX_FILE_SIZE = 512 * 1024; // 512 KB
 interface FileUpload {
-  onFileUpload: (imageUrl: string) => void;  // Callback to handle the image URL
+  onFileUpload: (fileInfo: FileStorage) => void;  // Callback to handle the image URL
 }
 
 const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
@@ -32,7 +33,12 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
   const handleUpload = async (file: File) => {
     try {
       const fileUrl = await uploadFile(file);
-      onFileUpload(fileUrl);
+      onFileUpload({
+        downloadUrl: fileUrl,
+        fileName: file.name,
+        id: "",
+        uploadTime: new Date().toISOString(),
+      });
       setFilePreview(fileUrl);
     } catch (err) {
       console.error("File upload failed:", err);

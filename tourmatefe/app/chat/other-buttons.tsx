@@ -1,12 +1,14 @@
 import { Plus, ImageIcon, MessageSquare, FileVideo } from 'lucide-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import FileUploadModal from './file-upload-modal';
+import { FileUploadContext, FileUploadContextProps } from './file-upload-context';
 function OtherButtons() {
     const [modalOpen, setModalOpen] = React.useState({
         file: false,
         image: false,
         video: false,
     });
+    const { setFile } = useContext(FileUploadContext) as FileUploadContextProps;
     return (
         <div>
             <div className="flex gap-2 mr-2">
@@ -41,7 +43,14 @@ function OtherButtons() {
                 </button>
             </div>
             {modalOpen.file && (
-                <FileUploadModal isOpen onClose={() => setModalOpen((prev) => ({ ...prev, file: false }))} />
+                <FileUploadModal
+                    isOpen
+                    onClose={() => setModalOpen((prev) => ({ ...prev, file: false }))}
+                    onConfirm={(file) => {
+                        setFile(file);
+                        setModalOpen((prev) => ({ ...prev, file: false }));
+                    }}
+                />
             )}
         </div>
     )

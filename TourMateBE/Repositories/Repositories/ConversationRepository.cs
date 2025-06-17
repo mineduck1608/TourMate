@@ -170,6 +170,7 @@ namespace Repositories.Repository
                 .Take(pageSize)
                 .Include(m => m.Sender)
                 .Include(m => m.MessageType)
+                .Include(m => m.File)
                 .ToListAsync();
         }
 

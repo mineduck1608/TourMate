@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useInfiniteQuery } from "@tanstack/react-query";
 import InfiniteScroll from "react-infinite-scroll-component";
 import { HubConnection, HubConnectionBuilder, LogLevel } from "@microsoft/signalr";
@@ -13,6 +13,10 @@ import { useToken } from "@/components/getToken";
 import { ConversationResponse } from "@/types/conversation";
 import { Phone, Video } from "lucide-react";
 import OtherButtons from "./other-buttons";
+import FileUploadRender from "./file-upload-render";
+import { FileUploadContext, FileUploadContextProps } from "./file-upload-context";
+import { baseFileTemplate } from "@/types/file";
+import SafeImage from "@/components/safe-image";
 
 const PAGE_SIZE = 20;
 
@@ -23,8 +27,9 @@ type Props = {
 
 export default function MessageList({ conversationId, conversationResponse }: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null);
-  const [messages, setMessages] = useState<Message[]>([]);
 
+  const [messages, setMessages] = useState<Message[]>([]);
+  const { file, setFile } = useContext(FileUploadContext) as FileUploadContextProps
   // Lấy token và decode AccountId
   const token = useToken("accessToken");
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
@@ -97,6 +102,19 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
       }
     });
 
+    newConnection.on("ReceiveMessageWithFile", (message: Message) => {
+      console.log(message);
+
+      if (message.conversationId === conversationId) {
+        // Kiểm tra tránh duplicate
+        setMessages((prev) =>
+          prev.some((m) => m.messageId === message.messageId)
+            ? prev
+            : [message, ...prev]
+        );
+      }
+    });
+
     return () => {
       newConnection.off("ReceiveMessage");
       newConnection.stop();
@@ -121,12 +139,25 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
     }
 
     try {
-      await connection.invoke(
-        "SendMessage",
-        conversationId,
-        text.trim(),
-        currentAccountIdNumber
-      );
+      if (file.downloadUrl.trim().length > 0) {
+        await connection.invoke(
+          "SendWithFile",
+          conversationId,
+          text.trim(),
+          currentAccountIdNumber,
+          file.fileName,
+          file.downloadUrl
+        )
+        setFile({ ...baseFileTemplate })
+      }
+      else {
+        await connection.invoke(
+          "SendMessage",
+          conversationId,
+          text.trim(),
+          currentAccountIdNumber
+        )
+      }
     } catch (error) {
       console.error("Send message error:", error);
     }
@@ -185,6 +216,7 @@ export default function MessageList({ conversationId, conversationResponse }: Pr
           })}
         </InfiniteScroll>
       </div>
+      <FileUploadRender />
       <MessageInput onSend={sendMessage} />
     </div>
   );
@@ -239,12 +271,16 @@ function MessageItem({
   showAvatar: boolean;
 }) {
   const isSender = currentAccountId == message.senderId;
+  const isImage = (fileName?: string) =>
+    !!fileName && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName);
+  const isVideo = (fileName?: string) =>
+    !!fileName && /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(fileName);
+
 
   return (
-    <div className={`flex mb-2 ${isSender ? "justify-end" : "justify-start"}`}>
+    <div className={`flex mb-4 ${isSender ? "justify-end" : "justify-start"}`}>
       <div
-        className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"
-          }`}
+        className={`flex items-end gap-2 ${isSender ? "flex-row-reverse" : "flex-row"}`}
       >
         {showAvatar ? (
           <img
@@ -258,17 +294,79 @@ function MessageItem({
         ) : (
           <div className="w-10 h-10" />
         )}
-        <div
-          className={`max-w-[70%] p-3 rounded-lg break-words whitespace-pre-wrap ${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"
-            }`}
-          style={{ wordBreak: "break-word", whiteSpace: "pre-wrap" }}
-        >
-          <div>{message.messageText}</div>
+
+        <div className="flex flex-col items-end max-w-xs">
+          {/* Render image above the message if present, omit file name */}
+          {message.fileName && message.downloadUrl && isImage(message.fileName) && (
+            <div
+              className="bg-blue-100 p-2 rounded mb-1"
+              style={{ maxWidth: 240 }}
+            >
+              <img
+                src={message.downloadUrl}
+                alt="image"
+                style={{
+                  maxWidth: 220,
+                  maxHeight: 220,
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  background: "#fff",
+                  display: "block",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Render video above the message if present, omit file name */}
+          {message.fileName && message.downloadUrl && isVideo(message.fileName) && (
+            <div
+              className="bg-blue-100 p-2 rounded mb-1"
+              style={{ maxWidth: 240 }}
+            >
+              <video
+                controls
+                src={message.downloadUrl}
+                style={{
+                  maxWidth: 220,
+                  maxHeight: 220,
+                  borderRadius: 8,
+                  border: "1px solid #eee",
+                  background: "#fff",
+                  display: "block",
+                }}
+              />
+            </div>
+          )}
+
+          {/* Message content */}
           <div
-            className={`text-xs mt-1 ${isSender ? "text-white text-right" : "text-gray-500 text-left"
-              }`}
+            className={`bg-blue-500 text-white p-2 rounded mt-1 break-words`}
+            style={{ maxWidth: 320, minWidth: 48 }}
           >
-            {new Date(message.sendAt).toLocaleTimeString()}
+            {message.fileName && message.downloadUrl && !isImage(message.fileName) && !isVideo(message.fileName) && (
+              <div className="flex items-center gap-2 mb-1">
+                <svg width="20" height="24" viewBox="0 0 24 24" fill="#ddd">
+                  <path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.83A2 2 0 0 0 19.41 7.41l-4.83-4.83A2 2 0 0 0 13.17 2H6zm7 1.5V8a1 1 0 0 0 1 1h4.5L13 3.5z" />
+                </svg>
+                <a
+                  href={message.downloadUrl}
+                  download={message.fileName}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-blue-200 underline font-medium"
+                  style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                  title={message.fileName}
+                >
+                  {message.fileName}
+                </a>
+              </div>
+            )}
+            {/* Message text */}
+            {message.messageText}
+            {/* Example: do not remove time */}
+            <div className="text-xs text-right opacity-80 mt-1">
+              {new Date(message.sendAt).toLocaleTimeString()}
+            </div>
           </div>
         </div>
       </div>

@@ -1,19 +1,21 @@
 import FileUpload from '@/components/file-upload'
+import { baseFileTemplate, FileStorage } from '@/types/file';
 import React from 'react'
 
 interface Props {
     isOpen: boolean,
     onClose: () => void,
+    onConfirm: (fileUrl: FileStorage) => void
 }
 
-function FileUploadModal({ isOpen, onClose }: Props) {
-
+function FileUploadModal({ isOpen, onClose, onConfirm }: Props) {
+    const [file, setFile] = React.useState({...baseFileTemplate});
     return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}
         >
             <div
-                className={`absolute inset-0 ${isOpen ? "block" : "hidden"}`}
+                className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"}`}
                 onClick={onClose}
             ></div>
 
@@ -39,16 +41,23 @@ function FileUploadModal({ isOpen, onClose }: Props) {
                         <span className="sr-only">Close modal</span>
                     </button>
                 </div>
-                <h3 className='text-center font-bold text-2xl mb-5'>Tải ảnh</h3>
+                <h3 className='text-center font-bold text-2xl mb-5'>Tải file</h3>
                 <FileUpload onFileUpload={(url => {
-                    console.log("File uploaded:", url);
+                    setFile(url);
                 })} />
                 <div className="flex justify-center mt-5">
                     <button
                         type="submit"
+                        disabled={!file}
+                        onClick={() => {
+                            if (file) {
+                                onConfirm(file);
+                            }
+                            onClose();
+                        }}
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                     >
-                        Tải ảnh
+                        Tải file
                     </button>
                 </div>
             </div>
