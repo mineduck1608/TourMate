@@ -76,24 +76,41 @@ export default function CallModal({
     const setupWebRTC = async () => {
       try {
         const getIceServers = async () => {
-          return [
-            { urls: "stun:stun.l.google.com:19302" },
-            {
-              urls: [
-                "stun:openrelay.metered.ca:80",
-                "turn:openrelay.metered.ca:80",
-                "turn:openrelay.metered.ca:443",
-                "turn:openrelay.metered.ca:443?transport=tcp"
-              ],
-              username: "openrelayproject",
-              credential: "openrelayproject"
-            },
-            { urls: "stun:stun1.l.google.com:19302" },
-            { urls: "stun:stun2.l.google.com:19302" },
-            { urls: "stun:stun3.l.google.com:19302" },
-            { urls: "stun:stun4.l.google.com:19302" }
-          ];
+          try {
+            const res = await fetch("https://global.xirsys.net/_turn/TourMate", {
+              method: "PUT",
+              headers: {
+                Authorization: "Basic " + btoa("mineduck1608:ef5be818-4bf8-11f0-aa45-0242ac130003"),
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ format: "urls" }),
+            });
+
+            const data = await res.json();
+
+            const iceServers = Array.isArray(data.v.iceServers)
+              ? data.v.iceServers
+              : [data.v.iceServers]; // ✅ Bọc lại nếu là object
+
+            console.log("✅ ICE servers:", iceServers);
+            return iceServers;
+          } catch (err) {
+            console.error("❌ Lỗi khi lấy ICE servers:", err);
+            return [
+              {
+                urls: [
+                  "stun:openrelay.metered.ca:80",
+                  "turn:openrelay.metered.ca:80",
+                  "turn:openrelay.metered.ca:443",
+                  "turn:openrelay.metered.ca:443?transport=tcp"
+                ],
+                username: "openrelayproject",
+                credential: "openrelayproject"
+              }
+            ];
+          }
         };
+
 
         const iceServers = await getIceServers();
 
