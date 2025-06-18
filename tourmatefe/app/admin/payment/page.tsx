@@ -16,6 +16,7 @@ import {
   SidebarTrigger,
 } from "@/components/ui/sidebar";
 import { Suspense } from "react";
+import PaymentsPage from "./paymentPage";
 
 export default function Page() {
   return (
@@ -47,7 +48,7 @@ export default function Page() {
           </header>
           <div className="w-[95%] mx-auto rounded-md border p-5 mb-10">
             {/* Hiển thị bảng dữ liệu khi có dữ liệu */}
-            {/* <PaymentPage /> */}
+            <PaymentsPage />
           </div>
         </SidebarInset>
       </SidebarProvider>

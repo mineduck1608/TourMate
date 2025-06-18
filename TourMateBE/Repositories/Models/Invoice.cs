@@ -37,6 +37,8 @@ public partial class Invoice
 
     public virtual Customer Customer { get; set; } = null!;
 
+    public virtual ICollection<Feedback> Feedbacks { get; set; } = new List<Feedback>();
+
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
     public virtual TourGuide TourGuide { get; set; } = null!;

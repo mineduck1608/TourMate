@@ -27,5 +27,7 @@ namespace Repositories.DTO
         public DateTime CreatedDate { get; set; }
         public int TourGuideAccountId { get; set; }
         public int CustomerAccountId { get; set; }
+        public int TourGuideId { get; set; }
+        public int CustomerId { get; set; }
     }
 }

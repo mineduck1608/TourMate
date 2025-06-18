@@ -310,7 +310,15 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                style={{
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "normal",
+                  wordBreak: "break-all",
+                  display: "block",
+                  marginTop: 4,
+                }}
                 title={message.fileName}
               >
                 {message.fileName}
@@ -344,7 +352,15 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
+                style={{
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "normal",
+                  wordBreak: "break-all",
+                  display: "block",
+                  marginTop: 4,
+                }}
                 title={message.fileName}
               >
                 {message.fileName}

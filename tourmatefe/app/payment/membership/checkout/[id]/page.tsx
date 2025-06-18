@@ -87,7 +87,7 @@ export default function MembershipPaymentPage() {
                     accountId: Number(accountId),
                     price: membership?.price || 0,
                     paymentMethod: "PayOS",
-                    completeDate: new Date().toISOString(),
+                    createdAt: new Date().toISOString(),
                     paymentType: "Membership",
                     paymentId: 0,
                     status: "Thành công"

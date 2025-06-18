@@ -88,7 +88,7 @@ export default function TourPaymentPage() {
           accountId: Number(accountId),
           price: schedule?.price || 0,
           paymentMethod: "PayOS",
-          completeDate: new Date().toISOString(),
+          createdAt: new Date().toISOString(),
           paymentType: "Đặt chuyến đi",
           paymentId: 0,
           status: "Thành công"

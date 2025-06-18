@@ -1,11 +1,12 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
+using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
 
 namespace API.Controllers
 {
-    [Route("api/feedbacks")]
+    [Route("api/feedback")]
     [ApiController]
     public class FeedbackController : ControllerBase
     {
@@ -17,9 +18,15 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<Feedback> Get(int id)
+        public async Task<ActionResult<Feedback>> Get(int id)
         {
-            return Ok(_feedbackService.GetFeedback(id));
+            return Ok(await _feedbackService.GetFeedback(id));
+        }
+
+        [HttpGet("invoice/{id}")]
+        public async Task<ActionResult<Feedback>> GetByInvoice(int id)
+        {
+            return Ok(await _feedbackService.GetFeedbackByInvoice(id));
         }
 
         [HttpGet]
@@ -29,24 +36,40 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create([FromBody] FeedbackCreateModel data)
+        public async Task<IActionResult> Create([FromBody] FeedbackCreateModel data)
         {
             var feedback = data.Convert();
-            _feedbackService.CreateFeedback(feedback);
-            return CreatedAtAction(nameof(Get), new { id = feedback.FeedbackId }, feedback);
+            var result = await _feedbackService.CreateFeedback(feedback);
+            if(result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
-        [HttpPut]
-        public IActionResult Update([FromBody] FeedbackCreateModel feedback)
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update([FromBody] FeedbackUpdateModel data)
         {
-            _feedbackService.UpdateFeedback(feedback.Convert());
-            return NoContent();
+            var feedback = await _feedbackService.GetFeedback(data.FeedbackId);
+            if(feedback == null)
+            {
+                return BadRequest();
+            }
+            feedback.Rating = data.Rating;
+            feedback.Content = data.Content;
+            feedback.UpdatedAt = DateTime.Now;
+            var result = await _feedbackService.UpdateFeedback(feedback);
+            if (result == true)
+            {
+                return Ok();
+            }
+            return BadRequest();
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _feedbackService.DeleteFeedback(id);
+            var result = await _feedbackService.DeleteFeedback(id);
             return result ? NoContent() : NotFound();
         }
     }

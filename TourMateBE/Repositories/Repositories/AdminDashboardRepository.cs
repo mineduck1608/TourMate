@@ -31,13 +31,13 @@ namespace Repositories.Repository
             if (fromDate.HasValue)
             {
                 revenueQuery = revenueQuery.Where(r => r.CreatedAt >= fromDate.Value);
-                membershipQuery = membershipQuery.Where(m => m.CompleteDate >= fromDate.Value);
+                membershipQuery = membershipQuery.Where(m => m.CreatedAt >= fromDate.Value);
             }
 
             if (toDate.HasValue)
             {
                 revenueQuery = revenueQuery.Where(r => r.CreatedAt <= toDate.Value);
-                membershipQuery = membershipQuery.Where(m => m.CompleteDate <= toDate.Value);
+                membershipQuery = membershipQuery.Where(m => m.CreatedAt <= toDate.Value);
             }
 
             // Apply area filter for tour commissions
@@ -65,7 +65,7 @@ namespace Repositories.Repository
                 .SumAsync(r => r.PlatformCommission);
 
             var prevMembershipRevenue = await _context.Payments
-                .Where(m => m.MembershipPackageId != null && m.CompleteDate >= previousFromDate && m.CompleteDate <= previousToDate)
+                .Where(m => m.MembershipPackageId != null && m.CreatedAt >= previousFromDate && m.CreatedAt <= previousToDate)
                 .SumAsync(m => m.Price);
 
             var prevTotalRevenue = prevTourCommission + (decimal)prevMembershipRevenue;
@@ -328,8 +328,8 @@ namespace Repositories.Repository
             {
                 var filteredPayments = package.Payments
                     .Where(p =>
-                        (!fromDate.HasValue || p.CompleteDate >= fromDate.Value) &&
-                        (!toDate.HasValue || p.CompleteDate <= toDate.Value) && p.PaymentType == "Membership")
+                        (!fromDate.HasValue || p.CreatedAt >= fromDate.Value) &&
+                        (!toDate.HasValue || p.CreatedAt <= toDate.Value) && p.PaymentType == "Membership")
                     .ToList() ?? new List<Payment>();
 
                 var durationText = FormatDuration(package.Duration);
@@ -340,7 +340,7 @@ namespace Repositories.Repository
 
                 // Tính số lượng ở kỳ trước
                 var prevSales = package.Payments?
-                    .Count(p => p.CompleteDate >= previousFromDate && p.CompleteDate <= previousToDate) ?? 0;
+                    .Count(p => p.CreatedAt >= previousFromDate && p.CreatedAt <= previousToDate) ?? 0;
 
                 var growthRate = prevSales > 0 ? ((decimal)(totalSales - prevSales) / prevSales) * 100 : 0;
 

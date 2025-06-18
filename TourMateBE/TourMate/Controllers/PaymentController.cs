@@ -51,7 +51,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResult<Payment>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {
-            var result =  _paymentService.GetAll(pageSize, pageIndex);
+            var result =  await _paymentService.GetAll(pageSize, pageIndex);
             return Ok(result);
         }
 
@@ -134,7 +134,7 @@ namespace API.Controllers
                     {
                         InvoiceId = s.InvoiceId,
                         Price = response.Amount,
-                        CompleteDate = DateTime.Now,
+                        CreatedAt = DateTime.Now,
                         PaymentType = "Đặt chuyến đi",
                         PaymentMethod = "VNPay",
                         Status = "Thành công",
@@ -243,7 +243,7 @@ namespace API.Controllers
 
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
                 var tourGuide = await _tourGuideService.GetTourGuideByAccountIdAsync(payment.AccountId);
-                var email = _paymentService.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CompleteDate, payment.PaymentType);
+                var email = _paymentService.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CreatedAt, payment.PaymentType);
                 try
                 {
                     await _emailSender.SendEmailAsync(account.Email, "Thanh toán thành công - TourMate", email);

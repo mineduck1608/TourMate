@@ -64,7 +64,9 @@ namespace Services
                 Note = e.Note,
                 CreatedDate = e.CreatedDate,
                 TourGuideAccountId = e.TourGuide.AccountId,
-                CustomerAccountId = e.Customer.AccountId
+                CustomerAccountId = e.Customer.AccountId,
+                CustomerId = e.CustomerId,
+                TourGuideId = e.TourGuideId
             }).ToList();
 
             // Trừ số lượng bị lọc ra nếu muốn chính xác

@@ -63,14 +63,17 @@ export const getPaymentByAccountId = async (accountId: number) => {
 };
 
 export const getAllPayments = async (
-  pageSize: number = 10,
-  pageIndex: number = 1
+  page: number | string,
+  limit: number | string,
+  signal?: AbortSignal
 ) => {
-  const response = await http.get<PagedResult<Payment>>("payment", {
+  const res = await http.get<PagedResult<Payment>>("payment", {
     params: {
-      pageSize,
-      pageIndex,
+      pageSize: limit,
+      pageIndex: page,
     },
+    signal,
   });
-  return response.data;
+
+  return res.data;
 };

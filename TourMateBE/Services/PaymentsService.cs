@@ -1,4 +1,5 @@
-﻿using Repositories.Models;
+﻿using Repositories.DTO.ResultModels;
+using Repositories.Models;
 using Repositories.Repository;
 
 namespace Services
@@ -6,11 +7,11 @@ namespace Services
     public interface IPaymentsService
     {
         Task<Payment> GetPayments(int id);
-        IEnumerable<Payment> GetAll(int pageSize, int pageIndex);
+        Task<PagedResult<Payment>> GetAll(int pageSize, int pageIndex);
         Task<Payment> CreatePayments(Payment payments);
         void UpdatePayments(Payment payments);
         bool DeletePayments(int id);
-        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime completeDate, string paymentType);
+        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime createdAt, string paymentType);
         public string GenerateTourGuideInvoiceEmail(Invoice invoice);
         public string GenerateCustomerInvoiceEmail(Invoice invoice);
         Task<List<Payment>> GetByAccountId(int accountId);
@@ -29,9 +30,9 @@ namespace Services
             return await PaymentsRepository.GetByIdAsync(id);
         }
 
-        public IEnumerable<Payment> GetAll(int pageSize, int pageIndex)
+        public async Task<PagedResult<Payment>> GetAll(int pageSize, int pageIndex)
         {
-            return PaymentsRepository.GetAll(pageSize, pageIndex);
+            return await PaymentsRepository.GetAllPaged(pageSize, pageIndex);
         }
 
         public async Task<Payment> CreatePayments(Payment payments)
@@ -218,7 +219,7 @@ namespace Services
         }
 
 
-        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime completeDate, string paymentType)
+        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime createdAt, string paymentType)
         {
             return $@"
 <!DOCTYPE html>
@@ -331,7 +332,7 @@ namespace Services
 
       <div class='payment-info'>
         <p><strong>Số tiền:</strong> {price:N0} VND</p>
-<p><strong>Ngày thanh toán:</strong> {completeDate.AddHours(7):dd/MM/yyyy HH:mm}</p>
+<p><strong>Ngày thanh toán:</strong> {createdAt.AddHours(7):dd/MM/yyyy HH:mm}</p>
         <p><strong>Hình thức dịch vụ:</strong> {paymentType}</p>
       </div>
 

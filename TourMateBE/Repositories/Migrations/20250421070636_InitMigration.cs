@@ -669,7 +669,7 @@ namespace Repositories.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     price = table.Column<float>(type: "real", nullable: false),
                     status = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
-                    completeDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    createdAt = table.Column<DateTime>(type: "datetime", nullable: false),
                     paymentType = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false, comment: "membership / invoice"),
                     paymentMethod = table.Column<string>(type: "varchar(50)", unicode: false, maxLength: 50, nullable: false, comment: "momo/ vnpay"),
                     accountId = table.Column<int>(type: "int", nullable: false),
