@@ -80,7 +80,7 @@ export const unlockTourGuide = async (id: number) => {
 };
 
 export const getOtherTourGuides = async (tourGuideId: number | string, pageSize: number, signal?: AbortSignal) => {
-  const res = await http.get<TourGuide>('tour-guide/other', {
+  const res = await http.get<TourGuide[]>('tour-guide/other', {
     params: {
       pageSize: pageSize,
       tourGuideId: tourGuideId,
