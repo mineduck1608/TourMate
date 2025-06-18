@@ -81,7 +81,7 @@ export default function TourSchedulePage() {
               <button
                 disabled={currentPage === 1}
                 onClick={() => setCurrentPage(currentPage - 1)}
-                className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
+                className="text-sm px-3 py-1 rounded-md border bg-white disabled:opacity-50"
               >
                 <ChevronLeft className="inline w-4 h-4" /> Trước
               </button>
@@ -89,7 +89,7 @@ export default function TourSchedulePage() {
               <button
                 disabled={currentPage === totalPages}
                 onClick={() => setCurrentPage(currentPage + 1)}
-                className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
+                className="text-sm px-3 py-1 rounded-md border bg-white disabled:opacity-50"
               >
                 Tiếp <ChevronRight className="inline w-4 h-4" />
               </button>

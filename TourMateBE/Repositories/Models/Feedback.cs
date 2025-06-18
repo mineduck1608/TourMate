@@ -21,7 +21,11 @@ public partial class Feedback
 
     public DateTime UpdatedAt { get; set; }
 
+    public int? InvoiceId { get; set; }
+
     public virtual Customer Customer { get; set; } = null!;
+
+    public virtual Invoice? Invoice { get; set; }
 
     public virtual TourGuide TourGuide { get; set; } = null!;
 }

@@ -5,20 +5,27 @@ namespace Services
 {
     public interface IFeedbackService
     {
-        Feedback GetFeedback(int id);
+        Task<Feedback> GetFeedback(int id);
+        Task<Feedback> GetFeedbackByInvoice(int id);
+
         IEnumerable<Feedback> GetAll(int pageSize, int pageIndex);
-        void CreateFeedback(Feedback feedback);
-        void UpdateFeedback(Feedback feedback);
-        bool DeleteFeedback(int id);
+        Task<bool> CreateFeedback(Feedback feedback);
+        Task<bool> UpdateFeedback(Feedback feedback);
+        Task<bool> DeleteFeedback(int id);
     }
 
     public class FeedbackService : IFeedbackService
     {
         private FeedbackRepository FeedbackRepository { get; set; } = new();
 
-        public Feedback GetFeedback(int id)
+        public async Task<Feedback> GetFeedback(int id)
         {
-            return FeedbackRepository.GetById(id);
+            return await FeedbackRepository.GetByIdAsync(id);
+        }
+
+        public async Task<Feedback> GetFeedbackByInvoice(int id)
+        {
+            return await FeedbackRepository.GetByInvoice(id);
         }
 
         public IEnumerable<Feedback> GetAll(int pageSize, int pageIndex)
@@ -26,19 +33,19 @@ namespace Services
             return FeedbackRepository.GetAll(pageSize, pageIndex);
         }
 
-        public void CreateFeedback(Feedback feedback)
+        public async Task<bool> CreateFeedback(Feedback feedback)
         {
-            FeedbackRepository.Create(feedback);
+            return await FeedbackRepository.CreateAsync(feedback);
         }
 
-        public void UpdateFeedback(Feedback feedback)
+        public async Task<bool> UpdateFeedback(Feedback feedback)
         {
-            FeedbackRepository.Update(feedback);
+            return await FeedbackRepository.UpdateAsync(feedback);
         }
 
-        public bool DeleteFeedback(int id)
+        public async Task<bool> DeleteFeedback(int id)
         {
-            FeedbackRepository.Remove(id);
+            await FeedbackRepository.RemoveAsync(id);
             return true;
         }
     }

@@ -5,7 +5,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Calendar,
     MapPin,
-    Star,
     LogOut,
     User,
     StretchHorizontalIcon,
@@ -46,7 +45,6 @@ const CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
         { label: "Lịch hẹn sắp tới", icon: CalendarCheck },
         { label: "Tour đã hướng dẫn", icon: MapPin },
         { label: "Từ chối", icon: CalendarX },
-        { label: "Đánh giá nhận được", icon: Star },
     ];
 
     const actionCards = [
