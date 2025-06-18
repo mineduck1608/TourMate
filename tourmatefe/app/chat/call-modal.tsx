@@ -122,52 +122,43 @@ export default function CallModal({
         const pc = peerConnection.current;
 
         pc.ontrack = (event) => {
-          const incomingStream = event.streams[0];
-          console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
-            kind: t.kind,
-            enabled: t.enabled,
-            muted: t.muted,
-          })));
-
           if (event.streams[0] && !isCleanedUp) {
-            console.log("🎵 Received remote stream:", event.streams[0]);
+            const incomingStream = event.streams[0];
+            console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
+              kind: t.kind,
+              enabled: t.enabled,
+              muted: t.muted,
+            })));
 
-            if (type === "video" && remoteVideo.current) {
-              remoteVideo.current.srcObject = event.streams[0];
-              console.log("📺 remoteVideo.current:", remoteVideo.current);
+            incomingStream.getTracks().forEach(track => {
+              track.onunmute = () => {
+                console.log(`🔊 Track ${track.kind} unmuted`);
+              };
+            });
 
-              remoteVideo.current.play()
-                .then(() => console.log("✅ Video started playing"))
-                .catch((err) => {
-                  console.error("❌ Video play failed:", err);
-                  const tryPlay = () => {
-                    remoteVideo.current?.play()
-                      .then(() => console.log("✅ Video started after user interaction"))
-                      .catch(console.error);
-                    document.removeEventListener("click", tryPlay);
-                  };
-                  document.addEventListener("click", tryPlay, { once: true });
-                });
-              remoteVideo.current.play().catch(console.error);
-            } else if (type === "voice" && remoteAudio.current) {
-              remoteAudio.current.srcObject = event.streams[0];
-              remoteAudio.current.play()
-                .then(() => console.log("🎵 Remote audio started playing"))
-                .catch((error) => {
-                  console.error("🎵 Audio play failed:", error);
-                  const playAudio = () => {
-                    remoteAudio.current?.play().then(() => {
-                      console.log("🎵 Audio started after user interaction");
-                      document.removeEventListener("click", playAudio);
-                    }).catch(console.error);
-                  };
-                  document.addEventListener("click", playAudio, { once: true });
-                });
-            }
+            // Force play again on user interaction
+            const playMedia = () => {
+              const element = type === "video" ? remoteVideo.current : remoteAudio.current;
+              if (element) {
+                element.srcObject = incomingStream;
+                element
+                  .play()
+                  .then(() => console.log("✅ Remote media playing"))
+                  .catch(err => {
+                    console.error("❌ Remote media failed to play:", err);
+                  });
+              }
+            };
+
+            playMedia(); // Try now
+
+            // Also trigger play on user interaction just in case
+            document.addEventListener("click", playMedia, { once: true });
 
             setConnectionStatus("Đã kết nối");
           }
         };
+
 
         pc.onicecandidate = async (event) => {
           if (event.candidate && !isCleanedUp) {
@@ -347,6 +338,7 @@ export default function CallModal({
             autoPlay
             playsInline
             controls={false}
+            muted={false}
             style={{ display: "none" }}
             onLoadedMetadata={() =>
               console.log("🎵 Remote audio metadata loaded")
@@ -402,6 +394,7 @@ export default function CallModal({
                 ref={remoteVideo}
                 autoPlay
                 playsInline
+                muted={false}
                 className="w-full h-full object-cover"
                 onLoadedMetadata={() =>
                   console.log("🎥 Remote video metadata loaded")
