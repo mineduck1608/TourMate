@@ -87,78 +87,27 @@ export default function CallModal({
             });
 
             const data = await res.json();
-
-            const iceServers = Array.isArray(data.v.iceServers)
-              ? data.v.iceServers
-              : [data.v.iceServers]; // ✅ Bọc lại nếu là object
-
+            const iceServers = Array.isArray(data.v?.iceServers) ? data.v.iceServers : [data.v.iceServers];
             console.log("✅ ICE servers:", iceServers);
             return iceServers;
           } catch (err) {
             console.error("❌ Lỗi khi lấy ICE servers:", err);
             return [
               {
-                urls: [
-                  "stun:openrelay.metered.ca:80",
-                  "turn:openrelay.metered.ca:80",
-                  "turn:openrelay.metered.ca:443",
-                  "turn:openrelay.metered.ca:443?transport=tcp"
-                ],
-                username: "openrelayproject",
-                credential: "openrelayproject"
+                urls: ["stun:stun.l.google.com:19302"]
               }
             ];
           }
         };
 
-
         const iceServers = await getIceServers();
 
         peerConnection.current = new RTCPeerConnection({
           iceServers,
-          iceTransportPolicy: "all"
+          iceTransportPolicy: "all" // Dùng "relay" để ép TURN nếu muốn test
         });
 
         const pc = peerConnection.current;
-
-        pc.ontrack = (event) => {
-          if (event.streams[0] && !isCleanedUp) {
-            const incomingStream = event.streams[0];
-            console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
-              kind: t.kind,
-              enabled: t.enabled,
-              muted: t.muted,
-            })));
-
-            incomingStream.getTracks().forEach(track => {
-              track.onunmute = () => {
-                console.log(`🔊 Track ${track.kind} unmuted`);
-              };
-            });
-
-            // Force play again on user interaction
-            const playMedia = () => {
-              const element = type === "video" ? remoteVideo.current : remoteAudio.current;
-              if (element) {
-                element.srcObject = incomingStream;
-                element
-                  .play()
-                  .then(() => console.log("✅ Remote media playing"))
-                  .catch(err => {
-                    console.error("❌ Remote media failed to play:", err);
-                  });
-              }
-            };
-
-            playMedia(); // Try now
-
-            // Also trigger play on user interaction just in case
-            document.addEventListener("click", playMedia, { once: true });
-
-            setConnectionStatus("Đã kết nối");
-          }
-        };
-
 
         pc.onicecandidate = async (event) => {
           if (event.candidate && !isCleanedUp) {
@@ -170,7 +119,12 @@ export default function CallModal({
           }
         };
 
+        pc.oniceconnectionstatechange = () => {
+          console.log("🌐 ICE connection state:", pc.iceConnectionState);
+        };
+
         pc.onconnectionstatechange = () => {
+          console.log("🌐 PeerConnection state:", pc.connectionState);
           const state = pc.connectionState;
           if (isCleanedUp) return;
 
@@ -179,9 +133,42 @@ export default function CallModal({
           else if (state === "failed") setError("Kết nối thất bại");
         };
 
+        pc.ontrack = (event) => {
+          if (event.streams[0] && !isCleanedUp) {
+            const incomingStream = event.streams[0];
+            console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
+              kind: t.kind,
+              enabled: t.enabled,
+              muted: t.muted
+            })));
+
+            incomingStream.getTracks().forEach(track => {
+              track.onunmute = () => {
+                console.log(`🔊 Track ${track.kind} unmuted`);
+              };
+            });
+
+            const playMedia = () => {
+              const element = type === "video" ? remoteVideo.current : remoteAudio.current;
+              if (element) {
+                element.srcObject = incomingStream;
+                if (element.readyState >= 2) {
+                  element.play();
+                } else {
+                  element.onloadeddata = () => element.play();
+                }
+              }
+            };
+
+            playMedia();
+            document.addEventListener("click", playMedia, { once: true });
+            setConnectionStatus("Đã kết nối");
+          }
+        };
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: type === "video" ? { width: 640, height: 480 } : false,
-          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
+          audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true }
         });
 
         console.log("📤 Local stream tracks (sending):", stream.getTracks().map(t => ({
@@ -196,6 +183,7 @@ export default function CallModal({
         }
 
         localStreamRef.current = stream;
+
         if (localVideo.current && type === "video") {
           localVideo.current.srcObject = stream;
         }
@@ -215,6 +203,7 @@ export default function CallModal({
           });
 
           await pc.setLocalDescription(offer);
+
           const compressedSdp = compressSdp(offer.sdp ?? "");
           const offerDto = {
             type: offer.type,
@@ -224,11 +213,23 @@ export default function CallModal({
           await connection.invoke("SendOffer", conversationId, peerId, offerDto, currentAccountId, type);
         }
 
+        // Debug: Xem candidate nào được chọn sau vài giây
+        setTimeout(() => {
+          pc.getStats().then(report => {
+            report.forEach(stat => {
+              if (stat.type === "candidate-pair" && stat.selected) {
+                console.log("📊 Selected candidate pair:", stat);
+              }
+            });
+          });
+        }, 3000);
+
       } catch (err) {
         console.error(err);
         setError("Không thể truy cập camera/microphone");
       }
     };
+
 
 
     // Xử lý SignalR
