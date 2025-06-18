@@ -92,7 +92,6 @@ export default function CallModal({
               ? data.v.iceServers
               : [data.v.iceServers]; // ✅ Bọc lại nếu là object
 
-            console.log("✅ ICE servers:", iceServers);
             return iceServers;
           } catch (err) {
             console.error("❌ Lỗi khi lấy ICE servers:", err);
@@ -124,11 +123,11 @@ export default function CallModal({
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
             const incomingStream = event.streams[0];
-            console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
-              kind: t.kind,
-              enabled: t.enabled,
-              muted: t.muted,
-            })));
+            // console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
+            //   kind: t.kind,
+            //   enabled: t.enabled,
+            //   muted: t.muted,
+            // })));
 
             incomingStream.getTracks().forEach(track => {
               track.onunmute = () => {
@@ -184,11 +183,11 @@ export default function CallModal({
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         });
 
-        console.log("📤 Local stream tracks (sending):", stream.getTracks().map(t => ({
-          kind: t.kind,
-          enabled: t.enabled,
-          muted: t.muted,
-        })));
+        // console.log("📤 Local stream tracks (sending):", stream.getTracks().map(t => ({
+        //   kind: t.kind,
+        //   enabled: t.enabled,
+        //   muted: t.muted,
+        // })));
 
         if (isCleanedUp) {
           stream.getTracks().forEach((t) => t.stop());
@@ -200,7 +199,7 @@ export default function CallModal({
           localVideo.current.srcObject = stream;
         }
 
-        console.log("📤 Adding tracks to PeerConnection:", stream.getTracks());
+        // console.log("📤 Adding tracks to PeerConnection:", stream.getTracks());
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         setMediaReady(true);
@@ -225,8 +224,7 @@ export default function CallModal({
         }
 
       } catch (err) {
-        console.error(err);
-        setError("Không thể truy cập camera/microphone");
+        console.log(err)
       }
     };
 
@@ -305,7 +303,6 @@ export default function CallModal({
       if (audioTrack) {
         audioTrack.enabled = !audioTrack.enabled;
         setIsMuted(!audioTrack.enabled);
-        console.log(`🎤 Audio ${audioTrack.enabled ? "enabled" : "disabled"}`);
       }
     }
   };
@@ -316,13 +313,11 @@ export default function CallModal({
       if (videoTrack) {
         videoTrack.enabled = !videoTrack.enabled;
         setIsVideoOff(!videoTrack.enabled);
-        console.log(`🎥 Video ${videoTrack.enabled ? "enabled" : "disabled"}`);
       }
     }
   };
 
   const handleEndCall = () => {
-    console.log("📞 Ending call...");
     peerConnection.current?.close();
     localStreamRef.current?.getTracks().forEach((track) => track.stop());
     onClose();
