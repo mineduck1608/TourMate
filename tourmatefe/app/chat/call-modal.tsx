@@ -122,11 +122,32 @@ export default function CallModal({
         const pc = peerConnection.current;
 
         pc.ontrack = (event) => {
+          const incomingStream = event.streams[0];
+          console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
+            kind: t.kind,
+            enabled: t.enabled,
+            muted: t.muted,
+          })));
+
           if (event.streams[0] && !isCleanedUp) {
             console.log("🎵 Received remote stream:", event.streams[0]);
 
             if (type === "video" && remoteVideo.current) {
               remoteVideo.current.srcObject = event.streams[0];
+              console.log("📺 remoteVideo.current:", remoteVideo.current);
+
+              remoteVideo.current.play()
+                .then(() => console.log("✅ Video started playing"))
+                .catch((err) => {
+                  console.error("❌ Video play failed:", err);
+                  const tryPlay = () => {
+                    remoteVideo.current?.play()
+                      .then(() => console.log("✅ Video started after user interaction"))
+                      .catch(console.error);
+                    document.removeEventListener("click", tryPlay);
+                  };
+                  document.addEventListener("click", tryPlay, { once: true });
+                });
               remoteVideo.current.play().catch(console.error);
             } else if (type === "voice" && remoteAudio.current) {
               remoteAudio.current.srcObject = event.streams[0];
@@ -172,6 +193,12 @@ export default function CallModal({
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         });
 
+        console.log("📤 Local stream tracks (sending):", stream.getTracks().map(t => ({
+          kind: t.kind,
+          enabled: t.enabled,
+          muted: t.muted,
+        })));
+
         if (isCleanedUp) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -182,6 +209,7 @@ export default function CallModal({
           localVideo.current.srcObject = stream;
         }
 
+        console.log("📤 Adding tracks to PeerConnection:", stream.getTracks());
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         setMediaReady(true);
