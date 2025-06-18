@@ -2,15 +2,24 @@
 
 import { ColumnDef } from "@tanstack/react-table";
 import { Payment } from "@/types/payment";
-import { DataTableColumnHeader } from "@/components/ui/data-table-column-header";
-import { formatDate } from "@/lib/utils";
+
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
+};
 
 export const columns: ColumnDef<Payment>[] = [
   {
+    accessorKey: "paymentId",
+    header: "ID",
+  },
+  {
     accessorKey: "price",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Giá tiền" />
-    ),
+    header: "Giá tiền",
     cell: ({ row }) => {
       const price = parseFloat(row.getValue("price"));
       const formatted = new Intl.NumberFormat("vi-VN", {
@@ -22,32 +31,45 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "status",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Trạng thái" />
-    ),
+    header: "Trạng thái",
     cell: ({ row }) => {
-      return <div className={`font-medium`}>{row.getValue("status")}</div>;
+      const status = row.getValue("status") as string;
+      return (
+        <div
+          className={`font-medium ${
+            status === "Thành công" ? "text-green-600" : "text-red-600"
+          }`}
+        >
+          {status}
+        </div>
+      );
     },
   },
   {
     accessorKey: "completeDate",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Ngày giao dịch" />
-    ),
+    header: "Ngày giao dịch",
     cell: ({ row }) => {
       return <div>{formatDate(row.getValue("completeDate"))}</div>;
     },
   },
   {
     accessorKey: "paymentType",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Loại giao dịch" />
-    ),
+    header: "Loại giao dịch",
+    cell: ({ row }) => {
+      const paymentType = row.getValue("paymentType") as string;
+      return <div>{paymentType || "Đặt chuyến đi"}</div>;
+    },
   },
   {
     accessorKey: "paymentMethod",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="Phương thức thanh toán" />
-    ),
+    header: "Phương thức thanh toán",
+    cell: ({ row }) => {
+      const method = row.getValue("paymentMethod") as string;
+      return <div>{method === "VNPAY" ? "VNPay" : method}</div>;
+    },
+  },
+  {
+    accessorKey: "invoiceId",
+    header: "Mã hóa đơn",
   },
 ];
