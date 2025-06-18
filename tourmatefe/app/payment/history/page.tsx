@@ -108,7 +108,7 @@ export default function PaymentHistory() {
         MoTa: p.paymentType === "Membership" ? p.membershipPackage?.name : p.invoice?.tourName,
         SoTien: p.price,
         PhuongThuc: p.paymentMethod,
-        NgayHoanThanh: new Date(p.completeDate).toLocaleString("vi-VN", {
+        NgayHoanThanh: new Date(p.createdAt).toLocaleString("vi-VN", {
           year: "numeric",
           month: "2-digit",
           day: "2-digit",
@@ -246,7 +246,7 @@ export default function PaymentHistory() {
                               <span className="capitalize">{payment.paymentMethod.toUpperCase()}</span>
                             </div>
                           </TableCell>
-                          <TableCell className="text-sm">{formatDate(payment.completeDate)}</TableCell>
+                          <TableCell className="text-sm">{formatDate(payment.createdAt)}</TableCell>
                         </TableRow>
 
                         {expandedRow === payment.paymentId && (
@@ -255,7 +255,7 @@ export default function PaymentHistory() {
                               <div className="p-4 space-y-1 text-sm text-gray-700">
                                 <p><strong>Mã giao dịch:</strong> #{payment.paymentId}</p>
                                 <p><strong>Phương thức thanh toán:</strong> {payment.paymentMethod}</p>
-                                <p><strong>Thời gian:</strong> {formatDate(payment.completeDate)}</p>
+                                <p><strong>Thời gian:</strong> {formatDate(payment.createdAt)}</p>
                                 <p>
                                   <strong>Chi tiết:</strong>{" "}
                                   <span

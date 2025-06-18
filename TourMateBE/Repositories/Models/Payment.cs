@@ -11,7 +11,7 @@ public partial class Payment
 
     public string Status { get; set; } = null!;
 
-    public DateTime CompleteDate { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     /// <summary>
     /// membership / invoice

@@ -962,9 +962,9 @@ namespace Repositories.Migrations
                         .HasColumnType("int")
                         .HasColumnName("accountId");
 
-                    b.Property<DateTime>("CompleteDate")
+                    b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime")
-                        .HasColumnName("completeDate");
+                        .HasColumnName("createdAt");
 
                     b.Property<int?>("InvoiceId")
                         .HasColumnType("int")

@@ -561,9 +561,9 @@ public partial class TourmateContext : DbContext
 
             entity.Property(e => e.PaymentId).HasColumnName("paymentId");
             entity.Property(e => e.AccountId).HasColumnName("accountId");
-            entity.Property(e => e.CompleteDate)
+            entity.Property(e => e.CreatedAt)
                 .HasColumnType("datetime")
-                .HasColumnName("completeDate");
+                .HasColumnName("createdAt");
             entity.Property(e => e.InvoiceId).HasColumnName("invoiceId");
             entity.Property(e => e.MembershipPackageId).HasColumnName("membershipPackageId");
             entity.Property(e => e.PaymentMethod)

@@ -1,5 +1,5 @@
 interface PaymentData {
-  completeDate?: string
+  createdAt?: string
   paymentType?: string
 }
 
@@ -34,8 +34,8 @@ export function PaymentDetails({ paymentId, paymentData }: PaymentDetailsProps) 
           <div className="flex justify-between">
             <span className="text-gray-600">Thời gian:</span>
             <span>
-              {paymentData?.completeDate
-                ? formatDateTime(paymentData.completeDate)
+              {paymentData?.createdAt
+                ? formatDateTime(paymentData.createdAt)
                 : formatDateTime(new Date().toISOString())}
             </span>
           </div>

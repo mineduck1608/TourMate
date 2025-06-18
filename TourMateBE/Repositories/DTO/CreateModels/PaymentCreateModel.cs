@@ -10,7 +10,7 @@ namespace Repositories.DTO.CreateModels
 
         public string Status { get; set; }
 
-        public DateTime CompleteDate { get; set; }
+        public DateTime CreatedAt { get; set; }
 
         /// <summary>
         /// membership / invoice
@@ -32,7 +32,7 @@ namespace Repositories.DTO.CreateModels
             PaymentId = 0,
             Price = Price,
             Status = Status,
-            CompleteDate = CompleteDate,
+            CreatedAt = CreatedAt,
             PaymentType = PaymentType,
             PaymentMethod = PaymentMethod,
             AccountId = AccountId,

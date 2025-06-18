@@ -5,7 +5,7 @@ export type Payment = {
     paymentId: number;
     price: GLfloat;
     status: string;
-    completeDate: string;
+    createdAt: string;
     paymentType: string;
     paymentMethod: string;
     accountId: number;

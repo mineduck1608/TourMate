@@ -30,26 +30,10 @@ export const columns: ColumnDef<Payment>[] = [
     },
   },
   {
-    accessorKey: "status",
-    header: "Trạng thái",
-    cell: ({ row }) => {
-      const status = row.getValue("status") as string;
-      return (
-        <div
-          className={`font-medium ${
-            status === "Thành công" ? "text-green-600" : "text-red-600"
-          }`}
-        >
-          {status}
-        </div>
-      );
-    },
-  },
-  {
-    accessorKey: "completeDate",
+    accessorKey: "createdAt",
     header: "Ngày giao dịch",
     cell: ({ row }) => {
-      return <div>{formatDate(row.getValue("completeDate"))}</div>;
+      return <div>{formatDate(row.getValue("createdAt"))}</div>;
     },
   },
   {
@@ -62,7 +46,7 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "paymentMethod",
-    header: "Phương thức thanh toán",
+    header: "Phương thức",
     cell: ({ row }) => {
       const method = row.getValue("paymentMethod") as string;
       return <div>{method === "VNPAY" ? "VNPay" : method}</div>;
@@ -70,6 +54,21 @@ export const columns: ColumnDef<Payment>[] = [
   },
   {
     accessorKey: "invoiceId",
-    header: "Mã hóa đơn",
+    header: "Mã đặt tour",
+  },
+  {
+    accessorKey: "status",
+    header: "Trạng thái",
+    cell: ({ row }) => {
+      const status = row.getValue("status") as string;
+      return (
+        <div
+          className={`font-medium ${status === "Thành công" ? "text-green-600" : "text-red-600"
+            }`}
+        >
+          {status}
+        </div>
+      );
+    },
   },
 ];
