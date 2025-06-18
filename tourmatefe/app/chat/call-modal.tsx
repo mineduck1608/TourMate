@@ -80,19 +80,22 @@ export default function CallModal({
             const res = await fetch("https://global.xirsys.net/_turn/TourMate", {
               method: "PUT",
               headers: {
-                "Authorization": "Basic " + btoa("mineduck1608:ef5be818-4bf8-11f0-aa45-0242ac130003"),
+                Authorization: "Basic " + btoa("mineduck1608:ef5be818-4bf8-11f0-aa45-0242ac130003"),
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({ format: "urls" }),
             });
 
-            if (!res.ok) throw new Error(`HTTP ${res.status}`);
-
             const data = await res.json();
-            console.log("✅ ICE servers từ Xirsys:", data.v.iceServers);
-            return data.v.iceServers;
+
+            const iceServers = Array.isArray(data.v.iceServers)
+              ? data.v.iceServers
+              : [data.v.iceServers]; // ✅ Bọc lại nếu là object
+
+            console.log("✅ ICE servers:", iceServers);
+            return iceServers;
           } catch (err) {
-            console.error("❌ Không thể lấy ICE servers từ Xirsys, fallback sang openrelay:", err);
+            console.error("❌ Lỗi khi lấy ICE servers:", err);
             return [
               {
                 urls: [
@@ -107,6 +110,7 @@ export default function CallModal({
             ];
           }
         };
+
 
         const iceServers = await getIceServers();
 
@@ -438,8 +442,8 @@ export default function CallModal({
           <button
             onClick={toggleMute}
             className={`p-4 rounded-full transition-colors ${isMuted
-                ? "bg-red-500 hover:bg-red-600"
-                : "bg-gray-500 hover:bg-gray-600"
+              ? "bg-red-500 hover:bg-red-600"
+              : "bg-gray-500 hover:bg-gray-600"
               }`}
             title={isMuted ? "Bật mic" : "Tắt mic"}
           >
@@ -455,8 +459,8 @@ export default function CallModal({
             <button
               onClick={toggleVideo}
               className={`p-4 rounded-full transition-colors ${isVideoOff
-                  ? "bg-red-500 hover:bg-red-600"
-                  : "bg-gray-500 hover:bg-gray-600"
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-gray-500 hover:bg-gray-600"
                 }`}
               title={isVideoOff ? "Bật camera" : "Tắt camera"}
             >
