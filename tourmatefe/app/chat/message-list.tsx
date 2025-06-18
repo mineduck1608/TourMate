@@ -383,7 +383,10 @@ function MessageItem({
             {message.messageText}
             {/* Example: do not remove time */}
             <div className="text-xs text-right opacity-80 mt-1">
-              {new Date(message.sendAt).toLocaleTimeString()}
+              {new Date(message.sendAt).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit',
+              })}
             </div>
           </div>
         </div>
