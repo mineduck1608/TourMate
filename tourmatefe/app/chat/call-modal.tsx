@@ -75,112 +75,138 @@ export default function CallModal({
 
     const setupWebRTC = async () => {
       try {
+        const getIceServers = async () => {
+          try {
+            const res = await fetch("https://global.xirsys.net/_turn/TourMate", {
+              method: "PUT",
+              headers: {
+                "Authorization": "Basic " + btoa("mineduck1608:ef5be818-4bf8-11f0-aa45-0242ac130003"),
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ format: "urls" }),
+            });
+
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+
+            const data = await res.json();
+            console.log("✅ ICE servers từ Xirsys:", data.v.iceServers);
+            return data.v.iceServers;
+          } catch (err) {
+            console.error("❌ Không thể lấy ICE servers từ Xirsys, fallback sang openrelay:", err);
+            return [
+              {
+                urls: [
+                  "stun:openrelay.metered.ca:80",
+                  "turn:openrelay.metered.ca:80",
+                  "turn:openrelay.metered.ca:443",
+                  "turn:openrelay.metered.ca:443?transport=tcp"
+                ],
+                username: "openrelayproject",
+                credential: "openrelayproject"
+              }
+            ];
+          }
+        };
+
+        const iceServers = await getIceServers();
+
         peerConnection.current = new RTCPeerConnection({
-          iceServers: [
-            {
-              urls: [
-                "stun:openrelay.metered.ca:80",
-                "turn:openrelay.metered.ca:80",
-                "turn:openrelay.metered.ca:443",
-                "turn:openrelay.metered.ca:443?transport=tcp"
-              ],
-              username: "openrelayproject",
-              credential: "openrelayproject"
-            }
-          ]
-        })
+          iceServers,
+          iceTransportPolicy: "all"
+        });
 
         const pc = peerConnection.current;
 
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
-            console.log("🎵 Received remote stream:", event.streams[0])
+            console.log("🎵 Received remote stream:", event.streams[0]);
 
             if (type === "video" && remoteVideo.current) {
-              remoteVideo.current.srcObject = event.streams[0]
-              remoteVideo.current.play().catch(console.error)
+              remoteVideo.current.srcObject = event.streams[0];
+              remoteVideo.current.play().catch(console.error);
             } else if (type === "voice" && remoteAudio.current) {
-              remoteAudio.current.srcObject = event.streams[0]
-              // Force audio to play with user gesture
-              remoteAudio.current
-                .play()
-                .then(() => {
-                  console.log("🎵 Remote audio started playing")
-                })
+              remoteAudio.current.srcObject = event.streams[0];
+              remoteAudio.current.play()
+                .then(() => console.log("🎵 Remote audio started playing"))
                 .catch((error) => {
-                  console.error("🎵 Audio play failed:", error)
-                  // Try to play again after user interaction
+                  console.error("🎵 Audio play failed:", error);
                   const playAudio = () => {
-                    remoteAudio.current
-                      ?.play()
-                      .then(() => {
-                        console.log("🎵 Audio started after user interaction")
-                        document.removeEventListener("click", playAudio)
-                      })
-                      .catch(console.error)
-                  }
-                  document.addEventListener("click", playAudio, { once: true })
-                })
+                    remoteAudio.current?.play().then(() => {
+                      console.log("🎵 Audio started after user interaction");
+                      document.removeEventListener("click", playAudio);
+                    }).catch(console.error);
+                  };
+                  document.addEventListener("click", playAudio, { once: true });
+                });
             }
-            setConnectionStatus("Đã kết nối")
+
+            setConnectionStatus("Đã kết nối");
           }
-        }
+        };
 
         pc.onicecandidate = async (event) => {
           if (event.candidate && !isCleanedUp) {
             try {
-              await connection.invoke("SendIceCandidate", conversationId, peerId, event.candidate)
+              await connection.invoke("SendIceCandidate", conversationId, peerId, event.candidate);
             } catch (err) {
-              console.error("SendIceCandidate failed:", err)
+              console.error("SendIceCandidate failed:", err);
             }
           }
         };
 
         pc.onconnectionstatechange = () => {
-          const state = pc.connectionState
-          if (isCleanedUp) return
-          if (state === "connected") setConnectionStatus("Đã kết nối")
-          else if (state === "disconnected") setConnectionStatus("Mất kết nối")
-          else if (state === "failed") setError("Kết nối thất bại")
-        }
+          const state = pc.connectionState;
+          if (isCleanedUp) return;
 
-        // Lấy media local
+          if (state === "connected") setConnectionStatus("Đã kết nối");
+          else if (state === "disconnected") setConnectionStatus("Mất kết nối");
+          else if (state === "failed") setError("Kết nối thất bại");
+        };
+
         const stream = await navigator.mediaDevices.getUserMedia({
           video: type === "video" ? { width: 640, height: 480 } : false,
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
-        })
+        });
 
         if (isCleanedUp) {
           stream.getTracks().forEach((t) => t.stop());
           return;
         }
 
-        localStreamRef.current = stream
+        localStreamRef.current = stream;
         if (localVideo.current && type === "video") {
-          localVideo.current.srcObject = stream
+          localVideo.current.srcObject = stream;
         }
 
-        stream.getTracks().forEach((track) => pc.addTrack(track, stream))
-        setMediaReady(true)
-        setConnectionStatus(isCaller ? "Đang gọi..." : "Đang kết nối...")
+        stream.getTracks().forEach((track) => pc.addTrack(track, stream));
+
+        setMediaReady(true);
+        setConnectionStatus(isCaller ? "Đang gọi..." : "Đang kết nối...");
 
         if (isCaller) {
-          await new Promise((r) => setTimeout(r, 300))
+          await new Promise((r) => setTimeout(r, 300));
+
           const offer = await pc.createOffer({
             offerToReceiveAudio: true,
             offerToReceiveVideo: type === "video",
-          })
+          });
 
-          await pc.setLocalDescription(offer)
-          const compressedSdp = compressSdp(offer.sdp ?? "")
-          const offerDto = { type: offer.type, sdp: compressedSdp }
-          await connection.invoke("SendOffer", conversationId, peerId, offerDto, currentAccountId, type)
+          await pc.setLocalDescription(offer);
+          const compressedSdp = compressSdp(offer.sdp ?? "");
+          const offerDto = {
+            type: offer.type,
+            sdp: compressedSdp,
+          };
+
+          await connection.invoke("SendOffer", conversationId, peerId, offerDto, currentAccountId, type);
         }
+
       } catch (err) {
-        console.error(err)
-        setError("Không thể truy cập camera/microphone")
+        console.error(err);
+        setError("Không thể truy cập camera/microphone");
       }
     };
+
 
     // Xử lý SignalR
     const handleReceiveOffer = async (toAccountId: number, offerDto: OfferDTO, fromAccountId: number) => {
@@ -325,9 +351,8 @@ export default function CallModal({
                 autoPlay
                 muted
                 playsInline
-                className={`w-full h-full object-cover ${
-                  isVideoOff ? "hidden" : "block"
-                }`}
+                className={`w-full h-full object-cover ${isVideoOff ? "hidden" : "block"
+                  }`}
               />
               {isVideoOff && (
                 <div className="w-full h-full flex items-center justify-center bg-gray-300">
@@ -412,11 +437,10 @@ export default function CallModal({
           {/* Mute Button */}
           <button
             onClick={toggleMute}
-            className={`p-4 rounded-full transition-colors ${
-              isMuted
+            className={`p-4 rounded-full transition-colors ${isMuted
                 ? "bg-red-500 hover:bg-red-600"
                 : "bg-gray-500 hover:bg-gray-600"
-            }`}
+              }`}
             title={isMuted ? "Bật mic" : "Tắt mic"}
           >
             {isMuted ? (
@@ -430,11 +454,10 @@ export default function CallModal({
           {type === "video" && (
             <button
               onClick={toggleVideo}
-              className={`p-4 rounded-full transition-colors ${
-                isVideoOff
+              className={`p-4 rounded-full transition-colors ${isVideoOff
                   ? "bg-red-500 hover:bg-red-600"
                   : "bg-gray-500 hover:bg-gray-600"
-              }`}
+                }`}
               title={isVideoOff ? "Bật camera" : "Tắt camera"}
             >
               {isVideoOff ? (
