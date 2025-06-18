@@ -1,46 +1,46 @@
-"use client"
+"use client";
 
-import { useEffect, useRef, useState } from "react"
-import type { HubConnection } from "@microsoft/signalr"
-import { PhoneOff, Mic, MicOff, Video, VideoOff } from "lucide-react"
-import pako from "pako"
+import { useEffect, useRef, useState } from "react";
+import type { HubConnection } from "@microsoft/signalr";
+import { PhoneOff, Mic, MicOff, Video, VideoOff } from "lucide-react";
+import pako from "pako";
 
 type Props = {
-  type: "voice" | "video"
-  conversationId: number
-  peerId: number
-  currentAccountId: number
-  onClose: () => void
-  connection?: HubConnection
-  isCaller: boolean
-  callStatus: "calling" | "connected"
-}
+  type: "voice" | "video";
+  conversationId: number;
+  peerId: number;
+  currentAccountId: number;
+  onClose: () => void;
+  connection?: HubConnection;
+  isCaller: boolean;
+  callStatus: "calling" | "connected";
+};
 
 type OfferDTO = {
-  type: RTCSdpType
-  sdp: string
-}
+  type: RTCSdpType;
+  sdp: string;
+};
 
 type IceCandidateDTO = {
-  candidate: string
-  sdpMid: string
-  sdpMLineIndex: number
-}
+  candidate: string;
+  sdpMid: string;
+  sdpMLineIndex: number;
+};
 
 // SDP compress/decompress
 function compressSdp(sdp: string): string {
-  const compressed = pako.deflate(sdp)
+  const compressed = pako.deflate(sdp);
   const binaryString = Array.from(compressed)
     .map((b) => String.fromCharCode(b))
-    .join("")
-  return btoa(binaryString)
+    .join("");
+  return btoa(binaryString);
 }
 
 function decompressSdp(compressedSdp: string): string {
-  const binary = atob(compressedSdp)
-  const bytes = new Uint8Array(binary.length)
-  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i)
-  return pako.inflate(bytes, { to: "string" })
+  const binary = atob(compressedSdp);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+  return pako.inflate(bytes, { to: "string" });
 }
 
 export default function CallModal({
@@ -53,25 +53,25 @@ export default function CallModal({
   isCaller,
   callStatus,
 }: Props) {
-  const localVideo = useRef<HTMLVideoElement>(null)
-  const remoteVideo = useRef<HTMLVideoElement>(null)
-  const remoteAudio = useRef<HTMLAudioElement>(null)
-  const peerConnection = useRef<RTCPeerConnection | null>(null)
-  const localStreamRef = useRef<MediaStream | null>(null)
-  const pendingCandidates = useRef<RTCIceCandidateInit[]>([])
-  const [connectionStatus, setConnectionStatus] = useState("Đang kết nối...")
-  const [isMuted, setIsMuted] = useState(false)
-  const [isVideoOff, setIsVideoOff] = useState(false)
-  const [mediaReady, setMediaReady] = useState(false)
-  const [error, setError] = useState<string | null>(null)
+  const localVideo = useRef<HTMLVideoElement>(null);
+  const remoteVideo = useRef<HTMLVideoElement>(null);
+  const remoteAudio = useRef<HTMLAudioElement>(null);
+  const peerConnection = useRef<RTCPeerConnection | null>(null);
+  const localStreamRef = useRef<MediaStream | null>(null);
+  const pendingCandidates = useRef<RTCIceCandidateInit[]>([]);
+  const [connectionStatus, setConnectionStatus] = useState("Đang kết nối...");
+  const [isMuted, setIsMuted] = useState(false);
+  const [isVideoOff, setIsVideoOff] = useState(false);
+  const [mediaReady, setMediaReady] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     if (!connection) {
-      setError("Không có kết nối SignalR")
-      return
+      setError("Không có kết nối SignalR");
+      return;
     }
 
-    let isCleanedUp = false
+    let isCleanedUp = false;
 
     const setupWebRTC = async () => {
       try {
@@ -90,7 +90,7 @@ export default function CallModal({
           ]
         })
 
-        const pc = peerConnection.current
+        const pc = peerConnection.current;
 
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
@@ -134,7 +134,7 @@ export default function CallModal({
               console.error("SendIceCandidate failed:", err)
             }
           }
-        }
+        };
 
         pc.onconnectionstatechange = () => {
           const state = pc.connectionState
@@ -151,8 +151,8 @@ export default function CallModal({
         })
 
         if (isCleanedUp) {
-          stream.getTracks().forEach((t) => t.stop())
-          return
+          stream.getTracks().forEach((t) => t.stop());
+          return;
         }
 
         localStreamRef.current = stream
@@ -180,7 +180,7 @@ export default function CallModal({
         console.error(err)
         setError("Không thể truy cập camera/microphone")
       }
-    }
+    };
 
     // Xử lý SignalR
     const handleReceiveOffer = async (toAccountId: number, offerDto: OfferDTO, fromAccountId: number) => {
@@ -252,32 +252,32 @@ export default function CallModal({
 
   const toggleMute = () => {
     if (localStreamRef.current) {
-      const audioTrack = localStreamRef.current.getAudioTracks()[0]
+      const audioTrack = localStreamRef.current.getAudioTracks()[0];
       if (audioTrack) {
-        audioTrack.enabled = !audioTrack.enabled
-        setIsMuted(!audioTrack.enabled)
-        console.log(`🎤 Audio ${audioTrack.enabled ? "enabled" : "disabled"}`)
+        audioTrack.enabled = !audioTrack.enabled;
+        setIsMuted(!audioTrack.enabled);
+        console.log(`🎤 Audio ${audioTrack.enabled ? "enabled" : "disabled"}`);
       }
     }
-  }
+  };
 
   const toggleVideo = () => {
     if (localStreamRef.current && type === "video") {
-      const videoTrack = localStreamRef.current.getVideoTracks()[0]
+      const videoTrack = localStreamRef.current.getVideoTracks()[0];
       if (videoTrack) {
-        videoTrack.enabled = !videoTrack.enabled
-        setIsVideoOff(!videoTrack.enabled)
-        console.log(`🎥 Video ${videoTrack.enabled ? "enabled" : "disabled"}`)
+        videoTrack.enabled = !videoTrack.enabled;
+        setIsVideoOff(!videoTrack.enabled);
+        console.log(`🎥 Video ${videoTrack.enabled ? "enabled" : "disabled"}`);
       }
     }
-  }
+  };
 
   const handleEndCall = () => {
-    console.log("📞 Ending call...")
-    peerConnection.current?.close()
-    localStreamRef.current?.getTracks().forEach((track) => track.stop())
-    onClose()
-  }
+    console.log("📞 Ending call...");
+    peerConnection.current?.close();
+    localStreamRef.current?.getTracks().forEach((track) => track.stop());
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 backdrop-blur-sm flex items-center justify-center z-50">
@@ -290,7 +290,9 @@ export default function CallModal({
             playsInline
             controls={false}
             style={{ display: "none" }}
-            onLoadedMetadata={() => console.log("🎵 Remote audio metadata loaded")}
+            onLoadedMetadata={() =>
+              console.log("🎵 Remote audio metadata loaded")
+            }
             onPlay={() => console.log("🎵 Remote audio started playing")}
             onError={(e) => console.error("🎵 Remote audio error:", e)}
           />
@@ -302,9 +304,14 @@ export default function CallModal({
             {type === "voice" ? "Cuộc gọi thoại" : "Cuộc gọi video"}
           </h2>
           <div className="text-lg text-gray-500">{connectionStatus}</div>
-          {error && <div className="text-red-600 mt-2 bg-red-100 p-2 rounded">{error}</div>}
+          {error && (
+            <div className="text-red-600 mt-2 bg-red-100 p-2 rounded">
+              {error}
+            </div>
+          )}
           <div className="text-sm text-gray-500 mt-2">
-            {isCaller ? "Bạn đang gọi" : "Bạn đang nhận cuộc gọi"} | Media: {mediaReady ? "✅" : "⏳"}
+            {isCaller ? "Bạn đang gọi" : "Bạn đang nhận cuộc gọi"} | Media:{" "}
+            {mediaReady ? "✅" : "⏳"}
           </div>
         </div>
 
@@ -318,7 +325,9 @@ export default function CallModal({
                 autoPlay
                 muted
                 playsInline
-                className={`w-full h-full object-cover ${isVideoOff ? "hidden" : "block"}`}
+                className={`w-full h-full object-cover ${
+                  isVideoOff ? "hidden" : "block"
+                }`}
               />
               {isVideoOff && (
                 <div className="w-full h-full flex items-center justify-center bg-gray-300">
@@ -337,14 +346,18 @@ export default function CallModal({
                 autoPlay
                 playsInline
                 className="w-full h-full object-cover"
-                onLoadedMetadata={() => console.log("🎥 Remote video metadata loaded")}
+                onLoadedMetadata={() =>
+                  console.log("🎥 Remote video metadata loaded")
+                }
                 onPlay={() => console.log("🎥 Remote video started playing")}
               />
               <div className="absolute bottom-2 left-2 text-sm bg-black bg-opacity-30 text-white px-2 py-1 rounded">
                 Đối phương
               </div>
               {!remoteVideo.current?.srcObject && (
-                <div className="absolute inset-0 flex items-center justify-center text-gray-500">Đang chờ video...</div>
+                <div className="absolute inset-0 flex items-center justify-center text-gray-500">
+                  Đang chờ video...
+                </div>
               )}
             </div>
           </div>
@@ -357,14 +370,19 @@ export default function CallModal({
               <div className="text-6xl">🎵</div>
             </div>
             <div className="text-center">
-              <div className="text-lg font-semibold text-gray-900">Cuộc gọi thoại</div>
+              <div className="text-lg font-semibold text-gray-900">
+                Cuộc gọi thoại
+              </div>
               <div className="text-sm text-gray-500 mt-1">
-                {remoteAudio.current?.srcObject ? "Đang phát âm thanh" : "Đang chờ âm thanh..."}
+                {remoteAudio.current?.srcObject
+                  ? "Đang phát âm thanh"
+                  : "Đang chờ âm thanh..."}
               </div>
               {/* Add audio debug info */}
               <div className="text-xs text-gray-400 mt-1">
-                Audio: {remoteAudio.current?.paused === false ? "Playing" : "Paused"} | Volume:{" "}
-                {remoteAudio.current?.volume || 0}
+                Audio:{" "}
+                {remoteAudio.current?.paused === false ? "Playing" : "Paused"} |
+                Volume: {remoteAudio.current?.volume || 0}
               </div>
             </div>
           </div>
@@ -394,20 +412,36 @@ export default function CallModal({
           {/* Mute Button */}
           <button
             onClick={toggleMute}
-            className={`p-4 rounded-full transition-colors ${isMuted ? "bg-red-500 hover:bg-red-600" : "bg-gray-500 hover:bg-gray-600"}`}
+            className={`p-4 rounded-full transition-colors ${
+              isMuted
+                ? "bg-red-500 hover:bg-red-600"
+                : "bg-gray-500 hover:bg-gray-600"
+            }`}
             title={isMuted ? "Bật mic" : "Tắt mic"}
           >
-            {isMuted ? <MicOff className="w-6 h-6 text-white" /> : <Mic className="w-6 h-6 text-white" />}
+            {isMuted ? (
+              <MicOff className="w-6 h-6 text-white" />
+            ) : (
+              <Mic className="w-6 h-6 text-white" />
+            )}
           </button>
 
           {/* Video Toggle (only for video calls) */}
           {type === "video" && (
             <button
               onClick={toggleVideo}
-              className={`p-4 rounded-full transition-colors ${isVideoOff ? "bg-red-500 hover:bg-red-600" : "bg-gray-500 hover:bg-gray-600"}`}
+              className={`p-4 rounded-full transition-colors ${
+                isVideoOff
+                  ? "bg-red-500 hover:bg-red-600"
+                  : "bg-gray-500 hover:bg-gray-600"
+              }`}
               title={isVideoOff ? "Bật camera" : "Tắt camera"}
             >
-              {isVideoOff ? <VideoOff className="w-6 h-6 text-white" /> : <Video className="w-6 h-6 text-white" />}
+              {isVideoOff ? (
+                <VideoOff className="w-6 h-6 text-white" />
+              ) : (
+                <Video className="w-6 h-6 text-white" />
+              )}
             </button>
           )}
 
@@ -422,5 +456,5 @@ export default function CallModal({
         </div>
       </div>
     </div>
-  )
+  );
 }
