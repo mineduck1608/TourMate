@@ -108,7 +108,7 @@ export default function MessageList({ conversationId, conversationResponse, glob
   }
 
   const sendMessage = async (text: string) => {
-    if (!connection || !text.trim()) return
+    if (!connection || (!text.trim() && file.downloadUrl.length === 0)) return
 
     const currentAccountIdNumber = Number(currentAccountId)
     if (isNaN(currentAccountIdNumber)) {
@@ -305,6 +305,24 @@ function MessageItem({
                   display: "block",
                 }}
               />
+              <a
+                href={message.downloadUrl}
+                download={message.fileName}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "normal",
+                  wordBreak: "break-all",
+                  display: "block",
+                  marginTop: 4,
+                }}
+                title={message.fileName}
+              >
+                {message.fileName}
+              </a>
             </div>
           )}
 
@@ -329,6 +347,24 @@ function MessageItem({
                   display: "block",
                 }}
               />
+              <a
+                href={message.downloadUrl}
+                download={message.fileName}
+                target="_blank"
+                rel="noopener noreferrer"
+                style={{
+                  maxWidth: "100%",
+                  overflow: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "normal",
+                  wordBreak: "break-all",
+                  display: "block",
+                  marginTop: 4,
+                }}
+                title={message.fileName}
+              >
+                {message.fileName}
+              </a>
             </div>
           )}
 
@@ -375,9 +411,12 @@ function MessageItem({
 function MessageInput({ onSend }: { onSend: (text: string) => void }) {
   const [text, setText] = React.useState("");
   const inputRef = React.useRef<HTMLInputElement>(null);
+  const { file } = useContext(FileUploadContext) as FileUploadContextProps;
 
   const handleSend = () => {
-    if (text.trim() === "") return;
+    console.log(text.trim() === "" && file.downloadUrl.length === 0);
+
+    if (text.trim() === "" && file.downloadUrl.length === 0) return;
     onSend(text);
     setText("");
     inputRef.current?.focus();

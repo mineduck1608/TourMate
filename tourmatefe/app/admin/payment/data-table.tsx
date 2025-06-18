@@ -80,15 +80,23 @@ export function DataTable<TData, TValue>({
     },
   });
 
+  // React Query lấy dữ liệu theo page
   const [searchTerm, setSearchTerm] = React.useState("");
-
-  // Log để debug
-  console.log("DataTable received props:", {
-    data,
-    totalResults,
-    totalPages,
-    page,
+  const { refetch } = useQuery({
+    queryKey: ["payments", page],
+    queryFn: ({ queryKey, signal }) => {
+      const [, currentPage] = queryKey;
+      return getAllPayments(currentPage, LIMIT, signal);
+    },
+    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
   });
+
+  React.useEffect(() => {
+    refetch();
+  }, [page]);
+  React.useEffect(() => {
+    refetch();
+  }, [searchTerm]);
 
   return (
     <div>
