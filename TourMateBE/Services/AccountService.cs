@@ -1,9 +1,9 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Org.BouncyCastle.Crypto.Generators;
-using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.Repository;
+using Repositories.ResponseModels;
 using Services.Utils;
 using System;
 using System.Collections.Generic;

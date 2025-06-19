@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
-using Repositories.DTO.ResultModels;
 using Repositories.DTO.UpdateModals;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using Services;
 
 namespace API.Controllers

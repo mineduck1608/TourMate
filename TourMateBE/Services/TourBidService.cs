@@ -1,8 +1,8 @@
 using Microsoft.Identity.Client;
 using Repositories.DTO;
-using Repositories.DTO.ResultModels;
 using Repositories.Models;
 using Repositories.Repository;
+using Repositories.ResponseModels;
 using System.Threading.Tasks;
 
 namespace Services

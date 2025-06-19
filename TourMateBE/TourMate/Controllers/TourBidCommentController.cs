@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
-using Repositories.DTO.ResultModels;
 using Repositories.DTO.UpdateModels;
+using Repositories.ResponseModels;
 using Services;
 
 namespace TourMate.Controllers

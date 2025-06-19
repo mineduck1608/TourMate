@@ -1,8 +1,10 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Services;
+using Services.Utils;
+
 
 namespace API.Controllers
 {
@@ -11,10 +13,14 @@ namespace API.Controllers
     public class FeedbackController : ControllerBase
     {
         private readonly IFeedbackService _feedbackService;
+        private readonly ITourGuideService _tourGuideService;
+        private readonly IEmailSender _emailSender;
 
-        public FeedbackController(IFeedbackService feedbackService)
+        public FeedbackController(IFeedbackService feedbackService, ITourGuideService tourGuideService, IEmailSender emailSender)
         {
             _feedbackService = feedbackService;
+            _tourGuideService = tourGuideService;
+            _emailSender = emailSender;
         }
 
         [HttpGet("{id}")]
@@ -40,8 +46,19 @@ namespace API.Controllers
         {
             var feedback = data.Convert();
             var result = await _feedbackService.CreateFeedback(feedback);
-            if(result == true)
+            if(result != null)
             {
+                var feedbackCreated = await _feedbackService.GetFeedbackContainInvoice(feedback.FeedbackId);
+                var mailBody = _feedbackService.GenerateTourGuideFeedbackEmail(feedbackCreated);
+                var tourGuideEmail = await _tourGuideService.GetTourGuide(feedback.TourGuideId);
+                try
+                {
+                    await _emailSender.SendEmailAsync(tourGuideEmail.Account.Email, "📅 Bạn có một đánh giá mới từ khách hàng!", mailBody);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Email send failed: {ex.Message}");
+                }
                 return Ok();
             }
             return BadRequest();

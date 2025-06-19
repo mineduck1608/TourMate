@@ -1,6 +1,6 @@
-﻿using Repositories.DTO.ResultModels;
-using Repositories.Models;
+﻿using Repositories.Models;
 using Repositories.Repository;
+using Repositories.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;

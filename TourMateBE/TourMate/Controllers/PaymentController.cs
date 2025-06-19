@@ -2,8 +2,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Repositories.DTO.CreateModels;
-using Repositories.DTO.ResultModels;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using Repositories.VnPay;
 using Services;
 using Services.Utils;

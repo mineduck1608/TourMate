@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
 using Repositories.DTO;
-using Repositories.DTO.ResultModels;
 using Repositories.GenericRepository;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using System.Linq.Expressions;
 
 namespace Repositories.Repository

@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
-using Repositories.DTO;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -92,83 +92,64 @@ namespace Repositories.Repository
             };
         }
 
-        public async Task<List<AreaStatus>> GetAreaStatsAsync(DateTime? fromDate, DateTime? toDate)
+        public async Task<List<AreaStatus>> GetAreaStatsAsync(DateTime? fromDate, DateTime? toDate, int limit)
         {
-            // Implement based on your actual Area model and relationships
-            var areas = await _context.ActiveAreas.ToListAsync();
-            var result = new List<AreaStatus>();
+            var invoicesQuery = _context.Invoices.AsQueryable();
+            var revenuesQuery = _context.Revenues.AsQueryable();
+            var feedbacksQuery = _context.Feedbacks.AsQueryable();
 
-            foreach (var area in areas)
+            if (fromDate.HasValue)
             {
-                var tourGuides = await _context.TourGuides
-    .Include(tg => tg.TourGuideDescs)
-    .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == area.AreaId))
-    .ToListAsync();
-
-
-                var tourGuideIds = tourGuides.Select(tg => tg.TourGuideId).ToList();
-
-
-                var tourInvoice = await _context.Invoices
-                    .Where(tb => tourGuideIds.Contains(tb.TourGuideId))
-                    .ToListAsync();
-
-                if (fromDate.HasValue)
-                {
-                    tourInvoice = tourInvoice.Where(tb => tb.CreatedDate >= fromDate.Value).ToList();
-                }
-
-                if (toDate.HasValue)
-                {
-                    tourInvoice = tourInvoice.Where(tb => tb.CreatedDate <= toDate.Value).ToList();
-                }
-
-                var completedTours = tourInvoice.Count(tb => tb.Status == "Đã hướng dẫn");
-                var cancelledTours = tourInvoice.Count(tb => tb.Status == "Từ chối");
-                var totalRequests = tourInvoice.Count;
-
-                // Calculate average rating
-                var ratings = await _context.Feedbacks
-                    .Where(tbc => tourInvoice.Select(tb => tb.TourGuideId).Contains(tbc.TourGuideId))
-                    .Select(tbc => tbc.Rating)
-                    .ToListAsync();
-
-                var averageRating = ratings.Any() ? ratings.Average() : 0;
-
-                // Calculate total revenue
-                var totalRevenue = await _context.Revenues
-                    .Where(r => tourGuideIds.Contains(r.TourGuideId))
-                    .SumAsync(r => r.TotalAmount);
-
-                if (fromDate.HasValue)
-                {
-                    totalRevenue = await _context.Revenues
-                        .Where(r => tourGuideIds.Contains(r.TourGuideId) && r.CreatedAt >= fromDate.Value)
-                        .SumAsync(r => r.TotalAmount);
-                }
-
-                if (toDate.HasValue)
-                {
-                    totalRevenue = await _context.Revenues
-                        .Where(r => tourGuideIds.Contains(r.TourGuideId) && r.CreatedAt <= toDate.Value)
-                        .SumAsync(r => r.TotalAmount);
-                }
-
-                result.Add(new AreaStatus
-                {
-                    AreaId = area.AreaId,
-                    AreaName = area.AreaName,
-                    CompletedTours = completedTours,
-                    TotalRequests = totalRequests,
-                    AverageRating = (decimal)averageRating,
-                    TotalRevenue = totalRevenue,
-                    CancelledTours = cancelledTours,
-                    ActiveGuides = tourGuides.Count
-                });
+                invoicesQuery = invoicesQuery.Where(i => i.CreatedDate >= fromDate.Value);
+                revenuesQuery = revenuesQuery.Where(r => r.CreatedAt >= fromDate.Value);
             }
 
-            return result.OrderByDescending(r => r.TotalRevenue).ToList();
+            if (toDate.HasValue)
+            {
+                invoicesQuery = invoicesQuery.Where(i => i.CreatedDate <= toDate.Value);
+                revenuesQuery = revenuesQuery.Where(r => r.CreatedAt <= toDate.Value);
+            }
+
+            var query = from area in _context.ActiveAreas
+                        join desc in _context.TourGuideDescs on area.AreaId equals desc.AreaId
+                        join tg in _context.TourGuides on desc.TourGuideId equals tg.TourGuideId
+                        group new { area, tg } by new { area.AreaId, area.AreaName } into g
+
+                        select new AreaStatus
+                        {
+                            AreaId = g.Key.AreaId,
+                            AreaName = g.Key.AreaName,
+                            ActiveGuides = g.Select(x => x.tg.TourGuideId).Distinct().Count(),
+
+                            // Tính toán phụ thuộc vào các ID hướng dẫn viên
+                            CompletedTours = invoicesQuery
+                                .Where(i => g.Select(x => x.tg.TourGuideId).Contains(i.TourGuideId) && i.Status == "Đã hướng dẫn")
+                                .Count(),
+
+                            CancelledTours = invoicesQuery
+                                .Where(i => g.Select(x => x.tg.TourGuideId).Contains(i.TourGuideId) && i.Status == "Từ chối")
+                                .Count(),
+
+                            TotalRequests = invoicesQuery
+                                .Where(i => g.Select(x => x.tg.TourGuideId).Contains(i.TourGuideId))
+                                .Count(),
+
+                            TotalRevenue = revenuesQuery
+                                .Where(r => g.Select(x => x.tg.TourGuideId).Contains(r.TourGuideId))
+                                .Sum(r => r.TotalAmount),
+
+                            AverageRating = (decimal)(feedbacksQuery
+                                .Where(f => g.Select(x => x.tg.TourGuideId).Contains(f.TourGuideId))
+                                .Select(f => (double?)f.Rating)
+                                .Average() ?? 0)
+                        };
+
+            return await query
+                .OrderByDescending(x => x.TotalRevenue)
+                .Take(limit)
+                .ToListAsync();
         }
+
 
         public async Task<UserStatus> GetUserStatsAsync(DateTime? fromDate, DateTime? toDate)
         {
@@ -253,62 +234,85 @@ namespace Repositories.Repository
 
         public async Task<List<GuidePerformance>> GetTopGuidesAsync(DateTime? fromDate, DateTime? toDate, string? areaFilter, int limit = 10)
         {
-            var query = from guide in _context.TourGuides
-                        join invoice in _context.Invoices on guide.TourGuideId equals invoice.TourGuideId into invoices
-                        select new { guide, invoices };
+            var invoiceQuery = _context.Invoices.AsQueryable();
+            var feedbackQuery = _context.Feedbacks.AsQueryable();
 
-            var data = await query.ToListAsync();
-
-            var guidePerformance = data.Select(x =>
+            if (fromDate.HasValue)
             {
-                var filteredInvoices = x.invoices.Where(i =>
-                    (!fromDate.HasValue || i.CreatedDate >= fromDate.Value) &&
-                    (!toDate.HasValue || i.CreatedDate <= toDate.Value)).ToList();
+                invoiceQuery = invoiceQuery.Where(i => i.CreatedDate >= fromDate.Value);
+            }
 
-                var completedInvoices = filteredInvoices.Where(i => i.Status == "Completed").ToList();
+            if (toDate.HasValue)
+            {
+                invoiceQuery = invoiceQuery.Where(i => i.CreatedDate <= toDate.Value);
+            }
 
-                // Get the guide's active area
-                var activeArea = x.guide.TourGuideDescs.FirstOrDefault()?.Area;
-                var areaName = activeArea?.AreaName ?? "Unknown";
+            var query = from guide in _context.TourGuides
+                        join desc in _context.TourGuideDescs on guide.TourGuideId equals desc.TourGuideId
+                        join area in _context.ActiveAreas on desc.AreaId equals area.AreaId
+                        where string.IsNullOrEmpty(areaFilter) || areaFilter == "all" || area.AreaName.ToLower() == areaFilter.ToLower()
+                        select new
+                        {
+                            guide.TourGuideId,
+                            guide.FullName,
+                            AreaName = area.AreaName
+                        };
 
-                // Apply area filter if specified
-                if (!string.IsNullOrEmpty(areaFilter) && areaFilter != "all" &&
-                    areaName.ToLower() != areaFilter.ToLower())
+            var guideList = await query.Distinct().ToListAsync();
+
+            var result = new List<GuidePerformance>();
+
+            foreach (var g in guideList)
+            {
+                var guideInvoices = await invoiceQuery
+                    .Where(i => i.TourGuideId == g.TourGuideId)
+                    .ToListAsync();
+
+                if (guideInvoices.Count == 0)
+                    continue;
+
+                var completed = guideInvoices.Where(i => i.Status == "Đã hướng dẫn").ToList();
+
+                var totalRevenue = completed.Sum(i => (decimal)i.Price);
+                var completionRate = guideInvoices.Count > 0 ? (decimal)completed.Count / guideInvoices.Count * 100 : 0;
+
+                var ratings = await feedbackQuery
+                    .Where(f => f.TourGuideId == g.TourGuideId)
+                    .Select(f => (double?)f.Rating)
+                    .ToListAsync();
+
+                var averageRating = ratings.Any() ? (decimal)ratings.Average().Value : 0;
+
+                result.Add(new GuidePerformance
                 {
-                    return null; // Will be filtered out
-                }
-
-                var totalRevenue = completedInvoices.Sum(i => (decimal)i.Price);
-                var completionRate = filteredInvoices.Count > 0 ?
-                    (decimal)completedInvoices.Count / filteredInvoices.Count * 100 : 0;
-
-                return new GuidePerformance
-                {
-                    GuideId = x.guide.TourGuideId,
-                    GuideName = x.guide.FullName,
-                    AreaName = areaName,
-                    TotalTours = completedInvoices.Count,
-                    AverageRating = 0, // You might need to implement rating system
+                    GuideId = g.TourGuideId,
+                    GuideName = g.FullName,
+                    AreaName = g.AreaName,
+                    TotalTours = completed.Count,
+                    AverageRating = averageRating,
                     TotalRevenue = totalRevenue,
                     CompletionRate = completionRate
-                };
-            })
-            .Where(x => x != null) // Filter out null results from Area filtering
-            .OrderByDescending(g => g.AverageRating)
-            .ThenByDescending(g => g.TotalRevenue)
-            .Take(limit)
-            .ToList();
+                });
+            }
 
-            return guidePerformance;
+            return result
+                .OrderByDescending(g => g.AverageRating)
+                .ThenByDescending(g => g.TotalRevenue)
+                .Take(limit)
+                .ToList();
         }
 
-        public async Task<List<AreaStatus>> GetCancelledToursByAreaAsync(DateTime? fromDate, DateTime? toDate)
+
+        public async Task<List<AreaStatus>> GetCancelledToursByAreaAsync(DateTime? fromDate, DateTime? toDate, int limit = 10)
         {
-            var areaStats = await GetAreaStatsAsync(fromDate, toDate);
-            return areaStats.Where(r => r.CancelledTours > 0)
-                             .OrderByDescending(r => r.CancelledTours)
-                             .ToList();
+            var areaStats = await GetAreaStatsAsync(fromDate, toDate, 63); // lấy tất cả để tính chính xác cancelled
+            return areaStats
+                .Where(r => r.CancelledTours > 0)
+                .OrderByDescending(r => r.CancelledTours)
+                .Take(limit)
+                .ToList();
         }
+
 
         public async Task<List<MembershipStatus>> GetMembershipStatsAsync(DateTime? fromDate, DateTime? toDate)
         {
@@ -356,7 +360,10 @@ namespace Repositories.Repository
                 });
             }
 
-            return membershipStats.OrderByDescending(m => m.TotalSales).ToList();
+            return membershipStats
+                .OrderByDescending(m => m.TotalSales)
+                .Take(10) // thêm giới hạn
+                .ToList();
         }
 
 

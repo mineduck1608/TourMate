@@ -3,7 +3,7 @@ using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 using Microsoft.IdentityModel.Tokens;
-using Repositories.DTO.ResultModels;
+using Repositories.ResponseModels;
 
 namespace Repositories.Repository
 {

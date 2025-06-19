@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Repositories.DTO;
+using Repositories.ResponseModels;
 using Services;
 
 namespace TourMate.Controllers

@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Azure;
 using System.Collections.Generic;
-using Repositories.DTO.ResultModels;
+using Repositories.ResponseModels;
 
 namespace Repositories.Repository
 {

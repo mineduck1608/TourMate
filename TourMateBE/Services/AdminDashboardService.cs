@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
-using Repositories.DTO;
 using Repositories.Repository;
+using Repositories.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace Services
     {
         Task<AdminDashboard> GetDashboardDataAsync(DashboardFilter filter);
         Task<FinancialStatus> GetFinancialStatsAsync(DashboardFilter filter);
-        Task<List<AreaStatus>> GetAreaStatsAsync(DashboardFilter filter);
+        Task<List<AreaStatus>> GetAreaStatsAsync(DashboardFilter filter, int limit = 10);
         Task<UserStatus> GetUserStatsAsync(DashboardFilter filter);
         Task<List<TourPerformance>> GetTopToursAsync(DashboardFilter filter, int limit = 10);
         Task<List<GuidePerformance>> GetTopGuidesAsync(DashboardFilter filter, int limit = 10);
@@ -78,11 +78,11 @@ namespace Services
                 filter.AreaFilter);
         }
 
-        public async Task<List<AreaStatus>> GetAreaStatsAsync(DashboardFilter filter)
+        public async Task<List<AreaStatus>> GetAreaStatsAsync(DashboardFilter filter, int limit = 10)
         {
             return await _dashboardRepository.GetAreaStatsAsync(
                 filter.FromDate,
-                filter.ToDate);
+                filter.ToDate, limit);
         }
 
         public async Task<UserStatus> GetUserStatsAsync(DashboardFilter filter)

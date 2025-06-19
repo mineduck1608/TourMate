@@ -4,12 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.DTO.ResultModels
+namespace Repositories.ResponseModels
 {
-    public class MostPopularArea
+    public class SimplifiedAreaListResult
     {
         public int AreaId { get; set; }
         public string AreaName { get; set; }
-        public int TourBidCount { get; set; }
     }
 }
