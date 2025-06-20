@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.ResponseModels;
 using Services;
 
 namespace TourMate.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [ApiController]
     [Route("api/admin-dashboard")]
     public class AdminDashboardController : ControllerBase

@@ -14,11 +14,13 @@ namespace Services.Utils
     {
         private readonly IConfiguration _config;
         private readonly RefreshTokenRepository _refreshTokenRepo;
+        private readonly AccountRepository _accountRepository;
 
-        public TokenService(IConfiguration config, RefreshTokenRepository refreshTokenRepo)
+        public TokenService(IConfiguration config, RefreshTokenRepository refreshTokenRepo, AccountRepository accountRepository)
         {
             _config = config;
             _refreshTokenRepo = refreshTokenRepo;
+            _accountRepository = accountRepository;
         }
 
         public string GenerateAccessToken(int accountId, string fullName, string roleName)
@@ -29,8 +31,8 @@ namespace Services.Utils
                 throw new InvalidOperationException("Jwt:Key is missing.");
 
             // Kiểm tra và parse thời gian hết hạn token (phút)
-            if (!int.TryParse(_config["Jwt:ExpireTime"], out var expireMinutes) || expireMinutes <= 0)
-                throw new InvalidOperationException("Jwt:ExpireTime is invalid.");
+            if (!int.TryParse(_config["Jwt:AccessTokenExpireMinutes"], out var accessExpireMinutes) || accessExpireMinutes <= 0)
+                accessExpireMinutes = 10;
 
 
             var claims = new[]
@@ -43,12 +45,15 @@ namespace Services.Utils
             var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(key));
             var creds = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
 
+
+
             var token = new JwtSecurityToken(
                 issuer: _config["Jwt:Issuer"],
                 audience: _config["Jwt:Audience"],
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(5),
+                expires: DateTime.UtcNow.AddMinutes(accessExpireMinutes),
                 signingCredentials: creds);
+
 
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
@@ -57,15 +62,19 @@ namespace Services.Utils
         {
             var refreshToken = Convert.ToBase64String(RandomNumberGenerator.GetBytes(64));
 
+            if (!int.TryParse(_config["Jwt:RefreshTokenExpireDays"], out var refreshExpireDays) || refreshExpireDays <= 0)
+                refreshExpireDays = 7;
+
             var tokenModel = new RefreshToken
             {
                 Id = Guid.NewGuid(),
                 Token = refreshToken,
-                ExpireAt = DateTime.UtcNow.AddDays(7),
+                ExpireAt = DateTime.UtcNow.AddDays(refreshExpireDays),
                 IsRevoked = false,
                 CreatedAt = DateTime.UtcNow,
                 UserId = userId
             };
+
 
             await _refreshTokenRepo.SaveAsync(tokenModel);
             return refreshToken;
@@ -80,11 +89,21 @@ namespace Services.Utils
 
             int userId = tokenInDb.UserId;
 
-            string username = "dummy"; 
-            string roleName = "dummy"; 
+            // Lấy thông tin user
+            var user = await _accountRepository.GetByIdAsync(tokenInDb.UserId);
+            if (user == null) return null;
 
+            string fullName = user.Role?.RoleName switch
+            {
+                "Customer" => user.Customers?.FirstOrDefault()?.FullName,
+                "TourGuide" => user.TourGuides?.FirstOrDefault()?.FullName,
+                "Admin" => "Admin",
+                _ => null
+            } ?? user.Email ?? "Unknown";
 
-            var newAccessToken = GenerateAccessToken(userId, username, roleName);
+            string roleName = user.Role?.RoleName ?? "Unknown";
+
+            var newAccessToken = GenerateAccessToken(userId, fullName, roleName);
             await _refreshTokenRepo.RemoveToken(oldRefreshToken);
             var newRefreshToken = await GenerateAndSaveRefreshTokenAsync(userId);
 

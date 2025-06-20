@@ -1,4 +1,5 @@
 ﻿using Azure;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using Repositories.DTO.CreateModels;
@@ -11,6 +12,7 @@ using Services.VnPay;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Route("api/payment")]
     [ApiController]
     public class PaymentController : ControllerBase

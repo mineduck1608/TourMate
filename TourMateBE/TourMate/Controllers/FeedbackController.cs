@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
@@ -41,6 +42,7 @@ namespace API.Controllers
             return Ok(_feedbackService.GetAll(pageSize, pageIndex));
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] FeedbackCreateModel data)
         {
@@ -64,6 +66,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] FeedbackUpdateModel data)
         {
@@ -83,6 +86,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

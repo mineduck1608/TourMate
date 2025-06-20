@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
@@ -7,6 +8,7 @@ using Services;
 
 namespace TourMate.Controllers
 {
+    [Authorize]
     [Route("api/comments")]
     [ApiController]
     public class TourBidCommentController : ControllerBase

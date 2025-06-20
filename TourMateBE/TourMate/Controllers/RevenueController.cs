@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Services;
-using ClosedXML.Excel;
 
 namespace TourMate.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/revenue")]
     public class RevenueController : ControllerBase

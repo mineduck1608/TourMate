@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Repositories.ResponseModels;
@@ -24,8 +25,8 @@ namespace API.Controllers
             return Ok(_contactService.GetContact(id));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
-
         public async Task<ActionResult<PagedResult<Contact>>> GetAll(int pageSize = 10, int pageIndex = 1)
         {
             var result = await _contactService.GetAll(pageSize, pageIndex);
@@ -58,6 +59,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("confirm/{id}")]
         public async Task<IActionResult> ConfirmContact(int id)
         {

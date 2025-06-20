@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Services;
 
 namespace TourMate.Controllers
 {
+    [Authorize]
     [Route("api/platform-feedback")]
     [ApiController]
     public class PlatformFeedbackController : ControllerBase

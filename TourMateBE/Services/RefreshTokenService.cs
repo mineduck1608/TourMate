@@ -13,7 +13,7 @@ namespace Services
         Task<RefreshToken> GetByRefreshToken(string refreshToken);
         IEnumerable<RefreshToken> GetAll(int pageSize, int pageIndex);
         void CreateRefreshToken(RefreshToken refreshtoken);
-        void UpdateRefreshToken(RefreshToken refreshtoken);
+        Task<bool> UpdateRefreshToken(RefreshToken refreshtoken);
         bool DeleteRefreshToken(int id);
     }
 
@@ -41,9 +41,9 @@ namespace Services
             _repository.Create(refreshtoken);
         }
 
-        public void UpdateRefreshToken(RefreshToken refreshtoken)
+        public async Task<bool> UpdateRefreshToken(RefreshToken refreshtoken)
         {
-            _repository.Update(refreshtoken);
+            return await _repository.UpdateAsync(refreshtoken);
         }
 
         public bool DeleteRefreshToken(int id)

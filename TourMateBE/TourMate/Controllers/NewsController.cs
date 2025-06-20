@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModals;
 using Repositories.Models;
@@ -51,6 +52,8 @@ namespace API.Controllers
             return Ok(result);
         }
 
+        [Authorize(Roles = "Admin")]
+
         [HttpPost]
         public async Task<IActionResult> CreateAsync([FromBody] NewsCreateModel data)
         {
@@ -63,6 +66,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateAsync([FromBody] NewsUpdateModel data)
         {
@@ -74,6 +78,8 @@ namespace API.Controllers
             }
             return BadRequest();
         }
+
+        [Authorize(Roles = "Admin")]
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)

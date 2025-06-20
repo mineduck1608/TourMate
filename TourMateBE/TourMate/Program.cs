@@ -3,6 +3,7 @@
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using Net.payOS;
 using Repositories.Context;
 using Repositories.Repositories;
@@ -10,6 +11,7 @@ using Repositories.Repository;
 using Services;
 using Services.Utils;
 using Services.VnPay;
+using System.Text;
 using System.Text.Json.Serialization;
 using TourMate.Mappings;
 using TourMate.MessageHub;
@@ -158,6 +160,22 @@ builder.Services.AddSingleton(sp =>
 });
 
 
+builder.Services.AddAuthentication("Bearer")
+    .AddJwtBearer("Bearer", options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = builder.Configuration["Jwt:Issuer"],
+            ValidAudience = builder.Configuration["Jwt:Audience"],
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
+                builder.Configuration["Jwt:Key"] ?? throw new Exception("JWT Key missing"))),
+            ClockSkew = TimeSpan.Zero // ⚠️ Token hết hạn chính xác, không cho phép chênh lệch 5 phút
+        };
+    });
 
 var app = builder.Build();
 
@@ -166,6 +184,7 @@ app.UseCors("AllowReactApp");
 
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
@@ -174,7 +193,11 @@ app.UseEndpoints(endpoints =>
     endpoints.MapControllers();
 });
 
-app.UseSwagger();
-app.UseSwaggerUI();
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.MapControllers();
 app.Run();

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.UpdateModals;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
@@ -8,6 +9,7 @@ using Services.Utils;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Route("api/customer")]
     [ApiController]
     public class CustomerController : ControllerBase
