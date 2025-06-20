@@ -49,7 +49,8 @@ function ActiveAreaList() {
         LIMIT,
         searchTerm,
         selectedRegion,
-        controller.signal
+        controller.signal,
+        true
       );
     },
     retry: 0,

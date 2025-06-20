@@ -3,7 +3,7 @@ import { getTourGuide } from '@/app/api/tour-guide.api';
 import Banner from '@/components/Banner';
 import { useQuery } from '@tanstack/react-query';
 import React, { use, useEffect, useState } from 'react'
-import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaFacebookMessenger, FaRegMap, FaRegUser, FaSuitcaseRolling } from 'react-icons/fa';
+import { FaMapMarkerAlt, FaPhoneAlt, FaRegClock, FaFacebookMessenger, FaRegMap, FaRegUser, FaSuitcaseRolling, FaCheckCircle } from 'react-icons/fa';
 import TourServices from './services';
 import { TourGuide } from '@/types/tour-guide';
 import { Button } from '@/components/ui/button';
@@ -55,7 +55,7 @@ export default function TourGuideDetail({
                     />
                     <div className='w-[60%]'>
                         <h4 className="font-bold text-4xl text-gray-800 p-2 mb-4">
-                            {tourGuide?.fullName}
+                            {tourGuide?.fullName} {tourGuide?.isVerified && <FaCheckCircle className="fill-blue-500 inline" />}
                         </h4>
                         {tourGuide && (
                             <>

@@ -14,13 +14,14 @@ export const getActiveAreas = async (page: number | string, limit: number | stri
   return res.data;
 };
 
-export const getFilteredActiveAreas = async (page: number | string, limit: number | string, search: string, region: string, signal?: AbortSignal) => {
+export const getFilteredActiveAreas = async (page: number | string, limit: number | string, search: string, region: string, signal?: AbortSignal, excludeContent?: boolean) => {
   const res = await http.get<PagedResult<ActiveArea>>('active-area/filtered-area', {
     params: {
       pageSize: limit,
       pageIndex: page,
       search: search,
-      region: region
+      region: region,
+      excludeContent: excludeContent
     },
     signal
   });

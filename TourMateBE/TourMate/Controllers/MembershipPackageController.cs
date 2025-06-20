@@ -53,5 +53,11 @@ namespace API.Controllers
             var result = _membershippackageService.DeleteMembershipPackages(id);
             return result ? NoContent() : NotFound();
         }
+        [HttpGet("member-package-of/{id}")]
+        public async Task<ActionResult<MembershipPackage>> GetNearestPackageForAccount(int id)
+        {
+            var result = await _membershippackageService.GetNearestPackageForAccount(id);
+            return Ok(result);
+        }
     }
 }

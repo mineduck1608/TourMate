@@ -10,6 +10,7 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react'
+import { FaCheckCircle } from 'react-icons/fa';
 const LIMIT = 12
 type SearchTerm = {
     name: string,
@@ -119,19 +120,19 @@ function TourGuideMain() {
                                 <div className="bg-white shadow-lg rounded-lg overflow-hidden hover:shadow-2xl transition duration-300 ease-in-out transform cursor-pointer">
                                     <div className="overflow-hidden">
                                         <SafeImage
-                                            src={v.image || "/fallback.jpg"}
+                                            src={v.image}
                                             alt={v.fullName}
                                             className="w-full h-60 object-cover rounded-t-lg transform hover:scale-105 transition duration-300 ease-in-out"
                                         />
                                     </div>
                                     <div className="p-6">
                                         <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                                            {v.fullName}
+                                            {v.fullName} {v.isVerified && <FaCheckCircle className="fill-blue-500 inline" />}
                                         </h4>
                                         <p className="text-gray-600 text-sm mb-2">
                                             {dayjs(v.dateOfBirth).format('DD/MM/YYYY')}
                                         </p>
-                                        <button className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
+                                        <button className="w-full bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                                             Xem ngay
                                         </button>
                                     </div>

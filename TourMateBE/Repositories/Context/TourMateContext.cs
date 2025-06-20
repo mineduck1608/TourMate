@@ -790,6 +790,7 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(10)
                 .IsUnicode(false)
                 .HasColumnName("phone");
+            entity.Property(e => e.IsVerified).HasColumnName("isVerified");
 
             entity.HasOne(d => d.Account).WithMany(p => p.TourGuides)
                 .HasForeignKey(d => d.AccountId)

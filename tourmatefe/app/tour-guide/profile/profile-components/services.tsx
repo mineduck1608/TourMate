@@ -5,19 +5,23 @@ import SafeImage from '@/components/safe-image'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { AnimatePresence, motion } from 'framer-motion'
-import Link from 'next/link'
 import React, { useContext, useEffect, useState } from 'react'
 import { ServiceEditContext, ServiceEditContextProp } from './service-edit-context'
 import { TourService } from '@/types/tour-service'
 import { toast } from 'react-toastify'
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../context'
+import Link from 'next/link'
+import { useAuth } from '@/components/authProvider'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
     const pageSize = 6
+    const auth = useAuth()
+    console.log(auth.role);
+    
     const { data, refetch } = useQuery({
         queryKey: ['tour-services-of', tourGuideId, pageSize, page],
-        queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize),
+        queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize, undefined, auth.token),
         staleTime: 24 * 3600 * 1000,
     })
     //Mutation here
@@ -103,12 +107,6 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                             <motion.div
                                 whileHover={{
                                 }}
-                                onClick={() => {
-                                    setTarget(item)
-                                    setTimeout(() => {
-                                        setModalOpen({ ...modalOpen, edit: true })
-                                    }, 50);
-                                }}
                                 transition={{ duration: 0.1, ease: "easeInOut" }}
                                 className="bg-white rounded-xl shadow-sm overflow-hidden cursor-pointer transform transition-all relative"
                             >
@@ -117,6 +115,7 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                                         src={item.image}
                                         alt={item.serviceName}
                                         className="w-full h-70 object-cover"
+
                                     />
                                     <motion.div
                                         initial={{ opacity: 0 }}
@@ -129,14 +128,22 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                                 <div className="flex justify-between">
                                     <div className="p-6">
                                         <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdDate).format('DD/MM/YYYY HH:mm:ss')}</p>
-                                        <h3 className="font-semibold text-lg mb-2">{item.serviceName}</h3>
+                                        <Link 
+                                        href={'/tour-service?id=' + item.serviceId}
+                                        className="font-semibold text-lg mb-2">{item.serviceName}</Link>
                                     </div>
                                     <div className="relative content-center">
-                                        <Link
-                                            href={'/news/' + item.serviceId}
-                                            className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700">
-                                            Xem ngay
-                                        </Link>
+                                        <button
+                                            onClick={() => {
+                                                setTarget(item)
+                                                setTimeout(() => {
+                                                    setModalOpen({ ...modalOpen, edit: true })
+                                                }, 50);
+                                            }}
+                                            className="text-nowrap text-gray-900 bg-white border border-gray-300 focus:outline-none hover:bg-gray-100 focus:ring-4 focus:ring-gray-100 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-gray-800 dark:text-white dark:border-gray-600 dark:hover:bg-gray-700 dark:hover:border-gray-600 dark:focus:ring-gray-700"
+                                        >
+                                            Cập nhật
+                                        </button>
                                     </div>
                                 </div>
                             </motion.div>

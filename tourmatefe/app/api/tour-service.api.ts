@@ -39,14 +39,17 @@ export const updateTourService = async (newData: TourService) => {
 
 export const deleteTourService = (id: number | string) => http.delete<object>(`tour-services/${id}`)
 
-export const getTourServicesOf = async (tourGuideId: number | string, page: number | string, limit: number | string, signal?: AbortSignal) => {
+export const getTourServicesOf = async (tourGuideId: number | string, page: number | string, limit: number | string, signal?: AbortSignal, token?: string | null) => {
   const res = await http.get<PagedResult<TourService>>('tour-services/services-of', {
     params: {
       pageSize: limit,
       pageIndex: page,
       tourGuideId: tourGuideId
     },
-    signal
+    signal,
+    headers:{
+      'Authorization': token
+    }
   });
   return res.data;
 };

@@ -10,6 +10,7 @@ namespace Services
         void CreateMembershipPackages(MembershipPackage membershippackages);
         void UpdateMembershipPackages(MembershipPackage membershippackages);
         bool DeleteMembershipPackages(int id);
+        Task<MembershipPackage> GetNearestPackageForAccount(int id);
     }
 
     public class MembershipPackagesService : IMembershipPackagesService
@@ -40,6 +41,11 @@ namespace Services
         {
             MembershipPackagesRepository.Remove(id);
             return true;
+        }
+
+        public async Task<MembershipPackage> GetNearestPackageForAccount(int id)
+        {
+            return await MembershipPackagesRepository.GetNearestPackageForAccount(id);
         }
     }
 }
