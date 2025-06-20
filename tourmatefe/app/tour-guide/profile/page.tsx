@@ -25,7 +25,7 @@ import MembershipPackageComponent from './profile-components/membership-package-
 
 function TourGuideProfileEdit() {
     const [editFormOpen, setEditFormOpen] = useState(false)
-    const { id } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
+    const { id, accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     const [toggleMode, setToggleMode] = useState({
         view: false,
         edit: false,
@@ -137,7 +137,7 @@ function TourGuideProfileEdit() {
                     </div>
                     <div className='mx-[5%] lg:mx-[20%] mt-16 '>
                         <div className="mb-6">
-                            <MembershipPackageComponent tourGuideId={id} />
+                            <MembershipPackageComponent accountId={accId} />
                         </div>
                         <div className='flex justify-between mb-5'>
                             <h3 className='text-3xl font-bold'>Thông tin cá nhân</h3>

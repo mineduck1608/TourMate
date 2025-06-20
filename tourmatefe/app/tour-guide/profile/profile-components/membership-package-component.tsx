@@ -6,32 +6,10 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
-import { Crown, Calendar, DollarSign, Star } from "lucide-react"
-import { MembershipPackage } from "@/types/membership-package"
+import { Crown, Star } from "lucide-react"
+import { getNearestMembershipOf } from "@/app/api/membership-package.api"
 
-
-// Mock function - replace with your actual API call
-const getMembershipPackage = async (tourGuideId: number): Promise<MembershipPackage | undefined> => {
-    // Simulate API call
-    const {} = tourGuideId
-    await new Promise((resolve) => setTimeout(resolve, 1000))
-
-    // Mock data - replace with actual API call
-    return {
-        membershipPackageId: 1,
-        name: "Premium Tour Guide",
-        price: 299.99,
-        duration: 12,
-        benefitDesc:
-            "Gói thành viên cao cấp bao gồm: Hiển thị ưu tiên trong kết quả tìm kiếm, Hỗ trợ khách hàng 24/7, Công cụ quản lý tour nâng cao, Báo cáo chi tiết về doanh thu, Khuyến mãi đặc biệt cho khách hàng",
-    }
-}
-
-interface MembershipPackageProps {
-    tourGuideId: number
-}
-
-export default function MembershipPackageComponent({ tourGuideId }: MembershipPackageProps) {
+export default function MembershipPackageComponent({ accountId }: { accountId: number }) {
     const [modalOpen, setModalOpen] = useState(false)
 
     const {
@@ -39,8 +17,8 @@ export default function MembershipPackageComponent({ tourGuideId }: MembershipPa
         isLoading,
         error,
     } = useQuery({
-        queryKey: ["membership-package", tourGuideId],
-        queryFn: () => getMembershipPackage(tourGuideId),
+        queryKey: ["membership-package", accountId],
+        queryFn: () => getNearestMembershipOf(accountId),
         staleTime: 24 * 3600 * 1000, // 24 hours
     })
 
@@ -58,9 +36,6 @@ export default function MembershipPackageComponent({ tourGuideId }: MembershipPa
                 <CardContent className="p-6 text-center">
                     <Crown className="mx-auto h-12 w-12 text-gray-400 mb-2" />
                     <p className="text-gray-500">Chưa có gói thành viên</p>
-                    <Button variant="outline" className="mt-2">
-                        Nâng cấp tài khoản
-                    </Button>
                 </CardContent>
             </Card>
         )
@@ -89,10 +64,6 @@ export default function MembershipPackageComponent({ tourGuideId }: MembershipPa
                             </div>
                             <p className="text-sm text-gray-600 mt-1">Nhấn để xem chi tiết gói thành viên</p>
                         </div>
-                        <div className="text-right">
-                            <p className="text-lg font-bold text-green-600">${membershipPackage.price}</p>
-                            <p className="text-xs text-gray-500">{membershipPackage.duration} tháng</p>
-                        </div>
                     </div>
                 </CardContent>
             </Card>
@@ -117,16 +88,23 @@ export default function MembershipPackageComponent({ tourGuideId }: MembershipPa
                             </Badge>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* <div className="grid grid-cols-2 gap-4">
                             <div className="text-center p-4 bg-green-50 rounded-lg">
                                 <DollarSign className="h-6 w-6 text-green-600 mx-auto mb-2" />
                                 <p className="text-sm text-gray-600">Giá gói</p>
-                                <p className="text-xl font-bold text-green-600">${membershipPackage.price}</p>
+                                <p className="text-xl font-bold text-green-600">{formatNumber(membershipPackage.price)} VND</p>
                             </div>
                             <div className="text-center p-4 bg-blue-50 rounded-lg">
                                 <Calendar className="h-6 w-6 text-blue-600 mx-auto mb-2" />
                                 <p className="text-sm text-gray-600">Thời hạn</p>
                                 <p className="text-xl font-bold text-blue-600">{membershipPackage.duration} tháng</p>
+                            </div>
+                        </div> */}
+
+                        <div>
+                            <h4 className="font-semibold text-gray-900 mb-3">Thời hạn:</h4>
+                            <div className="bg-gray-50 p-4 rounded-lg">
+                                <p className="text-sm text-gray-700 leading-relaxed">{membershipPackage.duration} tháng</p>
                             </div>
                         </div>
 
@@ -141,9 +119,9 @@ export default function MembershipPackageComponent({ tourGuideId }: MembershipPa
                             <Button variant="outline" className="flex-1" onClick={() => setModalOpen(false)}>
                                 Đóng
                             </Button>
-                            <Button className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600">
+                            {/* <Button className="flex-1 bg-gradient-to-r from-yellow-400 to-orange-500 hover:from-yellow-500 hover:to-orange-600">
                                 Gia hạn gói
-                            </Button>
+                            </Button> */}
                         </div>
                     </div>
                 </DialogContent>
