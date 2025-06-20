@@ -31,7 +31,7 @@ namespace API.Controllers
             return Ok(_bidService.GetAll(pageSize, pageIndex));
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "TourGuide")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BidCreateModel data)
         {
@@ -40,7 +40,7 @@ namespace API.Controllers
             return result ? CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid) : BadRequest();
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "TourGuide")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] BidUpdateModel bid)
         {
@@ -48,7 +48,7 @@ namespace API.Controllers
             return result ? NoContent() : BadRequest();
         }
 
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "TourGuide")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
