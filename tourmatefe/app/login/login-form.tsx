@@ -47,6 +47,8 @@ export function LoginForm({
         : null;
 
       const role = decoded?.[roleJwt] as string;
+      console.log(role);
+
       if (!role) {
         throw new Error("Không xác định được vai trò từ JWT.");
       }
@@ -77,6 +79,7 @@ export function LoginForm({
       const result = await login({ email, password });
       const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
       const role = decoded?.[roleJwt] as string;
+      console.log(role);
       if (!role) {
         throw new Error("Không xác định được vai trò từ JWT");
       }

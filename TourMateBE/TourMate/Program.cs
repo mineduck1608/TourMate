@@ -38,9 +38,9 @@ builder.Services.AddCors(options =>
 });
 
 // Đăng ký Azure SignalR Service
-builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+//builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
 
-//builder.Services.AddSignalR();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped<AccountRepository>();
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -139,13 +139,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-//if (FirebaseApp.DefaultInstance == null)
-//{
-//    FirebaseApp.Create(new AppOptions()
-//    {
-//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-//    });
-//}
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+    });
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

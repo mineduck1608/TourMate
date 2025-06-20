@@ -11,6 +11,7 @@ import {
   ContactRound,
   UserPlus,
   CreditCard,
+  Star,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -31,9 +32,9 @@ import Logo from "@/public/Logo.png";
 
 const data = {
   user: {
-    name: "shadcn",
-    email: "m@example.com",
-    avatar: "/avatars/shadcn.jpg",
+    name: "Admin",
+    email: "tourmate2025@gmail.com",
+    avatar: Logo.src,
   },
   navMain: [
     {
@@ -124,6 +125,11 @@ const data = {
       name: "Dashboard",
       url: "/admin/dashboard",
       icon: PieChart,
+    },
+    {
+      name: "Feedback",
+      url: "/admin/feedback",
+      icon: Star,
     },
     {
       name: "Liên hệ",
