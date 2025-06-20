@@ -213,7 +213,7 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
                 {/* Content */}
                 {feedback.content && (
                   <div className="bg-gray-50 rounded-lg p-4">
-                    <p className="text-gray-700 leading-relaxed italic">"{feedback.content}"</p>
+                    <p className="text-gray-700 leading-relaxed italic">&quot;{feedback.content}&quot;</p>
                   </div>
                 )}
 
