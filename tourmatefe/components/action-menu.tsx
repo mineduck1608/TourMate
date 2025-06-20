@@ -24,7 +24,7 @@ export default function ActionMenu() {
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const accountName = decoded?.FullName;
   const accountId = decoded?.AccountId;
-  const role = decoded?.[roleJwt]
+  const role = decoded?.[roleJwt] as string;
 
   return (
     <Sheet>

@@ -27,5 +27,5 @@ export function getUserRole(key: string): string | null {
       
       console.log(decoded);
       
-      return decoded?.[roleJwt] ?? null;
+      return decoded?.[roleJwt] as string ?? null;
 }

@@ -46,12 +46,12 @@ export function LoginForm({
         ? jwtDecode<MyJwtPayload>(response.accessToken.toString())
         : null;
 
-      const role = decoded?.[roleJwt];
+      const role = decoded?.[roleJwt] as string;
       console.log(role);
       
-      if (role == "Customer" || role == "TourGuide") {
+      if (role === "Customer" || role === "TourGuide") {
         router.push("/");
-      } else if (role == "Admin") {
+      } else if (role === "Admin") {
         router.push("/admin/dashboard");
       }
     } catch (error) {
@@ -74,15 +74,15 @@ export function LoginForm({
     try {
       const result = await login({ email, password });
       const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
-      const role = decoded?.[roleJwt];
+      const role = decoded?.[roleJwt] as string;
       console.log(role);
-      if (role == "Customer") {
+      if (role === "Customer") {
         router.push('/')
       }
-      if (role == "TourGuide") {
+      if (role === "TourGuide") {
         router.push('/')
       }
-      if (role == "Admin") {
+      if (role === "Admin") {
         router.push('/admin/dashboard')
       }
     } catch (err) {

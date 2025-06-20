@@ -13,6 +13,7 @@ import "@/styles/globals.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { useRouter } from 'next/navigation';
+import TourGuideFeedbackSection from './feedback';
 
 export default function TourGuideDetail({
     params,
@@ -120,6 +121,9 @@ export default function TourGuideDetail({
             </div>
             <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>
                 {id && <TourServices tourGuideId={id} />}
+            </div>
+            <div className="p-5 shadow-lg w-[85%] rounded-lg place-self-center">
+                {id && <TourGuideFeedbackSection tourGuideId={id as number} />}
             </div>
         </div>
     );
