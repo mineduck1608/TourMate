@@ -61,11 +61,19 @@ namespace API.Controllers
         string search = "",
         string region = "",
         int pageIndex = 1,
-        int pageSize = 8)
+        int pageSize = 8,
+        bool excludeContent = false)
         {
             // Gọi service để lấy dữ liệu đã lọc và phân trang
             var result = await _activeareaService.GetActiveAreas(search, region, pageIndex, pageSize);
-
+            if(excludeContent)
+            {
+                // Nếu không bao gồm nội dung, loại bỏ trường AreaContent khỏi kết quả
+                foreach (var area in result.Result)
+                {
+                    area.AreaContent = ""; // Hoặc có thể sử dụng một giá trị mặc định khác
+                }
+            }
             // Tạo đối tượng PagedResult để trả về cho client
             var response = new PagedResult<ActiveArea>
             {

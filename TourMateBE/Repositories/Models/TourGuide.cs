@@ -22,6 +22,7 @@ public partial class TourGuide
     public string Phone { get; set; } = null!;
 
     public string BannerImage { get; set; } = null!;
+    public bool IsVerified { get; set; }
 
     public virtual Account Account { get; set; } = null!;
 

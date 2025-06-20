@@ -5,10 +5,11 @@ import AboutSunday from '@/components/about-sunday';
 import MegaMenu from '@/components/mega-menu';
 import HomeNews from '@/components/home-news';
 import FeedbackSection from '@/components/feedback-section';
-import TourGuideCard from '@/components/tour-guide-card';
 import ContactPagination from '@/components/contact-panigation';
 import Footer from '@/components/Footer';
 import ContactText from './contact/contactText';
+import RotatingTourGuideHomePage from '@/components/rotating-tour-guide-home-page';
+// import TourGuideCard from '@/components/tour-guide-card';
 
 
 export default function Home() {
@@ -19,7 +20,8 @@ export default function Home() {
       <HeroSection />
       <AboutSunday />
       <ContactText />
-      <TourGuideCard />
+      {/* <TourGuideCard /> */}
+      <RotatingTourGuideHomePage />
       <FeedbackSection />
       <ContactPagination />
       <HomeNews />

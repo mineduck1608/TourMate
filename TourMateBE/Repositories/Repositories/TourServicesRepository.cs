@@ -9,7 +9,7 @@ namespace Repositories.Repository
     {
         public async Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex)
         {
-            var query = _context.TourServices.Where(x => x.TourGuideId == tourGuideId);
+            var query = _context.TourServices.Where(x => x.TourGuideId == tourGuideId).OrderByDescending(x => x.CreatedDate);
 
             // Phân trang
             var result = await query

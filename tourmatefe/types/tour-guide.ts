@@ -11,6 +11,7 @@ export type TourGuide = {
     address: string,
     image: string,
     phone: string,
+    isVerified: boolean,
     tourGuideDescs?: TourGuideDesc[],
     tourServices?: TourService[],
     account: Account,

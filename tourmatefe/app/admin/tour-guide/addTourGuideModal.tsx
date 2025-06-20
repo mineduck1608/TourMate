@@ -6,35 +6,36 @@ type AddTourGuideModalProps = {
   onClose: () => void;
   onSave: (data: TourGuide) => void;
 };
-
+const base: TourGuide = {
+  tourGuideId: 0,
+  address: "",
+  image: "",
+  accountId: 0,
+  fullName: "",
+  gender: "",
+  phone: "",
+  dateOfBirth: "",
+  account: {
+    role: {
+      roleId: 3,
+      roleName: "TourGuide"
+    },
+    accountId: 0,
+    email: "",
+    password: "",
+    status: true,
+    createdDate: "",
+    roleId: 3,
+  },
+  bannerImage: '',
+  isVerified: false,
+}
 const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
   isOpen,
   onClose,
   onSave,
 }) => {
-  const [formData, setFormData] = useState<TourGuide>({
-    tourGuideId: 0,
-    address: "",
-    image: "",
-    accountId: 0,
-    fullName: "",
-    gender: "",
-    phone: "",
-    dateOfBirth: "",
-    account: {
-      role: {
-        roleId: 3,
-        roleName: "TourGuide"
-      },
-      accountId: 0,
-      email: "",
-      password: "",
-      status: true,
-      createdDate: "",
-      roleId: 3,
-    },
-    bannerImage: ''
-  });
+  const [formData, setFormData] = useState<TourGuide>({ ...base });
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -74,38 +75,15 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
     onSave(dataToSave);
     console.log("Form data submitted:", dataToSave);
 
-    setFormData({
-      tourGuideId: 0,
-      address: "",
-      image: "",
-      accountId: 0,
-      fullName: "",
-      gender: "",
-      phone: "",
-      dateOfBirth: "",
-      account: {
-        role: {
-        roleId: 3,
-        roleName: "TourGuide"
-      },
-        accountId: 0,
-        email: "",
-        password: "",
-        status: true,
-        createdDate: "",
-        roleId: 3,
-      },
-      bannerImage: ''
-    });
+    setFormData({ ...base });
 
     onClose();
   };
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
     >
       <div
         className="absolute inset-0 bg-black opacity-50"
