@@ -38,7 +38,7 @@ export default function CustomerProfile() {
         ? jwtDecode<MyJwtPayload>(token.toString())
         : null;
     const currentAccountId = decoded?.AccountId;
-    const accountRole = decoded?.[roleJwt];
+    const accountRole = decoded?.[roleJwt] as string;
 
     const { data } = useQuery({
         queryKey: ["user-profile", currentAccountId, accountRole],

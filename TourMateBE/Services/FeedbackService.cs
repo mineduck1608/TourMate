@@ -1,5 +1,6 @@
 ﻿using Repositories.Models;
 using Repositories.Repository;
+using Repositories.ResponseModels;
 
 namespace Services
 {
@@ -14,11 +15,58 @@ namespace Services
         Task<bool> UpdateFeedback(Feedback feedback);
         Task<bool> DeleteFeedback(int id);
         string GenerateTourGuideFeedbackEmail(Feedback feedback);
+        Task<PaginatedFeedbackResponse> GetTourGuideFeedbacksPublicAsync(int tourGuideId, int page, int pageSize);
     }
 
     public class FeedbackService : IFeedbackService
     {
         private FeedbackRepository FeedbackRepository { get; set; } = new();
+
+       public async Task<PaginatedFeedbackResponse> GetTourGuideFeedbacksPublicAsync(int tourGuideId, int page, int pageSize)
+        {
+            // Validate input parameters
+            if (tourGuideId <= 0)
+                throw new ArgumentException("Tour Guide ID phải lớn hơn 0");
+
+            if (page <= 0)
+                throw new ArgumentException("Page phải lớn hơn 0");
+
+            if (pageSize <= 0 || pageSize > 100)
+                throw new ArgumentException("Page size phải từ 1 đến 100");
+
+            // Get feedbacks from repository
+            var feedbacks = await FeedbackRepository.GetTourGuideFeedbacksAsync(tourGuideId, page, pageSize);
+            var totalCount = await FeedbackRepository.GetTourGuideFeedbackCountAsync(tourGuideId);
+
+            // Calculate pagination info
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
+            // Map to DTOs
+            var feedbackDtos = feedbacks.Select(f => new PublicFeedbackDto
+            {
+                FeedbackId = f.FeedbackId,
+                CustomerId = f.CustomerId,
+                TourGuideId = f.TourGuideId,
+                CreatedDate = f.CreatedDate,
+                Content = f.Content,
+                Rating = f.Rating,
+                InvoiceId = f.InvoiceId ?? 0,
+                CustomerName = f.Customer.FullName,
+                CustomerAvatar = f.Customer.Image,
+                CustomerAccountId = f.Customer?.AccountId,
+                TourName = f.Invoice?.TourName,
+                StartDate = f.Invoice?.StartDate
+            }).ToList();
+
+            return new PaginatedFeedbackResponse
+            {
+                Result = feedbackDtos,
+                TotalCount = totalCount,
+                TotalPage = totalPages,
+                CurrentPage = page,
+                PageSize = pageSize
+            };
+        }
 
         public async Task<Feedback> GetFeedback(int id)
         {

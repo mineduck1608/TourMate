@@ -93,5 +93,27 @@ namespace API.Controllers
             var result = await _feedbackService.DeleteFeedback(id);
             return result ? NoContent() : NotFound();
         }
+
+        [HttpGet("tour-guide/public")]
+        public async Task<ActionResult> GetTourGuideFeedbacksPublic(
+            [FromQuery] int tourGuideId,
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var result = await _feedbackService.GetTourGuideFeedbacksPublicAsync(tourGuideId, page, pageSize);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách đánh giá", error = ex.Message });
+            }
+        }
+
     }
 }
