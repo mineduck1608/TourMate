@@ -23,6 +23,7 @@ const ReactQuill = dynamic(() => import("react-quill-new"), {
 });
 
 import "react-quill-new/dist/quill.snow.css";
+import { ApiError } from "@/types/response";
 
 export function SignupForm({
   className,
@@ -54,12 +55,9 @@ export function SignupForm({
         window.location.href = "/";
       }, 800);
     },
-    onError: (error) => {
+    onError: (error: ApiError) => {
       setError(
-        error.message || "Đăng ký thất bại. Vui lòng thử lại sau."
-      );
-      alert(
-        error.message || "Đăng ký thất bại. Vui lòng thử lại sau."
+        error.response?.data?.msg || "Đăng ký thất bại. Vui lòng thử lại sau."
       );
     },
   });
