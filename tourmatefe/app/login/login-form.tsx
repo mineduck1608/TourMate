@@ -47,8 +47,10 @@ export function LoginForm({
         : null;
 
       const role = decoded?.[roleJwt] as string;
-      console.log(role);
-      
+      if (!role) {
+        throw new Error("Không xác định được vai trò từ JWT.");
+      }
+
       if (role === "Customer" || role === "TourGuide") {
         router.push("/");
       } else if (role === "Admin") {
@@ -75,15 +77,19 @@ export function LoginForm({
       const result = await login({ email, password });
       const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
       const role = decoded?.[roleJwt] as string;
-      console.log(role);
-      if (role === "Customer") {
-        router.push('/')
+      if (!role) {
+        throw new Error("Không xác định được vai trò từ JWT");
       }
-      if (role === "TourGuide") {
-        router.push('/')
-      }
-      if (role === "Admin") {
-        router.push('/admin/dashboard')
+      switch (role) {
+        case "Customer":
+        case "TourGuide":
+          router.push("/");
+          break;
+        case "Admin":
+          router.push("/admin/dashboard");
+          break;
+        default:
+          throw new Error("Vai trò không hợp lệ");
       }
     } catch (err) {
       // Xử lý lỗi không dùng any

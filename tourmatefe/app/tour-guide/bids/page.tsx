@@ -63,14 +63,14 @@ function TourBidPageMain() {
             <div>
                 <Banner title='Đấu giá' imageUrl='/travel.jpg' />
                 <div className='lg:flex justify-evenly pt-10'>
-                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-0 h-screen overflow-y-auto *:mb-5">
+                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-5 h-screen overflow-y-auto *:mb-5">
                         <Profile tourGuide={tourGuide} />
                         <RotatingTourGuide excludeId={tourGuide?.tourGuideId} />
                     </div>
-                    <div className='w-full lg:w-[32%] '>
+                    <div className='w-full lg:w-[32%] mb-5'>
                         <Bids tourGuide={tourGuide} search={content} />
                     </div>
-                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-0 h-screen overflow-y-auto *:mb-5">
+                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-5 h-screen overflow-y-auto *:mb-5">
                         <div className="rounded-md border shadow-lg p-5">
                             <input
                                 className="p-1 w-full mb-2 border-2 rounded-sm"
@@ -87,7 +87,7 @@ function TourBidPageMain() {
                                     <span className="text-end">({v.tourBidCount} bài đăng)</span>
                                 </div>
                             ))}
-                        </div>
+                        </div>                
                         <RotatingActiveArea />
                     </div>
                 </div>
