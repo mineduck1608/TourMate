@@ -16,6 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import CustomerProfile from "./customerProfile";
 import { ResetPass } from "./reset-password";
 import Link from "next/link";
+import { roleJwt } from "@/types/constants";
 
 export default function ActionMenu() {
 
@@ -23,7 +24,7 @@ export default function ActionMenu() {
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null;
   const accountName = decoded?.FullName;
   const accountId = decoded?.AccountId;
-  const role = decoded?.Role
+  const role = decoded?.[roleJwt]
 
   return (
     <Sheet>

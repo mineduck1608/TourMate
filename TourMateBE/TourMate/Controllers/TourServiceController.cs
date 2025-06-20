@@ -9,7 +9,6 @@ using Services;
 
 namespace API.Controllers
 {
-    [Authorize(Roles = "TourGuide")]
     [Route("api/tour-services")]
     [ApiController]
     public class TourServiceController : ControllerBase

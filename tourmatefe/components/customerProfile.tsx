@@ -30,6 +30,7 @@ import { toast } from "react-toastify";
 import { Customer } from "@/types/customer";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import { storage } from "@/firebaseConfig";
+import { roleJwt } from "@/types/constants";
 
 export default function CustomerProfile() {
     const token = useToken("accessToken");
@@ -37,7 +38,7 @@ export default function CustomerProfile() {
         ? jwtDecode<MyJwtPayload>(token.toString())
         : null;
     const currentAccountId = decoded?.AccountId;
-    const accountRole = decoded?.Role;
+    const accountRole = decoded?.[roleJwt];
 
     const { data } = useQuery({
         queryKey: ["user-profile", currentAccountId, accountRole],

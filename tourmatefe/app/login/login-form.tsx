@@ -16,6 +16,7 @@ import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { auth, provider } from "@/firebaseConfig";
 import { signInWithPopup } from "firebase/auth";
+import { roleJwt } from "@/types/constants";
 
 export function LoginForm({
   className,
@@ -45,10 +46,12 @@ export function LoginForm({
         ? jwtDecode<MyJwtPayload>(response.accessToken.toString())
         : null;
 
-      const role = decoded?.Role;
-      if (role === "Customer" || role === "TourGuide") {
+      const role = decoded?.[roleJwt];
+      console.log(role);
+      
+      if (role == "Customer" || role == "TourGuide") {
         router.push("/");
-      } else if (role === "Admin") {
+      } else if (role == "Admin") {
         router.push("/admin/dashboard");
       }
     } catch (error) {
@@ -71,7 +74,8 @@ export function LoginForm({
     try {
       const result = await login({ email, password });
       const decoded: MyJwtPayload | null = result.accessToken ? jwtDecode<MyJwtPayload>(result.accessToken.toString()) : null;
-      const role = decoded?.Role
+      const role = decoded?.[roleJwt];
+      console.log(role);
       if (role == "Customer") {
         router.push('/')
       }

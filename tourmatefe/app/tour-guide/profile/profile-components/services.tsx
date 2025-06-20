@@ -11,13 +11,17 @@ import { TourService } from '@/types/tour-service'
 import { toast } from 'react-toastify'
 import { TourGuideSiteContext, TourGuideSiteContextProps } from '../../context'
 import Link from 'next/link'
+import { useAuth } from '@/components/authProvider'
 
 export default function TourServices({ tourGuideId }: { tourGuideId: number | string }) {
     const [page, setPage] = useState(1)
     const pageSize = 6
+    const auth = useAuth()
+    console.log(auth.role);
+    
     const { data, refetch } = useQuery({
         queryKey: ['tour-services-of', tourGuideId, pageSize, page],
-        queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize),
+        queryFn: () => getTourServicesOf(Number(tourGuideId), page, pageSize, undefined, auth.token),
         staleTime: 24 * 3600 * 1000,
     })
     //Mutation here
