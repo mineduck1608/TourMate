@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
@@ -30,6 +31,7 @@ namespace API.Controllers
             return Ok(_bidService.GetAll(pageSize, pageIndex));
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] BidCreateModel data)
         {
@@ -38,6 +40,7 @@ namespace API.Controllers
             return result ? CreatedAtAction(nameof(Get), new { id = bid.BidId }, bid) : BadRequest();
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] BidUpdateModel bid)
         {
@@ -45,6 +48,7 @@ namespace API.Controllers
             return result ? NoContent() : BadRequest();
         }
 
+        [Authorize(Roles = "Customer")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteAsync(int id)
         {
@@ -57,6 +61,8 @@ namespace API.Controllers
             var result = await _bidService.GetBidsOfTourBid(tourBid, pageSize, pageIndex);
             return Ok(result);
         }
+
+        [Authorize(Roles = "Customer")]
         [HttpPost("accept/{bidId}")]
         public async Task<IActionResult> AcceptBid(int bidId)
         {

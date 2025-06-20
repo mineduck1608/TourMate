@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
 using Repositories.ResponseModels;
 using Services;
@@ -6,6 +7,7 @@ using System;
 
 namespace API.Controllers
 {
+    [Authorize]
     [Route("api/conversation")]
     [ApiController]
     public class ConversationController : ControllerBase

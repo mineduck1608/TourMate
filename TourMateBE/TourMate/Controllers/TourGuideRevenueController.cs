@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -5,6 +6,7 @@ using Services;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = "TourGuide")]
     [Route("api/tour-guide-revenues")]
     [ApiController]
     public class TourGuideRevenueController : ControllerBase

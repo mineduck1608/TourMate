@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModals;
 using Repositories.DTO.UpdateModels;
@@ -56,6 +57,7 @@ namespace API.Controllers
             return Ok(await _activeareaService.GetMostPopularAreas());
         }
 
+
         [HttpGet("filtered-area")]
         public async Task<ActionResult<PagedResult<ActiveArea>>> GetActiveAreas(
         string search = "",
@@ -85,6 +87,7 @@ namespace API.Controllers
             return Ok(response);  // Trả về dữ liệu dưới dạng OK response
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] ActiveAreaCreateModel data)
         {
@@ -97,6 +100,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] ActiveAreaUpdateModal data)
         {
@@ -109,6 +113,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {

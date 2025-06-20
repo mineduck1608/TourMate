@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
 using Repositories.ResponseModels;
@@ -29,6 +30,7 @@ namespace API.Controllers
             return Ok(_cvapplicationService.GetCvapplication(id));
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpGet]
         public async Task<ActionResult<PagedResult<Cvapplication>>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
         {

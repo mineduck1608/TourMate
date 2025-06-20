@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -6,6 +7,7 @@ using Services;
 
 namespace TourMate.Controllers
 {
+    [Authorize]
     [Route("api/files")]
     [ApiController]
     public class FileController : ControllerBase

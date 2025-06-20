@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
 using Repositories.Models;
@@ -7,6 +8,7 @@ using Services;
 
 namespace TourMate.Controllers;
 
+[Authorize]
 [Route("api/payos")]
 [ApiController]
 public class PayOSController : ControllerBase

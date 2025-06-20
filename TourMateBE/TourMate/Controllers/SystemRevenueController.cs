@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
@@ -5,6 +6,7 @@ using Services;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/system-revenues")]
     [ApiController]
     public class SystemRevenueController : ControllerBase

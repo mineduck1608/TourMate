@@ -177,53 +177,50 @@ namespace Services
             }
 
 
-            public async Task<AuthResponse> RefreshNewTokenAsync(string refreshToken)
-            {
-                var token = await _refreshTokenService.GetByRefreshToken(refreshToken);
-                if (token == null || token.ExpireAt < DateTime.UtcNow)
-                    return null;
-
-                if (token.User.Role.RoleName == "Customer")
-                {
-                    var customer = await _customerService.GetCustomerByAccId(token.User.AccountId);
-                    var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, customer.FullName, "Customer");
-                    var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
-
-                    return new AuthResponse
-                    {
-                        AccessToken = newAccessToken,
-                        RefreshToken = newRefreshToken
-                    };
-                }
-
-                if (token.User.Role.RoleName == "TourGuide")
-                {
-                    var tourGuide = await _tourGuideService.GetTourGuideByAccId(token.User.AccountId);
-                    var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, tourGuide.FullName, "TourGuide");
-                    var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
-
-                    return new AuthResponse
-                    {
-                        AccessToken = newAccessToken,
-                        RefreshToken = newRefreshToken
-                    };
-                }
-
-                if (token.User.Role.RoleName == "Admin")
-                {
-                    var newAccessToken = _tokenService.GenerateAccessToken(token.User.AccountId, "Admin", "Admin");
-                    var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(token.User.AccountId);
-
-                    return new AuthResponse
-                    {
-                        AccessToken = newAccessToken,
-                        RefreshToken = newRefreshToken
-                    };
-                }
-
+        public async Task<AuthResponse?> RefreshNewTokenAsync(string refreshToken)
+        {
+            var token = await _refreshTokenService.GetByRefreshToken(refreshToken);
+            if (token == null || token.ExpireAt < DateTime.UtcNow || token.IsRevoked)
                 return null;
+
+            token.IsRevoked = true;
+            await _refreshTokenService.UpdateRefreshToken(token);
+
+            var user = token.User;
+            string fullName;
+
+            var account = await _repo.GetRoleByAccountId(user.AccountId);
+            string roleName = account.Role.RoleName;
+
+            switch (roleName)
+            {
+                case "Customer":
+                    var customer = await _customerService.GetCustomerByAccId(user.AccountId);
+                    fullName = customer.FullName;
+                    break;
+                case "TourGuide":
+                    var tourGuide = await _tourGuideService.GetTourGuideByAccId(user.AccountId);
+                    fullName = tourGuide.FullName;
+                    break;
+                case "Admin":
+                    fullName = "Admin";
+                    break;
+                default:
+                    return null;
             }
-            public async Task<Account> GetAccountByEmail(string email)
+
+            var newAccessToken = _tokenService.GenerateAccessToken(user.AccountId, fullName, roleName);
+            var newRefreshToken = await _tokenService.GenerateAndSaveRefreshTokenAsync(user.AccountId);
+
+            return new AuthResponse
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken
+            };
+        }
+
+
+        public async Task<Account> GetAccountByEmail(string email)
             {
                 // Kiểm tra tài khoản đã tồn tại
                 return await _repo.GetAccountByEmail(email);

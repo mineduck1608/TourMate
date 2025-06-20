@@ -1,4 +1,5 @@
 ﻿using FirebaseAdmin.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
 using Repositories.DTO.CreateModels;
@@ -36,6 +37,20 @@ namespace API.Controllers
             _tourGuideDescService = tourGuideDescService;
             _emailSender = emailSender;
             _cvApplicationService = cvApplicationService;
+        }
+
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RefreshToken([FromBody] TokenRequest request)
+        {
+            if (string.IsNullOrWhiteSpace(request.Token))
+                return BadRequest(new { message = "Refresh token is required." });
+
+            var response = await _accountService.RefreshNewTokenAsync(request.Token);
+
+            if (response == null)
+                return Unauthorized(new { message = "Invalid or expired refresh token." });
+
+            return Ok(response); // return { accessToken, refreshToken }
         }
 
         [HttpPost("google")]
@@ -447,6 +462,7 @@ namespace API.Controllers
             return res.ToString();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPost("rejectcv")]
         public async Task<ActionResult> RejectCvApplication([FromBody] dynamic request)
         {
@@ -652,6 +668,7 @@ namespace API.Controllers
             return NoContent();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("lock/{id}")]
         public async Task<IActionResult> LockAccount(int id)
         {
@@ -663,6 +680,7 @@ namespace API.Controllers
             return BadRequest();
         }
 
+        [Authorize(Roles = "Admin")]
         [HttpPut("unlock/{id}")]
         public async Task<IActionResult> UnlockAccount(int id)
         {

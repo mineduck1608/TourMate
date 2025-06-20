@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModals;
@@ -8,6 +9,7 @@ using Services;
 
 namespace API.Controllers
 {
+    [Authorize(Roles = "TourGuide")]
     [Route("api/tour-services")]
     [ApiController]
     public class TourServiceController : ControllerBase

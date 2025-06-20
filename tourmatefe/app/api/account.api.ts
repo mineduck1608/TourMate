@@ -201,3 +201,43 @@ export const approveCVApplication = async (data: ApprovedCVRequest) => {
   const response = await http.post("/account/registertourguide", data);
   return response.data;
 };
+
+export const refreshToken = async (): Promise<LoginResponse> => {
+  const token = sessionStorage.getItem("refreshToken");
+  if (!token) throw new Error("Missing refresh token");
+
+  try {
+    const response = await http.post<LoginResponse>(
+      "/account/refresh-token",
+      { Token: token },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const data = response.data;
+
+    if (data?.accessToken && data.refreshToken) {
+      sessionStorage.setItem("accessToken", data.accessToken);
+      sessionStorage.setItem("refreshToken", data.refreshToken);
+    }
+
+    return data;
+  } catch (error) {
+    let message = "Làm mới token thất bại";
+
+    if (axios.isAxiosError(error)) {
+      if (
+        error.response?.data &&
+        typeof error.response.data === "object" &&
+        "message" in error.response.data
+      ) {
+        message = (error.response.data as { message: string }).message;
+      }
+    }
+
+    throw new Error(message);
+  }
+};

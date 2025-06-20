@@ -32,6 +32,13 @@ namespace Repositories.Repository
             return null;
         }
 
+        public async Task<Account?> GetRoleByAccountId(int id)
+        {
+            var query = _context.Accounts
+                .Include(a => a.Role).FirstOrDefault(a => a.AccountId == id);
+            return query;
+        }
+
 
         public async Task<List<AccountSearchResult>> SearchAccountsByNameAsync(string searchTerm, int excludeUserId)
         {

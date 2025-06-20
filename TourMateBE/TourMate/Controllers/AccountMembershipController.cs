@@ -16,6 +16,7 @@ namespace API.Controllers
             _accountmembershipService = accountmembershipService;
         }
 
+
         [HttpGet("{id}")]
         public ActionResult<AccountMembership> Get(int id)
         {
