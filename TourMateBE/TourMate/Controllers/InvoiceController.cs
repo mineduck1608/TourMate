@@ -2,8 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
-using Services;
-using System.Threading.Tasks;
+using Services.IServices;
 
 namespace API.Controllers
 {

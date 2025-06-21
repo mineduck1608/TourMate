@@ -2,9 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
-using Repositories.Models;
-using Repositories.Repository;
-using Services;
+using Services.IServices;
 
 namespace TourMate.Controllers;
 

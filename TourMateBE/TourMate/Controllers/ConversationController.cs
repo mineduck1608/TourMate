@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.Models;
 using Repositories.ResponseModels;
-using Services;
-using System;
+using Services.IServices;
 
 namespace API.Controllers
 {

@@ -1,10 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Repositories.DTO.UpdateModals;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Repositories.ResponseModels;
-using Services;
+using Services.IServices;
 using Services.Utils;
 
 namespace API.Controllers

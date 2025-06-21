@@ -5,7 +5,7 @@ using Repositories.DTO.UpdateModels;
 using Repositories.Models;
 using Repositories.RequestModels;
 using Repositories.ResponseModels;
-using Services;
+using Services.IServices;
 using Services.Utils;
 
 namespace API.Controllers

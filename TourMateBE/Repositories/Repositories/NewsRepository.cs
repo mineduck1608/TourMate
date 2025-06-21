@@ -1,14 +1,18 @@
-﻿using Repositories.Models;
-using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
-using System.Globalization;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using Repositories.Context;
+using Repositories.GenericRepository;
+using Repositories.IRepositories;
+using Repositories.Models;
 using Repositories.ResponseModels;
+using System.Globalization;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class NewsRepository : GenericRepository<News>
+    public class NewsRepository : GenericRepository<News>, INewsRepository
     {
+        public NewsRepository(TourmateContext context) : base(context) { }
+
         public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category)
         {
             var query = _context.News.AsQueryable();

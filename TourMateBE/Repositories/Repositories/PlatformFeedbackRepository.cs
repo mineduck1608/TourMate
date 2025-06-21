@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -9,8 +11,10 @@ using System.Threading.Tasks;
 
 namespace Repositories.Repositories
 {
-    public class PlatformFeedbackRepository : GenericRepository<PlatformFeedback>
+    public class PlatformFeedbackRepository : GenericRepository<PlatformFeedback>, IPlatformFeedbackRepository
     {
+        public PlatformFeedbackRepository(TourmateContext context) : base(context) { }
+
         public async Task<IEnumerable<PlatformFeedback>> GetAllPlatformFeedback()
         {
             return await _context.PlatformFeedbacks

@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.RequestModels;
-using Services;
+using Services.IServices;
 
 namespace TourMate.Controllers
 {

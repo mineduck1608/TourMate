@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.ResponseModels;
-using Services;
+using Services.IServices;
 
 namespace TourMate.Controllers
 {

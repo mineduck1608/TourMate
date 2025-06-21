@@ -1,16 +1,18 @@
-﻿using Repositories.Models;
-using Repositories.GenericRepository;
+﻿using Azure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
-using Azure;
-using System.Collections.Generic;
+using Repositories.Context;
+using Repositories.GenericRepository;
+using Repositories.IRepositories;
+using Repositories.Models;
 using Repositories.ResponseModels;
+using System.Collections.Generic;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class CustomerRepository : GenericRepository<Customer>
+    public class CustomerRepository : GenericRepository<Customer>, ICustomerRepository
     {
-        public CustomerRepository()
+        public CustomerRepository(TourmateContext context) : base(context)
         {
         }
 

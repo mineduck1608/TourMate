@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.ResponseModels;
 using System;
@@ -9,14 +10,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class TourBidCommentRepository : GenericRepository<TourBidComment>
+    public class TourBidCommentRepository : GenericRepository<TourBidComment>, ITourBidCommentRepository
     {
-        public TourBidCommentRepository()
+        public TourBidCommentRepository(TourmateContext context) : base(context)
         {
-            _context = new();
         }
+
         public async Task<PagedResult<CommentListResult>> GetCommentsByTourBidIdAsync(int tourBidId, int pageSize, int pageIndex)
         {
             var query = _context.TourBidComments

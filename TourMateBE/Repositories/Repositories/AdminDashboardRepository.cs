@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
+using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.ResponseModels;
 using System;
@@ -9,9 +10,9 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class AdminDashboardRepository
+    public class AdminDashboardRepository : IAdminDashboardRepository
     {
         private readonly TourmateContext _context;
 

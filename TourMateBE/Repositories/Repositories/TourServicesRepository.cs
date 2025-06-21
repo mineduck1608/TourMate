@@ -1,12 +1,16 @@
-﻿using Repositories.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
+using Repositories.IRepositories;
+using Repositories.Models;
 using Repositories.ResponseModels;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class TourServicesRepository : GenericRepository<TourService>
+    public class TourServicesRepository : GenericRepository<TourService>, ITourServicesRepository
     {
+        public TourServicesRepository(TourmateContext context) : base(context) { }
+
         public async Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex)
         {
             var query = _context.TourServices.Where(x => x.TourGuideId == tourGuideId && !x.IsDeleted).OrderByDescending(x => x.CreatedDate);

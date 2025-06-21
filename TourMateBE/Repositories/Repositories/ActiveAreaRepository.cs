@@ -1,13 +1,16 @@
-﻿using Repositories.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
+using Repositories.IRepositories;
+using Repositories.Models;
 using Repositories.ResponseModels;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class ActiveAreaRepository : GenericRepository<ActiveArea>
+    public class ActiveAreaRepository : GenericRepository<ActiveArea>, IActiveAreaRepository
     {
-        // Trả về ActiveAreas với bộ lọc theo search và region
+        public ActiveAreaRepository(TourmateContext context) : base(context) { }
+
         public async Task<PagedResult<ActiveArea>> GetActiveAreas(string search, string region, int page, int limit)
         {
             var query = _context.ActiveAreas.AsQueryable();

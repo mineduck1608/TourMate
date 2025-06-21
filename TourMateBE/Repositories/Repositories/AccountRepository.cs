@@ -1,15 +1,15 @@
-﻿using Repositories.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
-using Microsoft.EntityFrameworkCore;
+using Repositories.IRepositories;
+using Repositories.Models;
 using Repositories.ResponseModels;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class AccountRepository : GenericRepository<Account>
+    public class AccountRepository : GenericRepository<Account>, IAccountRepository
     {
-        public AccountRepository()
-        {
-        }
+        public AccountRepository(TourmateContext context) : base(context) { }
 
         public async Task<Account?> GetByAccountAndRoleAsync(int id, string role)
         {

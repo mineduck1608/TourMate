@@ -1,15 +1,16 @@
-﻿using Repositories.Models;
-using Repositories.GenericRepository;
-using System;
+﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
-using Microsoft.EntityFrameworkCore;
+using Repositories.GenericRepository;
+using Repositories.IRepositories;
+using Repositories.Models;
+using System;
 
-namespace Repositories.Repository
+
+namespace Repositories.Repositories
 {
-    public class RefreshTokenRepository : GenericRepository<RefreshToken>
+    public class RefreshTokenRepository : GenericRepository<RefreshToken>, IRefreshTokenRepository
     {
-
-        public RefreshTokenRepository()
+        public RefreshTokenRepository(TourmateContext context) : base(context)
         {
         }
 

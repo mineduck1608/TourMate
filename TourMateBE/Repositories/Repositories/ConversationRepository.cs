@@ -1,12 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.ResponseModels;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class ConversationRepository : GenericRepository<Conversation>
+    public class ConversationRepository : GenericRepository<Conversation>, IConversationRepository
     {
+        public ConversationRepository(TourmateContext context) : base(context)
+        {
+        }
+
         public async Task<Conversation?> GetConversationBetweenUsersAsync(int userId1, int userId2)
         {
             return await _context.Conversations.Include(c => c.Account1)
