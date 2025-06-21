@@ -78,13 +78,6 @@ namespace Services.Services
         {
             return await _repository.ChangePicture(id, fieldToChange, newValue);
         }
-
-        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize, bool prioritizeMembership)
-        {
-            return prioritizeMembership ? 
-                await _repository.GetOtherTourGuidesFavorMembership(tourGuideId, pageSize) : 
-                await _repository.GetOtherTourGuidesAsync(tourGuideId, pageSize);
-        }
         public async Task<bool> ChangePassword(int id, string password)
         {
             return await _repository.ChangePassword(id, password);
@@ -92,6 +85,11 @@ namespace Services.Services
         public async Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize)
         {
             return await _repository.GetTourGuidesByAreaAsync(areaId, pageSize);
+        }
+
+        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
+        {
+            return await _repository.GetOtherTourGuidesFavorMembership(tourGuideId, pageSize);
         }
     }
 }

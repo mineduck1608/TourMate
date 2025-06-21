@@ -19,5 +19,6 @@ namespace Repositories.IRepositories
         Task<bool> ChangePassword(int id, string password);
         Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize);
         Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize);
+        Task<List<TourGuide>> GetOtherTourGuidesFavorMembership(int tourGuideId, int pageSize);
     }
 }
