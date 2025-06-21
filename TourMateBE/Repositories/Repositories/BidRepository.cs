@@ -2,10 +2,11 @@
 using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
 using Repositories.ResponseModels;
+using Repositories.IRepositories;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class BidRepository : GenericRepository<Bid>
+    public class BidRepository : GenericRepository<Bid>, IBidRepository
     {
         public async Task<PagedResult<BidListResult>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex)
         {

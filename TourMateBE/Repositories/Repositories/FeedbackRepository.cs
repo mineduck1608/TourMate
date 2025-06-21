@@ -1,34 +1,45 @@
 using Repositories.Models;
 using Repositories.GenericRepository;
 using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
+using Repositories.IRepositories;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class FeedbackRepository : GenericRepository<Feedback>
+    public class FeedbackRepository : GenericRepository<Feedback>, IFeedbackRepository
     {
-        public async Task<Feedback> GetByInvoice(int invoiceId)
+
+        public FeedbackRepository(TourmateContext context) : base(context)
         {
-            var result = _context.Feedbacks.FirstOrDefault(i => i.InvoiceId == invoiceId);
-            return result;
         }
 
-        public async Task<List<Feedback>> GetByAccount(int id)
+        public async Task<Feedback?> GetByInvoiceAsync(int invoiceId)
         {
-            var result = await _context.Feedbacks.Include(tg => tg.TourGuide).Include(c => c.Customer).Where(i => i.TourGuide.AccountId == id).ToListAsync();
-            return result;
+            return await _context.Feedbacks.FirstOrDefaultAsync(i => i.InvoiceId == invoiceId);
         }
 
-        public async Task<Feedback> GetByIdContainInvoice(int id)
+        public async Task<List<Feedback>> GetByAccountAsync(int accountId)
         {
-            var result = _context.Feedbacks.Include(i => i.Invoice).Include(tg => tg.TourGuide).Include(cs => cs.Customer).FirstOrDefault(f => f.FeedbackId == id);
-            return result;
+            return await _context.Feedbacks
+                .Include(f => f.TourGuide)
+                .Include(f => f.Customer)
+                .Where(f => f.TourGuide.AccountId == accountId)
+                .ToListAsync();
+        }
+
+        public async Task<Feedback?> GetByIdContainInvoiceAsync(int id)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Invoice)
+                .Include(f => f.TourGuide)
+                .Include(f => f.Customer)
+                .FirstOrDefaultAsync(f => f.FeedbackId == id);
         }
 
         public async Task<List<Feedback>> GetTourGuideFeedbacksAsync(int tourGuideId, int page, int pageSize)
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
                 .Include(f => f.Invoice)
                 .Where(f => f.TourGuideId == tourGuideId && !f.IsDeleted)
                 .OrderByDescending(f => f.CreatedDate)
@@ -47,10 +58,8 @@ namespace Repositories.Repository
         public async Task<IEnumerable<Feedback>> GetAllFeedbackAsync()
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
-                .Include(f => f.TourGuide)
-                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide).ThenInclude(tg => tg.Account)
                 .Include(f => f.Invoice)
                 .Where(f => !f.IsDeleted)
                 .OrderByDescending(f => f.CreatedDate)
@@ -60,10 +69,8 @@ namespace Repositories.Repository
         public async Task<Feedback?> GetFeedbackByIdAsync(int id)
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
-                .Include(f => f.TourGuide)
-                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide).ThenInclude(tg => tg.Account)
                 .Include(f => f.Invoice)
                 .FirstOrDefaultAsync(f => f.FeedbackId == id && !f.IsDeleted);
         }
@@ -71,10 +78,8 @@ namespace Repositories.Repository
         public async Task<IEnumerable<Feedback>> GetByTourGuideIdAsync(int tourGuideId)
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
-                .Include(f => f.TourGuide)
-                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide).ThenInclude(tg => tg.Account)
                 .Include(f => f.Invoice)
                 .Where(f => f.TourGuideId == tourGuideId && !f.IsDeleted)
                 .OrderByDescending(f => f.CreatedDate)
@@ -84,10 +89,8 @@ namespace Repositories.Repository
         public async Task<IEnumerable<Feedback>> GetByCustomerIdAsync(int customerId)
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
-                .Include(f => f.TourGuide)
-                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide).ThenInclude(tg => tg.Account)
                 .Include(f => f.Invoice)
                 .Where(f => f.CustomerId == customerId && !f.IsDeleted)
                 .OrderByDescending(f => f.CreatedDate)
@@ -97,10 +100,8 @@ namespace Repositories.Repository
         public async Task<IEnumerable<Feedback>> GetByRatingAsync(int rating)
         {
             return await _context.Feedbacks
-                .Include(f => f.Customer)
-                    .ThenInclude(c => c.Account)
-                .Include(f => f.TourGuide)
-                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Customer).ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide).ThenInclude(tg => tg.Account)
                 .Include(f => f.Invoice)
                 .Where(f => f.Rating == rating && !f.IsDeleted)
                 .OrderByDescending(f => f.CreatedDate)
@@ -109,14 +110,11 @@ namespace Repositories.Repository
 
         public async Task<decimal> GetAverageRatingAsync()
         {
-            var feedbacks = await _context.Feedbacks
-                .Where(f => !f.IsDeleted)
-                .ToListAsync();
+            var average = await _context.Feedbacks
+     .Where(f => !f.IsDeleted)
+     .AverageAsync(f => (double?)f.Rating);
 
-            if (!feedbacks.Any())
-                return 0;
-
-            return (decimal)feedbacks.Average(f => f.Rating);
+            return average.HasValue ? (decimal)average.Value : 0;
         }
 
         public async Task<Dictionary<int, int>> GetRatingDistributionAsync()
@@ -124,15 +122,11 @@ namespace Repositories.Repository
             var distribution = await _context.Feedbacks
                 .Where(f => !f.IsDeleted)
                 .GroupBy(f => f.Rating)
-                .Select(g => new { Rating = g.Key, Count = g.Count() })
-                .ToDictionaryAsync(x => x.Rating, x => x.Count);
+                .Select(g => new { g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Key, x => x.Count);
 
-            // Ensure all ratings 1-5 are present
             for (int i = 1; i <= 5; i++)
-            {
-                if (!distribution.ContainsKey(i))
-                    distribution[i] = 0;
-            }
+                if (!distribution.ContainsKey(i)) distribution[i] = 0;
 
             return distribution;
         }

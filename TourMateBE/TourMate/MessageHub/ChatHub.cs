@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
-using Services;
+using Services.IServices;
 using System.Collections.Concurrent;
 
 namespace TourMate.MessageHub;

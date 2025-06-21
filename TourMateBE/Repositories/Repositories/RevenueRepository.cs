@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.DTO;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using System;
 using System.Collections.Generic;
@@ -8,10 +10,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class RevenueRepository : GenericRepository<Revenue>
+    public class RevenueRepository : GenericRepository<Revenue>, IRevenueRepository
     {
+        public RevenueRepository(TourmateContext context) : base(context) { }
+
         public async Task<IEnumerable<Revenue>> GetAllRevenuesAsync()
         {
             return await _context.Revenues

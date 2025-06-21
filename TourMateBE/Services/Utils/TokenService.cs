@@ -1,6 +1,6 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using Repositories.Models;
-using Repositories.Repository;
+using Repositories.IRepositories;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -13,10 +13,10 @@ namespace Services.Utils
     public class TokenService
     {
         private readonly IConfiguration _config;
-        private readonly RefreshTokenRepository _refreshTokenRepo;
-        private readonly AccountRepository _accountRepository;
+        private readonly IRefreshTokenRepository _refreshTokenRepo;
+        private readonly IAccountRepository _accountRepository;
 
-        public TokenService(IConfiguration config, RefreshTokenRepository refreshTokenRepo, AccountRepository accountRepository)
+        public TokenService(IConfiguration config, IRefreshTokenRepository refreshTokenRepo, IAccountRepository accountRepository)
         {
             _config = config;
             _refreshTokenRepo = refreshTokenRepo;

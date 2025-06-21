@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.Models;
-using Services;
+using Services.IServices;
 
 namespace API.Controllers
 {
@@ -46,9 +46,9 @@ namespace API.Controllers
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            var result = _accountmembershipService.DeleteAccountMembership(id);
+            var result = await _accountmembershipService.DeleteAccountMembership(id);
             return result ? NoContent() : NotFound();
         }
     }

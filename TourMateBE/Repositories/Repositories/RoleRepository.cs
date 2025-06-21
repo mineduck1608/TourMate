@@ -1,9 +1,12 @@
-using Repositories.Models;
+using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
+using Repositories.Models;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class RoleRepository : GenericRepository<Role>
+    public class RoleRepository : GenericRepository<Role>, IRoleRepository
     {
+        public RoleRepository(TourmateContext context) : base(context) { }
     }
 }

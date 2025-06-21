@@ -1,11 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class InvoiceRepository : GenericRepository<Invoice>
+    public class InvoiceRepository : GenericRepository<Invoice>, IInvoiceRepository
     {
+        public InvoiceRepository(TourmateContext context) : base(context)
+        {
+        }
+
         public async Task UpdateStatusAsync(int invoiceId, string newStatus)
         {
             var invoice = await _context.Invoices.FindAsync(invoiceId);

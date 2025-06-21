@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.GenericRepository
 {
-    public class GenericRepository<T> where T : class
+    public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
         protected TourmateContext _context;
 

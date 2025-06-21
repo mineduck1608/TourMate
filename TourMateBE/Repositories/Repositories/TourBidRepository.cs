@@ -1,15 +1,21 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Identity.Client;
+using Repositories.Context;
 using Repositories.DTO;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.ResponseModels;
 using System.Linq.Expressions;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class TourBidRepository : GenericRepository<TourBid>
+    public class TourBidRepository : GenericRepository<TourBid>, ITourBidRepository
     {
+        public TourBidRepository(TourmateContext context) : base(context)
+        {
+        }
+
         public async Task<PagedResult<TourBidListResult>> GetBids(string content, int accountIdFrom, int pageSize, int pageIndex)
         {
             content = content != null ? content.Trim().ToLower() : "";

@@ -1,14 +1,15 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class MessagesRepository : GenericRepository<Message>
+    public class MessagesRepository : GenericRepository<Message>, IMessagesRepository
     {
         public MessagesRepository(TourmateContext context) : base(context)
         {
