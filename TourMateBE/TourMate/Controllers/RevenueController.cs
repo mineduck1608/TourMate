@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
-using Services;
+using Services.IServices;
 
 namespace TourMate.Controllers
 {

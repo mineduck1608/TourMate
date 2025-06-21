@@ -1,16 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Repositories.Context;
 using Repositories.GenericRepository;
+using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.ResponseModels;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace Repositories.Repository
+namespace Repositories.Repositories
 {
-    public class TourGuideRepository : GenericRepository<TourGuide>
+    public class TourGuideRepository : GenericRepository<TourGuide>, ITourGuideRepository
     {
-        public TourGuideRepository()
-        {
-        }
+        public TourGuideRepository(TourmateContext context) : base(context) { }
+
 
         public async Task<TourGuide> GetTourGuideById(int tourGuideId)
         {

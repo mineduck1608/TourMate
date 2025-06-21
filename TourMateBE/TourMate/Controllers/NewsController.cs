@@ -4,8 +4,7 @@ using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModals;
 using Repositories.Models;
 using Repositories.ResponseModels;
-using Services;
-using System.Linq;
+using Services.IServices;
 
 namespace API.Controllers
 {
