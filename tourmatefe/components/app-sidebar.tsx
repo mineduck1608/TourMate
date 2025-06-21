@@ -12,6 +12,7 @@ import {
   UserPlus,
   CreditCard,
   Star,
+  CircleDollarSign,
 } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
@@ -145,6 +146,11 @@ const data = {
       name: "Lịch sử giao dịch",
       url: "/admin/payment",
       icon: CreditCard,
+    },
+    {
+      name: "Hoa hồng",
+      url: "/admin/revenue",
+      icon: CircleDollarSign,
     },
   ],
 };
