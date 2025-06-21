@@ -1,4 +1,3 @@
-import { roleJwt } from "@/types/constants";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { useState, useEffect } from "react";
@@ -27,5 +26,5 @@ export function getUserRole(key: string): string | null {
       
       console.log(decoded);
       
-      return decoded?.[roleJwt] as string ?? null;
+      return decoded?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] as string ?? null;
 }

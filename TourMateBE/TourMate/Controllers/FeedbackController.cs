@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
+using Repositories.RequestModels;
+using Repositories.ResponseModels;
 using Services;
 using Services.Utils;
-
 
 namespace API.Controllers
 {
@@ -36,10 +37,11 @@ namespace API.Controllers
             return Ok(await _feedbackService.GetFeedbackByInvoice(id));
         }
 
-        [HttpGet]
-        public ActionResult<IEnumerable<Feedback>> GetAll([FromQuery] int pageSize = 10, [FromQuery] int pageIndex = 1)
+        [Authorize(Roles = "TourGuide")]
+        [HttpGet("tour-guide/account/{id}")]
+        public async Task<ActionResult<TourGuideFeedback>> GetByAccountId(int id)
         {
-            return Ok(_feedbackService.GetAll(pageSize, pageIndex));
+            return Ok(await _feedbackService.GetFeedbackByAccount(id));
         }
 
         [Authorize(Roles = "Customer")]
@@ -112,6 +114,114 @@ namespace API.Controllers
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = "Có lỗi xảy ra khi lấy danh sách đánh giá", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get all tour feedbacks
+        /// </summary>
+        [HttpGet("tour")]
+        public async Task<ActionResult<IEnumerable<TourFeedbackDto>>> GetAllTourFeedbacks()
+        {
+            try
+            {
+                var feedbacks = await _feedbackService.GetAllTourFeedbacksAsync();
+                return Ok(feedbacks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get tour feedback by ID
+        /// </summary>
+        [HttpGet("tour/{id}")]
+        public async Task<ActionResult<TourFeedbackDto>> GetTourFeedbackById(int id)
+        {
+            try
+            {
+                var feedback = await _feedbackService.GetTourFeedbackByIdAsync(id);
+                if (feedback == null)
+                    return NotFound(new { message = "Tour feedback not found" });
+
+                return Ok(feedback);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get tour feedbacks by tour guide ID
+        /// </summary>
+        [HttpGet("tour/tour-guide/{tourGuideId}")]
+        public async Task<ActionResult<IEnumerable<TourFeedbackDto>>> GetTourFeedbacksByTourGuideId(int tourGuideId)
+        {
+            try
+            {
+                var feedbacks = await _feedbackService.GetTourFeedbacksByTourGuideIdAsync(tourGuideId);
+                return Ok(feedbacks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get tour feedbacks by rating
+        /// </summary>
+        [HttpGet("tour/rating/{rating}")]
+        public async Task<ActionResult<IEnumerable<TourFeedbackDto>>> GetTourFeedbacksByRating(int rating)
+        {
+            try
+            {
+                if (rating < 1 || rating > 5)
+                    return BadRequest(new { message = "Rating must be between 1 and 5" });
+
+                var feedbacks = await _feedbackService.GetTourFeedbacksByRatingAsync(rating);
+                return Ok(feedbacks);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get tour feedback statistics
+        /// </summary>
+        [HttpGet("tour/stats")]
+        public async Task<ActionResult<FeedbackStatsDto>> GetTourFeedbackStats()
+        {
+            try
+            {
+                var stats = await _feedbackService.GetTourFeedbackStatsAsync();
+                return Ok(stats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
+            }
+        }
+
+        /// <summary>
+        /// Get top tour guides by rating
+        /// </summary>
+        [HttpGet("tour/top-guides")]
+        public async Task<ActionResult<IEnumerable<TopTourGuideDto>>> GetTopTourGuides([FromQuery] int limit = 10)
+        {
+            try
+            {
+                var topGuides = await _feedbackService.GetTopTourGuidesAsync(limit);
+                return Ok(topGuides);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Internal server error", error = ex.Message });
             }
         }
 

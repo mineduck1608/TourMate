@@ -5,4 +5,3 @@ export const apiUrl = "https://tourmate-avbjemhvezgqa4en.southeastasia-01.azurew
 export const apiHub = "https://tourmate-avbjemhvezgqa4en.southeastasia-01.azurewebsites.net";
 
 export const webURL = "https://tourmate-phi.vercel.app";
-export const roleJwt = "http://schemas.microsoft.com/ws/2008/06/identity/claims/role"

@@ -30,4 +30,14 @@ namespace Repositories.ResponseModels
             public int CurrentPage { get; set; }
             public int PageSize { get; set; }
         }
+
+    public class TourGuideFeedback
+    {
+        public int FeedbackId { get; set; }
+        public int CustomerAccountId { get; set; }
+        public string CustomerName { get; set; }
+        public int Rating { get; set; }
+        public string Content { get; set; }
+        public string CreatedAt { get; set; }
+    }
 }

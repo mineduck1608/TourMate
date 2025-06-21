@@ -44,44 +44,42 @@ export default function TourGuideDetail({
     const token = sessionStorage.getItem("accessToken");
 
     return (
-        <div className='*:my-10' data-aos="fade-in"
-            data-aos-delay="300">
-            <Banner imageUrl='/tour-guide-list-banner.png' title='THÔNG TIN HƯỚNG DẪN VIÊN' />
-            <div className='shadow-lg w-[85%] rounded-lg place-self-center'>
-                <div className='flex justify-between p-5'>
+        <div className="space-y-10" data-aos="fade-in" data-aos-delay="300">
+            <Banner imageUrl="/tour-guide-list-banner.png" title="THÔNG TIN HƯỚNG DẪN VIÊN" />
+
+            <div className="w-[85%] mx-auto bg-white shadow-xl rounded-xl p-6 space-y-6">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-start">
                     <SafeImage
                         src={tourGuide?.image}
                         alt={tourGuide?.fullName}
-                        className="w-[30%] h-60 object-cover border-2"
+                        className="w-full h-60 object-cover border-2 rounded-md"
                     />
-                    <div className='w-[60%]'>
-                        <h4 className="font-bold text-4xl text-gray-800 p-2 mb-4">
-                            {tourGuide?.fullName} {tourGuide?.isVerified && <FaCheckCircle className="fill-blue-500 inline" />}
+
+                    <div className="md:col-span-2 space-y-4">
+                        <h4 className="text-3xl font-bold text-gray-800">
+                            {tourGuide?.fullName}{' '}
+                            {tourGuide?.isVerified && <FaCheckCircle className="text-blue-500 inline ml-1" />}
                         </h4>
+
                         {tourGuide && (
-                            <>
-                                <table>
-                                    <tbody>
-                                        {statToRender(tourGuide).map((v, i) => (
-                                            <tr key={i}>
-                                                <td className='p-2'>
-                                                    <span className='flex gap-5 font-semibold'>
-                                                        {v.icon}
-                                                        {v.name}:
-                                                    </span>
-                                                </td>
-                                                <td>{v.value}</td>
-                                            </tr>
-                                        ))}
-                                    </tbody>
-                                </table>
-                            </>
+                            <table className="table-auto w-full text-left">
+                                <tbody>
+                                    {statToRender(tourGuide).map((v, i) => (
+                                        <tr key={i} className="border-b border-gray-200">
+                                            <td className="py-2 pr-4 whitespace-nowrap font-medium flex items-center gap-3 text-gray-700">
+                                                {v.icon} {v.name}
+                                            </td>
+                                            <td className="py-2 text-gray-600">{v.value}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
                         )}
                     </div>
-                    {/* Nút nhắn tin */}
-                    <div className='mt-4'>
+
+                    <div className="flex justify-end md:col-span-3">
                         <Button
-                            className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'
+                            className="bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-5 py-2.5"
                             onClick={() => {
                                 if (!token) {
                                     alert('Vui lòng đăng nhập để sử dụng dịch vụ này');
@@ -90,43 +88,48 @@ export default function TourGuideDetail({
                                 router.push(`/chat?userId=${tourGuide?.accountId}`);
                             }}
                         >
-                            <FaFacebookMessenger size={20} />
+                            <FaFacebookMessenger size={20} className="mr-2" />
                             Nhắn tin
                         </Button>
                     </div>
                 </div>
-                <div className='pt-2 px-5'>
-                    <div className='flex justify-between'>
-                        <p className='text-2xl font-semibold'>Giới thiệu</p>
+
+                <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                        <h2 className="text-2xl font-semibold text-gray-800">Giới thiệu</h2>
                         <Button
-                            onClick={() => setDisplayDesc(p => !p)}
-                            className='text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-4 py-2 md:px-5 md:py-2.5 focus:outline-none cursor-pointer mb-2.5'>
+                            onClick={() => setDisplayDesc((p) => !p)}
+                            className="bg-blue-700 hover:bg-blue-800 text-white font-medium rounded-lg text-sm px-5 py-2.5"
+                        >
                             {displayDesc ? 'Ẩn' : 'Hiện'}
                         </Button>
                     </div>
+
                     <div
-                        className={`text-justify ${displayDesc ? 'block pb-5' : 'hidden'}`}
+                        className={`text-justify text-gray-700 ${displayDesc ? 'block pb-5' : 'hidden'}`}
                         dangerouslySetInnerHTML={{
                             __html: tourGuide?.tourGuideDescs?.[0]?.description
                                 ? tourGuide?.tourGuideDescs?.[0]?.description.replace(
                                     /(https?:\/\/.*\.(?:png|jpg|jpeg|gif|bmp|svg))/gi,
-                                    (match) => {
-                                        return `<img src="${match}" alt="Image" style="max-width: 100%; max-height: 100%; object-fit: contain;" />`;
-                                    }
+                                    (match) =>
+                                        `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain;" />`
                                 )
-                                : "Không có mô tả",
+                                : 'Không có mô tả',
                         }}
                     />
                 </div>
             </div>
-            <div className='flex justify-between p-5 shadow-lg w-[85%] rounded-lg place-self-center'>
+
+            <div className="w-[85%] mx-auto shadow-xl rounded-xl p-6 bg-white">
                 {id && <TourServices tourGuideId={id} />}
             </div>
-            <div className="p-5 shadow-lg w-[85%] rounded-lg place-self-center">
+
+            <div className="w-[85%] mx-auto shadow-xl rounded-xl p-6 bg-white mb-5">
                 {id && <TourGuideFeedbackSection tourGuideId={id as number} />}
             </div>
         </div>
     );
+
 }
 
 const statToRender = (t: TourGuide) => [

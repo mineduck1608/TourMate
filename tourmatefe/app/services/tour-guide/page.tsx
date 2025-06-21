@@ -1,7 +1,7 @@
 'use client'
 
 import { getSimplifiedAreas } from '@/app/api/active-area.api';
-import { getList} from '@/app/api/tour-guide.api';
+import { getList } from '@/app/api/tour-guide.api';
 import { useQueryString } from '@/app/utils/utils';
 import Banner from '@/components/Banner'
 import SafeImage from '@/components/safe-image';
@@ -52,8 +52,8 @@ function TourGuideMain() {
     });
 
     const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
-        const {name, value} = event.target
-        setSearchTerm({...searchTerm, [name]: value});
+        const { name, value } = event.target
+        setSearchTerm({ ...searchTerm, [name]: value });
     };
 
     const handlePageChange = (a: number) => {
@@ -132,6 +132,12 @@ function TourGuideMain() {
                                         <p className="text-gray-600 text-sm mb-2">
                                             {dayjs(v.dateOfBirth).format('DD/MM/YYYY')}
                                         </p>
+                                        <div
+                                            className="text-gray-600 text-sm mb-4 line-clamp-3"
+                                            dangerouslySetInnerHTML={{
+                                                __html: v.tourGuideDescs?.[0]?.description || 'Chưa có mô tả',
+                                            }}
+                                        />
                                         <button className="w-full bg-black text-white rounded-lg hover:bg-gray-800 transition duration-300 px-5 py-2.5 me-2 mb-2">
                                             Xem ngay
                                         </button>

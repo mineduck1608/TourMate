@@ -139,13 +139,13 @@ builder.Services.AddControllers().AddJsonOptions(options =>
     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.Never;
 });
 
-//if (FirebaseApp.DefaultInstance == null)
-//{
-//    FirebaseApp.Create(new AppOptions()
-//    {
-//        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
-//    });
-//}
+if (FirebaseApp.DefaultInstance == null)
+{
+    FirebaseApp.Create(new AppOptions()
+    {
+        Credential = GoogleCredential.FromFile("firebase-adminsdk.json")
+    });
+}
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
