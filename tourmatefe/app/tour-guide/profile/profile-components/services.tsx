@@ -117,17 +117,17 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                                         className="w-full h-70 object-cover"
 
                                     />
-                                    <motion.div
+                                    {/* <motion.div
                                         initial={{ opacity: 0 }}
                                         whileHover={{ opacity: 1 }}
                                         className="absolute inset-0 bg-[rgba(0,0,0,0.25)] bg-opacity-50 flex items-center justify-center"
                                     >
                                         <span className="text-white text-xl font-semibold">Cập nhật</span>
-                                    </motion.div>
+                                    </motion.div> */}
                                 </div>
                                 <div className="flex justify-between">
                                     <div className="p-6">
-                                        <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdDate).format('DD/MM/YYYY HH:mm:ss')}</p>
+                                        <p className="text-sm text-gray-500 mb-1">{dayjs(item.createdDate).format('DD/MM/YYYY')}</p>
                                         <Link 
                                         href={'/tour-service?id=' + item.serviceId}
                                         className="font-semibold text-lg mb-2">{item.serviceName}</Link>

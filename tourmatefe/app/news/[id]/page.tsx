@@ -5,10 +5,10 @@ import Footer from "@/components/Footer";
 import Banner from "@/components/Banner";
 import RecentNews from "./recent-news";
 import NewsCategories from "./categories";
-import { FaEnvelope, FaPhoneAlt } from "react-icons/fa";
 import { useQuery } from "@tanstack/react-query";
 import { getOneNews } from "@/app/api/news.api";
 import DOMPurify from "dompurify";
+import ContactSection from "./contact";
 
 export default function NewsDetailPage({
   params,
@@ -77,33 +77,7 @@ export default function NewsDetailPage({
         >
           <RecentNews currentId={id} />
           <NewsCategories />
-          <div className="rounded-md border shadow-lg bg-black mt-6">
-            <div className="p-4 text-white">
-              <h4 className="mb-4 text-3xl leading-none">
-                Bạn có câu hỏi nào không?
-              </h4>
-              <p>
-                Đừng ngần ngại gọi cho chúng tôi. Chúng tôi là một đội ngũ chuyên
-                gia và rất vui được trò chuyện với bạn.
-              </p>
-              <table className="mt-5">
-                <tbody>
-                  <tr className="*:p-2">
-                    <td>
-                      <FaPhoneAlt fill="#ffffff" size={20} />
-                    </td>
-                    <td>0974581366</td>
-                  </tr>
-                  <tr className="*:p-1">
-                    <td>
-                      <FaEnvelope fill="#ffffff" size={20} />
-                    </td>
-                    <td>TourMatebooking@gmail.com</td>
-                  </tr>
-                </tbody>
-              </table>
-            </div>
-          </div>
+          <ContactSection />
         </div>
 
       </div>

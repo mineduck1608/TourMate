@@ -6,7 +6,6 @@ import { useContext, useState } from "react"
 import { FaHeart, FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify";
 import BidListModal from "./bid-list-modal"
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
 import { TourGuideSiteContext, TourGuideSiteContextProps } from "../context"
 import { formatNumber } from "@/types/other"
@@ -18,7 +17,7 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
         bid: false,
         comment: false
     })
-    const { setModalOpen, modalOpen, setTarget, signal, setSignal } = useContext(BidTaskContext) as BidTaskContextProp
+    const { setTarget, signal, setSignal } = useContext(BidTaskContext) as BidTaskContextProp
     const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
     const sanitizeContent = (html: string) => {
         // Only sanitize if window is available (client-side)
@@ -67,28 +66,6 @@ export default function TourBidRender({ tourBid, onCreateOrDelete }: { tourBid: 
                         )}>
                         {tourBid.status}
                     </span>
-
-                    {tourBid.accountId === accId && <DropdownMenu>
-                        <DropdownMenuTrigger>
-                            <button
-                                className="p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-full transition-colors"
-                            >
-                                <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
-                                </svg>
-                            </button>
-                        </DropdownMenuTrigger>
-                        <DropdownMenuContent>
-                            <DropdownMenuItem onClick={() => {
-                                setTarget({ ...tourBid })
-                                setModalOpen({ ...modalOpen, edit: true })
-                            }}>Cập nhật</DropdownMenuItem>
-                            <DropdownMenuItem onClick={() => {
-                                setTarget({ ...tourBid })
-                                setModalOpen({ ...modalOpen, delete: true })
-                            }}>Xóa</DropdownMenuItem>
-                        </DropdownMenuContent>
-                    </DropdownMenu>}
                 </div>
             </div>
             <div

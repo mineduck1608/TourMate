@@ -9,7 +9,7 @@ namespace Repositories.Repository
     {
         public async Task<PagedResult<TourService>> GetTourServicesOf(int tourGuideId, int pageSize, int pageIndex)
         {
-            var query = _context.TourServices.Where(x => x.TourGuideId == tourGuideId).OrderByDescending(x => x.CreatedDate);
+            var query = _context.TourServices.Where(x => x.TourGuideId == tourGuideId && !x.IsDeleted).OrderByDescending(x => x.CreatedDate);
 
             // Phân trang
             var result = await query
@@ -49,6 +49,21 @@ namespace Repositories.Repository
             _context.TourServices.Update(v);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public new async Task<bool> UpdateAsync(TourService service)
+        {
+            try
+            {
+                var v = _context.TourServices.FirstOrDefault(x => x.ServiceId == service.ServiceId);
+                service.CreatedDate = v.CreatedDate;
+                _context.Entry(v).CurrentValues.SetValues(service);
+                await _context.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }         
         }
     }
 }
