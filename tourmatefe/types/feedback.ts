@@ -11,10 +11,14 @@ export type Feedback = {
   invoiceId: number
 }
 
-// export type UpdateFeedback = {
-//   content: string
-//   rating: number
-// }
+export type TourGuideFeedback = {
+  feedbackId: number,
+  customerAccountId: number,
+  customerName: string,
+  rating: number,
+  content: string,
+  createdAt: string,
+}
 
 export interface TourFeedback {
   feedbackId: number

@@ -3,9 +3,10 @@ using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
+using Repositories.RequestModels;
+using Repositories.ResponseModels;
 using Services;
 using Services.Utils;
-using Repositories.RequestModels;
 
 namespace API.Controllers
 {
@@ -36,6 +37,12 @@ namespace API.Controllers
             return Ok(await _feedbackService.GetFeedbackByInvoice(id));
         }
 
+        [Authorize(Roles = "TourGuide")]
+        [HttpGet("tour-guide/account/{id}")]
+        public async Task<ActionResult<TourGuideFeedback>> GetByAccountId(int id)
+        {
+            return Ok(await _feedbackService.GetFeedbackByAccount(id));
+        }
 
         [Authorize(Roles = "Customer")]
         [HttpPost]

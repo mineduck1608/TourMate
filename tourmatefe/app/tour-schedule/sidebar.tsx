@@ -49,7 +49,7 @@ const CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
 
     const actionCards = [
         { label: "Hồ sơ", icon: User, bgColor: "bg-red-500", href: "/tour-guide/profile" },
-        { label: "Đấu giá", icon: StretchHorizontalIcon, bgColor: "bg-emerald-500", href: "/tour-guide/bid" },
+        { label: "Đấu giá", icon: StretchHorizontalIcon, bgColor: "bg-emerald-500", href: "/services/bids" },
         { label: "Tin nhắn", icon: MessageCircleMore, bgColor: "bg-blue-500", href: "/chat" },
     ];
 

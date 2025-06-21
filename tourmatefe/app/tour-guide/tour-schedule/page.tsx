@@ -12,33 +12,55 @@ import { fetchSchedules } from "@/app/api/schedule.api"
 import { MyJwtPayload } from "@/types/JwtPayload"
 import { useToken } from "@/components/getToken"
 import { jwtDecode } from "jwt-decode"
+import { getFeedbacksByAccountId } from "@/app/api/feedback.api"
+import FeedbackCard from "./feedback-card"
+import { TourGuideFeedback } from "@/types/feedback"
 
-const pageSize = 5 // Tuỳ chỉnh số phần tử mỗi trang
+const pageSize = 5
 
 export default function TourSchedulePage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedFilter, setSelectedFilter] = useState("Chờ xác nhận")
   const [currentPage, setCurrentPage] = useState(1)
+  const [showFeedbacks, setShowFeedbacks] = useState(false)
 
-  const token = useToken('accessToken')
+  const token = useToken("accessToken")
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accountId = Number(payLoad?.AccountId)
   const role = payLoad?.Role
 
   const { data, isLoading, isError } = useQuery({
-    queryKey: ['tour-schedules', selectedFilter, searchTerm, currentPage],
-    queryFn: () => {
-      return fetchSchedules(selectedFilter, searchTerm, currentPage, pageSize, accountId, role as string);
-    },
+    queryKey: ["tour-schedules", selectedFilter, searchTerm, currentPage],
+    queryFn: () =>
+      fetchSchedules(
+        selectedFilter,
+        searchTerm,
+        currentPage,
+        pageSize,
+        accountId,
+        role as string
+      ),
     retry: 1,
     refetchOnWindowFocus: false,
-  });
+    enabled: !showFeedbacks,
+  })
 
+  const feedbackQuery = useQuery({
+    queryKey: ["tour-guide-feedbacks", accountId],
+    queryFn: () => getFeedbacksByAccountId(accountId),
+    enabled: showFeedbacks && !!accountId,
+  })
 
   const schedules: TourSchedule[] = data?.result ?? []
   const totalPages = data?.totalPage ?? 1
 
   const handleFilterChange = (label: string) => {
+    if (label === "Đánh giá nhận được") {
+      setShowFeedbacks(true)
+      return
+    }
+
+    setShowFeedbacks(false)
     setSelectedFilter(label)
     setSearchTerm("")
     setCurrentPage(1)
@@ -48,7 +70,7 @@ export default function TourSchedulePage() {
     setSearchTerm(e.target.value)
     setCurrentPage(1)
   }
-
+ console.log(feedbackQuery.data)
   return (
     <>
       <MegaMenu />
@@ -57,51 +79,73 @@ export default function TourSchedulePage() {
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
         <main className="flex-1 py-10 pr-10 space-y-6">
-          {/* Search box */}
-          <div className="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-3">
-            <Search className="w-5 h-5 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Tìm theo tên khách hoặc mã tour"
-              className="flex-grow text-gray-900 text-base font-normal bg-transparent border-none outline-none placeholder:text-gray-400"
-              value={searchTerm}
-              onChange={handleSearchChange}
-            />
-          </div>
-
-          {/* Loading */}
-          {isLoading && <p>Đang tải dữ liệu...</p>}
-          {isError && <p className="text-red-500">Lỗi khi tải dữ liệu.</p>}
-
-          {/* Schedule list */}
-          {schedules.map((schedule) => (
-            <ScheduleCard key={schedule.invoiceId} {...schedule} />
-          ))}
-
-          {/* Empty state */}
-          {!isLoading && schedules.length === 0 && (
-            <p className="text-gray-500">Không tìm thấy lịch hẹn nào phù hợp.</p>
+          {/* Search box (chỉ hiện khi không phải xem đánh giá) */}
+          {!showFeedbacks && (
+            <div className="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-3">
+              <Search className="w-5 h-5 text-gray-400" />
+              <input
+                type="text"
+                placeholder="Tìm theo tên khách hoặc mã tour"
+                className="flex-grow text-gray-900 text-base font-normal bg-transparent border-none outline-none placeholder:text-gray-400"
+                value={searchTerm}
+                onChange={handleSearchChange}
+              />
+            </div>
           )}
 
-          {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="flex items-center justify-center space-x-4 mt-6">
-              <button
-                disabled={currentPage === 1}
-                onClick={() => setCurrentPage(currentPage - 1)}
-                className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
-              >
-                <ChevronLeft className="inline w-4 h-4" /> Trước
-              </button>
-              <span>Trang {currentPage} / {totalPages}</span>
-              <button
-                disabled={currentPage === totalPages}
-                onClick={() => setCurrentPage(currentPage + 1)}
-                className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
-              >
-                Tiếp <ChevronRight className="inline w-4 h-4" />
-              </button>
-            </div>
+          {/* Lịch hẹn hoặc Đánh giá */}
+          {showFeedbacks ? (
+            <>
+              {feedbackQuery.isLoading && <p>Đang tải đánh giá...</p>}
+              {feedbackQuery.isError && <p className="text-red-500">Lỗi khi tải đánh giá.</p>}
+              {feedbackQuery.data?.length === 0 && (
+                <p className="text-gray-500">Chưa có đánh giá nào.</p>
+              )}
+              {feedbackQuery.data?.map((fb: TourGuideFeedback) => (
+                <FeedbackCard
+                  key={fb.feedbackId}
+                  customerName={fb.customerName}
+                  rating={fb.rating}
+                  content={fb.content}
+                  createdAt={fb.createdAt}
+                  customerAccountId={fb.customerAccountId}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {isLoading && <p>Đang tải dữ liệu...</p>}
+              {isError && <p className="text-red-500">Lỗi khi tải dữ liệu.</p>}
+              {schedules.map((schedule) => (
+                <ScheduleCard key={schedule.invoiceId} {...schedule} />
+              ))}
+              {!isLoading && schedules.length === 0 && (
+                <p className="text-gray-500">Không tìm thấy lịch hẹn nào phù hợp.</p>
+              )}
+
+              {/* Pagination */}
+              {totalPages > 1 && (
+                <div className="flex items-center justify-center space-x-4 mt-6">
+                  <button
+                    disabled={currentPage === 1}
+                    onClick={() => setCurrentPage(currentPage - 1)}
+                    className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
+                  >
+                    <ChevronLeft className="inline w-4 h-4" /> Trước
+                  </button>
+                  <span>
+                    Trang {currentPage} / {totalPages}
+                  </span>
+                  <button
+                    disabled={currentPage === totalPages}
+                    onClick={() => setCurrentPage(currentPage + 1)}
+                    className="text-sm px-3 py-1 rounded border bg-white disabled:opacity-50"
+                  >
+                    Tiếp <ChevronRight className="inline w-4 h-4" />
+                  </button>
+                </div>
+              )}
+            </>
           )}
         </main>
       </div>

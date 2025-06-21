@@ -12,6 +12,12 @@ namespace Repositories.Repository
             return result;
         }
 
+        public async Task<List<Feedback>> GetByAccount(int id)
+        {
+            var result = await _context.Feedbacks.Include(tg => tg.TourGuide).Include(c => c.Customer).Where(i => i.TourGuide.AccountId == id).ToListAsync();
+            return result;
+        }
+
         public async Task<Feedback> GetByIdContainInvoice(int id)
         {
             var result = _context.Feedbacks.Include(i => i.Invoice).Include(tg => tg.TourGuide).Include(cs => cs.Customer).FirstOrDefault(f => f.FeedbackId == id);

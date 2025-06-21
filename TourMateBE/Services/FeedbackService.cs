@@ -11,6 +11,8 @@ namespace Services
         Task<Feedback> GetFeedback(int id);
         Task<Feedback> GetFeedbackContainInvoice(int id);
         Task<Feedback> GetFeedbackByInvoice(int id);
+        Task<List<TourGuideFeedback>> GetFeedbackByAccount(int id);
+
         Task<Feedback> CreateFeedback(Feedback feedback);
         Task<bool> UpdateFeedback(Feedback feedback);
         Task<bool> DeleteFeedback(int id);
@@ -88,6 +90,24 @@ namespace Services
         {
             return await FeedbackRepository.GetByInvoice(id);
         }
+
+        public async Task<List<TourGuideFeedback>> GetFeedbackByAccount(int id)
+        {
+            var result = await FeedbackRepository.GetByAccount(id); // Có thể là List<Feedback>
+
+            var feedbackList = result.Select(f => new TourGuideFeedback
+            {
+                FeedbackId = f.FeedbackId,
+                CustomerAccountId = f.Customer.AccountId,
+                CustomerName = f.Customer.FullName, // nếu có navigation property
+                Rating = f.Rating,
+                Content = f.Content,
+                CreatedAt = f.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")
+            }).ToList();
+
+            return feedbackList;
+        }
+
 
 
         public async Task<Feedback> CreateFeedback(Feedback feedback)

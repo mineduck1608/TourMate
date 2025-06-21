@@ -16,6 +16,11 @@ export const deleteTourFeedback = async (feedbackId: number) => {
   return response.data
 }
 
+export async function getFeedbacksByAccountId(accountId: number) {
+  const res = await http.get(`/feedback/tour-guide/account/${accountId}`);
+  return res.data; // { result: Feedback[] }
+}
+
 export const getTourFeedbackByInvoice = async (invoiceId: number) => {
   const response = await http.get(`/feedback/invoice/${invoiceId}`)
   return response.data

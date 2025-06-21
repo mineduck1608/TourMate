@@ -138,7 +138,9 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
                     className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 border border-transparent hover:border-gray-300 hover:bg-gray-100 hover:text-red-700 transition-colors duration-300 font-medium"
                     type="button"
                     onClick={() => {
-                        console.log("Logout");
+                        sessionStorage.removeItem('accessToken');
+                        sessionStorage.removeItem('refreshToken');
+                        router.push('/');
                     }}
                 >
                     <LogOut className="h-5 w-5" />

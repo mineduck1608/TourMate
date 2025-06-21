@@ -1,12 +1,14 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { useQuery } from "@tanstack/react-query"
 import { Star, User, Calendar, MessageSquare, ChevronLeft, ChevronRight } from "lucide-react"
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import SafeImage from "@/components/safe-image"
 import { getTourGuideFeedbacksPaged } from "@/app/api/feedback.api"
+import AOS from "aos";
+import "aos/dist/aos.css";
 
 interface TourGuideFeedbackSectionProps {
   tourGuideId: number
@@ -28,6 +30,8 @@ interface FeedbackItem {
 export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedbackSectionProps) {
   const [currentPage, setCurrentPage] = useState(1)
   const pageSize = 5
+
+
 
   const {
     data: feedbackData,
@@ -54,6 +58,15 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
     count: feedbacks.filter((f) => f.rating === rating).length,
   }))
 
+  useEffect(() => {
+    AOS.init({
+      offset: 0,
+      delay: 200,
+      duration: 1200,
+      once: true,
+    });
+  }, []);
+
   const getRatingText = (rating: number) => {
     switch (rating) {
       case 5:
@@ -79,7 +92,7 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
 
   if (isLoading) {
     return (
-      <div className="w-full space-y-4">
+      <div className="w-full space-y-4" data-aos="fade-up" data-aos-duration="3000">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Đánh giá từ khách hàng</h2>
         <div className="space-y-4">
           {[1, 2, 3].map((i) => (
@@ -103,7 +116,7 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
 
   if (error) {
     return (
-      <div className="w-full">
+      <div className="w-full" data-aos="fade-up" data-aos-duration="3000">
         <h2 className="text-2xl font-semibold text-gray-800 mb-4">Đánh giá từ khách hàng</h2>
         <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
           <p className="text-red-600">Có lỗi xảy ra khi tải đánh giá</p>
@@ -113,7 +126,7 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
   }
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full space-y-6" data-aos="fade-up" data-aos-duration="3000">
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-semibold text-gray-800">Đánh giá từ khách hàng</h2>
         <div className="flex items-center gap-2 text-sm text-gray-600">
@@ -198,9 +211,8 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
                       {[1, 2, 3, 4, 5].map((star) => (
                         <Star
                           key={star}
-                          className={`h-4 w-4 ${
-                            star <= feedback.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
-                          }`}
+                          className={`h-4 w-4 ${star <= feedback.rating ? "fill-yellow-400 text-yellow-400" : "text-gray-300"
+                            }`}
                         />
                       ))}
                     </div>
