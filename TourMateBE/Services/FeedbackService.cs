@@ -1,5 +1,7 @@
 ﻿using Repositories.Models;
+using Repositories.Repositories;
 using Repositories.Repository;
+using Repositories.RequestModels;
 using Repositories.ResponseModels;
 
 namespace Services
@@ -9,13 +11,17 @@ namespace Services
         Task<Feedback> GetFeedback(int id);
         Task<Feedback> GetFeedbackContainInvoice(int id);
         Task<Feedback> GetFeedbackByInvoice(int id);
-
-        IEnumerable<Feedback> GetAll(int pageSize, int pageIndex);
         Task<Feedback> CreateFeedback(Feedback feedback);
         Task<bool> UpdateFeedback(Feedback feedback);
         Task<bool> DeleteFeedback(int id);
         string GenerateTourGuideFeedbackEmail(Feedback feedback);
         Task<PaginatedFeedbackResponse> GetTourGuideFeedbacksPublicAsync(int tourGuideId, int page, int pageSize);
+        Task<IEnumerable<TourFeedbackDto>> GetAllTourFeedbacksAsync();
+        Task<TourFeedbackDto?> GetTourFeedbackByIdAsync(int id);
+        Task<IEnumerable<TourFeedbackDto>> GetTourFeedbacksByTourGuideIdAsync(int tourGuideId);
+        Task<IEnumerable<TourFeedbackDto>> GetTourFeedbacksByRatingAsync(int rating);
+        Task<FeedbackStatsDto> GetTourFeedbackStatsAsync();
+        Task<IEnumerable<TopTourGuideDto>> GetTopTourGuidesAsync(int limit = 10);
     }
 
     public class FeedbackService : IFeedbackService
@@ -83,10 +89,6 @@ namespace Services
             return await FeedbackRepository.GetByInvoice(id);
         }
 
-        public IEnumerable<Feedback> GetAll(int pageSize, int pageIndex)
-        {
-            return FeedbackRepository.GetAll(pageSize, pageIndex);
-        }
 
         public async Task<Feedback> CreateFeedback(Feedback feedback)
         {
@@ -186,5 +188,128 @@ namespace Services
 </html>";
         }
 
+        public async Task<IEnumerable<TourFeedbackDto>> GetAllTourFeedbacksAsync()
+        {
+            var feedbacks = await FeedbackRepository.GetAllFeedbackAsync();
+            return feedbacks.Select(MapToTourFeedbackDto);
+        }
+
+        public async Task<TourFeedbackDto?> GetTourFeedbackByIdAsync(int id)
+        {
+            var feedback = await FeedbackRepository.GetFeedbackByIdAsync(id);
+            return feedback != null ? MapToTourFeedbackDto(feedback) : null;
+        }
+
+        public async Task<IEnumerable<TourFeedbackDto>> GetTourFeedbacksByTourGuideIdAsync(int tourGuideId)
+        {
+            var feedbacks = await FeedbackRepository.GetByTourGuideIdAsync(tourGuideId);
+            return feedbacks.Select(MapToTourFeedbackDto);
+        }
+
+        public async Task<IEnumerable<TourFeedbackDto>> GetTourFeedbacksByRatingAsync(int rating)
+        {
+            var feedbacks = await FeedbackRepository.GetByRatingAsync(rating);
+            return feedbacks.Select(MapToTourFeedbackDto);
+        }
+
+        
+        public async Task<FeedbackStatsDto> GetTourFeedbackStatsAsync()
+        {
+            var allFeedbacks = await FeedbackRepository.GetAllFeedbackAsync();
+            var feedbackList = allFeedbacks.ToList();
+
+            if (!feedbackList.Any())
+            {
+                return new FeedbackStatsDto
+                {
+                    TotalFeedbacks = 0,
+                    AverageRating = 0,
+                    RatingDistribution = Enumerable.Range(1, 5).Select(i => new RatingDistributionDto
+                    {
+                        Rating = i,
+                        Count = 0,
+                        Percentage = 0
+                    }).ToList()
+                };
+            }
+
+            var totalCount = feedbackList.Count;
+            var averageRating = (decimal)feedbackList.Average(f => f.Rating);
+
+            var ratingDistribution = feedbackList
+                .GroupBy(f => f.Rating)
+                .Select(g => new RatingDistributionDto
+                {
+                    Rating = g.Key,
+                    Count = g.Count(),
+                    Percentage = (decimal)g.Count() / totalCount * 100
+                })
+                .ToList();
+
+            // Ensure all ratings 1-5 are present
+            for (int i = 1; i <= 5; i++)
+            {
+                if (!ratingDistribution.Any(r => r.Rating == i))
+                {
+                    ratingDistribution.Add(new RatingDistributionDto
+                    {
+                        Rating = i,
+                        Count = 0,
+                        Percentage = 0
+                    });
+                }
+            }
+
+            ratingDistribution = ratingDistribution.OrderBy(r => r.Rating).ToList();
+
+            return new FeedbackStatsDto
+            {
+                TotalFeedbacks = totalCount,
+                AverageRating = averageRating,
+                RatingDistribution = ratingDistribution
+            };
+        }
+
+       
+
+        public async Task<IEnumerable<TopTourGuideDto>> GetTopTourGuidesAsync(int limit = 10)
+        {
+            var allFeedbacks = await FeedbackRepository.GetAllFeedbackAsync();
+
+            var topGuides = allFeedbacks
+                .GroupBy(f => new { f.TourGuideId, f.TourGuide.FullName })
+                .Select(g => new TopTourGuideDto
+                {
+                    TourGuideId = g.Key.TourGuideId,
+                    Name = g.Key.FullName,
+                    AverageRating = (decimal)g.Average(f => f.Rating),
+                    TotalReviews = g.Count()
+                })
+                .OrderByDescending(tg => tg.AverageRating)
+                .ThenByDescending(tg => tg.TotalReviews)
+                .Take(limit);
+
+            return topGuides;
+        }
+
+
+        private static TourFeedbackDto MapToTourFeedbackDto(Feedback feedback)
+        {
+            return new TourFeedbackDto
+            {
+                FeedbackId = feedback.FeedbackId,
+                CustomerId = feedback.CustomerId,
+                CustomerName = feedback.Customer?.FullName ?? "",
+                TourGuideId = feedback.TourGuideId,
+                TourGuideName = feedback.TourGuide?.FullName ?? "",
+                TourName = feedback.Invoice?.TourName ?? "",
+                Content = feedback.Content,
+                Rating = feedback.Rating,
+                CreatedDate = feedback.CreatedDate,
+                UpdatedAt = feedback.UpdatedAt,
+                InvoiceId = feedback.InvoiceId,
+                IsDeleted = feedback.IsDeleted
+            };
+        }
     }
 }

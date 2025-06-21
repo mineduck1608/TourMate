@@ -37,5 +37,98 @@ namespace Repositories.Repository
                 .Where(f => f.TourGuideId == tourGuideId && !f.IsDeleted)
                 .CountAsync();
         }
+
+        public async Task<IEnumerable<Feedback>> GetAllFeedbackAsync()
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Customer)
+                    .ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide)
+                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Invoice)
+                .Where(f => !f.IsDeleted)
+                .OrderByDescending(f => f.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<Feedback?> GetFeedbackByIdAsync(int id)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Customer)
+                    .ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide)
+                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Invoice)
+                .FirstOrDefaultAsync(f => f.FeedbackId == id && !f.IsDeleted);
+        }
+
+        public async Task<IEnumerable<Feedback>> GetByTourGuideIdAsync(int tourGuideId)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Customer)
+                    .ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide)
+                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Invoice)
+                .Where(f => f.TourGuideId == tourGuideId && !f.IsDeleted)
+                .OrderByDescending(f => f.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Feedback>> GetByCustomerIdAsync(int customerId)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Customer)
+                    .ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide)
+                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Invoice)
+                .Where(f => f.CustomerId == customerId && !f.IsDeleted)
+                .OrderByDescending(f => f.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<Feedback>> GetByRatingAsync(int rating)
+        {
+            return await _context.Feedbacks
+                .Include(f => f.Customer)
+                    .ThenInclude(c => c.Account)
+                .Include(f => f.TourGuide)
+                    .ThenInclude(tg => tg.Account)
+                .Include(f => f.Invoice)
+                .Where(f => f.Rating == rating && !f.IsDeleted)
+                .OrderByDescending(f => f.CreatedDate)
+                .ToListAsync();
+        }
+
+        public async Task<decimal> GetAverageRatingAsync()
+        {
+            var feedbacks = await _context.Feedbacks
+                .Where(f => !f.IsDeleted)
+                .ToListAsync();
+
+            if (!feedbacks.Any())
+                return 0;
+
+            return (decimal)feedbacks.Average(f => f.Rating);
+        }
+
+        public async Task<Dictionary<int, int>> GetRatingDistributionAsync()
+        {
+            var distribution = await _context.Feedbacks
+                .Where(f => !f.IsDeleted)
+                .GroupBy(f => f.Rating)
+                .Select(g => new { Rating = g.Key, Count = g.Count() })
+                .ToDictionaryAsync(x => x.Rating, x => x.Count);
+
+            // Ensure all ratings 1-5 are present
+            for (int i = 1; i <= 5; i++)
+            {
+                if (!distribution.ContainsKey(i))
+                    distribution[i] = 0;
+            }
+
+            return distribution;
+        }
     }
 }

@@ -22,7 +22,7 @@ export const getTourFeedbackByInvoice = async (invoiceId: number) => {
 }
 
 // Thêm API function để lấy feedback của tour guide cho public view
-export const getTourGuideFeedbacks = async (tourGuideId: number, page = 1, pageSize = 10) => {
+export const getTourGuideFeedbacksPaged = async (tourGuideId: number, page = 1, pageSize = 10) => {
   const params = new URLSearchParams({
     tourGuideId: tourGuideId.toString(),
     page: page.toString(),
@@ -30,5 +30,50 @@ export const getTourGuideFeedbacks = async (tourGuideId: number, page = 1, pageS
   })
 
   const response = await http.get(`/feedback/tour-guide/public?${params}`)
+  return response.data
+}
+
+// Tour Feedback APIs
+export const getAllTourFeedbacks = async () => {
+  const response = await http.get("/feedback/tour")
+  return response.data
+}
+
+export const getTourFeedbackById = async (id: number) => {
+  const response = await http.get(`/feedback/tour/${id}`)
+  return response.data
+}
+
+export const getTourFeedbacksByTourGuide = async (tourGuideId: number) => {
+  const response = await http.get(`/feedback/tour/tour-guide/${tourGuideId}`)
+  return response.data
+}
+
+export const getTourFeedbacksByRating = async (rating: number) => {
+  const response = await http.get(`/feedback/tour/rating/${rating}`)
+  return response.data
+}
+
+
+// Statistics APIs
+export const getTourFeedbackStats = async () => {
+  const response = await http.get("/feedback/tour/stats")
+  return response.data
+}
+
+
+export const getTopTourGuides = async (limit = 10) => {
+  const response = await http.get(`/feedback/tour/top-guides?limit=${limit}`)
+  return response.data
+}
+
+
+export const getTourGuideFeedbacks = async (tourGuideId: number, page = 1, pageSize = 10) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    pageSize: pageSize.toString(),
+  })
+
+  const response = await http.get(`/feedback/tour/tour-guide/${tourGuideId}?${params}`)
   return response.data
 }

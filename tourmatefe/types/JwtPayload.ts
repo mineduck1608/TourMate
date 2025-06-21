@@ -1,10 +1,6 @@
-import { roleJwt } from "./constants";
-
-// Define a custom type for your JWT payload
 export type MyJwtPayload = {
   AccountId: number;
-  [roleJwt]: string;
   FullName: string;
-  // add other properties if needed
+  "http://schemas.microsoft.com/ws/2008/06/identity/claims/role": string;
   [key: string]: unknown;
 };

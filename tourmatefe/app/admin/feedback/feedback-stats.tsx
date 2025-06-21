@@ -28,7 +28,9 @@ export default function FeedbackStats({ tourStats, platformStats, topTourGuide, 
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{tourStats.total}</div>
-          <p className="text-xs text-muted-foreground">Trung bình: {tourStats.avgRating.toFixed(1)} ⭐</p>
+          <p className="text-xs text-muted-foreground">
+            Trung bình: {typeof tourStats.avgRating === "number" ? tourStats.avgRating.toFixed(1) : "N/A"} ⭐
+          </p>
         </CardContent>
       </Card>
 
@@ -39,7 +41,9 @@ export default function FeedbackStats({ tourStats, platformStats, topTourGuide, 
         </CardHeader>
         <CardContent>
           <div className="text-2xl font-bold">{platformStats.total}</div>
-          <p className="text-xs text-muted-foreground">Trung bình: {platformStats.avgRating.toFixed(1)} ⭐</p>
+          <p className="text-xs text-muted-foreground">
+            Trung bình: {typeof platformStats.avgRating === "number" ? platformStats.avgRating.toFixed(1) : "N/A"} ⭐
+          </p>
         </CardContent>
       </Card>
 
@@ -51,7 +55,7 @@ export default function FeedbackStats({ tourStats, platformStats, topTourGuide, 
         <CardContent>
           <div className="text-lg font-bold">{topTourGuide?.name || "N/A"}</div>
           <p className="text-xs text-muted-foreground">
-            {topTourGuide
+            {topTourGuide && typeof topTourGuide.avgRating === "number"
               ? `${topTourGuide.avgRating.toFixed(1)} ⭐ (${topTourGuide.count} đánh giá)`
               : "Chưa có dữ liệu"}
           </p>

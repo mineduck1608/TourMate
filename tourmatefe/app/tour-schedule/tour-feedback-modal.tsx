@@ -89,7 +89,7 @@ export function TourFeedbackModal({
 
   // Update feedback mutation
   const updateMutation = useMutation({
-    mutationFn: async (data: { feedbackId: number; content: string; rating: number }) => {
+    mutationFn: async (data: { feedbackId: number; content: string; rating: number; customerId: number; tourGuideId: number }) => {
       return updateTourFeedback(data)
     },
     onSuccess: () => {
@@ -141,6 +141,8 @@ export function TourFeedbackModal({
         feedbackId: existingFeedback.feedbackId,
         content: feedback,
         rating,
+        customerId,
+        tourGuideId,
       }
       updateMutation.mutate(updateData)
     }

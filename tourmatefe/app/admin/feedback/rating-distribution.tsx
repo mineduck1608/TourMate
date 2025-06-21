@@ -30,7 +30,7 @@ export default function RatingDistribution({ title, description, ratingDistribut
               <Progress value={item.percentage} className="h-2" />
             </div>
             <div className="text-sm text-muted-foreground w-16 text-right">
-              {item.count} ({item.percentage.toFixed(0)}%)
+              {item.count} ({typeof item.percentage === 'number' ? item.percentage.toFixed(0) : 'N/A'}%)
             </div>
           </div>
         ))}

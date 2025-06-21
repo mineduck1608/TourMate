@@ -1,11 +1,14 @@
 import { Star } from "lucide-react"
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Label } from "@/components/ui/label"
+import { formatFeedbackDate } from "./utils/date-utils"
+import type { TourFeedback } from "@/types/feedback"
+import { PlatformFeedback, PlatformFeedbackDto } from "@/types/platform-feedback"
 
 interface FeedbackDetailModalProps {
   isOpen: boolean
   onClose: () => void
-  feedback: any
+  feedback: TourFeedback | PlatformFeedbackDto | null
   type: "tour" | "platform"
 }
 
@@ -22,15 +25,7 @@ export default function FeedbackDetailModal({ isOpen, onClose, feedback, type }:
     )
   }
 
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString("vi-VN", {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    })
-  }
+  const formatDate = formatFeedbackDate
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -38,35 +33,38 @@ export default function FeedbackDetailModal({ isOpen, onClose, feedback, type }:
         <DialogHeader>
           <DialogTitle>Chi tiết đánh giá {type === "tour" ? "Tour" : "Hệ thống"}</DialogTitle>
           <DialogDescription>
-            Đánh giá từ {type === "tour" ? feedback.customerName : feedback.accountName}
+            Đánh giá từ{" "}
+            {type === "tour" ? (feedback as TourFeedback).customerName : (feedback as PlatformFeedbackDto).accountName}
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label className="text-sm font-medium">{type === "tour" ? "Khách hàng" : "Tài khoản"}</Label>
-              <p className="text-sm">{type === "tour" ? feedback.customerName : feedback.accountName}</p>
+              <p className="text-sm">
+                {type === "tour" ? (feedback as TourFeedback).customerName : (feedback as PlatformFeedbackDto).accountName}
+              </p>
             </div>
             {type === "tour" ? (
               <>
                 <div>
                   <Label className="text-sm font-medium">Hướng dẫn viên</Label>
-                  <p className="text-sm">{feedback.tourGuideName}</p>
+                  <p className="text-sm">{(feedback as TourFeedback).tourGuideName}</p>
                 </div>
                 <div>
                   <Label className="text-sm font-medium">Tour</Label>
-                  <p className="text-sm">{feedback.tourName}</p>
+                  <p className="text-sm">{(feedback as TourFeedback).tourName}</p>
                 </div>
               </>
             ) : (
               <div>
                 <Label className="text-sm font-medium">Payment ID</Label>
-                <p className="text-sm">#{feedback.paymentId}</p>
+                <p className="text-sm">#{(feedback as PlatformFeedback).paymentId}</p>
               </div>
             )}
             <div>
               <Label className="text-sm font-medium">Ngày tạo</Label>
-              <p className="text-sm">{formatDate(type === "tour" ? feedback.createdDate : feedback.createdAt)}</p>
+              <p className="text-sm">{formatDate(feedback)}</p>
             </div>
           </div>
           <div>

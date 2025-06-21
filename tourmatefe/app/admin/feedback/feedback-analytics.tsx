@@ -1,32 +1,41 @@
+import { useTourFeedbackStats, useTourFeedbacks } from "@/hooks/use-feedback"
+import { usePlatformFeedbackStats, usePlatformFeedbacks } from "@/hooks/use-platform-feedback"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { Star } from "lucide-react"
-import { tourFeedbacks, platformFeedbacks } from "./data/feedback-data"
-
-// Import utility functions
 import { formatFeedbackDate, sortFeedbacksByDate } from "./utils/date-utils"
+import type { FeedbackStats, TourFeedback } from "@/types/feedback"
+import { PlatformFeedbackDto } from "@/types/platform-feedback"
 
 export default function FeedbackAnalytics() {
-  // Tính toán thống kê
-  const tourStats = {
-    total: tourFeedbacks.length,
-    avgRating: tourFeedbacks.reduce((sum, f) => sum + f.rating, 0) / tourFeedbacks.length,
-    ratingDistribution: [1, 2, 3, 4, 5].map((rating) => ({
-      rating,
-      count: tourFeedbacks.filter((f) => f.rating === rating).length,
-    })),
+  // Sử dụng API hooks với proper types
+  const { data: tourStatsResponse, isLoading: tourStatsLoading } = useTourFeedbackStats()
+  const { data: platformStatsResponse, isLoading: platformStatsLoading } = usePlatformFeedbackStats()
+  const { data: tourFeedbacksResponse, isLoading: tourFeedbacksLoading } = useTourFeedbacks()
+  const { data: platformFeedbacksResponse, isLoading: platformFeedbacksLoading } = usePlatformFeedbacks()
+
+  // Loading state
+  if (tourStatsLoading || platformStatsLoading || tourFeedbacksLoading || platformFeedbacksLoading) {
+    return <div>Đang tải dữ liệu...</div>
   }
 
-  const platformStats = {
-    total: platformFeedbacks.length,
-    avgRating: platformFeedbacks.reduce((sum, f) => sum + f.rating, 0) / platformFeedbacks.length,
-    ratingDistribution: [1, 2, 3, 4, 5].map((rating) => ({
-      rating,
-      count: platformFeedbacks.filter((f) => f.rating === rating).length,
-    })),
+  // Extract data with proper types
+  const tourStats: FeedbackStats = tourStatsResponse || {
+    totalFeedbacks: 0,
+    averageRating: 0,
+    ratingDistribution: [],
   }
 
-  // Update the formatDate function call
+  const platformStats: FeedbackStats = platformStatsResponse || {
+    totalFeedbacks: 0,
+    averageRating: 0,
+    ratingDistribution: [],
+  }
+
+  const tourFeedbacks: TourFeedback[] = tourFeedbacksResponse || []
+  const platformFeedbacks: PlatformFeedbackDto[] = platformFeedbacksResponse || []
+
+
   const formatDate = formatFeedbackDate
 
   const getRatingBadge = (rating: number) => {
@@ -45,6 +54,12 @@ export default function FeedbackAnalytics() {
     )
   }
 
+  // Combine feedbacks for recent display with proper typing
+  const combinedFeedbacks: (TourFeedback | PlatformFeedbackDto)[] = [
+    ...tourFeedbacks.slice(0, 3),
+    ...platformFeedbacks.slice(0, 2),
+  ]
+
   return (
     <div className="space-y-6">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -59,16 +74,21 @@ export default function FeedbackAnalytics() {
               <div className="flex justify-between items-center p-4 bg-blue-50 rounded-lg">
                 <div>
                   <h4 className="font-semibold text-blue-900">Đánh giá Tour</h4>
-                  <p className="text-sm text-blue-700">Trung bình: {tourStats.avgRating.toFixed(1)}/5</p>
+                  <p className="text-sm text-blue-700">
+                    Trung bình: {typeof tourStats.averageRating === 'number' ? tourStats.averageRating.toFixed(1) : 'N/A'}/5
+                  </p>
+
                 </div>
-                <div className="text-2xl font-bold text-blue-600">{tourStats.total}</div>
+                <div className="text-2xl font-bold text-blue-600">{tourStats?.totalFeedbacks ?? 0}</div>
               </div>
               <div className="flex justify-between items-center p-4 bg-green-50 rounded-lg">
                 <div>
                   <h4 className="font-semibold text-green-900">Đánh giá Hệ thống</h4>
-                  <p className="text-sm text-green-700">Trung bình: {platformStats.avgRating.toFixed(1)}/5</p>
+                  <p className="text-sm text-green-700">
+                    Trung bình: {typeof platformStats.averageRating === 'number' ? platformStats.averageRating.toFixed(1) : 'N/A'}/5
+                  </p>
                 </div>
-                <div className="text-2xl font-bold text-green-600">{platformStats.total}</div>
+                <div className="text-2xl font-bold text-green-600">{platformStats?.totalFeedbacks ?? 0}</div>
               </div>
             </div>
           </CardContent>
@@ -125,7 +145,7 @@ export default function FeedbackAnalytics() {
         </CardHeader>
         <CardContent>
           <div className="space-y-4">
-            {sortFeedbacksByDate([...tourFeedbacks.slice(0, 3), ...platformFeedbacks.slice(0, 2)])
+            {sortFeedbacksByDate(combinedFeedbacks)
               .slice(0, 5)
               .map((feedback, index) => (
                 <div key={index} className="flex space-x-4 p-4 border rounded-lg">

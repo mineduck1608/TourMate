@@ -5,7 +5,7 @@ interface TopTourGuidesProps {
   guides: Array<{
     id: number
     name: string
-    avgRating: number
+    averageRating: number
     count: number
   }>
 }
@@ -41,8 +41,10 @@ export default function TopTourGuides({ guides }: TopTourGuidesProps) {
                 </div>
               </div>
               <div className="flex items-center space-x-2">
-                {renderStars(Math.round(guide.avgRating))}
-                <span className="font-semibold">{guide.avgRating.toFixed(1)}</span>
+                {typeof guide.averageRating === "number" ? renderStars(Math.round(guide.averageRating)) : renderStars(0)}
+                <span className="font-semibold">
+                  {typeof guide.averageRating === "number" ? guide.averageRating.toFixed(1) : "N/A"}
+                </span>
               </div>
             </div>
           ))}

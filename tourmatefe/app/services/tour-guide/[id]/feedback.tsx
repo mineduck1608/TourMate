@@ -6,7 +6,7 @@ import { Star, User, Calendar, MessageSquare, ChevronLeft, ChevronRight } from "
 import { format } from "date-fns"
 import { Button } from "@/components/ui/button"
 import SafeImage from "@/components/safe-image"
-import { getTourGuideFeedbacks } from "@/app/api/feedback.api"
+import { getTourGuideFeedbacksPaged } from "@/app/api/feedback.api"
 
 interface TourGuideFeedbackSectionProps {
   tourGuideId: number
@@ -35,7 +35,7 @@ export default function TourGuideFeedbackSection({ tourGuideId }: TourGuideFeedb
     error,
   } = useQuery({
     queryKey: ["tour-guide-feedbacks", tourGuideId, currentPage],
-    queryFn: () => getTourGuideFeedbacks(tourGuideId, currentPage, pageSize),
+    queryFn: () => getTourGuideFeedbacksPaged(tourGuideId, currentPage, pageSize),
     enabled: !!tourGuideId,
   })
 

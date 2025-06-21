@@ -1,5 +1,6 @@
 "use client"
 
+import { useTourFeedbacks } from "@/hooks/use-feedback"
 import { useState } from "react"
 import { Eye, Star } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -8,18 +9,31 @@ import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import FeedbackFilters from "./feedback-filters"
 import FeedbackDetailModal from "./feedback-detail-modal"
-import { tourFeedbacks } from "./data/feedback-data"
-// Import utility function
 import { formatFeedbackDate } from "./utils/date-utils"
+import type { TourFeedback } from "@/types/feedback"
 
 export default function TourFeedbackList() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedRating, setSelectedRating] = useState("all")
-  const [selectedFeedback, setSelectedFeedback] = useState<any>(null)
+  const [selectedFeedback, setSelectedFeedback] = useState<TourFeedback | null>(null)
   const [isModalOpen, setIsModalOpen] = useState(false)
 
-  // Lọc feedback
-  const filteredFeedbacks = tourFeedbacks.filter((feedback) => {
+  // Sử dụng API hook với proper types
+  const { data: feedbacksResponse, isLoading, error } = useTourFeedbacks()
+  const feedbacks: TourFeedback[] = feedbacksResponse || []
+
+  // Loading state
+  if (isLoading) {
+    return <div>Đang tải dữ liệu...</div>
+  }
+
+  // Error state
+  if (error) {
+    return <div>Lỗi khi tải dữ liệu: {error.message}</div>
+  }
+
+  // Lọc feedback với proper types
+  const filteredFeedbacks = feedbacks.filter((feedback: TourFeedback) => {
     const matchesSearch =
       feedback.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
       feedback.tourGuideName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -28,7 +42,6 @@ export default function TourFeedbackList() {
     return matchesSearch && matchesRating
   })
 
-  // Update the formatDate function
   const formatDate = formatFeedbackDate
 
   const getRatingBadge = (rating: number) => {
@@ -47,7 +60,7 @@ export default function TourFeedbackList() {
     )
   }
 
-  const handleViewDetail = (feedback: any) => {
+  const handleViewDetail = (feedback: TourFeedback) => {
     setSelectedFeedback(feedback)
     setIsModalOpen(true)
   }
@@ -86,15 +99,14 @@ export default function TourFeedbackList() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {filteredFeedbacks.map((feedback) => (
+                {filteredFeedbacks.map((feedback: TourFeedback) => (
                   <TableRow key={feedback.feedbackId}>
                     <TableCell className="font-medium">{feedback.customerName}</TableCell>
                     <TableCell>{feedback.tourGuideName}</TableCell>
                     <TableCell className="max-w-xs truncate">{feedback.tourName}</TableCell>
                     <TableCell>{getRatingBadge(feedback.rating)}</TableCell>
                     <TableCell className="max-w-md truncate">{feedback.content}</TableCell>
-                    {/* Update the table cell */}
-                    <TableCell>{formatDate(feedback.createdDate)}</TableCell>
+                    <TableCell>{formatDate(feedback)}</TableCell>
                     <TableCell>
                       <Button variant="outline" size="sm" onClick={() => handleViewDetail(feedback)}>
                         <Eye className="w-4 h-4" />
