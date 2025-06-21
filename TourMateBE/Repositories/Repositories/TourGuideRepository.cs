@@ -212,10 +212,10 @@ namespace Repositories.Repository
             }
         }
 
-        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
+        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int excludeId, int pageSize)
         {
             var result = await _context.TourGuides
-    .Where(x => x.TourGuideId != tourGuideId)
+    .Where(x => x.TourGuideId != excludeId)
     .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
     .Include(td => td.TourGuideDescs)  // Đảm bảo TourGuideDescs được tải ra
     .Take(pageSize)  // Giới hạn số lượng kết quả theo pageSize
@@ -223,6 +223,45 @@ namespace Repositories.Repository
 
 
             return result;
+        }
+
+        public async Task<List<TourGuide>> GetOtherTourGuidesFavorMembership(int excludeId, int pageSize)
+        {
+            try
+            {
+                var query = _context.TourGuides
+                .Include(x => x.TourGuideDescs)
+                .Include(x => x.Account)
+                .ThenInclude(x => x.AccountMemberships)
+                .ThenInclude(x => x.MembershipPackage)
+                .Where(x => x.TourGuideId != excludeId
+                //Find those with active membership
+                && x.Account.AccountMemberships.Any(y => y.IsActive)
+                )
+                .Take(pageSize);
+                await query.ForEachAsync(x =>
+                {
+                    var memberships = x.Account.AccountMemberships;
+                    x.Account.AccountMemberships = memberships.Where(y => y.IsActive).ToList();
+                });
+                var result = new List<TourGuide>();
+                result.AddRange(query);
+                var r = result.Count;
+                if (r < pageSize)
+                {
+                    var includedId = result.Select(x => x.TourGuideId).ToHashSet();
+                    var randomGuides = _context.TourGuides
+                        .Include(x => x.TourGuideDescs)
+                        .Where(x => !includedId.Contains(x.TourGuideId))
+                        .OrderBy(x => Guid.NewGuid())
+                        .Take(pageSize - r);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return [];
+            }            
         }
 
         public async Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize)

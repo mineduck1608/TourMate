@@ -204,11 +204,11 @@ namespace API.Controllers
         }
 
         [HttpGet("other")]
-        public async Task<IActionResult> GetOtherTourGuide([FromQuery] int tourGuideId, [FromQuery] int pageSize)
+        public async Task<IActionResult> GetOtherTourGuide([FromQuery] int tourGuideId, [FromQuery] int pageSize, [FromQuery] bool prioritizeMembership = false)
         {
             try
             {
-                var result = await _tourguideService.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+                var result = await _tourguideService.GetOtherTourGuidesAsync(tourGuideId, pageSize, prioritizeMembership);
                 return Ok(result);
             }
             catch (Exception ex)

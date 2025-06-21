@@ -21,7 +21,7 @@ namespace Services
         Task<bool> UpdateTourGuideClient(TourGuide tourGuide);
         Task<PagedResult<TourGuide>> GetList(int pageSize, int pageIndex, string? name, int? areaId);
         Task<bool> ChangePicture(int id, string fieldToChange, string newValue);
-        Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize);
+        Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize, bool prioritizeMembership);
         Task<bool> ChangePassword(int id, string password);
         Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize);
         Task<TourGuideIdAndName> GetTourGuideByAccountIdAsync(int accountId);
@@ -95,9 +95,11 @@ namespace Services
             return await _repository.ChangePicture(id, fieldToChange, newValue);
         }
 
-        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize)
+        public async Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize, bool prioritizeMembership)
         {
-            return await _repository.GetOtherTourGuidesAsync(tourGuideId, pageSize);
+            return prioritizeMembership ? 
+                await _repository.GetOtherTourGuidesFavorMembership(tourGuideId, pageSize) : 
+                await _repository.GetOtherTourGuidesAsync(tourGuideId, pageSize);
         }
         public async Task<bool> ChangePassword(int id, string password)
         {

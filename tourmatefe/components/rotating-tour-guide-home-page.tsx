@@ -11,7 +11,7 @@ export default function RotatingTourGuideHomePage() {
     const { data, isLoading } = useQuery({
         queryKey: ['random-tour-guide'],
         queryFn: async () => {
-            const response = await getOtherTourGuides(47, 2)
+            const response = await getOtherTourGuides(-1, 4)
             return response ?? []
         },
         refetchInterval: 5000,
@@ -38,7 +38,7 @@ export default function RotatingTourGuideHomePage() {
     return (
         <>
             <h2 className="text-center text-4xl my-10 inter" data-aos="fade-up">Hướng dẫn viên</h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 p-5">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-5 p-5">
                 {tourGuides.map(currentGuide => {
                     return <TourGuideCard key={currentGuide.tourGuideId} currentGuide={currentGuide} />
                 })}
@@ -68,7 +68,7 @@ function TourGuideCard({ currentGuide }: { currentGuide: TourGuide }) {
                             className="w-16 h-16 rounded-full aspect-square border-2"
                             alt={currentGuide.fullName || "Tour guide"}
                         />
-                        <div>
+                        <div className="line-clamp-3">
                             <div className="font-bold text-lg">{currentGuide.fullName}</div>
                             {currentGuide.tourGuideDescs && currentGuide.tourGuideDescs.length > 0 &&
                                 currentGuide.tourGuideDescs[0]?.company &&
@@ -95,12 +95,12 @@ function TourGuideCard({ currentGuide }: { currentGuide: TourGuide }) {
                         className="w-full object-cover aspect-[3/1]"
                         alt={'Tour guide banner'}
                     />
-                    <div className="p-5">
+                    <div className="p-5 ">
                         {(currentGuide.tourGuideDescs &&
                             currentGuide.tourGuideDescs.length > 0 &&
                             currentGuide.tourGuideDescs[0]?.description) ? (
                             <div
-                                className="text-sm text-gray-700 line-clamp-3"
+                                className="text-sm text-gray-700 line-clamp-4"
                                 dangerouslySetInnerHTML={{
                                     __html: currentGuide.tourGuideDescs[0].description,
                                 }}
