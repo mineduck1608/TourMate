@@ -4,6 +4,7 @@ using Repositories.DTO;
 using Repositories.GenericRepository;
 using Repositories.IRepositories;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -161,6 +162,31 @@ namespace Repositories.Repositories
             _context.Revenues.Remove(revenue);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<PagedResult<RevenueDto>> GetAllPaged(int pageSize, int pageIndex, bool descending = true)
+        {
+            var query = _context.Revenues
+                .AsQueryable();
+
+            // Phân trang
+            var result = await query
+                .Skip(pageSize * (pageIndex - 1))
+                .Take(pageSize)
+                .Include(x => x.TourGuide)
+                .ThenInclude(x => x.TourGuideRevenues)
+                .Select(x => new RevenueDto())
+                .ToListAsync();
+
+            // Lấy tổng số bản ghi
+            var totalAmount = await _context.Revenues.CountAsync();
+
+            return new PagedResult<RevenueDto>
+            {
+                Result = result,
+                TotalResult = totalAmount,
+                TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
+            };
         }
     }
 }
