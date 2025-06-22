@@ -1,14 +1,16 @@
-﻿using Org.BouncyCastle.Crypto;
+﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Crypto;
 using Repositories.DTO;
-using Repositories.Models;
 using Repositories.IRepositories;
+using Repositories.Models;
+using Repositories.ResponseModels;
+using Services.IServices;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AutoMapper;
-using Services.IServices;
 
 
 namespace Services.Services
@@ -98,6 +100,11 @@ namespace Services.Services
 
             if (previousMonthRevenue == 0) return 0;
             return (currentMonthRevenue - previousMonthRevenue) / previousMonthRevenue * 100;
+        }
+
+        public async Task<PagedResult<RevenueDto>> GetAll(int pageSize, int pageIndex)
+        {
+            return await _revenueRepository.GetAllPaged(pageSize, pageIndex);
         }
     }
 }

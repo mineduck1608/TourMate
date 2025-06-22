@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO;
+using Repositories.ResponseModels;
 using Services.IServices;
 
 namespace TourMate.Controllers
@@ -94,6 +95,20 @@ namespace TourMate.Controllers
                     return NotFound(new { message = "Revenue not found" });
 
                 return Ok(revenue);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<PagedResult<RevenueDto>>> GetAll([FromQuery] int pageSize = 10,[FromQuery] int pageIndex = 1)
+        {
+            try
+            {
+                var pagedResult = await _revenueService.GetAll(pageSize, pageIndex);
+                return Ok(pagedResult);
             }
             catch (Exception ex)
             {

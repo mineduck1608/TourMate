@@ -1,5 +1,6 @@
 ﻿using Repositories.DTO;
 using Repositories.Models;
+using Repositories.ResponseModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Services.IServices
         Task<MonthlyRevenueDto> GetMonthlyRevenueAsync(int tourGuideId, int month, int year);
         Task<IEnumerable<RevenueDto>> GetRevenueListAsync(RevenueFilterDto filter);
         Task<RevenueDto?> GetRevenueByIdAsync(int revenueId);
+        Task<PagedResult<RevenueDto>> GetAll(int pageSize, int pageIndex);
         Task<RevenueDto> CreateRevenueAsync(RevenueDto revenueDto);
         Task<RevenueDto> UpdateRevenueAsync(int revenueId, RevenueDto revenueDto);
         Task<bool> DeleteRevenueAsync(int revenueId);
