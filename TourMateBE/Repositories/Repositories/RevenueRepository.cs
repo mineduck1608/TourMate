@@ -174,8 +174,17 @@ namespace Repositories.Repositories
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .Include(x => x.TourGuide)
-                .ThenInclude(x => x.TourGuideRevenues)
-                .Select(x => new RevenueDto())
+                .Select(x => new RevenueDto()
+                {
+                    ActualReceived = x.ActualReceived,
+                    CreatedAt = x.CreatedAt,
+                    PaymentStatus = x.PaymentStatus,
+                    PlatformCommission = x.PlatformCommission,
+                    RevenueId = x.RevenueId,
+                    TotalAmount = x.TotalAmount,
+                    TourGuideId = x.TourGuideId,
+                    TourGuideName = x.TourGuide.FullName,
+                })
                 .ToListAsync();
 
             // Lấy tổng số bản ghi
