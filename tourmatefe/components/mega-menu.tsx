@@ -44,23 +44,20 @@ const MegaMenu = () => {
 
   return (
     <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
-      <div className="mx-auto px-4 sm:px-5 lg:px-20">
-        <div className="flex justify-between items-center h-20">
-          {/* Logo */}
-          <Link href="/" className="flex items-center space-x-3 group">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-center items-center h-20 relative">
+          {/* Logo - positioned absolutely to the left */}
+          <Link href="/" className="absolute left-0 flex items-center space-x-3 group">
             <div className="relative">
               <Image
                 src={Logo || "/placeholder.svg"}
-                className="h-20 w-20 transition-transform group-hover:scale-105"
+                className="h-16 w-16 transition-transform group-hover:scale-105"
                 alt="TourMate Logo"
               />
             </div>
-            {/* <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-              TourMate
-            </span> */}
           </Link>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Navigation - centered */}
           <div className="hidden lg:flex items-center space-x-1">
             <Link
               href="/"
@@ -209,8 +206,8 @@ const MegaMenu = () => {
             </Link>
           </div>
 
-          {/* Auth Buttons */}
-          <div className="hidden lg:flex items-center space-x-3">
+          {/* Auth Buttons - positioned absolutely to the right */}
+          <div className="absolute right-0 hidden lg:flex items-center space-x-3">
             {token ? (
               <ActionMenu />
             ) : (
@@ -231,10 +228,10 @@ const MegaMenu = () => {
             )}
           </div>
 
-          {/* Mobile menu button */}
+          {/* Mobile menu button - positioned absolutely to the right */}
           <button
             onClick={toggleMobileMenu}
-            className="lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
+            className="absolute right-0 lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
           >
             {isMobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
