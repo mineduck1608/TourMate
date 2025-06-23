@@ -117,7 +117,7 @@ export default function FeedbackSection() {
               {/* Content */}
               <div className="px-6 pb-6">
                 <blockquote className="text-gray-700 leading-relaxed mb-6 line-clamp-4 text-sm lg:text-base">
-                  "{item.content}"
+                  &quot;{item.content}&quot;
                 </blockquote>
 
                 {/* Author */}

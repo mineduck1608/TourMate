@@ -133,11 +133,11 @@ const AboutSunday = () => {
               {/* Content */}
               <div className="text-center space-y-6 relative z-10">
                 <h4 className="text-2xl lg:text-3xl font-bold text-gray-900 charm-bold">
-                  "Tái định nghĩa{" "}
+                  &quot;Tái định nghĩa{" "}
                   <span className="bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
                     trải nghiệm du lịch bản địa
                   </span>
-                  "
+                  &quot;
                 </h4>
 
                 <div className="w-16 h-1 bg-gradient-to-r from-blue-600 to-purple-600 rounded-full mx-auto"></div>
