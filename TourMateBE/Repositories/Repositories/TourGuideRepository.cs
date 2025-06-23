@@ -202,7 +202,7 @@ namespace Repositories.Repositories
             try
             {
                 var c = _context.TourGuides.Include(x => x.TourGuideDescs).FirstOrDefault(x => x.TourGuideId == id);
-                
+
                 _context.Entry(c).CurrentValues.SetValues(c);
                 await _context.SaveChangesAsync();
                 return true;
@@ -237,8 +237,9 @@ namespace Repositories.Repositories
                 .ThenInclude(x => x.MembershipPackage)
                 .Where(x => x.TourGuideId != excludeId
                 //Find those with active membership
-                && x.Account.AccountMemberships.Any(y => y.IsActive)
+                && (x.Account.AccountMemberships.Any(y => y.IsActive) || x.IsVerified)
                 )
+                .OrderBy(x => Guid.NewGuid())
                 .Take(pageSize);
                 await query.ForEachAsync(x =>
                 {
@@ -256,13 +257,14 @@ namespace Repositories.Repositories
                         .Where(x => !includedId.Contains(x.TourGuideId))
                         .OrderBy(x => Guid.NewGuid())
                         .Take(pageSize - r);
+                    result.AddRange(randomGuides);
                 }
                 return result;
             }
             catch (Exception ex)
             {
                 return [];
-            }            
+            }
         }
 
         public async Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize)
