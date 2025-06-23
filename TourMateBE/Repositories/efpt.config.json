@@ -79,6 +79,10 @@
          "ObjectType": 0
       },
       {
+         "Name": "[dbo].[PlatformFeedback]",
+         "ObjectType": 0
+      },
+      {
          "Name": "[dbo].[RefreshToken]",
          "ObjectType": 0
       },
@@ -88,10 +92,6 @@
       },
       {
          "Name": "[dbo].[Role]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[SystemRevenue]",
          "ObjectType": 0
       },
       {
@@ -108,10 +108,6 @@
       },
       {
          "Name": "[dbo].[TourGuideDesc]",
-         "ObjectType": 0
-      },
-      {
-         "Name": "[dbo].[TourGuideRevenue]",
          "ObjectType": 0
       },
       {

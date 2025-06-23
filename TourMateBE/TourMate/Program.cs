@@ -95,9 +95,6 @@ builder.Services.AddScoped<IRefreshTokenService, RefreshTokenService>();
 builder.Services.AddScoped<IRoleRepository, RoleRepository>();
 builder.Services.AddScoped<IRoleService, RoleService>();
 
-builder.Services.AddScoped<ISystemRevenueRepository, SystemRevenueRepository>();
-builder.Services.AddScoped<ISystemRevenueService, SystemRevenueService>();
-
 builder.Services.AddScoped<ITourBidRepository, TourBidRepository>();
 builder.Services.AddScoped<ITourBidService, TourBidService>();
 
@@ -106,9 +103,6 @@ builder.Services.AddScoped<ITourGuideService, TourGuideService>();
 
 builder.Services.AddScoped<ITourGuideDescRepository, TourGuideDescRepository>();
 builder.Services.AddScoped<ITourGuideDescService, TourGuideDescService>();
-
-builder.Services.AddScoped<ITourGuideRevenueRepository, TourGuideRevenueRepository>();
-builder.Services.AddScoped<ITourGuideRevenueService, TourGuideRevenueService>();
 
 builder.Services.AddScoped<ITourServicesRepository, TourServicesRepository>();
 builder.Services.AddScoped<ITourServicesService, TourServicesService>();

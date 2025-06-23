@@ -174,17 +174,16 @@ namespace Repositories.Repositories
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .Include(x => x.TourGuide)
-                .ThenInclude(x => x.TourGuideRevenues)
-                .Select(x => new RevenueDto
+                .Select(x => new RevenueDto()
                 {
-                  RevenueId = x.RevenueId,
-                    TourGuideId = x.TourGuideId,
-                    TotalAmount = x.TotalAmount,
                     ActualReceived = x.ActualReceived,
-                    PlatformCommission = x.PlatformCommission,
                     CreatedAt = x.CreatedAt,
                     PaymentStatus = x.PaymentStatus,
-                    TourGuideName = x.TourGuide.FullName
+                    PlatformCommission = x.PlatformCommission,
+                    RevenueId = x.RevenueId,
+                    TotalAmount = x.TotalAmount,
+                    TourGuideId = x.TourGuideId,
+                    TourGuideName = x.TourGuide.FullName,
                 })
                 .ToListAsync();
 
