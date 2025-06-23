@@ -236,8 +236,8 @@ export function SignupForm({
               <option value="" disabled>
                 Chọn giới tính
               </option>
-              <option value="male">Nam</option>
-              <option value="female">Nữ</option>
+              <option value="Nam">Nam</option>
+              <option value="Nữ">Nữ</option>
             </select>
           </div>
 
