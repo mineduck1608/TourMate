@@ -4,7 +4,6 @@
 //   useReactTable,
 //   getCoreRowModel,
 //   flexRender,
-//   ColumnDef,
 // } from "@tanstack/react-table";
 // import {
 //   Table,
@@ -14,25 +13,112 @@
 //   TableHeader,
 //   TableRow,
 // } from "@/components/ui/table";
-// import { Button } from "@/components/ui/button";
+// import { columns, RevenueRecord } from "./column";
 
-// interface DataTableProps<T> {
-//   columns: ColumnDef<T>[];
-//   data: T[];
-//   isLoading?: boolean;
-// }
+// const mockData: RevenueRecord[] = [
+//   {
+//     revenueId: "REV-001",
+//     tourGuide: "Sarah Johnson",
+//     customer: "John Smith",
+//     tourDescription: "Historical Downtown Tour",
+//     bookDate: "2024-01-15",
+//     amount: 120,
+//     revenuePercent: 70,
+//     revenueAmount: 84,
+//     status: "Unpaid",
+//   },
+//   {
+//     revenueId: "REV-002",
+//     tourGuide: "Michael Chen",
+//     customer: "Emma Wilson",
+//     tourDescription: "Food & Culture Experience",
+//     bookDate: "2024-01-16",
+//     amount: 95,
+//     revenuePercent: 65,
+//     revenueAmount: 61.75,
+//     status: "Paid",
+//   },
+//   {
+//     revenueId: "REV-003",
+//     tourGuide: "Sarah Johnson",
+//     customer: "David Brown",
+//     tourDescription: "City Highlights Tour",
+//     bookDate: "2024-01-17",
+//     amount: 150,
+//     revenuePercent: 70,
+//     revenueAmount: 105,
+//     status: "Unpaid",
+//   },
+//   {
+//     revenueId: "REV-004",
+//     tourGuide: "Emma Rodriguez",
+//     customer: "Lisa Garcia",
+//     tourDescription: "Adventure Hiking Tour",
+//     bookDate: "2024-01-18",
+//     amount: 200,
+//     revenuePercent: 75,
+//     revenueAmount: 150,
+//     status: "Unpaid",
+//   },
+//   {
+//     revenueId: "REV-005",
+//     tourGuide: "Michael Chen",
+//     customer: "Robert Taylor",
+//     tourDescription: "Local Markets Tour",
+//     bookDate: "2024-01-19",
+//     amount: 80,
+//     revenuePercent: 65,
+//     revenueAmount: 52,
+//     status: "Unpaid",
+//   },
+//   {
+//     revenueId: "REV-006",
+//     tourGuide: "David Kim",
+//     customer: "Maria Lopez",
+//     tourDescription: "Art Gallery Tour",
+//     bookDate: "2024-01-20",
+//     amount: 110,
+//     revenuePercent: 60,
+//     revenueAmount: 66,
+//     status: "Paid",
+//   },
+//   {
+//     revenueId: "REV-007",
+//     tourGuide: "Emma Rodriguez",
+//     customer: "James Wilson",
+//     tourDescription: "Nature Photography Tour",
+//     bookDate: "2024-01-21",
+//     amount: 180,
+//     revenuePercent: 75,
+//     revenueAmount: 135,
+//     status: "Unpaid",
+//   },
+//   {
+//     revenueId: "REV-008",
+//     tourGuide: "Lisa Thompson",
+//     customer: "Anna Davis",
+//     tourDescription: "Sunset Photography Tour",
+//     bookDate: "2024-01-22",
+//     amount: 130,
+//     revenuePercent: 70,
+//     revenueAmount: 91,
+//     status: "Unpaid",
+//   },
+// ];
 
-// export function DataTable<T>({ columns, data, isLoading }: DataTableProps<T>) {
+// export function DataTable() {
 //   const table = useReactTable({
-//     data,
+//     data: mockData,
 //     columns,
 //     getCoreRowModel: getCoreRowModel(),
 //   });
 
-//   if (isLoading) return <div>Đang tải dữ liệu...</div>;
-
 //   return (
-//     <div className="rounded-md border bg-white">
+//     <div className="bg-white rounded-xl p-6 mt-6 border">
+//       <div className="font-semibold text-lg mb-1">Revenue Records</div>
+//       <div className="text-gray-500 mb-5 text-sm">
+//         Detailed view of all tour guide revenue records
+//       </div>
 //       <Table>
 //         <TableHeader>
 //           {table.getHeaderGroups().map((headerGroup) => (
