@@ -1,8 +1,8 @@
 "use client"
 
 import { Card, CardContent } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
 import { Phone, Mail, MessageCircle } from "lucide-react"
+import Link from "next/link"
 
 export default function ContactSection() {
     return (
@@ -52,12 +52,16 @@ export default function ContactSection() {
                     </div>
                 </div>
 
-                <Button
-                    className="w-full mt-6 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 border-0 font-medium"
-                    size="lg"
+                <Link
+
+                    href={'/contact'}
                 >
-                    Liên hệ ngay
-                </Button>
+                    <div
+                        className="p-2 rounded-lg text-center w-full mt-6 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 border-0 font-medium"
+                    >
+                        Liên hệ ngay
+                    </div>
+                </Link>
             </CardContent>
         </Card>
     )

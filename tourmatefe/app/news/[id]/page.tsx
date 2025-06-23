@@ -73,7 +73,7 @@ export default function NewsDetailPage({
         />
         {/* Rest of your component remains the same */}
         <div
-          className="w-[30%] p-2 *:mb-10 sticky top-10 h-[calc(100vh)] overflow-auto"
+          className="w-[30%] p-2 *:mb-10 sticky top-10 h-[calc(150vh)] overflow-y-auto overflow-x-hidden"
         >
           <RecentNews currentId={id} />
           <NewsCategories />
