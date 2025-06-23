@@ -175,7 +175,17 @@ namespace Repositories.Repositories
                 .Take(pageSize)
                 .Include(x => x.TourGuide)
                 .ThenInclude(x => x.TourGuideRevenues)
-                .Select(x => new RevenueDto())
+                .Select(x => new RevenueDto
+                {
+                  RevenueId = x.RevenueId,
+                    TourGuideId = x.TourGuideId,
+                    TotalAmount = x.TotalAmount,
+                    ActualReceived = x.ActualReceived,
+                    PlatformCommission = x.PlatformCommission,
+                    CreatedAt = x.CreatedAt,
+                    PaymentStatus = x.PaymentStatus,
+                    TourGuideName = x.TourGuide.FullName
+                })
                 .ToListAsync();
 
             // Lấy tổng số bản ghi
