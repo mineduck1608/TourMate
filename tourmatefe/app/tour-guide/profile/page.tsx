@@ -97,7 +97,7 @@ function TourGuideProfileEdit() {
                 />}
                 <PictureView isOpen={toggleMode.view} onClose={() => { setToggleMode({ ...toggleMode, view: false }) }} img={toggleMode.value} />
 
-                <div className='my-10 relative'>
+                <div className='mb-10 relative'>
                     {/* Banner */}
                     <div className='relative'>
 
