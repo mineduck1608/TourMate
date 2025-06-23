@@ -156,10 +156,10 @@ namespace Repositories.Repositories
         {
             name = name != null ? name.ToLower() : "";
             var query = _context.TourGuides
-                .Include(x => x.TourGuideDescs)
+                .Include(x => x.TourGuideDescs).Include(a => a.Account)
                 .Where(x =>
                 (string.IsNullOrEmpty(name) || x.FullName.ToLower().Contains(name))
-                && (areaId == null || x.TourGuideDescs.First().AreaId == areaId));
+                && (areaId == null || x.TourGuideDescs.First().AreaId == areaId) && x.Account.Status == true);
             var result = query.Skip((pageIndex - 1) * pageSize).Take(pageSize);
             var totalResult = await result.CountAsync();
             return new PagedResult<TourGuide>
