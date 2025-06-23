@@ -142,6 +142,7 @@ export const getAllRevenue = async (
     },
     signal,
   });
+  console.log("getAllRevenue response:", res.data);
 };
 
 export const exportRevenueExcel = async (tourGuideId: number, month: number, year: number) => {
