@@ -77,7 +77,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value } = e.target;
+        const { name, value } = {... e.target};
         const updated = { ...target, [name]: value }
         setTarget(updated);
     };
@@ -267,6 +267,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             onClick={() => {
                                 setSignal({ edit: false, delete: false, create: true })
                             }}
+                            disabled
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                         >

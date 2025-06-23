@@ -2,6 +2,7 @@ import { storage } from "@/firebaseConfig";
 import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import SafeImage from "./safe-image";
 
 interface ImageUploadProps {
   onImageUpload: (imageUrl: string) => void;  // Callback to handle the image URL
@@ -134,7 +135,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload }) => {
   </div>
 ) : imagePreview ? (
   // Hiển thị ảnh sau khi tải lên
-  <img
+  <SafeImage
     src={imagePreview}
     alt="Preview"
     style={{
