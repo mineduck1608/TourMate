@@ -87,7 +87,7 @@ function ActiveAreaList() {
         {/* Bộ lọc bên trái */}
         <div
           data-aos="fade-right"
-          className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-[calc(30vh)] sticky top-15 overflow-auto"
+          className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-[calc(30vh)] sticky top-30 overflow-auto"
         >
           <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
           <input

@@ -74,7 +74,7 @@ function TourGuideMain() {
             <div className="flex flex-col md:flex-row gap-10 p-15 bg-gray-100">
                 <div
                     data-aos="fade-right"
-                    className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full"
+                    className="md:w-1/4 bg-white shadow-lg rounded-lg p-6 h-full sticky top-30 overflow-auto"
                 >
                     <h3 className="text-2xl font-semibold mb-4 text-gray-700">Bộ lọc</h3>
                     <input

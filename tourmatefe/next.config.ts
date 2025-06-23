@@ -9,6 +9,8 @@ const nextConfig: NextConfig = {
       'i.pravatar.cc',
       'img.freepik.com', // thêm domain freepik
       'bestlocationhotels.com',
+      'thanhnien.mediacdn.vn',
+      'media-cdn-v2.laodong.vn',
     ],
   },
 };
