@@ -10,7 +10,7 @@ import dayjs from 'dayjs';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import React, { Suspense, useState } from 'react'
-import { FaCheckCircle } from 'react-icons/fa';
+import { FaCheck } from 'react-icons/fa';
 const LIMIT = 12
 type SearchTerm = {
     name: string,
@@ -127,7 +127,7 @@ function TourGuideMain() {
                                     </div>
                                     <div className="p-6">
                                         <h4 className="font-semibold text-xl text-gray-800 mb-2">
-                                            {v.fullName} {v.isVerified && <FaCheckCircle className="fill-blue-500 inline" />}
+                                            {v.fullName} {v.isVerified && <FaCheck className="fill-blue-500 inline" />}
                                         </h4>
                                         <p className="text-gray-600 text-sm mb-2">
                                             {dayjs(v.dateOfBirth).format('DD/MM/YYYY')}

@@ -16,6 +16,7 @@ import Link from "next/link";
 import dayjs from "dayjs";
 import BidEditModal from "./bid-edit-modal";
 import DeleteModal from "@/components/delete-modal";
+import { FaCheckCircle } from "react-icons/fa";
 
 type BidCommentModalProps = {
     isOpen: boolean;
@@ -110,7 +111,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
             newBid.image = tourGuide?.image
             newBid.fullName = tourGuide?.fullName
             console.log(newBid);
-            
+
             setModalOpen(p => ({ ...p, create: false }));
             setInnerTourBid({ ...innerTourBid, isBid: true })
             setBids(prev => {
@@ -282,6 +283,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                     >
                         {bids.map((v) => {
                             const displayBid = cachedEdits[v.bidId] || v;
+                            const isAccepted = v.status === 'Chấp nhận'
                             return (
                                 <div key={v.bidId} id={`bid-${v.bidId}`} className="bg-[#F8FAFC] p-3 my-2 rounded-sm items-center">
                                     <div className="flex justify-between">
@@ -290,13 +292,16 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                                                 <SafeImage src={displayBid.image} alt="pfp" className="w-15 h-15 rounded-full" />
                                             </Link>
                                             <div className="ml-2">
-                                                <p className="font-semibold">{displayBid.fullName}</p>
-                                                <p>{dayjs(displayBid.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
+                                                <p>
+                                                    <span className="font-semibold">{v.fullName}</span>
+                                                    {isAccepted && <FaCheckCircle size={20} className="fill-blue-500 inline ml-3" />}
+                                                </p>
+                                                <p>{dayjs(v.createdAt).format('DD [tháng] MM, YYYY; HH:mm:ss')}</p>
                                             </div>
                                         </div>
                                         <div>
                                             <p className="font-semibold text-blue-700">{formatNumber(displayBid.amount)} VND</p>
-                                            {v.tourGuideId === id &&
+                                            {v.tourGuideId === id && !isAccepted &&
                                                 <div className="flex justify-end relative">
                                                     <DropdownMenu>
                                                         <DropdownMenuTrigger asChild>

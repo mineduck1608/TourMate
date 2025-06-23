@@ -57,7 +57,7 @@ export default function MembershipPackageComponent({ accountId }: { accountId: n
                         <div className="flex-1 min-w-0">
                             <div className="flex items-center space-x-2">
                                 <h3 className="text-lg font-semibold text-gray-900 truncate">{membershipPackage.name}</h3>
-                                <Badge variant="secondary" className="bg-yellow-100 text-yellow-800">
+                                <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
                                     <Star className="h-3 w-3 mr-1" />
                                     Premium
                                 </Badge>

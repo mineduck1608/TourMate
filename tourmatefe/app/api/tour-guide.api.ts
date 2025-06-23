@@ -84,6 +84,7 @@ export const getOtherTourGuides = async (tourGuideId: number | string, pageSize:
     params: {
       pageSize: pageSize,
       tourGuideId: tourGuideId,
+      prioritizeMembership: true
     },
     signal
   });

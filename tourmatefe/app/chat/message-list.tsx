@@ -435,7 +435,7 @@ function MessageInput({ onSend }: { onSend: (text: string) => void }) {
         value={text}
         onChange={(e) => setText(e.target.value)}
         placeholder="Nhập tin nhắn..."
-        className="flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800"
+        className="ml-2 flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800"
         onKeyDown={(e) => {
           if (e.key === "Enter") handleSend();
         }}
