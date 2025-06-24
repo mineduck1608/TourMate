@@ -91,10 +91,12 @@ function TourGuideProfileEdit() {
                         type={toggleMode.targetType}
                     />
                 }
-                {(modalOpen.edit || modalOpen.create) && <ServiceEditModal
-                    isOpen
-                    onClose={() => { setModalOpen(p => ({ ...p, edit: false, create: false })) }}
-                />}
+                {(modalOpen.edit || modalOpen.create) &&
+                    <ServiceEditModal
+                        isOpen
+                        onClose={() => { setModalOpen(p => ({ ...p, edit: false, create: false })) }}
+                    />
+                }
                 <PictureView isOpen={toggleMode.view} onClose={() => { setToggleMode({ ...toggleMode, view: false }) }} img={toggleMode.value} />
 
                 <div className='mb-10 relative'>

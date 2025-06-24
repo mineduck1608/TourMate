@@ -17,7 +17,6 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
     const [page, setPage] = useState(1)
     const pageSize = 6
     const auth = useAuth()
-    console.log(auth.role);
     
     const { data, refetch } = useQuery({
         queryKey: ['tour-services-of', tourGuideId, pageSize, page],
@@ -117,13 +116,6 @@ export default function TourServices({ tourGuideId }: { tourGuideId: number | st
                                         className="w-full h-70 object-cover"
 
                                     />
-                                    {/* <motion.div
-                                        initial={{ opacity: 0 }}
-                                        whileHover={{ opacity: 1 }}
-                                        className="absolute inset-0 bg-[rgba(0,0,0,0.25)] bg-opacity-50 flex items-center justify-center"
-                                    >
-                                        <span className="text-white text-xl font-semibold">Cập nhật</span>
-                                    </motion.div> */}
                                 </div>
                                 <div className="flex justify-between">
                                     <div className="p-6">

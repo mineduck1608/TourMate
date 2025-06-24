@@ -34,14 +34,9 @@ function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) =>
             [name]: clampedValue
         }
         setTime(newV);
-        const newStr = newV.day.toString().padStart(2, '0') + ':' +
-            newV.hour.toString().padStart(2, '0') + ":00"
+        // Remove padding 0 for both day and hour
+        const newStr = `${newV.day}:${newV.hour}:00`
         onChange(newStr)
-        // Format the new value back to string and notify parent
-        // const newTime = name === 'day'
-        //     ? { day: clampedValue, hour: time.hour }
-        //     : { day: time.day, hour: clampedValue };
-        // onChange(`${newTime.day}:${newTime.hour}`);
     };
 
     return (
@@ -53,7 +48,7 @@ function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) =>
                 min={0}
                 max={10}
                 name='day'
-                value={time.day}
+                value={Number(time.day)} // Ensure no leading zero
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
             />
@@ -63,7 +58,7 @@ function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) =>
                 min={0}
                 max={23}
                 name='hour'
-                value={time.hour}
+                value={Number(time.hour)} // Ensure no leading zero
                 inputMode='numeric'
                 onChange={handleChange}
                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -73,11 +68,13 @@ function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) =>
 }
 function ServiceEditModal({ isOpen, onClose }: Props) {
     const { target, setTarget, setSignal, modalOpen, setModalOpen, signal } = useContext(ServiceEditContext) as ServiceEditContextProp
-
+    const [allowCreate, setAllowCreate] = useState(true)
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
-        const { name, value } = {... e.target};
+        const { name, value } = e.target;
+        console.log(name, value);
+
         const updated = { ...target, [name]: value }
         setTarget(updated);
     };
@@ -146,7 +143,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                                 id="price"
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 placeholder="Nhập giá"
-                                value={target.price}
+                                value={Number(target.price)} // Ensure no leading zero
                                 onChange={handleChange}
                                 required
                             />
@@ -211,7 +208,11 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         </label>
                         <ImageUpload
                             onImageUpload={(url: string) => {
+                                setAllowCreate(false)
                                 setTarget({ ...target, image: url })
+                            }}
+                            onUploadComplete={() => {
+                                setAllowCreate(true)
                             }}
                         />
                     </div>
@@ -267,7 +268,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             onClick={() => {
                                 setSignal({ edit: false, delete: false, create: true })
                             }}
-                            disabled
+                            disabled={!allowCreate}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                         >

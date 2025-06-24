@@ -1,3 +1,4 @@
+import SafeImage from '@/components/safe-image';
 import React from 'react'
 
 interface Props {
@@ -40,7 +41,7 @@ function PictureView({ img, isOpen, onClose }: Props) {
                     </button>
                 </div>
                 <div className='opacity-100 flex justify-center items-center w-full h-full'>
-                    {img.length > 0 && <img src={img} className='max-w-[80%] max-h-[80%]' />}
+                    <SafeImage src={img} className='max-w-[80%] max-h-[80%]' />
                 </div>
             </div>
         </div>
