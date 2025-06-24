@@ -9,7 +9,7 @@ import { FaRegPaperPlane } from "react-icons/fa";
 import { DropdownMenu, DropdownMenuTrigger, DropdownMenuContent, DropdownMenuItem } from "@radix-ui/react-dropdown-menu";
 import ClickAwayListener from "react-click-away-listener";
 import { cn } from "@/lib/utils";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../services/context";
 import dayjs from "dayjs";
 import DeleteModal from "@/components/delete-modal";
 

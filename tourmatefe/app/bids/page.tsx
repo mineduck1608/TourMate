@@ -5,14 +5,16 @@ import TourBidPage from './tour-bids-page'
 import { getMostPopularAreas } from '@/app/api/active-area.api'
 import { useQuery } from '@tanstack/react-query'
 import Link from 'next/link'
-import { CustomerSiteContext, CustomerSiteContextProp } from '../context'
+import { CustomerSiteContext, CustomerSiteContextProp } from '../services/context'
 import { AuthProvider } from '@/components/authProvider'
-import { CustomerContent } from '../customer-content'
+import { CustomerContent } from '../services/customer-content'
 import Banner from '@/components/Banner'
 import { TourBid, TourBidListResult } from '@/types/tour-bid'
 import { baseData, BidTaskContext } from './tour-bid-task-context'
 import RotatingActiveArea from '@/components/rotating-active-area'
 import RotatingTourGuide from '@/components/rotating-tour-guide'
+import MegaMenu from '@/components/mega-menu'
+import Footer from '@/components/Footer'
 
 
 function TourBidPageMain() {
@@ -63,18 +65,20 @@ function TourBidPageMain() {
         }
     }, [signal.delete])
     return (
+        <>
+        <MegaMenu/>
         <BidTaskContext.Provider value={{ signal, setSignal, modalOpen, setModalOpen, setTarget, target }}>
             <div>
                 <Banner title='Đấu giá' imageUrl='/travel.jpg' />
                 <div className='lg:flex justify-evenly pt-10'>
-                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-0 h-screen overflow-y-auto *:mb-5">
+                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-30 h-screen overflow-y-auto *:mb-5">
                         <Profile customer={customer} />
                         <RotatingTourGuide />
                     </div>
                     <div className='w-full lg:w-[35%] '>
                         <TourBidPage customer={customer} search={content} />
                     </div>
-                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-0 h-screen overflow-y-auto *:mb-5">
+                    <div className="hidden lg:block lg:w-[30%] px-5 sticky top-30 h-screen overflow-y-auto *:mb-5">
                         <div className="rounded-md border shadow-lg p-5">
                             <input
                                 className="p-1 w-full mb-2 border-2 rounded-sm"
@@ -97,6 +101,8 @@ function TourBidPageMain() {
                 </div>
             </div>
         </BidTaskContext.Provider>
+        <Footer />
+        </>
     )
 }
 

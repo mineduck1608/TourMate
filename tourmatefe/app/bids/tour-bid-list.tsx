@@ -6,7 +6,7 @@ import { TourBid, TourBidListResult } from '@/types/tour-bid';
 import { getTourBids, addTourBid, updateTourBid, deleteTourBid, likeOrUnlike } from '@/app/api/tour-bid.api';
 import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
-import { CustomerSiteContext, CustomerSiteContextProp } from '../context';
+import { CustomerSiteContext, CustomerSiteContextProp } from '../services/context';
 import { baseData } from './tour-bid-task-context';
 import { sendLocationBid } from '@/app/api/bid.api';
 
