@@ -193,11 +193,10 @@ const MegaMenu = () => {
             {token ? (
               <Link
                 href="/chat"
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute === "/chat"
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/chat"
+                  ? "text-blue-600 bg-blue-50 shadow-sm"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Tin nhắn
               </Link>
@@ -208,7 +207,7 @@ const MegaMenu = () => {
               >
                 Tin nhắn
               </button>
-            )}          
+            )}
 
             <Link
               href="/contact"
@@ -220,13 +219,13 @@ const MegaMenu = () => {
               Liên hệ
             </Link>
           </div>
-          <div>
-            <Notification />
-          </div>
           {/* Auth Buttons - positioned absolutely to the right */}
           <div className="absolute right-0 hidden lg:flex items-center space-x-3">
             {token ? (
-              <ActionMenu />
+              <div className="gap-5 flex items-end ">
+                {role === 'TourGuide' && <Notification/>}
+                <ActionMenu />
+              </div>
             ) : (
               <>
                 <Link
@@ -354,9 +353,6 @@ const MegaMenu = () => {
               >
                 Liên hệ
               </Link>
-              <div>
-                <Notification />
-              </div>
               {!token && (
                 <div className="pt-4 border-t border-gray-200 space-y-3">
                   <Link

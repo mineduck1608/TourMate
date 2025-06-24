@@ -7,8 +7,8 @@ using Microsoft.IdentityModel.Tokens;
 using Net.payOS;
 using Repositories.Context;
 using Repositories.GenericRepository;
-using Repositories.Repositories;
 using Repositories.IRepositories;
+using Repositories.Repositories;
 using Services.IServices;
 using Services.Services;
 using Services.Utils;
@@ -17,6 +17,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using TourMate.Mappings;
 using TourMate.MessageHub;
+using TourMate.NotificationHub;
 
 
 
@@ -40,9 +41,9 @@ builder.Services.AddCors(options =>
 });
 
 // Đăng ký Azure SignalR Service
-builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+//builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
 
-//builder.Services.AddSignalR();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
@@ -222,7 +223,8 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    //endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<NotificationHub>("/notificationHub");
     endpoints.MapControllers();
 });
 
