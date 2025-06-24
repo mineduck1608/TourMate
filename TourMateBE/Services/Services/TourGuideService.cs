@@ -24,6 +24,11 @@ namespace Services.Services
             return await _repository.GetTourGuideByAccountIdAsync(accountId);
         }
 
+        public async Task<List<TourGuide>> GetTourGuidesByAreaId(int areaId)
+        {
+            return await _repository.GetTourGuidesByArea(areaId);
+        }
+
         public async Task<TourGuide> GetTourGuideByAccId(int accId)
         {
             return await _repository.GetByAccId(accId);

@@ -278,5 +278,15 @@ namespace Repositories.Repositories
 
             return result;
         }
+
+        public async Task<List<TourGuide>> GetTourGuidesByArea(int areaId)
+        {
+            var result = await _context.TourGuides.Include(a => a.Account)
+                .Include(td => td.TourGuideDescs)  // Load navigation property
+                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId))  // Lọc theo areaId từ mô tả
+                .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
+                .ToListAsync();
+            return result;
+        }
     }
 }

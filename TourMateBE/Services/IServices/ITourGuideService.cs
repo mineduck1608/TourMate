@@ -12,6 +12,7 @@ namespace Services.IServices
     {
         Task<TourGuide> GetTourGuideByAccId(int accId);
         Task<TourGuide> GetTourGuide(int id);
+        Task<List<TourGuide>> GetTourGuidesByAreaId(int areaId);
         Task<PagedResult<TourGuide>> GetAll(int pageSize, int pageIndex, string phone);
         bool DeleteTourGuide(int id);
         Task<bool> CreateTourGuide(TourGuide tourguide);

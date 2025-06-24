@@ -5,7 +5,7 @@ import { TourBidListResult } from "@/types/tour-bid";
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../services/context";
 import { baseData } from "./tour-bid-task-context";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component

@@ -172,11 +172,12 @@ const MegaMenu = () => {
             {/* Bidding - Main Navigation */}
             {token ? (
               <Link
-                href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute.includes("/bids")
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
+                href={`/${role === "TourGuide" ? "tour-guide/bids" : "bids"}`}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute.includes("/bids")
+                    ? "text-blue-600 bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
               >
                 Đấu giá
               </Link>

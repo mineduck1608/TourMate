@@ -13,7 +13,7 @@ import { FaCheckCircle, FaFacebookMessenger } from "react-icons/fa";
 import { useRouter } from "next/navigation";
 import { TourBidListResult } from "@/types/tour-bid";
 import { cn } from "@/lib/utils";
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context";
+import { CustomerSiteContext, CustomerSiteContextProp } from "../services/context";
 import { toast } from "react-toastify";
 type BidCommentModalProps = {
     isOpen: boolean;

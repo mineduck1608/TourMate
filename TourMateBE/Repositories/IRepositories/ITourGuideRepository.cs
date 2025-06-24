@@ -20,5 +20,6 @@ namespace Repositories.IRepositories
         Task<List<TourGuide>> GetOtherTourGuidesAsync(int tourGuideId, int pageSize);
         Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize);
         Task<List<TourGuide>> GetOtherTourGuidesFavorMembership(int tourGuideId, int pageSize);
+        Task<List<TourGuide>> GetTourGuidesByArea(int areaId);
     }
 }

@@ -8,7 +8,7 @@ import DOMPurify from "dompurify";
 import BidListModal from "./bid-list-modal"
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu"
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context"
-import { CustomerSiteContext, CustomerSiteContextProp } from "../context"
+import { CustomerSiteContext, CustomerSiteContextProp } from "../services/context"
 import { formatNumber } from "@/types/other"
 import BidCommentModal from "./bid-comment-modal"
 import Link from "next/link"
