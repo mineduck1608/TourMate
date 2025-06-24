@@ -28,7 +28,7 @@ const AboutSunday = () => {
       <div className="flex justify-center mb-16 relative z-10">
         <div className="text-center max-w-3xl">
           <h2
-            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4 inter"
+            className="text-4xl md:text-5xl lg:text-6xl font-bold text-gray-900 mb-4"
             data-aos="zoom-in"
             data-aos-delay="300"
           >

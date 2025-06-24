@@ -152,28 +152,7 @@ const MegaMenu = () => {
               )}
             </div>
 
-            {/* Chat - Main Navigation */}
-            {token ? (
-              <Link
-                href="/chat"
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute === "/chat"
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
-              >
-                Tin nhắn
-              </Link>
-            ) : (
-              <button
-                onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
-              >
-                Tin nhắn
-              </button>
-            )}
-
-            {/* Bidding - Main Navigation */}
+             {/* Bidding - Main Navigation */}
             {token ? (
               <Link
                 href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
@@ -193,6 +172,27 @@ const MegaMenu = () => {
                 Đấu giá
               </button>
             )}
+
+            {/* Chat - Main Navigation */}
+            {token ? (
+              <Link
+                href="/chat"
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute === "/chat"
+                    ? "text-blue-600 bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                Tin nhắn
+              </Link>
+            ) : (
+              <button
+                onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
+              >
+                Tin nhắn
+              </button>
+            )}          
 
             <Link
               href="/contact"
