@@ -11,6 +11,7 @@ import { RoleSelectionModal } from "@/components/role-selection-modal"
 import ActionMenu from "./action-menu"
 import { getUserRole } from "./getToken"
 import { Menu, X, ChevronDown } from "lucide-react"
+import Notification from "./notification"
 
 const MegaMenu = () => {
   const [isModalOpen, setIsModalOpen] = useState(false)
@@ -61,31 +62,28 @@ const MegaMenu = () => {
           <div className="hidden lg:flex items-center space-x-1">
             <Link
               href="/"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/"
+                ? "text-blue-600 bg-blue-50 shadow-sm"
+                : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
             >
               Trang chủ
             </Link>
             <Link
               href="/aboutUs"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/aboutUs"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/aboutUs"
+                ? "text-blue-600 bg-blue-50 shadow-sm"
+                : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
             >
               Về chúng tôi
             </Link>
             <Link
               href="/news"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/news"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/news"
+                ? "text-blue-600 bg-blue-50 shadow-sm"
+                : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
             >
               Tin tức
             </Link>
@@ -94,11 +92,10 @@ const MegaMenu = () => {
             <div className="relative">
               <button
                 onClick={toggleDropdown}
-                className={`flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute.startsWith("/services/")
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute.startsWith("/services/")
+                  ? "text-blue-600 bg-blue-50 shadow-sm"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Dịch vụ
                 <ChevronDown
@@ -152,15 +149,34 @@ const MegaMenu = () => {
               )}
             </div>
 
-             {/* Bidding - Main Navigation */}
+            {/* Chat - Main Navigation */}
+            {token ? (
+              <Link
+                href="/chat"
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/chat"
+                  ? "text-blue-600 bg-blue-50 shadow-sm"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
+              >
+                Tin nhắn
+              </Link>
+            ) : (
+              <button
+                onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
+                className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
+              >
+                Tin nhắn
+              </button>
+            )}
+
+            {/* Bidding - Main Navigation */}
             {token ? (
               <Link
                 href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute.includes("/bids")
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute.includes("/bids")
+                  ? "text-blue-600 bg-blue-50 shadow-sm"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Đấu giá
               </Link>
@@ -196,16 +212,17 @@ const MegaMenu = () => {
 
             <Link
               href="/contact"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/contact"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
+              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${currentRoute === "/contact"
+                ? "text-blue-600 bg-blue-50 shadow-sm"
+                : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
             >
               Liên hệ
             </Link>
           </div>
-
+          <div>
+            <Notification />
+          </div>
           {/* Auth Buttons - positioned absolutely to the right */}
           <div className="absolute right-0 hidden lg:flex items-center space-x-3">
             {token ? (
@@ -243,31 +260,28 @@ const MegaMenu = () => {
             <div className="space-y-2">
               <Link
                 href="/"
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                  currentRoute === "/"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute === "/"
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Trang chủ
               </Link>
               <Link
                 href="/aboutUs"
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                  currentRoute === "/aboutUs"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute === "/aboutUs"
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Về chúng tôi
               </Link>
               <Link
                 href="/news"
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                  currentRoute === "/news"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute === "/news"
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Tin tức
               </Link>
@@ -295,11 +309,10 @@ const MegaMenu = () => {
               {token ? (
                 <Link
                   href="/chat"
-                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                    currentRoute === "/chat"
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
+                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute === "/chat"
+                    ? "text-blue-600 bg-blue-50"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
                 >
                   Tin nhắn
                 </Link>
@@ -316,11 +329,10 @@ const MegaMenu = () => {
               {token ? (
                 <Link
                   href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
-                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                    currentRoute.includes("/bids")
-                      ? "text-blue-600 bg-blue-50"
-                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                  }`}
+                  className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute.includes("/bids")
+                    ? "text-blue-600 bg-blue-50"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                    }`}
                 >
                   Đấu giá Tour
                 </Link>
@@ -335,15 +347,16 @@ const MegaMenu = () => {
 
               <Link
                 href="/contact"
-                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
-                  currentRoute === "/contact"
-                    ? "text-blue-600 bg-blue-50"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
+                className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${currentRoute === "/contact"
+                  ? "text-blue-600 bg-blue-50"
+                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
               >
                 Liên hệ
               </Link>
-
+              <div>
+                <Notification />
+              </div>
               {!token && (
                 <div className="pt-4 border-t border-gray-200 space-y-3">
                   <Link
