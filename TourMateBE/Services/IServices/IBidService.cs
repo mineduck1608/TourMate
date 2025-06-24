@@ -17,5 +17,6 @@ namespace Services.IServices
         Task<bool> DeleteBid(int id);
         Task<PagedResult<BidListResult>> GetBidsOfTourBid(int tourBid, int pageSize, int pageIndex);
         Task<bool> AcceptBid(int bidId);
+        string GenerateBidNotificationEmail(string areaName, string customerName);
     }
 }

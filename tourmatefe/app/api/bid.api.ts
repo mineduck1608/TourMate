@@ -14,6 +14,19 @@ export const getBidsOfTourBid = async (tourBid: number | string, page: number | 
     return res.data;
 };
 
+export const sendLocationBid = async (
+  areaId: number,
+  accId: number,
+  signal?: AbortSignal
+) => {
+  const res = await http.post(`bids/send-mail-from-location?areaId=${areaId}&accId=${accId}`, null, {
+    signal,
+  });
+
+  return res.data;
+};
+
+
 export const addBid = async (data: Bid, signal?: AbortSignal) => {
     const res = await http.post('bids', data, {
         signal

@@ -8,6 +8,7 @@ import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { CustomerSiteContext, CustomerSiteContextProp } from '../context';
 import { baseData } from './tour-bid-task-context';
+import { sendLocationBid } from '@/app/api/bid.api';
 
 function TourBidList({ search }: { search: string }) {
   const pageSize = 10;
@@ -52,7 +53,7 @@ function TourBidList({ search }: { search: string }) {
     mutationFn: async (data: TourBid | TourBidListResult) => {
       return await addTourBid(data);
     },
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Tạo thành công");
       setSignal({ ...signal, create: false });
       setTarget({ ...baseData });
@@ -60,6 +61,7 @@ function TourBidList({ search }: { search: string }) {
       resetData().then(() => {
         if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
+      await sendLocationBid(target.placeRequested, accId);
     },
     onError: (error) => {
       toast.error("Tạo thất bại");

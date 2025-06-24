@@ -10,7 +10,7 @@ namespace Services.IServices
 {
     public interface IActiveAreaService
     {
-        ActiveArea GetActiveArea(int id);
+        Task<ActiveArea> GetActiveArea(int id);
         Task<PagedResult<ActiveArea>> GetAll(int pageSize, int pageIndex);
         Task<PagedResult<ActiveArea>> GetActiveAreas(string search, string region, int page, int limit);
 

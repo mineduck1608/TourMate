@@ -26,9 +26,9 @@ namespace Services.Services
             }).ToList();
         }
 
-        public ActiveArea GetActiveArea(int id)
+        public async Task<ActiveArea> GetActiveArea(int id)
         {
-            return ActiveAreaRepository.GetById(id);
+            return await ActiveAreaRepository.GetByIdAsync(id);
         }
 
         public async Task<PagedResult<ActiveArea>> GetAll(int pageSize, int pageIndex)
