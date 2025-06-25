@@ -37,5 +37,10 @@ namespace Services.Services
         {
             return await _accountMembershipRepository.RemoveAsync(id);
         }
+
+        public async Task<bool> DeactivateMembership()
+        {
+            return await _accountMembershipRepository.DeactivateMembership();
+        }
     }
 }

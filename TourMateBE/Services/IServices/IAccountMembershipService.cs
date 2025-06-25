@@ -14,7 +14,6 @@ namespace Services.IServices
         Task<bool> CreateAccountMembership(AccountMembership accountMembership);
         Task<bool> UpdateAccountMembership(AccountMembership accountMembership);
         Task<bool> DeleteAccountMembership(int id);
-
-
+        Task<bool> DeactivateMembership();
     }
 }

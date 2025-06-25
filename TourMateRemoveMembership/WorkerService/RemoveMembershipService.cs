@@ -1,36 +1,35 @@
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Services.IServices;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace WorkerService
 {
     public class RemoveMembershipService : BackgroundService
     {
         private readonly ILogger<RemoveMembershipService> _logger;
-        private readonly RemoveMembership _removeMembership;
+        private IAccountMembershipService _accountMembershipService;
 
-        public RemoveMembershipService(ILogger<RemoveMembershipService> logger)
+        public RemoveMembershipService(ILogger<RemoveMembershipService> logger, IAccountMembershipService accountMembershipService)
         {
             _logger = logger;
-            _removeMembership = new RemoveMembership();
+            _accountMembershipService = accountMembershipService;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                if (_logger.IsEnabled(LogLevel.Information))
-                {
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                }
+                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                var r = await _accountMembershipService.DeactivateMembership();
+                _logger.LogInformation(r ? "Ok" : "Error");
 
-                // Call DoSomething every minute
-                _removeMembership.DoSomething();
-
-                await Task.Delay(TimeSpan.FromMinutes(1), stoppingToken);
+                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
             }
         }
     }
 }
+
+
