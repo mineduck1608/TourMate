@@ -88,9 +88,12 @@ export default function RotatingTourGuideHomePage() {
 
                 {/* Tour Guides Grid */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8" data-aos="fade-up" data-aos-delay="200">
-                    {tourGuides.map((currentGuide, index) => (
-                        <TourGuideCard key={currentGuide.tourGuideId} currentGuide={currentGuide} index={index} />
-                    ))}
+                    {tourGuides.map((currentGuide, index) => {
+                        const key = (currentGuide.tourGuideId + new Date().getTime()).toString()
+                        return (
+                            <TourGuideCard key={key} currentGuide={currentGuide} index={index} />
+                        )
+                    })}
                 </div>
 
                 {/* View All Button */}
@@ -118,7 +121,7 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
     const services = data?.result ?? []
 
     return (
-        <div 
+        <div
             className="bg-white rounded-3xl shadow-xl overflow-hidden transition-all duration-500 hover:shadow-2xl hover:scale-105 group h-fit"
             data-aos="fade-up"
             data-aos-delay={300 + index * 100}
@@ -147,18 +150,18 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
                                 </h3>
                                 {currentGuide.tourGuideDescs && currentGuide.tourGuideDescs.length > 0 &&
                                     currentGuide.tourGuideDescs[0]?.company && (
-                                    <p className="text-sm text-gray-600 truncate mb-1">
-                                        {currentGuide.tourGuideDescs[0].company}
-                                    </p>
-                                )}
+                                        <p className="text-sm text-gray-600 truncate mb-1">
+                                            {currentGuide.tourGuideDescs[0].company}
+                                        </p>
+                                    )}
                                 <div className="flex items-center gap-3 text-xs">
                                     {currentGuide.tourGuideDescs && currentGuide.tourGuideDescs.length > 0 &&
                                         currentGuide.tourGuideDescs[0]?.yearOfExperience && (
-                                        <div className="flex items-center gap-1 text-blue-600">
-                                            <Calendar className="h-3 w-3" />
-                                            <span className="font-medium">{currentGuide.tourGuideDescs[0].yearOfExperience} năm</span>
-                                        </div>
-                                    )}
+                                            <div className="flex items-center gap-1 text-blue-600">
+                                                <Calendar className="h-3 w-3" />
+                                                <span className="font-medium">{currentGuide.tourGuideDescs[0].yearOfExperience} năm</span>
+                                            </div>
+                                        )}
                                     <div className="flex items-center gap-1 text-yellow-500">
                                         <Star className="h-3 w-3 fill-current" />
                                         <span className="font-medium">4.8</span>
@@ -178,7 +181,7 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
                             alt={'Tour guide banner'}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-                        
+
                         {/* Location badge */}
                         <div className="absolute top-4 right-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
                             <MapPin className="h-3 w-3 text-blue-600" />
