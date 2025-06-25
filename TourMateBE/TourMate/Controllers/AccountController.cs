@@ -287,7 +287,9 @@ namespace API.Controllers
             {
                 TourGuideId = tourGuide.TourGuideId,
                 Description = description,
-                AreaId = areaId
+                AreaId = areaId,
+                Company = "Chưa cập nhật",
+                YearOfExperience = 0
             };
 
             var isTourGuideDescCreated = await _tourGuideDescService.CreateTourGuideDesc(tourGuideDesc);
@@ -317,7 +319,7 @@ namespace API.Controllers
             string responseSection = string.IsNullOrWhiteSpace(response)
                 ? ""
                 : $@"
-      <p class='response-section' style='background-color: #fff3cd; border-left: 5px solid #ffc107; padding: 15px 20px; border-radius: 6px; margin-top: 20px; color: #856404;'>
+      <p class='response-section' style='background-color: #e2f0fb; border-left: 5px solid #007acc; padding: 15px 20px; border-radius: 6px; margin-top: 20px; color: #004085;'>
         <strong>Phản hồi từ quản trị viên:</strong><br />{response}
       </p>";
 
@@ -331,7 +333,7 @@ namespace API.Controllers
   <style>
     body, html {{
       margin: 0; padding: 0; height: 100%; width: 100%;
-      background-color: #f4f4f4;
+      background-color: #f5f8fa;
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       color: #000000;
     }}
@@ -343,11 +345,11 @@ namespace API.Controllers
       margin: 40px auto;
       background-color: #ffffff;
       border-radius: 14px;
-      box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.05);
       overflow: hidden;
     }}
     .email-header {{
-      background-color: #2e2e2e;
+      background-color: #0056b3;
       padding: 30px 20px;
       text-align: center;
       color: #ffffff;
@@ -371,23 +373,23 @@ namespace API.Controllers
       margin-bottom: 20px;
     }}
     .highlight {{
-      background-color: #f0f0f0;
+      background-color: #e2f0d9;
       padding: 10px 15px;
-      border-left: 5px solid #007bff;
+      border-left: 5px solid #28a745;
       border-radius: 6px;
     }}
     .account-info {{
-      background-color: #e9f7ef;
+      background-color: #e6f4ff;
       padding: 12px 16px;
-      border-left: 5px solid #28a745;
+      border-left: 5px solid #007bff;
       border-radius: 6px;
       margin-top: 20px;
     }}
     .response-section {{
-      /* custom style if needed */
+      /* optional override */
     }}
     .email-footer {{
-      background-color: #f4f4f4;
+      background-color: #f0f4f8;
       color: #555555;
       text-align: center;
       font-size: 13px;
@@ -417,12 +419,13 @@ namespace API.Controllers
       <p>Kính gửi <strong>{fullName}</strong>,</p>
       <p>Chúng tôi rất vui mừng thông báo rằng hồ sơ ứng tuyển vị trí <strong>Hướng dẫn viên du lịch</strong> của bạn tại TourMate đã được <strong>chấp thuận</strong>.</p>
       <p class='highlight'>
-        Tài khoản của bạn đã được kích hoạt và bạn có thể đăng nhập để bắt đầu cập nhật lịch trình, thông tin cá nhân và sẵn sàng nhận các chuyến đi!
+        Tài khoản của bạn đã được kích hoạt. Bạn có thể đăng nhập để cập nhật lịch trình, thông tin cá nhân và bắt đầu nhận các chuyến đi!
       </p>
       <div class='account-info'>
         <p><strong>Thông tin đăng nhập của bạn:</strong></p>
         <p><strong>Email:</strong> {email}<br />
            <strong>Mật khẩu:</strong> {password}</p>
+        <p style='margin-top: 10px; font-style: italic; color: #555;'>Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu để đảm bảo an toàn thông tin.</p>
       </div>
 
       {responseSection}
@@ -439,6 +442,7 @@ namespace API.Controllers
 </body>
 </html>";
         }
+
 
 
 

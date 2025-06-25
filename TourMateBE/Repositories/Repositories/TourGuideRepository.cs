@@ -270,8 +270,8 @@ namespace Repositories.Repositories
         public async Task<List<TourGuide>> GetTourGuidesByAreaAsync(int areaId, int pageSize)
         {
             var result = await _context.TourGuides
-                .Include(td => td.TourGuideDescs)  // Load navigation property
-                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId))  // Lọc theo areaId từ mô tả
+                .Include(td => td.TourGuideDescs).Include(a => a.Account)  // Load navigation property
+                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId) && tg.Account.Status == true)  // Lọc theo areaId từ mô tả
                 .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
                 .Take(pageSize)  // Giới hạn số lượng
                 .ToListAsync();
@@ -283,7 +283,7 @@ namespace Repositories.Repositories
         {
             var result = await _context.TourGuides.Include(a => a.Account)
                 .Include(td => td.TourGuideDescs)  // Load navigation property
-                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId))  // Lọc theo areaId từ mô tả
+                .Where(tg => tg.TourGuideDescs.Any(desc => desc.AreaId == areaId) && tg.Account.Status == true)  // Lọc theo areaId từ mô tả
                 .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
                 .ToListAsync();
             return result;

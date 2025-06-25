@@ -69,7 +69,7 @@ const AreaDetail = () => {
 
         {/* SIDEBAR */}
         <div className="w-[30%] p-2">
-          <div className="sticky top-10 max-h-[calc(100vh-5rem)] overflow-auto space-y-10">
+          <div className="sticky top-30 max-h-[calc(100vh-5rem)] overflow-auto space-y-10">
             <TourGuidesInArea />
           </div>
         </div>
