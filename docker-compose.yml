@@ -10,6 +10,13 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
 
+  remove_membership_worker:
+    build:
+      context: ./TourMateBE
+      dockerfile: RemoveMembership/Dockerfile
+    depends_on:
+      - backend
+      
   frontend:
     build:
       context: ./tourmatefe
