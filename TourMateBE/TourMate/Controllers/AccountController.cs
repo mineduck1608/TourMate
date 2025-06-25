@@ -293,7 +293,7 @@ namespace API.Controllers
             };
 
             var isTourGuideDescCreated = await _tourGuideDescService.CreateTourGuideDesc(tourGuideDesc);
-            if (isTourGuideDescCreated)
+            if (!isTourGuideDescCreated)
                 return StatusCode(500, "An error occurred while registering the tourguide desc.");
 
             var cvApplication = await _cvApplicationService.GetCvapplication(cvApplicationId);

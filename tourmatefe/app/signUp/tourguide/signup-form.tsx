@@ -135,6 +135,7 @@ export function SignupForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
+    console.log("Form submitted:", formData);
   };
 
   return (
