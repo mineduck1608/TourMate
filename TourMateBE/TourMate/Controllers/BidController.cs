@@ -73,7 +73,7 @@ namespace API.Controllers
             {
                 await _emailSender.SendEmailAsync(
                     guide.Account.Email,
-                    "Yêu cầu báo giá mới từ khách hàng",
+                    "Yêu cầu tìm kiếm mới từ khách hàng",
                     mailBody
                 );
             }

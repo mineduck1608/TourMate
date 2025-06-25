@@ -27,9 +27,9 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult<ActiveArea> Get(int id)
+        public async Task<ActionResult<ActiveArea>> Get(int id)
         {
-            return Ok(_activeareaService.GetActiveArea(id));
+            return Ok(await _activeareaService.GetActiveArea(id));
         }
 
         [HttpGet]
