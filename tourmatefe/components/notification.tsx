@@ -67,6 +67,10 @@ function Notification() {
                 }
             })
             .catch((e) => console.log("SignalR connection failed: ", e))
+        return () => {
+            newConnection.off("ReceiveMessage")
+            newConnection.stop()
+        }
     }
 
     useEffect(() => {
@@ -75,24 +79,23 @@ function Notification() {
         if (!tourGuideData || !tourGuideData.tourGuideDescs) return;
         const area = tourGuideData.tourGuideDescs[0].areaId
         setAreaId(area)
-        setupConnection(area)
+        return setupConnection(area)
     }, [tourGuideQueryData.data?.data])
 
     return (
-        <div className='w-full h-full'>
-            <button className='cursor-pointer' onClick={() => { setNotificationModal(p => !p) }}>
+        <div ref={modalRef} className='w-full h-full relative'>
+            <button className='cursor-pointer' onClick={() => setNotificationModal(!notificationModal)}>
                 <Bell className={cn('fill-blue-600 stroke-blue-600 hover:fill-blue-700 hover:stroke-blue-700')} />
             </button>
             {notificationModal && (
                 <div
-                    ref={modalRef}
                     className="absolute right-0 top-12 w-96 max-w-[90vw] bg-white rounded-xl shadow-2xl border border-gray-200 z-50 animate-fade-in"
                 >
-                    <div className="p-4 border-b font-semibold text-lg">Thông báo</div>
+                    <div className="p-4 border-b font-bold text-lg">Thông báo</div>
                     <div className="max-h-80 overflow-y-auto">
                         {/* Example notifications */}
                         <div className="p-4 hover:bg-gray-100 cursor-pointer border-b">
-                            <div className="font-medium">Bạn có một tin nhắn mới</div>
+                            <div className="font-medium text-md">Bạn có một tin nhắn mới</div>
                             <div className="text-xs text-gray-500">2 phút trước</div>
                         </div>
                         <div className="p-4 hover:bg-gray-100 cursor-pointer border-b">

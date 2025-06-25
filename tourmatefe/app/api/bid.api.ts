@@ -14,6 +14,10 @@ export const getBidsOfTourBid = async (tourBid: number | string, page: number | 
     return res.data;
 };
 
+export const sendNotification = async () => {
+    
+}
+
 export const sendLocationBid = async (
   areaId: number,
   accId: number,

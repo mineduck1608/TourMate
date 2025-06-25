@@ -16,10 +16,10 @@ function TourBidList({ search }: { search: string }) {
   const [tourBids, setTourBids] = useState<TourBidListResult[]>([]);
   const [hasMore, setHasMore] = useState(true);
   const [resetTrigger, setResetTrigger] = useState(false);
-
   const { setSignal, setTarget, signal, target, modalOpen, setModalOpen } =
     useContext(BidTaskContext) as BidTaskContextProp;
   const { accId } = useContext(CustomerSiteContext) as CustomerSiteContextProp;
+  const [tempData, setTempData] = useState<TourBidListResult | TourBid>({ ...baseData })
 
   const tourBidQuery = useQuery({
     queryKey: ["tour-bids", pageSize, page, search, resetTrigger],
@@ -41,7 +41,7 @@ function TourBidList({ search }: { search: string }) {
     // const asSet = new Set(tourBids)
     setTourBids(prevBids =>
       prevBids.map(bid =>
-        bid.tourBidId === updatedBid.tourBidId ? { 
+        bid.tourBidId === updatedBid.tourBidId ? {
           ...bid,
           ...updatedBid // This spreads all updated properties including placeRequested and placeRequestedName
         } : bid
@@ -62,6 +62,8 @@ function TourBidList({ search }: { search: string }) {
         if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
       await sendLocationBid(target.placeRequested, accId);
+      console.log(tempData);
+      
     },
     onError: (error) => {
       toast.error("Tạo thất bại");
@@ -170,6 +172,7 @@ function TourBidList({ search }: { search: string }) {
     if (signal.create) {
       createTourBidMutation.mutate(target);
       setSignal({ ...signal, create: false });
+      setTempData({ ...target })
       setTarget({ ...baseData });
     }
   }, [signal.create]);
