@@ -2,13 +2,15 @@
 // Add this to your Program.cs file in the Web API project
 using FirebaseAdmin;
 using Google.Apis.Auth.OAuth2;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Net.payOS;
 using Repositories.Context;
 using Repositories.GenericRepository;
-using Repositories.Repositories;
 using Repositories.IRepositories;
+using Repositories.Repositories;
 using Services.IServices;
 using Services.Services;
 using Services.Utils;
@@ -16,7 +18,7 @@ using Services.VnPay;
 using System.Text;
 using System.Text.Json.Serialization;
 using TourMate.Mappings;
-using TourMate.MessageHub;
+using TourMate.SignalRHub;
 
 
 
@@ -38,6 +40,9 @@ builder.Services.AddCors(options =>
         .AllowCredentials();
     });
 });
+
+builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
+
 
 // Đăng ký Azure SignalR Service
 builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
@@ -118,6 +123,9 @@ builder.Services.AddScoped<IPlatformFeedbackService, PlatformFeedbackService>();
 
 builder.Services.AddScoped<ITourBidCommentRepository, TourBidCommentRepository>();
 builder.Services.AddScoped<ITourBidCommentService, TourBidCommentService>();
+
+builder.Services.AddScoped<INotificationRepository, NotificationRepository>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 builder.Services.AddScoped<TokenService>();
 
@@ -206,9 +214,28 @@ builder.Services.AddAuthentication("Bearer")
             ValidAudience = builder.Configuration["Jwt:Audience"],
             IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(
                 builder.Configuration["Jwt:Key"] ?? throw new Exception("JWT Key missing"))),
-            ClockSkew = TimeSpan.Zero // ⚠️ Token hết hạn chính xác, không cho phép chênh lệch 5 phút
+            ClockSkew = TimeSpan.Zero
+        };
+
+        // ✅ Phần quan trọng nhất cho SignalR:
+        options.Events = new JwtBearerEvents
+        {
+            OnMessageReceived = context =>
+            {
+                var accessToken = context.Request.Query["access_token"];
+
+                var path = context.HttpContext.Request.Path;
+                if (!string.IsNullOrEmpty(accessToken) && path.StartsWithSegments("/notificationHub"))
+                {
+                    context.Token = accessToken;
+                }
+
+                return Task.CompletedTask;
+            }
         };
     });
+
+
 
 var app = builder.Build();
 
@@ -222,7 +249,8 @@ app.UseAuthorization();
 
 app.UseEndpoints(endpoints =>
 {
-    //endpoints.MapHub<ChatHub>("/chatHub");
+    endpoints.MapHub<NotificationHub>("/notificationHub");
+    endpoints.MapHub<ChatHub>("/chatHub");
     endpoints.MapControllers();
 });
 

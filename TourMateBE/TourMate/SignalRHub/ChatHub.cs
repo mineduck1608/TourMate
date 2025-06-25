@@ -4,7 +4,7 @@ using Repositories.Models;
 using Services.IServices;
 using System.Collections.Concurrent;
 
-namespace TourMate.MessageHub;
+namespace TourMate.SignalRHub;
 
 public class ChatHub : Hub
 {

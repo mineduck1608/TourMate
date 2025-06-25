@@ -26,6 +26,16 @@ export const sendLocationBid = async (
   return res.data;
 };
 
+export const sendNotificationToGuides = async (areaId: number, accId: number) => {
+  try {
+    await http.post('/notifications/tour-bid', {
+      areaId,
+      accId
+    });
+  } catch (err) {
+    console.error('Không thể gửi thông báo SignalR:', err);
+  }
+};
 
 export const addBid = async (data: Bid, signal?: AbortSignal) => {
     const res = await http.post('bids', data, {

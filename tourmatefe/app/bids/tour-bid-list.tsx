@@ -8,7 +8,7 @@ import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { CustomerSiteContext, CustomerSiteContextProp } from '../services/context';
 import { baseData } from './tour-bid-task-context';
-import { sendLocationBid } from '@/app/api/bid.api';
+import { sendLocationBid, sendNotificationToGuides } from '@/app/api/bid.api';
 
 function TourBidList({ search }: { search: string }) {
   const pageSize = 10;
@@ -41,7 +41,7 @@ function TourBidList({ search }: { search: string }) {
     // const asSet = new Set(tourBids)
     setTourBids(prevBids =>
       prevBids.map(bid =>
-        bid.tourBidId === updatedBid.tourBidId ? { 
+        bid.tourBidId === updatedBid.tourBidId ? {
           ...bid,
           ...updatedBid // This spreads all updated properties including placeRequested and placeRequestedName
         } : bid
@@ -55,13 +55,17 @@ function TourBidList({ search }: { search: string }) {
     },
     onSuccess: async () => {
       toast.success("Tạo thành công");
+       //Gửi email thông báo đến hướng dẫn viên
+      await sendLocationBid(target.placeRequested, accId);
+      //Gửi noti SignalR và lưu DB
+      await sendNotificationToGuides(target.placeRequested, accId);
       setSignal({ ...signal, create: false });
       setTarget({ ...baseData });
       setModalOpen({ ...modalOpen, create: false });
       resetData().then(() => {
         if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
       });
-      await sendLocationBid(target.placeRequested, accId);
+     
     },
     onError: (error) => {
       toast.error("Tạo thất bại");
@@ -170,7 +174,6 @@ function TourBidList({ search }: { search: string }) {
     if (signal.create) {
       createTourBidMutation.mutate(target);
       setSignal({ ...signal, create: false });
-      setTarget({ ...baseData });
     }
   }, [signal.create]);
 
