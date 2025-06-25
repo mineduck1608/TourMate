@@ -22,7 +22,7 @@ namespace YourProject.Worker
             while (!stoppingToken.IsCancellationRequested)
             {
                 var now = DateTime.Now;
-                var nextMidnight = now.Date.AddDays(1); // Tomorrow midnight
+                var nextMidnight = now.Date.AddMinutes(1); // Tomorrow midnight
                 var delay = nextMidnight - now;
 
                 _logger.LogInformation("Worker sleeping until {NextRunTime}", nextMidnight);
