@@ -71,7 +71,7 @@ const RecruitActions: React.FC<RecruitActionsProps> = ({ data }) => {
       image: data.image,
       dateOfBirth: data.dateOfBirth,
       description: data.description,
-      areaId: 1,
+      areaId: data.areaId,
       response: response,
     });
   };
