@@ -59,7 +59,7 @@ const NotificationBell = () => {
       .catch((err) => console.error("SignalR connection error:", err))
 
     // Listen for notifications - with deduplication
-    connection.on("ReceiveNotification", (data: any) => {
+    connection.on("ReceiveNotification", (data) => {
       console.log("📩 New notification received:", data)
 
       // Create a unique key for deduplication
