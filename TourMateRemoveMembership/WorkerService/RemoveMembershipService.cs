@@ -25,13 +25,20 @@ namespace WorkerService
             {
                 using (var scope = _serviceProvider.CreateScope())
                 {
-                    var membershipService = scope.ServiceProvider.GetRequiredService<IAccountMembershipService>();
-                    _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                    var r = await membershipService.DeactivateMembership();
-                    _logger.LogInformation(r ? "Ok" : "Error");
+                    try
+                    {
+                        var membershipService = scope.ServiceProvider.GetRequiredService<IAccountMembershipService>();
+                        _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                        var r = await membershipService.DeactivateMembership();
+                        _logger.LogInformation("Ok");
+                    }
+                    catch (Exception ex)
+                    {
+                        _logger.LogError(ex, "An error occurred while executing the RemoveMembershipService.");
+                    }
                 }
 
-                await Task.Delay(TimeSpan.FromSeconds(15), stoppingToken);
+                await Task.Delay(TimeSpan.FromHours(12), stoppingToken);
             }
         }
     }
