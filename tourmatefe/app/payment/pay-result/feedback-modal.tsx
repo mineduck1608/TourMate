@@ -59,7 +59,6 @@ export function FeedbackModal({ isOpen, onClose, paymentId }: FeedbackModalProps
       content: feedback,
       createdAt: new Date().toISOString(),
     }
- console.log(data)
     addFeedbackMutation.mutate(data)
   }
 

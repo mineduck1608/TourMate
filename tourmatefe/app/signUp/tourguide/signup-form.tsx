@@ -66,7 +66,6 @@ export function SignupForm({
     mutationFn: fetchAreaIdAndName,
     onSuccess: (data) => {
       // Use the data directly in the component
-      console.log("Areas loaded:", data);
     },
     onError: (error) => {
       console.error("Error fetching areas:", error);
@@ -121,7 +120,6 @@ export function SignupForm({
       [e.target.id]: value,
     };
     setFormData(v);
-    console.log(v);
   };
 
   const handleDescriptionChange = (value: string) => {
@@ -135,7 +133,6 @@ export function SignupForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
-    console.log("Form submitted:", formData);
   };
 
   return (

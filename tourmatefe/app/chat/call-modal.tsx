@@ -123,15 +123,9 @@ export default function CallModal({
         pc.ontrack = (event) => {
           if (event.streams[0] && !isCleanedUp) {
             const incomingStream = event.streams[0];
-            // console.log("📥 Incoming stream tracks:", incomingStream.getTracks().map(t => ({
-            //   kind: t.kind,
-            //   enabled: t.enabled,
-            //   muted: t.muted,
-            // })));
 
             incomingStream.getTracks().forEach(track => {
               track.onunmute = () => {
-                console.log(`🔊 Track ${track.kind} unmuted`);
               };
             });
 
@@ -142,7 +136,7 @@ export default function CallModal({
                 element.srcObject = incomingStream;
                 element
                   .play()
-                  .then(() => console.log("✅ Remote media playing"))
+                  .then(() =>  {})
                   .catch(err => {
                     console.error("❌ Remote media failed to play:", err);
                   });
@@ -183,12 +177,6 @@ export default function CallModal({
           audio: { echoCancellation: true, noiseSuppression: true, autoGainControl: true },
         });
 
-        // console.log("📤 Local stream tracks (sending):", stream.getTracks().map(t => ({
-        //   kind: t.kind,
-        //   enabled: t.enabled,
-        //   muted: t.muted,
-        // })));
-
         if (isCleanedUp) {
           stream.getTracks().forEach((t) => t.stop());
           return;
@@ -199,7 +187,6 @@ export default function CallModal({
           localVideo.current.srcObject = stream;
         }
 
-        // console.log("📤 Adding tracks to PeerConnection:", stream.getTracks());
         stream.getTracks().forEach((track) => pc.addTrack(track, stream));
 
         setMediaReady(true);
@@ -335,11 +322,6 @@ export default function CallModal({
             controls={false}
             muted={false}
             style={{ display: "none" }}
-            onLoadedMetadata={() =>
-              console.log("🎵 Remote audio metadata loaded")
-            }
-            onPlay={() => console.log("🎵 Remote audio started playing")}
-            onError={(e) => console.error("🎵 Remote audio error:", e)}
           />
         )}
 
@@ -391,10 +373,6 @@ export default function CallModal({
                 playsInline
                 muted={false}
                 className="w-full h-full object-cover"
-                onLoadedMetadata={() =>
-                  console.log("🎥 Remote video metadata loaded")
-                }
-                onPlay={() => console.log("🎥 Remote video started playing")}
               />
               <div className="absolute bottom-2 left-2 text-sm bg-black bg-opacity-30 text-white px-2 py-1 rounded">
                 Đối phương
@@ -432,25 +410,6 @@ export default function CallModal({
             </div>
           </div>
         )}
-
-        {/* Add this after the Voice Call Display section */}
-        {/* {type === "voice" && remoteAudio.current?.srcObject && (
-          <button
-            onClick={() => {
-              remoteAudio.current
-                ?.play()
-                .then(() => {
-                  console.log("🎵 Manual audio play successful")
-                })
-                .catch((error) => {
-                  console.error("🎵 Manual audio play failed:", error)
-                })
-            }}
-            className="mb-4 px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
-          >
-            🔊 Test Audio Play
-          </button>
-        )} */}
 
         {/* Controls */}
         <div className="flex gap-4 items-center">

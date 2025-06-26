@@ -58,7 +58,6 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
         "state_changed",
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
         },
         (error) => {
           setIsUploading(false);
@@ -67,7 +66,6 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log("File available at", downloadURL);
           
           setIsUploading(false);
           resolve(downloadURL);  // Resolve the promise with the download URL

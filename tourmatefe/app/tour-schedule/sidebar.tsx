@@ -33,7 +33,6 @@ const CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
     const accountId = Number(payLoad?.AccountId)
 
     const [user, setUser] = useState<Customer>();
-    console.log(user)
 
     React.useEffect(() => {
         if (!accountId) return;

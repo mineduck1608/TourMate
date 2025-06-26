@@ -39,7 +39,6 @@ export function SignupForm({
       }, 500);
     },
     onError: (error) => {
-      console.log(error);
       
       setError(error.message || "Đăng ký thất bại");
     },

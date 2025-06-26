@@ -78,7 +78,6 @@ export default function MembershipPaymentPage() {
         CHECKOUT_URL: checkoutUrl || "", // Đảm bảo không null
         embedded: true,
         onSuccess: async (event: PayOSEvent) => {
-            console.log("Payment success:", event)
             setIsProcessing(true) // Show processing state
 
             try {
@@ -92,8 +91,6 @@ export default function MembershipPaymentPage() {
                     paymentId: 0,
                     status: "Thành công"
                 })
-
-                console.log("Payment added:", payment)
 
                 if (payment) {
                     // Add delay to show processing state
@@ -110,24 +107,16 @@ export default function MembershipPaymentPage() {
             }
         },
         onCancel: (event: PayOSEvent) => {
-            console.log("Payment cancelled:", event)
             window.location.href = `/payment/pay-result?success=false&id=${membershipId}`
             handleClosePayment()
         },
         onExit: (event: PayOSEvent) => {
-            console.log("Payment exit:", event)
             window.location.href = `/payment/pay-result?success=false&id=${membershipId}`
             handleClosePayment()
         }
     }), [checkoutUrl])
 
     const { open, exit } = usePayOS(payOSConfig)
-
-    useEffect(() => {
-        console.log("PayOS Config:", payOSConfig)
-        console.log("Checkout URL:", checkoutUrl)
-        console.log("Is Payment Open:", isPaymentOpen)
-    }, [payOSConfig, checkoutUrl, isPaymentOpen])
 
     // Load Membership - chỉ chạy khi membershipId thay đổi
     useEffect(() => {

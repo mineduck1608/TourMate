@@ -55,7 +55,6 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onCompleteImageUpload, onImme
         "state_changed",
         (snapshot) => {
           const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
         },
         (error) => {
           setIsUploading(false);

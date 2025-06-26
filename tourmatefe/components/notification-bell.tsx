@@ -53,21 +53,18 @@ const NotificationBell = () => {
     connection
       .start()
       .then(() => {
-        console.log("✅ SignalR connected to NotificationHub")
         connectionRef.current = connection
       })
       .catch((err) => console.error("SignalR connection error:", err))
 
     // Listen for notifications - with deduplication
     connection.on("ReceiveNotification", (data) => {
-      console.log("📩 New notification received:", data)
 
       // Create a unique key for deduplication
       const notificationKey = `${data.message}_${data.link}_${data.createdAt}`
 
       // Check if we've already processed this notification
       if (processedNotifications.current.has(notificationKey)) {
-        console.log("🔄 Duplicate notification ignored:", notificationKey)
         return
       }
 
@@ -93,7 +90,6 @@ const NotificationBell = () => {
         )
 
         if (isDuplicate) {
-          console.log("🔄 Duplicate notification in state ignored")
           return prev
         }
 

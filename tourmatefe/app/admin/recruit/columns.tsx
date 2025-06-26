@@ -116,4 +116,3 @@ export const columns: ColumnDef<Applications>[] = [
   },
 ];
 
-console.log("Column definitions:", columns);
