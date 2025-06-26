@@ -31,7 +31,7 @@ export default function ContactSection() {
                         <div>
                             <p className="text-sm text-gray-400">Điện thoại</p>
                             <a href="tel:0977300916" className="text-white font-medium hover:text-blue-400 transition-colors">
-                                0977-300-916
+                                0977300916
                             </a>
                         </div>
                     </div>
