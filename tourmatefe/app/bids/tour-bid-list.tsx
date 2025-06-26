@@ -8,7 +8,8 @@ import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { CustomerSiteContext, CustomerSiteContextProp } from '../services/context';
 import { baseData } from './tour-bid-task-context';
-import { sendLocationBid, sendNotificationToGuides } from '@/app/api/bid.api';
+import { sendLocationBid } from '@/app/api/bid.api';
+import { sendNotificationToGuides } from '../api/notification.api';
 
 function TourBidList({ search }: { search: string }) {
   const pageSize = 10;

@@ -47,9 +47,9 @@ const MegaMenu = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-center items-center h-20 relative">
-          {/* Logo - positioned absolutely to the left */}
-          <Link href="/" className="absolute left-0 flex items-center space-x-3 group">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo - Left side */}
+          <Link href="/" className="flex items-center space-x-3 group flex-shrink-0">
             <motion.div
               className="relative"
               whileHover={{ scale: 1.05 }}
@@ -59,8 +59,8 @@ const MegaMenu = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - centered */}
-          <div className="hidden lg:flex items-center space-x-1">
+          {/* Desktop Navigation - Center */}
+          <div className="hidden lg:flex items-center space-x-1 flex-1 justify-center">
             <Link
               href="/"
               className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
@@ -230,59 +230,69 @@ const MegaMenu = () => {
             </Link>
           </div>
 
-          {/* Auth Buttons - positioned absolutely to the right */}
-          <div className="absolute right-0 hidden lg:flex items-center space-x-3">
-            {token && <NotificationBell />}
-            {token ? (
-              <ActionMenu />
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors rounded-xl hover:bg-gray-50"
-                >
-                  Đăng nhập
-                </Link>
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  Đăng ký
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Mobile menu button - positioned absolutely to the right */}
-          <motion.button
-            onClick={toggleMobileMenu}
-            className="absolute right-0 lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
-            whileTap={{ scale: 0.95 }}
-          >
-            <AnimatePresence mode="wait">
-              {isMobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="h-6 w-6" />
-                </motion.div>
+          {/* Right side - Auth & Mobile Menu */}
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            {/* Desktop Auth Buttons */}
+            <div className="hidden lg:flex items-center space-x-3">
+              {token && <NotificationBell />}
+              {token ? (
+                <ActionMenu />
               ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="h-6 w-6" />
-                </motion.div>
+                <>
+                  <Link
+                    href="/login"
+                    className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors rounded-xl hover:bg-gray-50"
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    Đăng ký
+                  </Button>
+                </>
               )}
-            </AnimatePresence>
-          </motion.button>
+            </div>
+
+            {/* Mobile Notification Bell (when logged in) */}
+            {token && (
+              <div className="lg:hidden">
+                <NotificationBell />
+              </div>
+            )}
+
+            {/* Mobile menu button - Always visible */}
+            <motion.button
+              onClick={toggleMobileMenu}
+              className="lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
+              whileTap={{ scale: 0.95 }}
+            >
+              <AnimatePresence mode="wait">
+                {isMobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="h-6 w-6" />
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </motion.button>
+          </div>
         </div>
 
         {/* Mobile Navigation */}
@@ -298,6 +308,7 @@ const MegaMenu = () => {
               <div className="space-y-2">
                 <Link
                   href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/"
                       ? "text-blue-600 bg-blue-50"
@@ -308,6 +319,7 @@ const MegaMenu = () => {
                 </Link>
                 <Link
                   href="/aboutUs"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/aboutUs"
                       ? "text-blue-600 bg-blue-50"
@@ -318,6 +330,7 @@ const MegaMenu = () => {
                 </Link>
                 <Link
                   href="/news"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/news"
                       ? "text-blue-600 bg-blue-50"
@@ -333,12 +346,14 @@ const MegaMenu = () => {
                   <div className="space-y-1 ml-4">
                     <Link
                       href="/services/active-area"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                     >
                       Địa điểm hoạt động
                     </Link>
                     <Link
                       href="/services/tour-guide"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                     >
                       Hướng dẫn viên
@@ -350,6 +365,7 @@ const MegaMenu = () => {
                 {token ? (
                   <Link
                     href="/chat"
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                       currentRoute === "/chat"
                         ? "text-blue-600 bg-blue-50"
@@ -371,6 +387,7 @@ const MegaMenu = () => {
                 {token ? (
                   <Link
                     href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                       currentRoute.includes("/bids")
                         ? "text-blue-600 bg-blue-50"
@@ -390,6 +407,7 @@ const MegaMenu = () => {
 
                 <Link
                   href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/contact"
                       ? "text-blue-600 bg-blue-50"
@@ -399,16 +417,25 @@ const MegaMenu = () => {
                   Liên hệ
                 </Link>
 
-                {!token && (
+                {/* Mobile Auth Section */}
+                {token ? (
+                  <div className="pt-4 border-t border-gray-200">
+                    <ActionMenu />
+                  </div>
+                ) : (
                   <div className="pt-4 border-t border-gray-200 space-y-3">
                     <Link
                       href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
                     >
                       Đăng nhập
                     </Link>
                     <Button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setIsModalOpen(true)
+                        setIsMobileMenuOpen(false)
+                      }}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl py-3"
                     >
                       Đăng ký
