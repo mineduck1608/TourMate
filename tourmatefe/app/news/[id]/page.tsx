@@ -49,7 +49,6 @@ export default function NewsDetailPage({
     if (news?.content) {
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = news.content;
-      const aligned = tempDiv.querySelectorAll(".ql-align-center");
     }
   }, [news?.content]);
 

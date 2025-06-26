@@ -56,9 +56,6 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
 
       uploadTask.on(
         "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        },
         (error) => {
           setIsUploading(false);
           toast.error("Image upload failed");

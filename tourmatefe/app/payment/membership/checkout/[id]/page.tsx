@@ -41,15 +41,6 @@ const formatDateTime = (dateStr: string) =>
         hour12: false,
     })
 
-interface PayOSEvent {
-    orderId: string;
-    amount: number;
-    description: string;
-    code: string;
-    status: 'PAID' | 'CANCELLED' | 'FAILED';
-    cancelledReason?: string;
-}
-
 export default function MembershipPaymentPage() {
     const params = useParams()
     const membershipId = Array.isArray(params?.id) ? params.id[0] : (params?.id ?? "")
@@ -77,7 +68,7 @@ export default function MembershipPaymentPage() {
         ELEMENT_ID: "embedded-payment-container",
         CHECKOUT_URL: checkoutUrl || "", // Đảm bảo không null
         embedded: true,
-        onSuccess: async (event: PayOSEvent) => {
+        onSuccess: async () => {
             setIsProcessing(true) // Show processing state
 
             try {
@@ -106,11 +97,11 @@ export default function MembershipPaymentPage() {
                 setError("Có lỗi xảy ra khi xử lý thanh toán")
             }
         },
-        onCancel: (event: PayOSEvent) => {
+        onCancel: () => {
             window.location.href = `/payment/pay-result?success=false&id=${membershipId}`
             handleClosePayment()
         },
-        onExit: (event: PayOSEvent) => {
+        onExit: () => {
             window.location.href = `/payment/pay-result?success=false&id=${membershipId}`
             handleClosePayment()
         }

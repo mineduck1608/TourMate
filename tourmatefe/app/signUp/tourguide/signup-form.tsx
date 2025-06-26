@@ -64,9 +64,6 @@ export function SignupForm({
 
   const areasMutation = useMutation({
     mutationFn: fetchAreaIdAndName,
-    onSuccess: (data) => {
-      // Use the data directly in the component
-    },
     onError: (error) => {
       console.error("Error fetching areas:", error);
       setError("Không thể tải danh sách khu vực. Vui lòng thử lại sau.");

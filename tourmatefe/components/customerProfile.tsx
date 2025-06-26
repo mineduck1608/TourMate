@@ -104,10 +104,6 @@ export default function CustomerProfile() {
 
             uploadTask.on(
                 "state_changed",
-                (snapshot) => {
-                    // bạn có thể thêm xử lý progress nếu muốn
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                },
                 (error) => {
                     reject(error);
                 },
