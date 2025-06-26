@@ -5,11 +5,11 @@ import { toast } from "react-toastify";
 import SafeImage from "./safe-image";
 
 interface ImageUploadProps {
-  onImageUpload: (imageUrl: string) => void;  // Callback to handle the image URL
-  onUploadComplete?: (imageUrl: string) => void; // Optional callback when upload is complete
+  onCompleteImageUpload: (imageUrl: string) => void;  // Callback to handle the image URL,
+  onImmediateChange?: () => void;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, onUploadComplete }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ onCompleteImageUpload, onImmediateChange }) => {
   const [imagePreview, setImagePreview] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
@@ -36,11 +36,8 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, onUploadComple
   const handleUpload = async (file: File) => {
     try {
       const imageUrl = await uploadImage(file);  // Get the download URL
-      onImageUpload(imageUrl);  // Pass the URL to the parent component
+      onCompleteImageUpload(imageUrl);  // Pass the URL to the parent component
       setImagePreview(imageUrl);  // Preview image
-      if (onUploadComplete) {
-        onUploadComplete(imageUrl); // Call optional callback if provided
-      }
     } catch (err) {
       console.error("Image upload failed:", err);
       setError("Image upload failed");
@@ -75,6 +72,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onImageUpload, onUploadComple
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onImmediateChange) {
+      onImmediateChange();  // Call the immediate change callback if provided
+    }
     const file = e.target.files ? e.target.files[0] : null;
     if (file) handleFile(file);
   };
