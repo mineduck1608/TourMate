@@ -30,23 +30,23 @@ export default function ContactSection() {
                         </div>
                         <div>
                             <p className="text-sm text-gray-400">Điện thoại</p>
-                            <a href="tel:0974581366" className="text-white font-medium hover:text-blue-400 transition-colors">
-                                0974581366
+                            <a href="tel:0977300916" className="text-white font-medium hover:text-blue-400 transition-colors">
+                                0977-300-916
                             </a>
                         </div>
                     </div>
 
                     <div className="flex items-center gap-4 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors group">
-                        <div className="p-2 bg-green-500/20 rounded-lg group-hover:bg-green-500/30 transition-colors">
-                            <Mail className="w-5 h-5 text-green-400" />
+                        <div className="p-2 bg-blue-500/20 rounded-lg group-hover:bg-blue-500/30 transition-colors">
+                            <Mail className="w-5 h-5 text-blue-400" />
                         </div>
                         <div>
                             <p className="text-sm text-gray-400">Email</p>
                             <a
-                                href="mailto:TourMatebooking@gmail.com"
-                                className="text-white font-medium hover:text-green-400 transition-colors break-all"
+                                href="mailto:tourmate2025@gmail.com"
+                                className="text-white font-medium hover:text-blue-400 transition-colors break-all"
                             >
-                                TourMatebooking@gmail.com
+                                tourmate2025@gmail.com
                             </a>
                         </div>
                     </div>
@@ -57,7 +57,7 @@ export default function ContactSection() {
                     href={'/contact'}
                 >
                     <div
-                        className="p-2 rounded-lg text-center w-full mt-6 bg-gradient-to-r from-blue-500 to-green-500 hover:from-blue-600 hover:to-green-600 border-0 font-medium"
+                        className="p-2 rounded-lg text-center w-full mt-6 bg-blue-500 hover:bg-blue-600 border-0 font-medium"
                     >
                         Liên hệ ngay
                     </div>
