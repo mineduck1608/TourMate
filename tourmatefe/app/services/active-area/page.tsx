@@ -79,7 +79,7 @@ function ActiveAreaList() {
     <div>
       <div>
         <Banner
-          imageUrl="https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"
+          imageUrl="/bacthang.jpg"
           title="Khám Phá Các Địa Điểm Du Lịch Tại Việt Nam"
         />
       </div>
