@@ -56,10 +56,6 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
 
       uploadTask.on(
         "state_changed",
-        (snapshot) => {
-          const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-          console.log(`Upload is ${progress}% done`);
-        },
         (error) => {
           setIsUploading(false);
           toast.error("Image upload failed");
@@ -67,7 +63,6 @@ const FileUpload: React.FC<FileUpload> = ({ onFileUpload }) => {
         },
         async () => {
           const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-          console.log("File available at", downloadURL);
           
           setIsUploading(false);
           resolve(downloadURL);  // Resolve the promise with the download URL

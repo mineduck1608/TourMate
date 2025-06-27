@@ -19,19 +19,13 @@ export default function CVApplicationsPage() {
         controller.abort();
       }, 500);
       const response = await getCVApplications(page, LIMIT, controller.signal);
-      console.log("API response:", response);
       return response;
     },
     retry: 0,
     refetchOnWindowFocus: false,
   });
 
-  console.log("Current data:", data);
-  console.log("Data being passed to DataTable:", {
-    result: data?.result,
-    totalResults: data?.totalResult,
-    totalPages: data?.totalPage,
-  });
+
 
   if (isLoading) return <div>Loading...</div>;
   if (error) return <div>Error loading data</div>;

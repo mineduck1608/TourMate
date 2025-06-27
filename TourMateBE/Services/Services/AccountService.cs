@@ -1,8 +1,9 @@
-﻿using Repositories.Models;
-using Repositories.ResponseModels;
-using Services.Utils;
-using Services.IServices;
+﻿using Microsoft.Extensions.Configuration;
 using Repositories.IRepositories;
+using Repositories.Models;
+using Repositories.ResponseModels;
+using Services.IServices;
+using Services.Utils;
 
 
 namespace Services.Services
@@ -15,10 +16,11 @@ namespace Services.Services
             private readonly ITourGuideService _tourGuideService;
             private readonly IRefreshTokenService _refreshTokenService;
             private readonly IEmailSender _emailSender;
+            private readonly IConfiguration _config;
 
 
 
-            public AccountService(IAccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService, IEmailSender emailSender)
+        public AccountService(IAccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService, IEmailSender emailSender, IConfiguration config)
             {
                 _repo = repo;
                 _tokenService = tokenService;
@@ -26,7 +28,8 @@ namespace Services.Services
                 _tourGuideService = tourGuideService;
                 _refreshTokenService = refreshTokenService;
                 _emailSender = emailSender;
-            }
+                _config = config;
+        }
 
         public async Task<string> ChangePasswordAsync(int accountId, string currentPassword, string newPassword)
         {
@@ -247,7 +250,9 @@ namespace Services.Services
                 // Tạo JWT token cho reset password
                 var token = _tokenService.GenerateResetPasswordToken(user);
 
-            var resetLink = $"https://tourmate-phi.vercel.app/reset-password/reset?token={token}";
+                var baseUrl = _config["FrontEndURL:BaseUrl"];
+
+            var resetLink = $"{baseUrl}/reset-password/reset?token={token}";
 
             var emailBody = $@"
 <!DOCTYPE html>

@@ -142,7 +142,6 @@ export const getAllRevenue = async (
     },
     signal,
   });
-  console.log("getAllRevenue response:", res.data);
   return res.data; // chỉ trả về mảng RevenueDto[]
 };
 

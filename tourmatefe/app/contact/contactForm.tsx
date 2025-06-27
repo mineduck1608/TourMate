@@ -93,7 +93,6 @@ export default function ContactForm() {
     e.preventDefault()
     if (validate()) {
       addContactMutation.mutate(form)
-      console.log(form)
     }
   }
 

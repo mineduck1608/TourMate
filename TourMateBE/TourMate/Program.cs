@@ -33,7 +33,7 @@ builder.Services.AddCors(options =>
     {
         builder.WithOrigins(
             "http://localhost:3000",
-            "https://tourmate-phi.vercel.app"
+            "https://tourmate2025.com"
         )
         .AllowAnyHeader()
         .AllowAnyMethod()

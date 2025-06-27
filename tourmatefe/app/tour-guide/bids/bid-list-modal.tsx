@@ -110,7 +110,6 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
             toast.success("Tạo thành công");
             newBid.image = tourGuide?.image
             newBid.fullName = tourGuide?.fullName
-            console.log(newBid);
 
             setModalOpen(p => ({ ...p, create: false }));
             setInnerTourBid({ ...innerTourBid, isBid: true })

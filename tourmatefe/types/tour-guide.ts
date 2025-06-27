@@ -63,8 +63,6 @@ export function convertToUpdateModel(tourGuide: TourGuide) {
         company: desc?.company ?? '',
         yearOfExperience: desc?.yearOfExperience
     }
-    console.log();
-    console.log(result);
 
     return result
 }

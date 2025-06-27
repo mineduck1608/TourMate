@@ -74,10 +74,8 @@ export default function MessageList({ conversationId, conversationResponse, glob
     newConnection
       .start()
       .then(async () => {
-        console.log("SignalR connected")
         try {
           await newConnection.invoke("JoinConversation", conversationId)
-          console.log("Joined conversation", conversationId)
         } catch (err) {
           console.error("Failed to join conversation:", err)
         }
@@ -417,8 +415,6 @@ function MessageInput({ onSend }: { onSend: (text: string) => void }) {
   const { file } = useContext(FileUploadContext) as FileUploadContextProps;
 
   const handleSend = () => {
-    console.log(text.trim() === "" && file.downloadUrl.length === 0);
-
     if (text.trim() === "" && file.downloadUrl.length === 0) return;
     onSend(text);
     setText("");

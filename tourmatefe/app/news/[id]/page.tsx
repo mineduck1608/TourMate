@@ -47,12 +47,8 @@ export default function NewsDetailPage({
 
   useEffect(() => {
     if (news?.content) {
-      console.log("🔥 Raw HTML content:", news.content);
       const tempDiv = document.createElement("div");
       tempDiv.innerHTML = news.content;
-      const aligned = tempDiv.querySelectorAll(".ql-align-center");
-      console.log("✅ Số phần tử có class .ql-align-center:", aligned.length);
-      aligned.forEach((el, i) => console.log(`Element ${i + 1}:`, el.outerHTML));
     }
   }, [news?.content]);
 
@@ -73,7 +69,7 @@ export default function NewsDetailPage({
         />
         {/* Rest of your component remains the same */}
         <div
-          className="w-[30%] p-2 *:mb-10 sticky top-10 h-[calc(150vh)] overflow-y-auto overflow-x-hidden"
+          className="w-[30%] p-2 *:mb-10 sticky top-30 h-[calc(150vh)] overflow-y-auto overflow-x-hidden"
         >
           <RecentNews currentId={id} />
           <NewsCategories />

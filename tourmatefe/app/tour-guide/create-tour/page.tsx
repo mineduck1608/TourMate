@@ -168,7 +168,6 @@ export default function CreateTourPage() {
         e.preventDefault()
         const submitData = { ...formData, createdDate: new Date().toISOString(), invoiceId: 0 }
         addInvoiceMutation.mutate(submitData)
-        console.log("Submitted data:", submitData)
         setFormData({
             startDate: "",
             endDate: "",

@@ -10,7 +10,7 @@ function NewsListPage() {
             <Header />
             <div className=''>
                 <Banner
-                    imageUrl="/news-banner.png"
+                    imageUrl="/bacthang2.jpg"
                     title="TIN TỨC"
                 />
             </div>

@@ -73,7 +73,6 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
     };
 
     onSave(dataToSave);
-    console.log("Form data submitted:", dataToSave);
 
     setFormData({ ...base });
 

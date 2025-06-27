@@ -104,11 +104,6 @@ export default function CustomerProfile() {
 
             uploadTask.on(
                 "state_changed",
-                (snapshot) => {
-                    // bạn có thể thêm xử lý progress nếu muốn
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    console.log(`Upload is ${progress}% done`);
-                },
                 (error) => {
                     reject(error);
                 },
@@ -144,7 +139,6 @@ export default function CustomerProfile() {
                 };
 
                 mutate(updatedCustomer);
-                console.log("Updated customer data:", updatedCustomer);
             } catch (error) {
                 toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
                 console.error(error);

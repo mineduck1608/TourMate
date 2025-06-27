@@ -43,7 +43,6 @@ export async function googleLogin(token: string): Promise<LoginResponse> {
       message = error.message;
     }
 
-    console.log(error);
     throw new Error(message);
   }
 }
@@ -79,7 +78,6 @@ export async function login(payload: LoginPayload): Promise<LoginResponse> {
       message = error.message;
     }
 
-    console.log(error);
     throw new Error(message);
   }
 }

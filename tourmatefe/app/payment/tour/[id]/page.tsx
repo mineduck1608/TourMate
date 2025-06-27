@@ -42,15 +42,6 @@ const formatDateTime = (dateStr: string) =>
     hour12: false,
   })
 
-  interface PayOSEvent {
-  orderId: string;
-  amount: number;
-  description: string;
-  code: string;
-  status: 'PAID' | 'CANCELLED' | 'FAILED';
-  cancelledReason?: string;
-}
-
 export default function TourPaymentPage() {
   const params = useParams()
   const invoiceId = Array.isArray(params?.id) ? params.id[0] : (params?.id ?? "")
@@ -78,8 +69,7 @@ export default function TourPaymentPage() {
     ELEMENT_ID: "embedded-payment-container",
     CHECKOUT_URL: checkoutUrl || "", // Đảm bảo không null
     embedded: true,
-    onSuccess: async (event: PayOSEvent) => {
-      console.log("Payment success:", event)
+    onSuccess: async () => {
       setIsProcessing(true) // Show processing state
 
       try {
@@ -108,25 +98,17 @@ export default function TourPaymentPage() {
         setError("Có lỗi xảy ra khi xử lý thanh toán")
       }
     },
-    onCancel: (event: PayOSEvent) => {
-      console.log("Payment cancelled:", event)
+    onCancel: () => {
       window.location.href = `/payment/pay-result?success=false&id=${invoiceId}`
       handleClosePayment()
     },
-    onExit: (event: PayOSEvent) => {
-      console.log("Payment exit:", event)
+    onExit: () => {
       window.location.href = `/payment/pay-result?success=false&id=${invoiceId}`
       handleClosePayment()
     }
   }), [checkoutUrl])
 
   const { open, exit } = usePayOS(payOSConfig)
-
-  useEffect(() => {
-    console.log("PayOS Config:", payOSConfig)
-    console.log("Checkout URL:", checkoutUrl)
-    console.log("Is Payment Open:", isPaymentOpen)
-  }, [payOSConfig, checkoutUrl, isPaymentOpen])
 
   // Load schedule - chỉ chạy khi invoiceId thay đổi
   useEffect(() => {
