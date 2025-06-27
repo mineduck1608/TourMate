@@ -11,7 +11,7 @@ import { jwtDecode } from "jwt-decode"
 import GlobalCallManager from "./global-call-manager"
 import * as signalR from "@microsoft/signalr"
 import { apiHub } from "@/types/constants"
-import { MyJwtPayload } from "@/types/JwtPayload"
+import type { MyJwtPayload } from "@/types/JwtPayload"
 import { useToken } from "@/components/getToken"
 import { baseFileTemplate } from "@/types/file"
 import { FileUploadContext } from "./file-upload-context"
@@ -76,7 +76,7 @@ function ChatContent() {
   }
 
   return (
-    <>
+    <div className="min-h-screen bg-gray-50">
       <MegaMenu />
       <GlobalCallManager
         ref={globalCallManagerRef}
@@ -84,36 +84,72 @@ function ChatContent() {
         currentAccountId={currentUserId || 0}
         conversations={allConversations}
       />
-      <div className="flex h-[100vh] mx-auto border rounded shadow">
-        <ConversationList
-          onSelect={handleSelectConversation}
-          selectedId={selectedConversation?.conversation.conversationId}
-          onConversationsChange={setAllConversations}
-          hubConnection={hubConnection} // 👈 truyền xuống đây
-        />
-        <div className="flex-1 flex flex-col">
-          {selectedConversation ? (
-            <MessageList
-              conversationId={selectedConversation.conversation.conversationId}
-              conversationResponse={selectedConversation}
-              globalCallManager={globalCallManagerRef}
-            />
-          ) : (
-            <div className="flex-1 flex items-center justify-center text-gray-400">Vui lòng chọn cuộc trò chuyện</div>
-          )}
+      <div>
+        <div className="flex h-[calc(100vh-80px)] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+          <ConversationList
+            onSelect={handleSelectConversation}
+            selectedId={selectedConversation?.conversation.conversationId}
+            onConversationsChange={setAllConversations}
+            hubConnection={hubConnection}
+          />
+          <div className="flex-1 flex flex-col">
+            {selectedConversation ? (
+              <MessageList
+                conversationId={selectedConversation.conversation.conversationId}
+                conversationResponse={selectedConversation}
+                globalCallManager={globalCallManagerRef}
+              />
+            ) : (
+              <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
+                <div className="text-center">
+                  <div className="w-24 h-24 mx-auto mb-6 bg-blue-100 rounded-full flex items-center justify-center">
+                    <svg className="w-12 h-12 text-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"
+                      />
+                    </svg>
+                  </div>
+                  <h3 className="text-xl font-semibold text-gray-800 mb-2">Chào mừng đến với Chat</h3>
+                  <p className="text-gray-600">Chọn một cuộc trò chuyện để bắt đầu nhắn tin</p>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
-    </>
+    </div>
   )
 }
 
 export default function ChatPage() {
-  const [currentFile, setCurrentFile] = useState({...baseFileTemplate})
+  const [currentFile, setCurrentFile] = useState({ ...baseFileTemplate })
   const [isUploading, setIsUploading] = useState(false)
   const [currentProgress, setCurrentProgress] = useState<number | undefined>(undefined)
+
   return (
-    <Suspense fallback={<div>Đang tải...</div>}>
-      <FileUploadContext.Provider value={{ file: currentFile, setFile: setCurrentFile, isUploading, setIsUploading, currentProgress, setCurrentProgress }}>
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
+            <p className="text-gray-600 text-lg font-medium">Đang tải chat...</p>
+          </div>
+        </div>
+      }
+    >
+      <FileUploadContext.Provider
+        value={{
+          file: currentFile,
+          setFile: setCurrentFile,
+          isUploading,
+          setIsUploading,
+          currentProgress,
+          setCurrentProgress,
+        }}
+      >
         <ChatContent />
       </FileUploadContext.Provider>
     </Suspense>

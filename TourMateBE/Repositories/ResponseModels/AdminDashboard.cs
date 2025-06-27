@@ -16,6 +16,7 @@ namespace Repositories.ResponseModels
         public decimal RevenueGrowth { get; set; }
         public decimal CommissionGrowth { get; set; }
         public decimal MembershipGrowth { get; set; }
+        public int TotalPayments { get; set; }
     }
 
     public class AreaStatus

@@ -11,6 +11,7 @@ export interface FinancialStatus {
   revenueGrowth: number
   commissionGrowth: number
   membershipGrowth: number
+  totalPayments: number
 }
 
 export interface AreaStatus {

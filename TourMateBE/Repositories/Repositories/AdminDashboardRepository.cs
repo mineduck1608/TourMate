@@ -26,7 +26,11 @@ namespace Repositories.Repositories
             var revenueQuery = _context.Revenues.AsQueryable();
             var membershipQuery = _context.Payments.Include(p => p.MembershipPackage)
                 .Where(p => p.MembershipPackageId != null);
-                
+
+            var totalPayments = await _context.Payments
+                    .Where(p => p.CreatedAt >= fromDate && p.CreatedAt <= toDate)
+                    .CountAsync();
+
 
             // Apply date filters
             if (fromDate.HasValue)
@@ -89,7 +93,8 @@ namespace Repositories.Repositories
                 ProfitMargin = profitMargin,
                 RevenueGrowth = revenueGrowth,
                 CommissionGrowth = commissionGrowth,
-                MembershipGrowth = (decimal)membershipGrowth
+                MembershipGrowth = (decimal)membershipGrowth,
+                TotalPayments = totalPayments
             };
         }
 

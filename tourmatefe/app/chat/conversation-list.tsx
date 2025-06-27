@@ -6,17 +6,17 @@ import { useInfiniteQuery } from "@tanstack/react-query"
 import { debounce } from "lodash"
 import type { ConversationResponse } from "@/types/conversation"
 import { fetchConversations } from "../api/conversation.api"
-import { Search } from "lucide-react"
+import { Search, MessageCircle } from "lucide-react"
 import { jwtDecode } from "jwt-decode"
 import * as signalR from "@microsoft/signalr"
 import { useToken } from "@/components/getToken"
-import { MyJwtPayload } from "@/types/JwtPayload"
+import type { MyJwtPayload } from "@/types/JwtPayload"
 
 type Props = {
   onSelect: (conversation: ConversationResponse) => void
   selectedId?: number
   onConversationsChange?: (conversations: ConversationResponse[]) => void
-  hubConnection: signalR.HubConnection | null // 👈 thêm dòng này
+  hubConnection: signalR.HubConnection | null
 }
 
 const PAGE_SIZE = 10
@@ -25,6 +25,7 @@ export default function ConversationList({ onSelect, selectedId, onConversations
   const [searchTerm, setSearchTerm] = useState("")
   const [debouncedTerm, setDebouncedTerm] = useState("")
   const [localConversations, setLocalConversations] = useState<ConversationResponse[]>([])
+  const [joinedConversations, setJoinedConversations] = useState<Set<number>>(new Set())
 
   const token = useToken("accessToken")
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null
@@ -41,10 +42,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
     enabled: !!currentAccountId,
   })
 
-  // Track joined conversations to prevent duplicate joins
-  const [joinedConversations, setJoinedConversations] = useState<Set<number>>(new Set())
-
-  // Update local conversations and join SignalR groups (improved)
   useEffect(() => {
     if (data?.pages) {
       const allConversations = data.pages.flatMap((page) => page.conversations)
@@ -57,25 +54,9 @@ export default function ConversationList({ onSelect, selectedId, onConversations
 
       setLocalConversations(allConversations)
       onConversationsChange?.(allConversations)
-
-      // Join new conversations only
-      if (hubConnection?.state === signalR.HubConnectionState.Connected) {
-        allConversations.forEach((conv) => {
-          const id = conv.conversation.conversationId
-          if (!joinedConversations.has(id)) {
-            hubConnection
-              .invoke("JoinConversation", id)
-              .then(() => {
-                setJoinedConversations((prev) => new Set([...prev, id]))
-              })
-              .catch((err) => console.error(`JoinConversation failed for ${id}:`, err))
-          }
-        })
-      }
     }
-  }, [data, hubConnection, onConversationsChange])
+  }, [data, onConversationsChange])
 
-  // Join conversations when connection is ready (improved)
   useEffect(() => {
     if (
       hubConnection &&
@@ -94,16 +75,14 @@ export default function ConversationList({ onSelect, selectedId, onConversations
         }
       })
     }
-  }, [hubConnection?.state]) // Removed localConversations from dependencies
+  }, [hubConnection, localConversations])
 
-  // Reset joined conversations when connection changes
   useEffect(() => {
     if (hubConnection?.state === signalR.HubConnectionState.Disconnected) {
       setJoinedConversations(new Set())
     }
   }, [hubConnection?.state])
 
-  // Handle real-time message updates
   useEffect(() => {
     if (!hubConnection) return
 
@@ -116,7 +95,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
       messageText: string
       sendAt: string
     }) => {
-
       setLocalConversations((prev) => {
         const index = prev.findIndex((conv) => conv.conversation.conversationId === message.conversationId)
 
@@ -133,7 +111,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
           sendAt: message.sendAt,
         }
 
-        // Move conversation with new message to top
         return [updatedConv, ...prev.filter((_, i) => i !== index)]
       })
     }
@@ -145,7 +122,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
     }
   }, [hubConnection])
 
-  // Debounced search
   const debounceSearch = useCallback(
     debounce((term: string) => setDebouncedTerm(term.trim().toLowerCase())),
     [],
@@ -163,28 +139,45 @@ export default function ConversationList({ onSelect, selectedId, onConversations
   }
 
   return (
-    <div className="flex flex-col border-r h-full w-80">
-      <h1 className="p-3 text-3xl font-bold">Trò chuyện</h1>
+    <div className="flex flex-col border-r border-gray-200 h-full w-80 bg-white">
+      {/* Header */}
+      <div className="p-6 border-b border-gray-200">
+        <div className="flex items-center gap-3 mb-4">
+          <div className="p-2 bg-blue-100 rounded-lg">
+            <MessageCircle className="w-6 h-6 text-blue-600" />
+          </div>
+          <h1 className="text-2xl font-bold text-gray-900">Trò chuyện</h1>
+        </div>
 
-      <div className="relative px-3">
-        <span className="absolute left-5 top-1/3 transform -translate-y-1/2 text-gray-500 pointer-events-none">
-          <Search />
-        </span>
-        <input
-          type="search"
-          className="w-full p-2 pl-10 mb-5 rounded-full border bg-gray-200
-               text-sm sm:text-base
-               focus:outline-none focus:ring-2 focus:ring-blue-500"
-          placeholder="Tìm kiếm cuộc trò chuyện"
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-        />
+        {/* Search */}
+        <div className="relative">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          <input
+            type="search"
+            className="w-full pl-10 pr-4 py-3 rounded-xl border-2 border-gray-200 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 text-sm placeholder-gray-500"
+            placeholder="Tìm kiếm cuộc trò chuyện..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+          />
+        </div>
       </div>
 
+      {/* Conversations List */}
       <div className="flex-1 overflow-auto" onScroll={handleScroll}>
-        {isLoading && <div className="p-4 text-center text-gray-500">Đang tải...</div>}
+        {isLoading && (
+          <div className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-blue-600 border-t-transparent mx-auto mb-3"></div>
+            <p className="text-gray-500">Đang tải...</p>
+          </div>
+        )}
+
         {!isLoading && localConversations.length === 0 && (
-          <div className="p-4 text-gray-500">Không có cuộc trò chuyện</div>
+          <div className="p-6 text-center">
+            <div className="w-16 h-16 mx-auto mb-4 bg-gray-100 rounded-full flex items-center justify-center">
+              <MessageCircle className="w-8 h-8 text-gray-400" />
+            </div>
+            <p className="text-gray-500">Không có cuộc trò chuyện</p>
+          </div>
         )}
 
         {localConversations.map((conversation) => (
@@ -196,9 +189,16 @@ export default function ConversationList({ onSelect, selectedId, onConversations
           />
         ))}
 
-        {isFetchingNextPage && <div className="p-2 text-center text-gray-500">Đang tải thêm...</div>}
-        {!hasNextPage && !isLoading && (
-          <div className="p-2 text-center text-gray-400 text-sm">Đã hiển thị tất cả cuộc trò chuyện</div>
+        {isFetchingNextPage && (
+          <div className="p-4 text-center">
+            <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent mx-auto"></div>
+          </div>
+        )}
+
+        {!hasNextPage && !isLoading && localConversations.length > 0 && (
+          <div className="p-4 text-center">
+            <p className="text-gray-400 text-sm">Đã hiển thị tất cả cuộc trò chuyện</p>
+          </div>
         )}
       </div>
     </div>
@@ -214,23 +214,51 @@ function ConversationItem({
   selected?: boolean
   onClick: () => void
 }) {
+  const formatTime = (dateString?: string) => {
+    if (!dateString) return ""
+    const date = new Date(dateString)
+    const now = new Date()
+    const diffInHours = (now.getTime() - date.getTime()) / (1000 * 60 * 60)
+
+    if (diffInHours < 24) {
+      return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
+    } else {
+      return date.toLocaleDateString()
+    }
+  }
+
   return (
     <div
       onClick={onClick}
-      className={`cursor-pointer p-3 border-b hover:bg-gray-100 flex items-center gap-3 ${selected ? "bg-blue-100 font-semibold" : ""
-        }`}
+      className={`cursor-pointer p-4 border-b border-gray-100 hover:bg-gray-50 transition-all duration-200 ${
+        selected ? "bg-blue-50 border-l-4 border-l-blue-500" : ""
+      }`}
     >
-      {/* Avatar */}
-      <img
-        src={conversation.account2Img || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
-        alt={`${conversation.accountName2} avatar`}
-        className="w-10 h-10 rounded-full object-cover"
-      />
+      <div className="flex items-center gap-3">
+        {/* Avatar */}
+        <div className="relative">
+          <img
+            src={conversation.account2Img || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
+            alt={`${conversation.accountName2} avatar`}
+            className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-sm"
+          />
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+        </div>
 
-      {/* Conversation Content */}
-      <div className="flex flex-col overflow-hidden">
-        <div className="truncate">{conversation.accountName2}</div>
-        <div className="text-xs truncate text-gray-500 font-normal">{conversation.latestMessage?.messageText}</div>
+        {/* Content */}
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center justify-between mb-1">
+            <h3 className={`font-semibold truncate ${selected ? "text-blue-700" : "text-gray-900"}`}>
+              {conversation.accountName2}
+            </h3>
+            <span className="text-xs text-gray-500 ml-2 flex-shrink-0">
+              {formatTime(conversation.latestMessage?.sendAt)}
+            </span>
+          </div>
+          <p className="text-sm text-gray-600 truncate leading-relaxed">
+            {conversation.latestMessage?.messageText || "Chưa có tin nhắn"}
+          </p>
+        </div>
       </div>
     </div>
   )
