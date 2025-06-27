@@ -90,8 +90,8 @@ export default function RevenuePage() {
   return (
     <div>
       <RevenueHeader
-        onShowHistory={() => alert("Show Revenue History")}
-        onPaySelected={() => alert("Pay Selected Revenue")}
+        onShowHistory={() => alert("Xem Lịch Sử Thanh Toán")}
+        onPaySelected={() => alert("Thanh toán doanh thu đã chọn")}
         payDisabled={true}
       />
       <SummaryBoxes />

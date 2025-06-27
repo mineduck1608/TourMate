@@ -65,16 +65,16 @@ export function SummaryBoxes() {
 
   const boxes = [
     {
-      title: "Total Unpaid Revenue",
+      title: "Tiền Hoa Hồng Chưa Thanh Toán",
       value: `$${totalUnpaidRevenue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
       })}`,
-      subtitle: "Pending payments",
+      subtitle: "Các Giao Dịch Đang Chờ",
       color: "red",
       rightIcon: <span className="text-red-400 text-lg">$</span>,
     },
     {
-      title: "Total Unpaid Tour Guides",
+      title: "Các Tour Guide Chưa Được Trả Tiền",
       value: totalUnpaidGuides,
       subtitle: "Guides awaiting payment",
       color: "orange",
@@ -88,14 +88,14 @@ export function SummaryBoxes() {
       ),
     },
     {
-      title: "Selected Revenue",
+      title: "Tiền Hoa Hồng Đang Được Chọn",
       value: "$0.00",
       subtitle: "0 items selected",
       color: "blue",
       rightIcon: <span className="text-blue-400 text-lg">📈</span>,
     },
     {
-      title: "Bookings This Month",
+      title: "Lượng Booking Tháng Này",
       value: bookingsThisMonth,
       subtitle: "Current month bookings",
       color: "green",
