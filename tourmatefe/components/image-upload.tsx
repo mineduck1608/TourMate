@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import axios from "axios";
 import { toast } from "react-toastify";
 import SafeImage from "./safe-image";
 import { uploadImageToServer } from "@/app/api/image-upload.api";
