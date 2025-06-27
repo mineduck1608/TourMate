@@ -9,7 +9,7 @@ import type { Message } from "@/types/message"
 import { jwtDecode } from "jwt-decode"
 import { apiHub } from "@/types/constants"
 import type { ConversationResponse } from "@/types/conversation"
-import { Phone, Video, Send, Download, FileText, MoreVertical } from "lucide-react"
+import { Phone, Video, Send, Download, FileText, MoreVertical, ArrowLeft } from "lucide-react"
 import type { GlobalCallManagerRef } from "./global-call-manager"
 import type { MyJwtPayload } from "@/types/JwtPayload"
 import { useToken } from "@/components/getToken"
@@ -25,9 +25,17 @@ type Props = {
   conversationId: number
   conversationResponse?: ConversationResponse
   globalCallManager?: React.RefObject<GlobalCallManagerRef | null>
+  isMobile?: boolean
+  onBack?: () => void
 }
 
-export default function MessageList({ conversationId, conversationResponse, globalCallManager }: Props) {
+export default function MessageList({
+  conversationId,
+  conversationResponse,
+  globalCallManager,
+  isMobile,
+  onBack,
+}: Props) {
   const [connection, setConnection] = useState<HubConnection | null>(null)
   const [messages, setMessages] = useState<Message[]>([])
   const { file, setFile } = useContext(FileUploadContext) as FileUploadContextProps
@@ -158,6 +166,7 @@ export default function MessageList({ conversationId, conversationResponse, glob
         onVoiceCall={() => initiateCall("voice")}
         onVideoCall={() => initiateCall("video")}
         isCallActive={false}
+        onBack={isMobile ? onBack : undefined}
       />
 
       {/* Messages */}
@@ -211,16 +220,27 @@ function ConversationHeader({
   onVoiceCall,
   onVideoCall,
   isCallActive,
+  onBack, // thêm prop này
 }: {
   conversationResponse?: ConversationResponse
   onVoiceCall?: () => void
   onVideoCall?: () => void
   isCallActive?: boolean
+  onBack?: () => void // thêm prop này
 }) {
   const avatarUrl = "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
 
   return (
     <div className="flex items-center p-4 border-b border-gray-200 bg-white shadow-sm">
+      {/* Nút quay lại chỉ hiện trên mobile */}
+      {onBack && (
+        <button
+          className="md:hidden mr-4 text-blue-600"
+          onClick={onBack}
+        >
+          <ArrowLeft size={24} />
+        </button>
+      )}
       <div className="flex items-center flex-1">
         <div className="relative">
           <SafeImage

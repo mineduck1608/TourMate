@@ -27,11 +27,33 @@ function ChatContent() {
   const [allConversations, setAllConversations] = useState<ConversationResponse[]>([])
   const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null)
 
+
+
   const globalCallManagerRef = useRef<GlobalCallManagerRef | null>(null)
 
   const token = useToken("accessToken")
   const decoded: MyJwtPayload | null = token ? jwtDecode<MyJwtPayload>(token.toString()) : null
   const currentUserId = decoded?.AccountId ? Number(decoded.AccountId) : undefined
+
+  // Simple useMediaQuery implementation
+  function useMediaQuery(query: string): boolean {
+    const [matches, setMatches] = useState(false);
+
+    useEffect(() => {
+      const media = window.matchMedia(query);
+      if (media.matches !== matches) {
+        setMatches(media.matches);
+      }
+      const listener = () => setMatches(media.matches);
+      media.addEventListener("change", listener);
+      return () => media.removeEventListener("change", listener);
+    }, [matches, query]);
+
+    return matches;
+  }
+
+  const isMobile = useMediaQuery("(max-width: 768px)") // hoặc dùng window.innerWidth
+  const [showConversationListMobile, setShowConversationListMobile] = useState(true)
 
   // Setup global SignalR connection
   useEffect(() => {
@@ -68,6 +90,7 @@ function ChatContent() {
 
   const handleSelectConversation = async (conv: ConversationResponse) => {
     setSelectedConversation(conv)
+    setShowConversationListMobile(false) // Ẩn danh sách khi chọn trên mobile
     try {
       await fetchMarkRead(conv.conversation.conversationId, conv.conversation.account2Id)
     } catch (error) {
@@ -86,18 +109,30 @@ function ChatContent() {
       />
       <div>
         <div className="flex h-[calc(100vh-80px)] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
-          <ConversationList
-            onSelect={handleSelectConversation}
-            selectedId={selectedConversation?.conversation.conversationId}
-            onConversationsChange={setAllConversations}
-            hubConnection={hubConnection}
-          />
-          <div className="flex-1 flex flex-col">
+          {/* ConversationList: Ẩn trên mobile nếu đã chọn chat */}
+          <div
+            className={`h-full ${selectedConversation && !showConversationListMobile ? "hidden" : "block"
+              } flex-shrink-0 md:w-[320px] md:block`}
+          >
+            <ConversationList
+              onSelect={handleSelectConversation}
+              selectedId={selectedConversation?.conversation.conversationId}
+              onConversationsChange={setAllConversations}
+              hubConnection={hubConnection}
+            />
+          </div>
+          {/* MessageList: Ẩn trên mobile nếu chưa chọn chat */}
+          <div
+            className={`flex-1 flex flex-col ${!selectedConversation || showConversationListMobile ? "hidden" : "flex"
+              } md:flex`}
+          >
             {selectedConversation ? (
               <MessageList
                 conversationId={selectedConversation.conversation.conversationId}
                 conversationResponse={selectedConversation}
                 globalCallManager={globalCallManagerRef}
+                isMobile={isMobile}
+                onBack={() => setShowConversationListMobile(true)}
               />
             ) : (
               <div className="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100">
