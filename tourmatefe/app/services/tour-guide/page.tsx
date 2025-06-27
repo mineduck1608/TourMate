@@ -71,7 +71,7 @@ function TourGuideMain() {
                 <div className="flex flex-col lg:flex-row gap-8">
                     {/* Filter Sidebar */}
                     <div data-aos="fade-right" className="w-full lg:w-80">
-                        <div className="bg-white shadow-xl rounded-2xl p-6 lg:sticky lg:top-8 border border-gray-200">
+                        <div className="bg-white shadow-xl rounded-2xl p-6 lg:sticky lg:top-30 border border-gray-200">
                             <div className="flex items-center gap-3 mb-6">
                                 <div className="p-2 bg-green-100 rounded-lg">
                                     <Filter className="w-5 h-5 text-green-600" />
