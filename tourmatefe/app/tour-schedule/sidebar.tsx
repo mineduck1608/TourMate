@@ -1,17 +1,14 @@
 import React, { useState, type FC } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Calendar,
     MapPin,
-    LogOut,
     User,
     StretchHorizontalIcon,
     MessageCircleMore,
     CalendarCheck,
     CalendarX,
-    ChartAreaIcon,
     ChevronsUpDown,
 } from "lucide-react";
 import { useToken } from "@/components/getToken";
@@ -25,7 +22,6 @@ type CustomerSidebarProps = {
 };
 
 const CustomerSidebar: FC<CustomerSidebarProps> = ({ onNavItemClick }) => {
-    const router = useRouter();
     const [selectedNav, setSelectedNav] = useState("Chờ xác nhận");
 
     const token = useToken('accessToken')

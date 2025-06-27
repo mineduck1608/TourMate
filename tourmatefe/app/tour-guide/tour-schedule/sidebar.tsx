@@ -1,18 +1,15 @@
 import React, { useState, type FC } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
     Calendar,
     MapPin,
     Star,
-    LogOut,
     User,
     StretchHorizontalIcon,
     MessageCircleMore,
     CalendarCheck,
     CalendarX,
-    ChartAreaIcon,
     ChevronsUpDown,
 } from "lucide-react";
 import { getByAccountId } from "@/app/api/tour-guide.api";
@@ -26,7 +23,6 @@ type TourGuideSidebarProps = {
 };
 
 const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
-    const router = useRouter();
     const [selectedNav, setSelectedNav] = useState("Chờ xác nhận");
 
     const token = useToken('accessToken')
