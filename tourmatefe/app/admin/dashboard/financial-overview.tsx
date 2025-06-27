@@ -83,13 +83,12 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
 
         <Card className="py-5 border-0 shadow-lg bg-gradient-to-br from-orange-500 to-red-600 text-white">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-orange-100">Lợi Nhuận Ròng</CardTitle>
+            <CardTitle className="text-sm font-medium text-orange-100">Tổng số giao dịch</CardTitle>
             <TrendingUp className="w-5 h-5" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{formatCurrency(data.netProfit)}</div>
-            <p className="text-xs text-orange-100 mt-2">Tỷ suất: {data.profitMargin.toFixed(1)}%</p>
-          </CardContent>
+          <CardContent className="flex flex-col items-center">
+            <div className="text-4xl font-extrabold mb-1">{data.totalPayments.toLocaleString("vi-VN")}</div>
+            <div className="text-sm text-orange-100">lượt giao dịch</div>          </CardContent>
         </Card>
       </div>
 

@@ -275,7 +275,7 @@ const NotificationBell = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -10, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="absolute right-0 mt-2 w-96 bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
+            className="absolute right-0 mt-2 w-[90vw] max-w-xs sm:max-w-sm md:max-w-md lg:w-96 bg-white/95 backdrop-blur-md border border-gray-200 rounded-2xl shadow-2xl z-50 overflow-hidden"
           >
             {/* Header */}
             <div className="px-6 py-4 border-b border-gray-100 bg-gradient-to-r from-blue-50 to-purple-50">
@@ -323,9 +323,8 @@ const NotificationBell = () => {
                       initial={{ opacity: 0, x: -20 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: index * 0.05 }}
-                      className={`relative group hover:bg-gray-50 transition-all duration-200 ${
-                        !notification.isRead ? "bg-blue-50/50" : ""
-                      }`}
+                      className={`relative group hover:bg-gray-50 transition-all duration-200 ${!notification.isRead ? "bg-blue-50/50" : ""
+                        }`}
                     >
                       <button
                         onClick={() => handleNotificationClick(notification)}
@@ -338,9 +337,8 @@ const NotificationBell = () => {
                           <div className="flex-1 min-w-0">
                             <div
                               dangerouslySetInnerHTML={{ __html: notification.message }}
-                              className={`text-sm leading-relaxed ${
-                                !notification.isRead ? "font-medium text-gray-900" : "text-gray-700"
-                              }`}
+                              className={`text-sm leading-relaxed ${!notification.isRead ? "font-medium text-gray-900" : "text-gray-700"
+                                }`}
                             />
 
                             <div className="flex items-center gap-2 mt-2">

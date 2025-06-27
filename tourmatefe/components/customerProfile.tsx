@@ -28,8 +28,7 @@ import {
 import { updateUserCustomer } from "@/app/api/customer.api";
 import { toast } from "react-toastify";
 import { Customer } from "@/types/customer";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "@/firebaseConfig";
+import { uploadImageToServer } from "@/app/api/image-upload.api";
 
 export default function CustomerProfile() {
     const token = useToken("accessToken");
@@ -97,57 +96,40 @@ export default function CustomerProfile() {
     });
 
 
-    const uploadImageToFirebase = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const storageRef = ref(storage, `tourmate/${file.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
-
-            uploadTask.on(
-                "state_changed",
-                (error) => {
-                    reject(error);
-                },
-                async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    resolve(downloadURL);
-                }
-            );
-        });
-    };
-
     const [isUpdating, setIsUpdating] = useState(false);
 
     const handleUpdate = () => {
-        if (!customer) return;
+    if (!customer) return;
 
-        const update = async () => {
-            try {
-                setIsUpdating(true);
-                let imageUrl = customer.image; // url hiện tại
+    const update = async () => {
+        try {
+            setIsUpdating(true);
+            let imageUrl = customer.image;
 
-                if (selectedImage) {
-                    imageUrl = await uploadImageToFirebase(selectedImage);
-                }
-
-                const updatedCustomer: Customer = {
-                    ...customer,
-                    fullName: fullName.trim() !== "" ? fullName : customer.fullName,
-                    phone: phone.trim() !== "" ? phone : customer.phone,
-                    gender: gender,
-                    dateOfBirth: dob.trim() !== "" ? dob : customer.dateOfBirth,
-                    image: imageUrl,
-                };
-
-                mutate(updatedCustomer);
-            } catch (error) {
-                toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
-                console.error(error);
-                setIsUpdating(false);
+            if (selectedImage) {
+                imageUrl = await uploadImageToServer(selectedImage); // 👈 gọi qua backend
             }
-        };
 
-        update();
+            const updatedCustomer: Customer = {
+                ...customer,
+                fullName: fullName.trim() !== "" ? fullName : customer.fullName,
+                phone: phone.trim() !== "" ? phone : customer.phone,
+                gender: gender,
+                dateOfBirth: dob.trim() !== "" ? dob : customer.dateOfBirth,
+                image: imageUrl,
+            };
+
+            mutate(updatedCustomer);
+        } catch (error) {
+            toast.error("Tải ảnh lên thất bại, vui lòng thử lại.");
+            console.error(error);
+            setIsUpdating(false);
+        }
     };
+
+    update();
+};
+
 
     return (
         <Dialog>

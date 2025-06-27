@@ -8,6 +8,7 @@ export interface FinancialStats {
   revenueGrowth: number
   commissionGrowth: number
   membershipGrowth: number
+  totalPayments: number
 }
 
 export interface AreaStats {

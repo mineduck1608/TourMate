@@ -9,14 +9,14 @@ import type { Message } from "@/types/message"
 import { jwtDecode } from "jwt-decode"
 import { apiHub } from "@/types/constants"
 import type { ConversationResponse } from "@/types/conversation"
-import { Phone, Video } from "lucide-react"
+import { Phone, Video, Send, Download, FileText, MoreVertical } from "lucide-react"
 import type { GlobalCallManagerRef } from "./global-call-manager"
-import { MyJwtPayload } from "@/types/JwtPayload"
+import type { MyJwtPayload } from "@/types/JwtPayload"
 import { useToken } from "@/components/getToken"
 import OtherButtons from "./other-buttons"
 import SafeImage from "@/components/safe-image"
 import FileUploadRender from "./file-upload-render"
-import { FileUploadContext, FileUploadContextProps } from "./file-upload-context"
+import { FileUploadContext, type FileUploadContextProps } from "./file-upload-context"
 import { baseFileTemplate } from "@/types/file"
 
 const PAGE_SIZE = 20
@@ -122,17 +122,11 @@ export default function MessageList({ conversationId, conversationResponse, glob
           text.trim(),
           currentAccountIdNumber,
           file.fileName,
-          file.downloadUrl
+          file.downloadUrl,
         )
         setFile({ ...baseFileTemplate })
-      }
-      else {
-        await connection.invoke(
-          "SendMessage",
-          conversationId,
-          text.trim(),
-          currentAccountIdNumber
-        )
+      } else {
+        await connection.invoke("SendMessage", conversationId, text.trim(), currentAccountIdNumber)
       }
     } catch (error) {
       console.error("Send message error:", error)
@@ -146,11 +140,18 @@ export default function MessageList({ conversationId, conversationResponse, glob
   }
 
   if ((isFetching || isLoading) && messages.length === 0) {
-    return <div className="flex-1 flex items-center justify-center text-gray-500">Đang tải tin nhắn...</div>
+    return (
+      <div className="flex-1 flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mx-auto mb-4"></div>
+          <p className="text-gray-600 font-medium">Đang tải tin nhắn...</p>
+        </div>
+      </div>
+    )
   }
 
   return (
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col h-full bg-white">
       {/* Header */}
       <ConversationHeader
         conversationResponse={conversationResponse}
@@ -162,7 +163,7 @@ export default function MessageList({ conversationId, conversationResponse, glob
       {/* Messages */}
       <div
         id="scrollableDiv"
-        className="flex-1 overflow-auto p-4 flex flex-col-reverse"
+        className="flex-1 overflow-auto p-4 flex flex-col-reverse bg-gradient-to-b from-gray-50 to-white"
         onScroll={(e) => {
           if (e.currentTarget.scrollTop === 0 && hasNextPage && !isFetchingNextPage) {
             loadMoreMessages()
@@ -173,7 +174,12 @@ export default function MessageList({ conversationId, conversationResponse, glob
           dataLength={messages.length}
           next={loadMoreMessages}
           hasMore={!!hasNextPage}
-          loader={<div className="text-center text-gray-500">Đang tải thêm...</div>}
+          loader={
+            <div className="text-center py-4">
+              <div className="animate-spin rounded-full h-6 w-6 border-2 border-blue-600 border-t-transparent mx-auto mb-2"></div>
+              <p className="text-gray-500 text-sm">Đang tải thêm...</p>
+            </div>
+          }
           inverse={true}
           scrollableTarget="scrollableDiv"
           style={{ display: "flex", flexDirection: "column-reverse" }}
@@ -214,22 +220,32 @@ function ConversationHeader({
   const avatarUrl = "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
 
   return (
-    <div className="flex items-center p-4 border-b border-gray-300">
-      <SafeImage
-        src={conversationResponse?.account2Img || avatarUrl}
-        alt="Conversation Avatar"
-        className="w-12 h-12 rounded-full"
-      />
-      <div className="ml-4 flex-1">
-        <h2 className="text-lg font-semibold">{conversationResponse?.accountName2 || "Người dùng"}</h2>
+    <div className="flex items-center p-4 border-b border-gray-200 bg-white shadow-sm">
+      <div className="flex items-center flex-1">
+        <div className="relative">
+          <SafeImage
+            src={conversationResponse?.account2Img || avatarUrl}
+            alt="Conversation Avatar"
+            className="w-12 h-12 rounded-full object-cover border-2 border-white shadow-md"
+          />
+          <div className="absolute -bottom-1 -right-1 w-4 h-4 bg-green-500 rounded-full border-2 border-white"></div>
+        </div>
+        <div className="ml-4">
+          <h2 className="text-lg font-bold text-gray-900">{conversationResponse?.accountName2 || "Người dùng"}</h2>
+          <p className="text-sm text-green-600 font-medium">Đang hoạt động</p>
+        </div>
       </div>
-      <div className="flex gap-2">
+
+      <div className="flex items-center gap-2">
         <button
           title="Gọi thoại"
           onClick={onVoiceCall}
           disabled={isCallActive}
-          className={`p-2 rounded-full transition-colors ${isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
-            }`}
+          className={`p-3 rounded-full transition-all duration-200 ${
+            isCallActive
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "hover:bg-green-50 text-green-600 hover:text-green-700 hover:scale-105"
+          }`}
         >
           <Phone size={20} />
         </button>
@@ -237,10 +253,19 @@ function ConversationHeader({
           title="Gọi video"
           onClick={onVideoCall}
           disabled={isCallActive}
-          className={`p-2 rounded-full transition-colors ${isCallActive ? "bg-gray-200 text-gray-400 cursor-not-allowed" : "hover:bg-blue-100 text-blue-600"
-            }`}
+          className={`p-3 rounded-full transition-all duration-200 ${
+            isCallActive
+              ? "bg-gray-100 text-gray-400 cursor-not-allowed"
+              : "hover:bg-blue-50 text-blue-600 hover:text-blue-700 hover:scale-105"
+          }`}
         >
           <Video size={20} />
+        </button>
+        <button
+          title="Tùy chọn khác"
+          className="p-3 rounded-full hover:bg-gray-50 text-gray-600 hover:text-gray-700 transition-all duration-200 hover:scale-105"
+        >
+          <MoreVertical size={20} />
         </button>
       </div>
     </div>
@@ -252,55 +277,47 @@ function MessageItem({
   currentAccountId,
   showAvatar,
 }: {
-  message: Message;
-  currentAccountId?: number;
-  showAvatar: boolean;
+  message: Message
+  currentAccountId?: number
+  showAvatar: boolean
 }) {
-  const isSender = currentAccountId == message.senderId;
-  const isImage = (fileName?: string) =>
-    !!fileName && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName);
-  const isVideo = (fileName?: string) =>
-    !!fileName && /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(fileName);
-
+  const isSender = currentAccountId == message.senderId
+  const isImage = (fileName?: string) => !!fileName && /\.(jpg|jpeg|png|gif|bmp|webp)$/i.test(fileName)
+  const isVideo = (fileName?: string) => !!fileName && /\.(mp4|webm|ogg|mov|avi|mkv)$/i.test(fileName)
 
   return (
-    <div className={`flex mb-4 ${isSender ? "justify-end" : "justify-start"}`}>
-      <div
-        className={`flex items-end ${isSender ? "flex-row-reverse" : "flex-row"} gap-2`}
-      >
+    <div className={`flex mb-6 ${isSender ? "justify-end" : "justify-start"} group`}>
+      <div className={`flex items-end ${isSender ? "flex-row-reverse" : "flex-row"} gap-3 max-w-[70%]`}>
         {showAvatar ? (
           <SafeImage
-            src={
-              message.senderAvatarUrl ||
-              "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"
-            }
+            src={message.senderAvatarUrl || "https://cdn2.fptshop.com.vn/small/avatar_trang_1_cd729c335b.jpg"}
             alt="avatar"
-            className="w-10 h-10 rounded-full"
+            className="w-10 h-10 rounded-full object-cover border-2 border-white shadow-sm flex-shrink-0"
           />
         ) : (
-          <div className="w-10 h-10" />
+          <div className="w-10 h-10 flex-shrink-0" />
         )}
 
-        <div className="flex flex-col max-w-xs">
+        <div className="flex flex-col">
           {/* Image */}
           {message.fileName && message.downloadUrl && isImage(message.fileName) && (
             <div
-              className={`${isSender ? "bg-blue-100" : "bg-gray-100"} p-2 rounded mb-1`}
+              className={`${
+                isSender ? "bg-blue-500" : "bg-white border border-gray-200"
+              } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
               style={{
-                maxWidth: "40vw",
+                maxWidth: "300px",
                 alignSelf: isSender ? "flex-end" : "flex-start",
               }}
             >
               <SafeImage
                 src={message.downloadUrl}
                 alt="image"
+                className="rounded-xl max-w-full h-auto"
                 style={{
-                  maxWidth: "40vw",
-                  maxHeight: "40vw",
-                  borderRadius: 8,
-                  border: "1px solid #eee",
-                  background: "#fff",
-                  display: "block",
+                  maxWidth: "280px",
+                  maxHeight: "280px",
+                  objectFit: "cover",
                 }}
               />
               <a
@@ -308,17 +325,12 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  maxWidth: "100%",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "normal",
-                  wordBreak: "break-all",
-                  display: "block",
-                  marginTop: 4,
-                }}
+                className={`${
+                  isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
+                } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
                 title={message.fileName}
               >
+                <Download className="w-4 h-4 inline mr-1" />
                 {message.fileName}
               </a>
             </div>
@@ -327,22 +339,21 @@ function MessageItem({
           {/* Video */}
           {message.fileName && message.downloadUrl && isVideo(message.fileName) && (
             <div
-              className={`${isSender ? "bg-blue-100" : "bg-gray-100"} p-2 rounded mb-1`}
+              className={`${
+                isSender ? "bg-blue-500" : "bg-white border border-gray-200"
+              } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
               style={{
-                maxWidth: "40vw",
+                maxWidth: "300px",
                 alignSelf: isSender ? "flex-end" : "flex-start",
               }}
             >
               <video
                 controls
                 src={message.downloadUrl}
+                className="rounded-xl max-w-full h-auto"
                 style={{
-                  maxWidth: "40vw",
-                  maxHeight: "40vw",
-                  borderRadius: 8,
-                  border: "1px solid #eee",
-                  background: "#fff",
-                  display: "block",
+                  maxWidth: "280px",
+                  maxHeight: "280px",
                 }}
               />
               <a
@@ -350,17 +361,12 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                style={{
-                  maxWidth: "100%",
-                  overflow: "hidden",
-                  textOverflow: "ellipsis",
-                  whiteSpace: "normal",
-                  wordBreak: "break-all",
-                  display: "block",
-                  marginTop: 4,
-                }}
+                className={`${
+                  isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
+                } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
                 title={message.fileName}
               >
+                <Download className="w-4 h-4 inline mr-1" />
                 {message.fileName}
               </a>
             </div>
@@ -368,80 +374,105 @@ function MessageItem({
 
           {/* Message content */}
           <div
-            className={`${isSender ? "bg-blue-500 text-white" : "bg-gray-100 text-black"} p-2 rounded mt-1 break-words`}
+            className={`${
+              isSender
+                ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
+                : "bg-white text-gray-900 border border-gray-200"
+            } px-4 py-3 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 break-words`}
             style={{
-              maxWidth: 320,
-              minWidth: 48,
+              maxWidth: "400px",
+              minWidth: "60px",
               alignSelf: isSender ? "flex-end" : "flex-start",
             }}
           >
+            {/* File attachment (non-image/video) */}
             {message.fileName && message.downloadUrl && !isImage(message.fileName) && !isVideo(message.fileName) && (
-              <div className="flex items-center gap-2 mb-1">
-                <svg width="20" height="24" viewBox="0 0 24 24" fill={isSender ? "#fff" : "#888"}>
-                  <path d="M6 2a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8.83A2 2 0 0 0 19.41 7.41l-4.83-4.83A2 2 0 0 0 13.17 2H6zm7 1.5V8a1 1 0 0 0 1 1h4.5L13 3.5z" />
-                </svg>
-                <a
-                  href={message.downloadUrl}
-                  download={message.fileName}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={isSender ? "text-white underline font-medium" : "text-blue-700 underline font-medium"}
-                  style={{ maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}
-                  title={message.fileName}
-                >
-                  {message.fileName}
-                </a>
+              <div className="flex items-center gap-3 mb-2 p-2 bg-black/10 rounded-lg">
+                <div className={`p-2 rounded-lg ${isSender ? "bg-white/20" : "bg-blue-50"}`}>
+                  <FileText className={`w-5 h-5 ${isSender ? "text-white" : "text-blue-600"}`} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <a
+                    href={message.downloadUrl}
+                    download={message.fileName}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className={`${
+                      isSender ? "text-white hover:text-blue-100" : "text-blue-600 hover:text-blue-800"
+                    } font-medium text-sm truncate block transition-colors duration-200`}
+                    title={message.fileName}
+                  >
+                    {message.fileName}
+                  </a>
+                </div>
+                <Download className={`w-4 h-4 ${isSender ? "text-white/80" : "text-gray-500"} flex-shrink-0`} />
               </div>
             )}
+
             {/* Message text */}
-            {message.messageText}
-            {/* Example: do not remove time */}
-            <div className="text-xs text-right opacity-80 mt-1">
+            {message.messageText && <div className="leading-relaxed">{message.messageText}</div>}
+
+            {/* Timestamp */}
+            <div className={`text-xs mt-2 ${isSender ? "text-blue-100" : "text-gray-500"} text-right`}>
               {new Date(message.sendAt).toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit',
+                hour: "2-digit",
+                minute: "2-digit",
               })}
             </div>
           </div>
         </div>
       </div>
     </div>
-  );
+  )
 }
 
 function MessageInput({ onSend }: { onSend: (text: string) => void }) {
-  const [text, setText] = React.useState("");
-  const inputRef = React.useRef<HTMLInputElement>(null);
-  const { file } = useContext(FileUploadContext) as FileUploadContextProps;
+  const [text, setText] = React.useState("")
+  const inputRef = React.useRef<HTMLInputElement>(null)
+  const { file } = useContext(FileUploadContext) as FileUploadContextProps
 
   const handleSend = () => {
-    if (text.trim() === "" && file.downloadUrl.length === 0) return;
-    onSend(text);
-    setText("");
-    inputRef.current?.focus();
-  };
+    if (text.trim() === "" && file.downloadUrl.length === 0) return
+    onSend(text)
+    setText("")
+    inputRef.current?.focus()
+  }
 
   return (
-    <div className="flex items-center p-3 border-t bg-white dark:bg-gray-900">
-      {/* Messenger-style buttons */}
-      <OtherButtons />
-      {/* Input */}
-      <input
-        ref={inputRef}
-        value={text}
-        onChange={(e) => setText(e.target.value)}
-        placeholder="Nhập tin nhắn..."
-        className="ml-2 flex-grow rounded-full border border-gray-300 px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white dark:bg-gray-800"
-        onKeyDown={(e) => {
-          if (e.key === "Enter") handleSend();
-        }}
-      />
-      <button
-        onClick={handleSend}
-        className="ml-3 bg-blue-600 hover:bg-blue-700 text-white rounded-full px-5 py-2 transition"
-      >
-        Gửi
-      </button>
+    <div className="p-4 border-t border-gray-200 bg-white">
+      <div className="flex items-end gap-3 mx-auto">
+        {/* File upload button */}
+        <div className="flex-shrink-0">
+          <OtherButtons />
+        </div>
+
+        {/* Input container */}
+        <div className="flex-1 relative">
+          <input
+            ref={inputRef}
+            value={text}
+            onChange={(e) => setText(e.target.value)}
+            placeholder="Nhập tin nhắn..."
+            className="w-full px-4 py-3 pr-12 rounded-2xl border-2 border-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 bg-gray-50 hover:bg-white resize-none"
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault()
+                handleSend()
+              }
+            }}
+          />
+        </div>
+
+        {/* Send button */}
+        <button
+          onClick={handleSend}
+          disabled={text.trim() === "" && file.downloadUrl.length === 0}
+          className="flex-shrink-0 p-3 bg-gradient-to-r from-blue-500 to-blue-600 hover:from-blue-600 hover:to-blue-700 disabled:from-gray-300 disabled:to-gray-400 text-white rounded-2xl transition-all duration-200 transform hover:scale-105 active:scale-95 disabled:cursor-not-allowed disabled:transform-none shadow-lg hover:shadow-xl"
+          title="Gửi tin nhắn"
+        >
+          <Send size={20} />
+        </button>
+      </div>
     </div>
-  );
+  )
 }
