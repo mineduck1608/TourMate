@@ -4,6 +4,7 @@ import { Account } from "@/types/account";
 import { Customer } from "@/types/customer";
 import axios from "axios";
 import { RejectCVRequest, ApprovedCVRequest } from "@/types/applications";
+import { PagedResult } from "@/types/pagedResult";
 
 export async function googleLogin(token: string): Promise<LoginResponse> {
   try {
@@ -200,6 +201,21 @@ export const rejectCVApplication = async (data: RejectCVRequest) => {
 export const approveCVApplication = async (data: ApprovedCVRequest) => {
   const response = await http.post("/account/registertourguide", data);
   return response.data;
+};
+
+export const getAllAccount = async (
+  page: number | string,
+  limit: number | string,
+  signal?: AbortSignal
+) => {
+  const res = await http.get<PagedResult<Account>>("account", {
+    params: {
+      pageSize: limit,
+      pageIndex: page,
+    },
+    signal,
+  });
+  return res.data;
 };
 
 export const refreshToken = async (): Promise<LoginResponse> => {
