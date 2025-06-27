@@ -47,9 +47,9 @@ const MegaMenu = () => {
   return (
     <nav className="bg-white/95 backdrop-blur-md border-b border-gray-100 sticky top-0 z-50 shadow-sm">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-center items-center h-20 relative">
-          {/* Logo - positioned absolutely to the left */}
-          <Link href="/" className="absolute left-0 flex items-center space-x-3 group">
+        <div className="flex justify-between items-center h-20">
+          {/* Logo - Left side */}
+          <Link href="/" className="flex items-center space-x-3 group flex-shrink-0">
             <motion.div
               className="relative"
               whileHover={{ scale: 1.05 }}
@@ -59,230 +59,244 @@ const MegaMenu = () => {
             </motion.div>
           </Link>
 
-          {/* Desktop Navigation - centered */}
-          <div className="hidden lg:flex items-center space-x-1">
-            <Link
-              href="/"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              Trang chủ
-            </Link>
-            <Link
-              href="/aboutUs"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/aboutUs"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              Về chúng tôi
-            </Link>
-            <Link
-              href="/news"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/news"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              Tin tức
-            </Link>
-
-            {/* Services Dropdown */}
-            <div className="relative">
-              <button
-                onClick={toggleDropdown}
-                className={`flex items-center px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute.startsWith("/services/")
+          {/* Desktop Navigation - Center */}
+          <div className="hidden lg:flex items-center flex-1 justify-center">
+            <div className="flex items-center space-x-1">
+              <Link
+                href="/"
+                className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute === "/"
                     ? "text-blue-600 bg-blue-50 shadow-sm"
                     : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
                 }`}
               >
-                Dịch vụ
-                <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-                  <ChevronDown className="ml-1 h-4 w-4" />
-                </motion.div>
-              </button>
+                Trang chủ
+              </Link>
+              <Link
+                href="/aboutUs"
+                className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute === "/aboutUs"
+                    ? "text-blue-600 bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                Về chúng tôi
+              </Link>
+              <Link
+                href="/news"
+                className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute === "/news"
+                    ? "text-blue-600 bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                Tin tức
+              </Link>
 
-              <AnimatePresence>
-                {isOpen && (
-                  <motion.div
-                    initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                    animate={{ opacity: 1, y: 0, scale: 1 }}
-                    exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                    transition={{ duration: 0.2 }}
-                    className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 py-6 z-50"
-                  >
-                    <div className="px-6 mb-4">
-                      <h3 className="text-lg font-semibold text-gray-900">Dịch vụ cơ bản</h3>
-                      <p className="text-sm text-gray-500">Khám phá các dịch vụ du lịch tuyệt vời</p>
-                    </div>
+              {/* Services Dropdown */}
+              <div className="relative">
+                <button
+                  onClick={toggleDropdown}
+                  className={`flex items-center px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    currentRoute.startsWith("/services/")
+                      ? "text-blue-600 bg-blue-50 shadow-sm"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
+                >
+                  Dịch vụ
+                  <motion.div animate={{ rotate: isOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
+                    <ChevronDown className="ml-1 h-4 w-4" />
+                  </motion.div>
+                </button>
 
-                    <div className="grid grid-cols-1 gap-2 px-6">
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.1 }}
-                      >
-                        <Link
-                          href="/services/active-area"
-                          className="flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+                <AnimatePresence>
+                  {isOpen && (
+                    <motion.div
+                      initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                      transition={{ duration: 0.2 }}
+                      className="absolute top-full left-0 mt-2 w-80 bg-white/95 backdrop-blur-md rounded-2xl shadow-2xl border border-gray-100 py-6 z-50"
+                    >
+                      <div className="px-6 mb-4">
+                        <h3 className="text-lg font-semibold text-gray-900">Dịch vụ cơ bản</h3>
+                        <p className="text-sm text-gray-500">Khám phá các dịch vụ du lịch tuyệt vời</p>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-2 px-6">
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.1 }}
                         >
-                          <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform">
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path
-                                fillRule="evenodd"
-                                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
-                                clipRule="evenodd"
-                              />
-                            </svg>
-                          </div>
-                          <div>
-                            <div className="font-semibold text-gray-900 group-hover:text-blue-600">
-                              Địa điểm hoạt động
+                          <Link
+                            href="/services/active-area"
+                            className="flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+                          >
+                            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform">
+                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path
+                                  fillRule="evenodd"
+                                  d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                                  clipRule="evenodd"
+                                />
+                              </svg>
                             </div>
-                            <div className="text-sm text-gray-500">Khám phá các điểm đến hấp dẫn</div>
-                          </div>
-                        </Link>
-                      </motion.div>
+                            <div>
+                              <div className="font-semibold text-gray-900 group-hover:text-blue-600">
+                                Địa điểm hoạt động
+                              </div>
+                              <div className="text-sm text-gray-500">Khám phá các điểm đến hấp dẫn</div>
+                            </div>
+                          </Link>
+                        </motion.div>
 
-                      <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: 0.2 }}
-                      >
-                        <Link
-                          href="/services/tour-guide"
-                          className="flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+                        <motion.div
+                          initial={{ opacity: 0, x: -20 }}
+                          animate={{ opacity: 1, x: 0 }}
+                          transition={{ delay: 0.2 }}
                         >
-                          <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform">
-                            <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
-                              <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
-                            </svg>
-                          </div>
-                          <div>
-                            <div className="font-semibold text-gray-900 group-hover:text-blue-600">Hướng dẫn viên</div>
-                            <div className="text-sm text-gray-500">Kết nối với guide chuyên nghiệp</div>
-                          </div>
-                        </Link>
-                      </motion.div>
-                    </div>
+                          <Link
+                            href="/services/tour-guide"
+                            className="flex items-center p-4 rounded-xl hover:bg-gray-50 transition-all duration-200 group"
+                          >
+                            <div className="w-12 h-12 bg-gradient-to-br from-green-500 to-green-600 rounded-xl flex items-center justify-center mr-4 group-hover:scale-105 transition-transform">
+                              <svg className="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z" />
+                              </svg>
+                            </div>
+                            <div>
+                              <div className="font-semibold text-gray-900 group-hover:text-blue-600">
+                                Hướng dẫn viên
+                              </div>
+                              <div className="text-sm text-gray-500">Kết nối với guide chuyên nghiệp</div>
+                            </div>
+                          </Link>
+                        </motion.div>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
+
+              {/* Bidding - Main Navigation */}
+              {token ? (
+                <Link
+                  href={`/${role === "TourGuide" ? "tour-guide/bids" : "bids"}`}
+                  className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    currentRoute.includes("/bids")
+                      ? "text-blue-600 bg-blue-50 shadow-sm"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
+                >
+                  Đấu giá
+                </Link>
+              ) : (
+                <button
+                  onClick={(e) => handleUnauthorizedAccess(e, "đấu giá tour")}
+                  className="px-5 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
+                >
+                  Đấu giá
+                </button>
+              )}
+
+              {/* Chat - Main Navigation */}
+              {token ? (
+                <Link
+                  href="/chat"
+                  className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                    currentRoute === "/chat"
+                      ? "text-blue-600 bg-blue-50 shadow-sm"
+                      : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                  }`}
+                >
+                  Tin nhắn
+                </Link>
+              ) : (
+                <button
+                  onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
+                  className="px-5 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
+                >
+                  Tin nhắn
+                </button>
+              )}
+
+              <Link
+                href="/contact"
+                className={`px-5 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                  currentRoute === "/contact"
+                    ? "text-blue-600 bg-blue-50 shadow-sm"
+                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
+                }`}
+              >
+                Liên hệ
+              </Link>
+            </div>
+          </div>
+
+          {/* Right side - Auth & Mobile Menu */}
+          <div className="flex items-center space-x-3 flex-shrink-0">
+            {/* Desktop Auth Buttons */}
+            <div className="hidden lg:flex items-center space-x-3">
+              {token && <NotificationBell />}
+              {token ? (
+                <ActionMenu />
+              ) : (
+                <>
+                  <Link
+                    href="/login"
+                    className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors rounded-xl hover:bg-gray-50"
+                  >
+                    Đăng nhập
+                  </Link>
+                  <Button
+                    onClick={() => setIsModalOpen(true)}
+                    className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
+                  >
+                    Đăng ký
+                  </Button>
+                </>
+              )}
+            </div>
+
+            {/* Mobile Notification Bell (when logged in) */}
+            {token && (
+              <div className="lg:hidden">
+                <NotificationBell />
+              </div>
+            )}
+
+            {/* Mobile menu button - Always visible */}
+            <motion.button
+              onClick={toggleMobileMenu}
+              className="lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
+              whileTap={{ scale: 0.95 }}
+            >
+              <AnimatePresence mode="wait">
+                {isMobileMenuOpen ? (
+                  <motion.div
+                    key="close"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <X className="h-6 w-6" />
+                  </motion.div>
+                ) : (
+                  <motion.div
+                    key="menu"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    <Menu className="h-6 w-6" />
                   </motion.div>
                 )}
               </AnimatePresence>
-            </div>
-
-            {/* Bidding - Main Navigation */}
-            {token ? (
-              <Link
-                href={`/${role === "TourGuide" ? "tour-guide/bids" : "bids"}`}
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute.includes("/bids")
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
-              >
-                Đấu giá
-              </Link>
-            ) : (
-              <button
-                onClick={(e) => handleUnauthorizedAccess(e, "đấu giá tour")}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
-              >
-                Đấu giá
-              </button>
-            )}
-
-            {/* Chat - Main Navigation */}
-            {token ? (
-              <Link
-                href="/chat"
-                className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                  currentRoute === "/chat"
-                    ? "text-blue-600 bg-blue-50 shadow-sm"
-                    : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-                }`}
-              >
-                Tin nhắn
-              </Link>
-            ) : (
-              <button
-                onClick={(e) => handleUnauthorizedAccess(e, "tin nhắn")}
-                className="px-4 py-2 rounded-xl text-sm font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-all duration-200"
-              >
-                Tin nhắn
-              </button>
-            )}
-
-            <Link
-              href="/contact"
-              className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
-                currentRoute === "/contact"
-                  ? "text-blue-600 bg-blue-50 shadow-sm"
-                  : "text-gray-700 hover:text-blue-600 hover:bg-gray-50"
-              }`}
-            >
-              Liên hệ
-            </Link>
+            </motion.button>
           </div>
-
-          {/* Auth Buttons - positioned absolutely to the right */}
-          <div className="absolute right-0 hidden lg:flex items-center space-x-3">
-            {token && <NotificationBell />}
-            {token ? (
-              <ActionMenu />
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="px-6 py-2.5 text-sm font-medium text-gray-700 hover:text-blue-600 transition-colors rounded-xl hover:bg-gray-50"
-                >
-                  Đăng nhập
-                </Link>
-                <Button
-                  onClick={() => setIsModalOpen(true)}
-                  className="px-6 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white text-sm font-medium rounded-xl transition-all duration-200 shadow-lg hover:shadow-xl"
-                >
-                  Đăng ký
-                </Button>
-              </>
-            )}
-          </div>
-
-          {/* Mobile menu button - positioned absolutely to the right */}
-          <motion.button
-            onClick={toggleMobileMenu}
-            className="absolute right-0 lg:hidden p-2 rounded-xl text-gray-700 hover:text-blue-600 hover:bg-gray-50 transition-colors"
-            whileTap={{ scale: 0.95 }}
-          >
-            <AnimatePresence mode="wait">
-              {isMobileMenuOpen ? (
-                <motion.div
-                  key="close"
-                  initial={{ rotate: -90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: 90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <X className="h-6 w-6" />
-                </motion.div>
-              ) : (
-                <motion.div
-                  key="menu"
-                  initial={{ rotate: 90, opacity: 0 }}
-                  animate={{ rotate: 0, opacity: 1 }}
-                  exit={{ rotate: -90, opacity: 0 }}
-                  transition={{ duration: 0.2 }}
-                >
-                  <Menu className="h-6 w-6" />
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </motion.button>
         </div>
 
         {/* Mobile Navigation */}
@@ -298,6 +312,7 @@ const MegaMenu = () => {
               <div className="space-y-2">
                 <Link
                   href="/"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/"
                       ? "text-blue-600 bg-blue-50"
@@ -308,6 +323,7 @@ const MegaMenu = () => {
                 </Link>
                 <Link
                   href="/aboutUs"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/aboutUs"
                       ? "text-blue-600 bg-blue-50"
@@ -318,6 +334,7 @@ const MegaMenu = () => {
                 </Link>
                 <Link
                   href="/news"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/news"
                       ? "text-blue-600 bg-blue-50"
@@ -333,12 +350,14 @@ const MegaMenu = () => {
                   <div className="space-y-1 ml-4">
                     <Link
                       href="/services/active-area"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                     >
                       Địa điểm hoạt động
                     </Link>
                     <Link
                       href="/services/tour-guide"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-3 py-2 text-sm text-gray-600 hover:text-blue-600 hover:bg-gray-50 rounded-lg transition-all duration-200"
                     >
                       Hướng dẫn viên
@@ -350,6 +369,7 @@ const MegaMenu = () => {
                 {token ? (
                   <Link
                     href="/chat"
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                       currentRoute === "/chat"
                         ? "text-blue-600 bg-blue-50"
@@ -371,6 +391,7 @@ const MegaMenu = () => {
                 {token ? (
                   <Link
                     href={`/${role === "TourGuide" ? "tour-guide" : "services"}/bids`}
+                    onClick={() => setIsMobileMenuOpen(false)}
                     className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                       currentRoute.includes("/bids")
                         ? "text-blue-600 bg-blue-50"
@@ -390,6 +411,7 @@ const MegaMenu = () => {
 
                 <Link
                   href="/contact"
+                  onClick={() => setIsMobileMenuOpen(false)}
                   className={`block px-4 py-3 rounded-xl text-base font-medium transition-all duration-200 ${
                     currentRoute === "/contact"
                       ? "text-blue-600 bg-blue-50"
@@ -399,16 +421,25 @@ const MegaMenu = () => {
                   Liên hệ
                 </Link>
 
-                {!token && (
+                {/* Mobile Auth Section */}
+                {token ? (
+                  <div className="pt-4 border-t border-gray-200">
+                    <ActionMenu />
+                  </div>
+                ) : (
                   <div className="pt-4 border-t border-gray-200 space-y-3">
                     <Link
                       href="/login"
+                      onClick={() => setIsMobileMenuOpen(false)}
                       className="block px-4 py-3 text-base font-medium text-gray-700 hover:text-blue-600 hover:bg-gray-50 rounded-xl transition-all duration-200"
                     >
                       Đăng nhập
                     </Link>
                     <Button
-                      onClick={() => setIsModalOpen(true)}
+                      onClick={() => {
+                        setIsModalOpen(true)
+                        setIsMobileMenuOpen(false)
+                      }}
                       className="w-full bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white rounded-xl py-3"
                     >
                       Đăng ký

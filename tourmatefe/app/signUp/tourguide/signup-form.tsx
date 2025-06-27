@@ -64,10 +64,6 @@ export function SignupForm({
 
   const areasMutation = useMutation({
     mutationFn: fetchAreaIdAndName,
-    onSuccess: (data) => {
-      // Use the data directly in the component
-      console.log("Areas loaded:", data);
-    },
     onError: (error) => {
       console.error("Error fetching areas:", error);
       setError("Không thể tải danh sách khu vực. Vui lòng thử lại sau.");
@@ -121,7 +117,6 @@ export function SignupForm({
       [e.target.id]: value,
     };
     setFormData(v);
-    console.log(v);
   };
 
   const handleDescriptionChange = (value: string) => {
@@ -135,7 +130,6 @@ export function SignupForm({
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     mutation.mutate(formData);
-    console.log("Form submitted:", formData);
   };
 
   return (

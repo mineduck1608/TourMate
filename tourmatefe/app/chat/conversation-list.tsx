@@ -41,26 +41,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
     enabled: !!currentAccountId,
   })
 
-  // // SignalR connection
-  // const [hubConnection, setHubConnection] = useState<signalR.HubConnection | null>(null)
-
-  // useEffect(() => {
-  //   if (!currentAccountId) return
-
-  //   const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/chatHub`).withAutomaticReconnect().build()
-
-  //   setHubConnection(connection)
-
-  //   connection
-  //     .start()
-  //     .then(() => console.log("SignalR connected"))
-  //     .catch((err) => console.error("SignalR connection error:", err))
-
-  //   return () => {
-  //     connection.stop()
-  //   }
-  // }, [currentAccountId])
-
   // Track joined conversations to prevent duplicate joins
   const [joinedConversations, setJoinedConversations] = useState<Set<number>>(new Set())
 
@@ -86,7 +66,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
             hubConnection
               .invoke("JoinConversation", id)
               .then(() => {
-                console.log("Joined conversation", id)
                 setJoinedConversations((prev) => new Set([...prev, id]))
               })
               .catch((err) => console.error(`JoinConversation failed for ${id}:`, err))
@@ -109,7 +88,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
           hubConnection
             .invoke("JoinConversation", id)
             .then(() => {
-              console.log("Joined conversation", id)
               setJoinedConversations((prev) => new Set([...prev, id]))
             })
             .catch((err) => console.error(`JoinConversation failed for ${id}:`, err))
@@ -138,7 +116,6 @@ export default function ConversationList({ onSelect, selectedId, onConversations
       messageText: string
       sendAt: string
     }) => {
-      console.log("handleReceiveMessage called", message)
 
       setLocalConversations((prev) => {
         const index = prev.findIndex((conv) => conv.conversation.conversationId === message.conversationId)

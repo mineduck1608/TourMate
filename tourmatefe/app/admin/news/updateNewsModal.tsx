@@ -134,7 +134,7 @@ const UpdateNewsModal: React.FC<UpdateNewsModalProps> = ({
                 Tải ảnh banner
               </label>
               <ImageUpload
-                onImageUpload={(url: string) =>
+                onCompleteImageUpload={(url: string) =>
                   setFormData((prev) => ({ ...prev, bannerImg: url }))
                 }
               />

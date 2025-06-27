@@ -21,10 +21,6 @@ export function useToken(key: string = "accessToken") {
 }
 
 export function getUserRole(key: string): string | null {
-      const decoded: MyJwtPayload | null = key ? jwtDecode<MyJwtPayload>(key.toString()) : null;
-      console.log('Decoded');
-      
-      console.log(decoded);
-      
+      const decoded: MyJwtPayload | null = key ? jwtDecode<MyJwtPayload>(key.toString()) : null;      
       return decoded?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] as string ?? null;
 }

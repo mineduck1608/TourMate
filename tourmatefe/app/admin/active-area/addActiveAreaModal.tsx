@@ -183,7 +183,7 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
                 Tải ảnh banner
               </label>
               <ImageUpload
-                onImageUpload={(url: string) =>
+                onCompleteImageUpload={(url: string) =>
                   setFormData((prev) => ({ ...prev, bannerImg: url }))
                 }
               />

@@ -34,7 +34,6 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
         const accountId = Number(payLoad?.AccountId)
 
     const [user, setUser] = useState<TourGuide>();
-    console.log(user)
 
     React.useEffect(() => {
         if (!accountId) return;

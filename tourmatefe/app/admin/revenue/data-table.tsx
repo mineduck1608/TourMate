@@ -1,10 +1,27 @@
 "use client";
+
 import * as React from "react";
 import {
-  useReactTable,
-  getCoreRowModel,
+  ColumnDef,
+  ColumnFiltersState,
+  SortingState,
+  VisibilityState,
   flexRender,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  getSortedRowModel,
+  useReactTable,
 } from "@tanstack/react-table";
+
+import { Button } from "@/components/ui/button";
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+
 import {
   Table,
   TableBody,
@@ -13,147 +30,216 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { columns, RevenueRecord } from "./column";
+import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
+import { Input } from "@/components/ui/input";
+import { getAllAccount } from "@/app/api/account.api";
+import { getAllRevenue } from "@/app/api/revenue.api";
+import { getTourGuides } from "@/app/api/tour-guide.api";
 
-const mockData: RevenueRecord[] = [
-  {
-    revenueId: "REV-001",
-    tourGuide: "Sarah Johnson",
-    customer: "John Smith",
-    tourDescription: "Historical Downtown Tour",
-    bookDate: "2024-01-15",
-    amount: 120,
-    revenuePercent: 70,
-    revenueAmount: 84,
-    status: "Unpaid",
-  },
-  {
-    revenueId: "REV-002",
-    tourGuide: "Michael Chen",
-    customer: "Emma Wilson",
-    tourDescription: "Food & Culture Experience",
-    bookDate: "2024-01-16",
-    amount: 95,
-    revenuePercent: 65,
-    revenueAmount: 61.75,
-    status: "Paid",
-  },
-  {
-    revenueId: "REV-003",
-    tourGuide: "Sarah Johnson",
-    customer: "David Brown",
-    tourDescription: "City Highlights Tour",
-    bookDate: "2024-01-17",
-    amount: 150,
-    revenuePercent: 70,
-    revenueAmount: 105,
-    status: "Unpaid",
-  },
-  {
-    revenueId: "REV-004",
-    tourGuide: "Emma Rodriguez",
-    customer: "Lisa Garcia",
-    tourDescription: "Adventure Hiking Tour",
-    bookDate: "2024-01-18",
-    amount: 200,
-    revenuePercent: 75,
-    revenueAmount: 150,
-    status: "Unpaid",
-  },
-  {
-    revenueId: "REV-005",
-    tourGuide: "Michael Chen",
-    customer: "Robert Taylor",
-    tourDescription: "Local Markets Tour",
-    bookDate: "2024-01-19",
-    amount: 80,
-    revenuePercent: 65,
-    revenueAmount: 52,
-    status: "Unpaid",
-  },
-  {
-    revenueId: "REV-006",
-    tourGuide: "David Kim",
-    customer: "Maria Lopez",
-    tourDescription: "Art Gallery Tour",
-    bookDate: "2024-01-20",
-    amount: 110,
-    revenuePercent: 60,
-    revenueAmount: 66,
-    status: "Paid",
-  },
-  {
-    revenueId: "REV-007",
-    tourGuide: "Emma Rodriguez",
-    customer: "James Wilson",
-    tourDescription: "Nature Photography Tour",
-    bookDate: "2024-01-21",
-    amount: 180,
-    revenuePercent: 75,
-    revenueAmount: 135,
-    status: "Unpaid",
-  },
-  {
-    revenueId: "REV-008",
-    tourGuide: "Lisa Thompson",
-    customer: "Anna Davis",
-    tourDescription: "Sunset Photography Tour",
-    bookDate: "2024-01-22",
-    amount: 130,
-    revenuePercent: 70,
-    revenueAmount: 91,
-    status: "Unpaid",
-  },
-];
+interface DataTableProps<TData, TValue> {
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  totalResults: number;
+  totalPages: number;
+  page: number;
+}
 
-export function DataTable() {
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  totalResults,
+  totalPages,
+  page,
+}: DataTableProps<TData, TValue>) {
+  const [sorting, setSorting] = React.useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
+    []
+  );
+  const [columnVisibility, setColumnVisibility] =
+    React.useState<VisibilityState>({});
+  const [rowSelection, setRowSelection] = React.useState({});
+
+  const LIMIT = 10; // Giới hạn số bản ghi/trang
+
+  // React Table setup
   const table = useReactTable({
-    data: mockData,
+    data,
     columns,
+    onSortingChange: setSorting,
+    onColumnFiltersChange: setColumnFilters,
     getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    getSortedRowModel: getSortedRowModel(),
+    getFilteredRowModel: getFilteredRowModel(),
+    onColumnVisibilityChange: setColumnVisibility,
+    onRowSelectionChange: setRowSelection,
+    state: {
+      sorting,
+      columnFilters,
+      columnVisibility,
+      rowSelection,
+    },
   });
 
+  // React Query lấy dữ liệu theo page
+  const [searchTerm, setSearchTerm] = React.useState("");
+  const { refetch: refetchRevenues } = useQuery({
+    queryKey: ["revenues", page],
+    queryFn: ({ queryKey, signal }) => {
+      const [, currentPage] = queryKey;
+      return getAllRevenue(currentPage, LIMIT, signal);
+    },
+    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
+  });
+
+  const { refetch: refetchTourGuides } = useQuery({
+    queryKey: ["tour-guides", page],
+    queryFn: ({ queryKey, signal }) => {
+      const [, currentPage] = queryKey;
+      return getTourGuides(currentPage, LIMIT, signal);
+    },
+    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
+  });
+
+  const { refetch: refetchAccounts } = useQuery({
+    queryKey: ["accounts", page],
+    queryFn: ({ queryKey, signal }) => {
+      const [, currentPage] = queryKey;
+      return getAllAccount(currentPage, LIMIT, signal);
+    },
+    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
+  });
+
+  React.useEffect(() => {
+    refetchRevenues();
+    refetchTourGuides();
+    refetchAccounts();
+  }, [page]);
+  React.useEffect(() => {
+    refetchRevenues();
+    refetchTourGuides();
+    refetchAccounts();
+  }, [searchTerm]);
+
   return (
-    <div className="bg-white rounded-xl p-6 mt-6 border">
-      <div className="font-semibold text-lg mb-1">Revenue Records</div>
-      <div className="text-gray-500 mb-5 text-sm">
-        Detailed view of all tour guide revenue records
-      </div>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => (
-                <TableHead key={header.id}>
-                  {flexRender(
-                    header.column.columnDef.header,
-                    header.getContext()
-                  )}
-                </TableHead>
+    <div>
+      <div className="flex items-center pb-5">
+        <Input
+          type="text"
+          placeholder="Tìm kiếm giao dịch..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          className="max-w-sm bg-white mr-5 p-2 border rounded"
+        />
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" className="ml-auto">
+              Hiển thị cột
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end">
+            {table
+              .getAllColumns()
+              .filter((column) => column.getCanHide())
+              .map((column) => (
+                <DropdownMenuCheckboxItem
+                  key={column.id}
+                  className="capitalize"
+                  checked={column.getIsVisible()}
+                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
+                >
+                  {column.id}
+                </DropdownMenuCheckboxItem>
               ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.length > 0 ? (
-            table.getRowModel().rows.map((row) => (
-              <TableRow key={row.id}>
-                {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </TableCell>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      </div>
+
+      <div className="rounded-md border bg-white">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => (
+                  <TableHead key={header.id}>
+                    {!header.isPlaceholder &&
+                      flexRender(
+                        header.column.columnDef.header,
+                        header.getContext()
+                      )}
+                  </TableHead>
                 ))}
               </TableRow>
-            ))
-          ) : (
-            <TableRow>
-              <TableCell colSpan={columns.length} className="text-center">
-                Không có dữ liệu
-              </TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+            ))}
+          </TableHeader>
+
+          <TableBody>
+            {table.getRowModel().rows.length > 0 ? (
+              table.getRowModel().rows.map((row) => (
+                <TableRow
+                  key={row.id}
+                  data-state={row.getIsSelected() && "selected"}
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <TableCell key={cell.id}>
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  ))}
+                </TableRow>
+              ))
+            ) : (
+              <TableRow>
+                <TableCell
+                  colSpan={columns.length}
+                  className="h-24 text-center"
+                >
+                  Dữ liệu trống.
+                </TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      </div>
+
+      {/* Pagination */}
+      <div className="flex items-center justify-end space-x-2 pt-5">
+        <div className="flex-1 text-sm text-muted-foreground">
+          {table.getFilteredSelectedRowModel().rows.length} trên {totalResults}{" "}
+          dòng được chọn.
+        </div>
+
+        {page === 1 ? (
+          <Button variant="outline" size="sm" disabled>
+            Trước
+          </Button>
+        ) : (
+          <Link href={`/admin/revenue?page=${page - 1}`}>
+            <Button variant="outline" size="sm">
+              Trước
+            </Button>
+          </Link>
+        )}
+
+        <span className="text-sm text-muted-foreground">
+          Trang {page} trên {totalPages}
+        </span>
+
+        {page === totalPages ? (
+          <Button variant="outline" size="sm" disabled>
+            Sau
+          </Button>
+        ) : (
+          <Link href={`/admin/revenue?page=${page + 1}`}>
+            <Button variant="outline" size="sm">
+              Sau
+            </Button>
+          </Link>
+        )}
+      </div>
     </div>
   );
 }

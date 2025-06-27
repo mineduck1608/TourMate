@@ -1,95 +1,112 @@
 import { ColumnDef } from "@tanstack/react-table";
-
-export type RevenueRecord = {
-  revenueId: string;
-  tourGuide: string;
-  customer: string;
-  tourDescription: string;
-  bookDate: string;
-  amount: number;
-  revenuePercent: number;
-  revenueAmount: number;
-  status: "Paid" | "Unpaid";
-  avatarUrl?: string;
+import { RevenueDto } from "@/types/revenue";
+import { TourGuide } from "@/types/tour-guide";
+import { Account } from "@/types/account";
+import { Checkbox } from "@/components/ui/checkbox";
+const formatDate = (dateString: string) => {
+  if (!dateString) return "";
+  const date = new Date(dateString);
+  const day = date.getDate().toString().padStart(2, "0");
+  const month = (date.getMonth() + 1).toString().padStart(2, "0");
+  const year = date.getFullYear();
+  return `${day}/${month}/${year}`;
 };
 
-export const columns: ColumnDef<RevenueRecord>[] = [
+type RevenueTableRow = RevenueDto | TourGuide | Account;
+
+export const columns: ColumnDef<RevenueTableRow>[] = [
   {
     id: "select",
-    header: () => <input type="checkbox" disabled />,
-    cell: () => <input type="checkbox" />,
-    size: 32,
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value: boolean) =>
+          table.toggleAllPageRowsSelected(value)
+        }
+        aria-label="Select all"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value: boolean) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
   },
   {
-    accessorKey: "tourGuide",
-    header: "Tour Guide",
+    accessorKey: "fullName",
+    header: "Họ và tên",
     cell: ({ row }) => (
-      <div className="flex items-center gap-2">
-        <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-gray-400 font-bold">
-          {/* Avatar placeholder */}
-          {row.original.avatarUrl ? (
-            <img
-              src={row.original.avatarUrl}
-              alt={row.original.tourGuide}
-              className="w-full h-full rounded-full object-cover"
-            />
-          ) : (
-            <span>✦</span>
-          )}
-        </div>
-        <span className="font-semibold">{row.original.tourGuide}</span>
+      <div
+        style={{
+          maxWidth: "300px", // Chiều rộng tối đa của cột
+          whiteSpace: "normal", // Cho phép nội dung xuống dòng
+          overflowWrap: "break-word", // Cho phép cắt từ nếu cần thiết
+        }}
+      >
+        {row.getValue("fullName")}
       </div>
     ),
   },
   {
-    accessorKey: "customer",
-    header: "Customer",
-  },
-  // {
-  //   accessorKey: "tourDescription",
-  //   header: "Tour Description",
-  //   cell: ({ getValue }) => (
-  //     <span className="truncate block max-w-[180px]">{getValue()}</span>
-  //   ),
-  // },
-  {
-    accessorKey: "bookDate",
-    header: "Book Date",
-    cell: ({ getValue }) => new Date(getValue() as string).toLocaleDateString(),
+    accessorKey: "email",
+    header: "Email",
+    cell: ({ row }) => {
+      const value = row.getValue("email");
+      return value !== undefined ? value : "";
+    },
   },
   {
-    accessorKey: "amount",
-    header: "Amount",
-    cell: ({ getValue }) => (
-      <span className="font-semibold text-gray-800">
-        ${Number(getValue()).toFixed(2)}
-      </span>
-    ),
+    accessorKey: "phone",
+    header: "Phone Number",
   },
   {
-    accessorKey: "revenuePercent",
-    header: "Revenue %",
-    cell: ({ getValue }) => `${getValue()}%`,
+    accessorKey: "totalAmount",
+    header: "Tổng tiền",
+    cell: ({ row }) => {
+      const value = row.getValue("totalAmount");
+      return value !== undefined ? value : "";
+    },
   },
   {
-    accessorKey: "revenueAmount",
-    header: "Revenue Amount",
-    cell: ({ getValue }) => (
-      <span className="font-semibold">${Number(getValue()).toFixed(2)}</span>
-    ),
+    accessorKey: "actualReceived",
+    header: "Thực nhận",
+    cell: ({ row }) => {
+      const value = row.getValue("actualReceived");
+      return value !== undefined ? value : "";
+    },
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: ({ getValue }) =>
-      getValue() === "Paid" ? (
-        <span className="bg-green-100 text-green-600 px-3 py-1 rounded-full text-xs font-semibold">
-          Paid
-        </span>
-      ) : (
-        <span className="bg-red-100 text-red-500 px-3 py-1 rounded-full text-xs font-semibold">
-          Unpaid
-        </span>
-      ),
+    accessorKey: "platformCommission",
+    header: "Hoa hồng nền tảng",
+    cell: ({ row }) => {
+      const value = row.getValue("platformCommission");
+      return value !== undefined ? value : "";
+    },
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Ngày tạo",
+    cell: ({ row }) => {
+      const value = row.getValue("createdAt");
+      return value ? formatDate(value as string) : "";
+    },
+  },
+  {
+    accessorKey: "paymentStatus",
+    header: "Trạng thái thanh toán",
+    cell: ({ row }) => {
+      const value = row.getValue("paymentStatus");
+      // Hiển thị tiếng Việt nếu muốn
+      if (value === true) return "Đã thanh toán";
+      if (value === false) return "Chưa thanh toán";
+      return value || "";
+    },
   },
 ];

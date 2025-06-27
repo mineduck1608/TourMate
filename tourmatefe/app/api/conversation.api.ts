@@ -15,7 +15,6 @@ export const fetchConversations = async (
       searchTerm: searchTerm.trim(),
     },
   });
-  console.log(res.data)
   return res.data;
 };
 

@@ -84,8 +84,7 @@ export function LoginForm({
 
       const decoded: MyJwtPayload | null = jwtDecode<MyJwtPayload>(result.accessToken.toString());
       const role = decoded?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"] as string;
-      console.log("Decoded JWT:", decoded);
-console.log(role)
+
       if (!role) throw new Error("Không xác định được vai trò từ JWT");
 
       switch (role) {

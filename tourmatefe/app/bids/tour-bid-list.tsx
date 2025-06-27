@@ -8,7 +8,8 @@ import { BidTaskContext, BidTaskContextProp } from './tour-bid-task-context';
 import TourBidRender from './tour-bid-render';
 import { CustomerSiteContext, CustomerSiteContextProp } from '../services/context';
 import { baseData } from './tour-bid-task-context';
-import { sendLocationBid, sendNotificationToGuides } from '@/app/api/bid.api';
+import { sendLocationBid } from '@/app/api/bid.api';
+import { sendNotificationToGuides } from '../api/notification.api';
 
 function TourBidList({ search }: { search: string }) {
   const pageSize = 10;
@@ -55,17 +56,23 @@ function TourBidList({ search }: { search: string }) {
     },
     onSuccess: async () => {
       toast.success("Tạo thành công");
-       //Gửi email thông báo đến hướng dẫn viên
-      await sendLocationBid(target.placeRequested, accId);
-      //Gửi noti SignalR và lưu DB
-      await sendNotificationToGuides(target.placeRequested, accId);
-      setSignal({ ...signal, create: false });
-      setTarget({ ...baseData });
-      setModalOpen({ ...modalOpen, create: false });
-      resetData().then(() => {
-        if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
-      });
-     
+      try {
+        setSignal({ ...signal, create: false });
+        const temp = { ...target }
+        setTarget({ ...baseData });
+        setModalOpen({ ...modalOpen, create: false });
+        resetData().then(() => {
+          if (page === 1) window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+        //Gửi email thông báo đến hướng dẫn viên
+        await sendLocationBid(temp.placeRequested, accId);
+        //Gửi noti SignalR và lưu DB
+        await sendNotificationToGuides(temp.placeRequested, accId);
+      }
+      catch (error) {
+        console.error("Error sending location or notification:", error);
+        toast.error("Có lỗi xảy ra khi gửi thông báo");
+      }
     },
     onError: (error) => {
       toast.error("Tạo thất bại");

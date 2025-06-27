@@ -67,7 +67,7 @@ function TourGuideMain() {
         <div>
             <div>
                 <Banner
-                    imageUrl="https://img.freepik.com/premium-photo/vietnam-flag-vintage-wood-wall_118047-4319.jpg?w=1380"
+                    imageUrl="/find-tour-guide.jpg"
                     title="TÌM KIẾM HƯỚNG DẪN VIÊN"
                 />
             </div>

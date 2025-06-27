@@ -138,7 +138,7 @@ const AddNewsModal: React.FC<AddNewsModalProps> = ({ isOpen, onClose, onSave }) 
                 Tải ảnh banner
               </label>
               <ImageUpload
-                onImageUpload={(url: string) =>
+                onCompleteImageUpload={(url: string) =>
                   setFormData((prev) => ({ ...prev, bannerImg: url }))
                 }
               />

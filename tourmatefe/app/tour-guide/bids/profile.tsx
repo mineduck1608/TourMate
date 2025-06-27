@@ -60,7 +60,7 @@ function UserRender({ tourGuide }: { tourGuide?: TourGuide }) {
         <div className='px-6 pt-5 pb-1'>
             <div className='lg:flex gap-5'>
                 <SafeImage src={tourGuide?.image}
-                    className='w-[75px] h-[75px] rounded-full aspect-auto border-2'
+                    className="w-[75px] h-[75px] rounded-full aspect-square border-2"
                     alt={'profile'}
                 />
                 <div className='xl:ml-4 *:mb-2 w-full overflow-hidden'>

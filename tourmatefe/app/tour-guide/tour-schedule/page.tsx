@@ -70,7 +70,6 @@ export default function TourSchedulePage() {
     setSearchTerm(e.target.value)
     setCurrentPage(1)
   }
- console.log(feedbackQuery.data)
   return (
     <>
       <MegaMenu />
