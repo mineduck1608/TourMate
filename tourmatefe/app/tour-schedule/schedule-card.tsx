@@ -85,10 +85,10 @@ const ScheduleCard: FC<TourSchedule> = ({
 
   return (
     <>
-      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-4">
+      <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-4 sm:p-6 space-y-4">
         {/* Header */}
-        <div className="flex justify-between items-center">
-          <h2 className="font-semibold text-lg text-gray-900">Mã lịch hẹn: {invoiceId}</h2>
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
+          <h2 className="font-semibold text-base sm:text-lg text-gray-900 break-words">Mã lịch hẹn: {invoiceId}</h2>
           <button
             className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 transition"
             onClick={() => alert(`Downloading lịch hẹn ${invoiceId}`)}
@@ -99,12 +99,12 @@ const ScheduleCard: FC<TourSchedule> = ({
         </div>
 
         {/* Trạng thái và ngày tạo */}
-        <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
           <div className="flex items-center gap-2">
-            <p className="text-md text-gray-500 whitespace-nowrap font-medium">Trạng thái:</p>
-            <span className={`text-sm px-3 py-1 rounded-sm font-medium ${statusStyles[status]}`}>{status}</span>
+            <p className="text-sm sm:text-md text-gray-500 whitespace-nowrap font-medium">Trạng thái:</p>
+            <span className={`text-xs sm:text-sm px-2 sm:px-3 py-1 rounded-sm font-medium ${statusStyles[status]}`}>{status}</span>
           </div>
-          <p className="text-md text-gray-500 whitespace-nowrap font-medium">
+          <p className="text-sm sm:text-md text-gray-500 whitespace-nowrap font-medium">
             Ngày tạo:{" "}
             {new Date(createdDate).toLocaleDateString("vi-VN", {
               day: "2-digit",
@@ -117,13 +117,13 @@ const ScheduleCard: FC<TourSchedule> = ({
         <hr className="border-gray-200" />
 
         {/* Thông tin khách hàng */}
-        <p className="text-lg font-semibold text-black">
+        <p className="text-base sm:text-lg font-semibold text-black break-words">
           👤 {customerName} ({email})
         </p>
-        <p className="text-gray-600">📞 {customerPhone}</p>
+        <p className="text-gray-600 text-sm sm:text-base break-words">📞 {customerPhone}</p>
 
         {/* Thông tin tour */}
-        <div className="space-y-1 text-gray-700">
+        <div className="space-y-1 text-gray-700 text-sm sm:text-base">
           <p>
             🧭 <strong>{tourName}</strong>
           </p>
@@ -134,7 +134,6 @@ const ScheduleCard: FC<TourSchedule> = ({
             📅 Thời gian: {format(new Date(startDate), "dd/MM/yyyy HH:mm")}
             {endDate ? ` - ${format(new Date(endDate), "dd/MM/yyyy HH:mm")}` : ""}
           </p>
-
           <p>👥 Số lượng người: {peopleAmount}</p>
           <p>💰 Giá: {price.toLocaleString("vi-VN", { style: "currency", currency: "VND" })}</p>
           <p>💳 Phương thức thanh toán: {paymentMethod}</p>
@@ -144,9 +143,7 @@ const ScheduleCard: FC<TourSchedule> = ({
               <p className="italic">{note}</p>
             </div>
           )}
-
-          {/* Hiển thị tourDesc với innerHTML */}
-          <p className="text-md text-gray-500" dangerouslySetInnerHTML={{ __html: tourDesc }} />
+          <p className="text-xs sm:text-md text-gray-500" dangerouslySetInnerHTML={{ __html: tourDesc }} />
         </div>
 
         {/* Show existing feedback preview if available */}

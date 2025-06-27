@@ -73,11 +73,16 @@ export default function TourSchedulePage() {
   return (
     <>
       <MegaMenu />
-      <div className="flex text-gray-900 bg-gray-50">
-        <div className="p-10 flex flex-col sticky top-10 h-fit self-start">
+      <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50 min-h-screen">
+        {/* Sidebar mobile */}
+        <div className="w-full px-2 pt-4 md:hidden">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
-        <main className="flex-1 py-10 pr-10 space-y-6">
+        {/* Sidebar desktop */}
+        <div className="hidden md:block md:sticky md:top-10 md:h-fit md:self-start md:w-80 md:px-0 md:pt-10">
+          <TourGuideSidebar onNavItemClick={handleFilterChange} />
+        </div>
+        <main className="flex-1 px-2 pt-4 md:pr-10 md:pt-10 space-y-6">
           {/* Search box (chỉ hiện khi không phải xem đánh giá) */}
           {!showFeedbacks && (
             <div className="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-3">
@@ -94,7 +99,7 @@ export default function TourSchedulePage() {
 
           {/* Lịch hẹn hoặc Đánh giá */}
           {showFeedbacks ? (
-            <>
+            <div className="mb-4 space-y-4">
               {feedbackQuery.isLoading && <p>Đang tải đánh giá...</p>}
               {feedbackQuery.isError && <p className="text-red-500">Lỗi khi tải đánh giá.</p>}
               {feedbackQuery.data?.length === 0 && (
@@ -110,7 +115,7 @@ export default function TourSchedulePage() {
                   customerAccountId={fb.customerAccountId}
                 />
               ))}
-            </>
+            </div>
           ) : (
             <>
               {isLoading && <p>Đang tải dữ liệu...</p>}

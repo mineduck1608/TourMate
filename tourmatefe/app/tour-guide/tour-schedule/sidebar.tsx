@@ -63,7 +63,7 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
 
 
     return (
-        <div className="w-100 bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-6">
+        <div className="w-full md:w-80 bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-5 mb-4 md:mb-0 md:mx-0">
             {/* User */}
             <div className="flex items-center gap-4 mb-6 p-4 rounded-xl shadow-sm">
                 <Avatar className="h-12 w-12 shadow-md">
@@ -80,16 +80,16 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
             <div className="border-t border-gray-300 mb-6"></div>
 
             {/* Action Cards */}
-            <div className="grid grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-3 gap-2 sm:gap-4 mb-6">
                 {actionCards.map((card) => (
                     <Link
                         key={card.label}
                         href={card.href}
                         title={card.label}
-                        className={`${card.bgColor} rounded-lg flex flex-col items-center justify-center p-4 cursor-pointer shadow-md border border-transparent transition transform hover:-translate-y-1 hover:shadow-lg`}
+                        className={`${card.bgColor} rounded-lg flex flex-col items-center justify-center p-3 sm:p-4 cursor-pointer shadow-md border border-transparent transition transform hover:-translate-y-1 hover:shadow-lg`}
                     >
                         <card.icon className="h-7 w-7 text-white mb-1" />
-                        <span className="text-xs font-semibold text-white">{card.label}</span>
+                        <span className="text-xs font-semibold text-white text-center">{card.label}</span>
                     </Link>
                 ))}
             </div>
@@ -122,30 +122,6 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
             </nav>
 
             <div className="border-t border-gray-300 mb-4"></div>
-
-            {/* Extra */}
-            <div className="space-y-2">
-                <button
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-gray-700 border border-transparent hover:border-gray-300 hover:bg-gray-100 transition-colors duration-300 font-medium"
-                    type="button"
-                    onClick={() => router.push("/tour-guide/statistics")}
-                >
-                    <ChartAreaIcon className="h-5 w-5" />
-                    <span>Thống kê</span>
-                </button>
-                <button
-                    className="w-full flex items-center gap-3 px-4 py-3 rounded-lg text-red-600 border border-transparent hover:border-gray-300 hover:bg-gray-100 hover:text-red-700 transition-colors duration-300 font-medium"
-                    type="button"
-                    onClick={() => {
-                        sessionStorage.removeItem('accessToken');
-                        sessionStorage.removeItem('refreshToken');
-                        router.push('/');
-                    }}
-                >
-                    <LogOut className="h-5 w-5" />
-                    <span>Đăng xuất</span>
-                </button>
-            </div>
         </div>
     );
 };
