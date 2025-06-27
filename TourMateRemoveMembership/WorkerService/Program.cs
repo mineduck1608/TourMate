@@ -11,16 +11,19 @@ namespace WorkerService
     {
         public static void Main(string[] args)
         {
-            var builder = Host.CreateApplicationBuilder(args);
-            builder.Services.AddDbContext<TourmateContext>(options =>
-                options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
-            );
-            builder.Services.AddScoped<IAccountMembershipRepository, AccountMembershipRepository>();
-            builder.Services.AddScoped<IAccountMembershipService, AccountMembershipService>();
-            builder.Services.AddHostedService<RemoveMembershipService>();
-
-            var host = builder.Build();
-            host.Run();
+            CreateHostBuilder(args).Build().Run(); // no await here, keep service running
         }
+
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+            Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    services.AddDbContext<TourmateContext>(options =>
+                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
+
+                    services.AddScoped<IAccountMembershipRepository, AccountMembershipRepository>();
+                    services.AddScoped<IAccountMembershipService, AccountMembershipService>();
+                    services.AddHostedService<RemoveMembershipService>(); // REGISTER as hosted service
+                });
     }
 }

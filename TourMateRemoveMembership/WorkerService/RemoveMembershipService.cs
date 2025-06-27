@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace WorkerService
 {
-    public class RemoveMembershipService : BackgroundService
+    public class RemoveMembershipService : IHostedService
     {
         private readonly ILogger<RemoveMembershipService> _logger;
         private readonly IServiceProvider _serviceProvider;
@@ -19,27 +19,31 @@ namespace WorkerService
             _serviceProvider = serviceProvider;
         }
 
-        protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+        public Task StartAsync(CancellationToken cancellationToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            // async void pattern not recommended, better to queue a background task if needed
+            _ = Task.Run(async () =>
             {
-                using (var scope = _serviceProvider.CreateScope())
+                using var scope = _serviceProvider.CreateScope();
+                try
                 {
-                    try
-                    {
-                        var membershipService = scope.ServiceProvider.GetRequiredService<IAccountMembershipService>();
-                        _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                        var r = await membershipService.DeactivateMembership();
-                        _logger.LogInformation("Ok");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError(ex, "An error occurred while executing the RemoveMembershipService.");
-                    }
+                    var membershipService = scope.ServiceProvider.GetRequiredService<IAccountMembershipService>();
+                    _logger.LogInformation("Membership deactivation job started at: {time}", DateTimeOffset.Now);
+                    var r = await membershipService.DeactivateMembership();
+                    _logger.LogInformation("Membership deactivation completed successfully");
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, "An error occurred during membership deactivation");
+                }
+            });
 
-                await Task.Delay(TimeSpan.FromHours(12), stoppingToken);
-            }
+            return Task.CompletedTask;
+        }
+
+        public Task StopAsync(CancellationToken cancellationToken)
+        {
+            return Task.CompletedTask;
         }
     }
 }
