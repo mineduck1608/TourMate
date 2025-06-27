@@ -45,6 +45,9 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onCompleteImageUpload, onImme
       formData.append("fileName", file.name);
       formData.append("folder", "/tourmate"); // tùy chọn
 
+      console.log("123")
+      console.log("KEY:", process.env.IMAGEKIT_PRIVATE_KEY); // thấy được
+
        const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
           const auth = `Basic ${btoa(privateKey + ":")}`;
 
