@@ -28,8 +28,6 @@ import {
 import { updateUserCustomer } from "@/app/api/customer.api";
 import { toast } from "react-toastify";
 import { Customer } from "@/types/customer";
-import { getDownloadURL, ref, uploadBytesResumable } from "firebase/storage";
-import { storage } from "@/firebaseConfig";
 
 export default function CustomerProfile() {
     const token = useToken("accessToken");
