@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import SafeImage from "./safe-image";
+import { uploadImageToServer } from "@/app/api/image-upload.api";
 
 interface ImageUploadProps {
   onCompleteImageUpload: (imageUrl: string) => void;
@@ -37,39 +38,16 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onCompleteImageUpload, onImme
     }
   };
 
-  const uploadImage = async (file: File) => {
-  return new Promise<string>(async (resolve, reject) => {
-    try {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("fileName", file.name);
-      formData.append("folder", "/tourmate"); // tùy chọn
-
-      console.log("123")
-      console.log("KEY:", process.env.IMAGEKIT_PRIVATE_KEY); // thấy được
-
-       const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
-          const auth = `Basic ${btoa(privateKey + ":")}`;
-
-          const response = await axios.post(
-            "https://upload.imagekit.io/api/v1/files/upload",
-            formData,
-            {
-              headers: {
-                Authorization: auth,
-              },
-            }
-          );
-
-      const imageUrl = response.data.url;
-      setIsUploading(false);
-      resolve(imageUrl);
-    } catch (error) {
-      setIsUploading(false);
-      toast.error("Image upload failed");
-      reject(error);
-    }
-  });
+  const uploadImage = async (file: File): Promise<string> => {
+  try {
+    const url = await uploadImageToServer(file);
+    setIsUploading(false);
+    return url;
+  } catch (error) {
+    setIsUploading(false);
+    toast.error("Tải ảnh lên thất bại");
+    throw error;
+  }
 };
 
 
