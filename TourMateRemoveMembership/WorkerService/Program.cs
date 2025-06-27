@@ -1,29 +1,33 @@
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Repositories.Context;
 using Repositories.IRepositories;
 using Repositories.Repositories;
 using Services.IServices;
 using Services.Services;
 
-namespace WorkerService
+namespace RemoveMembershipJob
 {
-    public class Program
+    internal class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run(); // no await here, keep service running
-        }
-
-        public static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) =>
+            using IHost host = Host.CreateDefaultBuilder(args)
+                .ConfigureServices((context, services) =>
                 {
                     services.AddDbContext<TourmateContext>(options =>
-                        options.UseSqlServer(hostContext.Configuration.GetConnectionString("DefaultConnection")));
+                        options.UseSqlServer(context.Configuration.GetConnectionString("DefaultConnection")));
 
                     services.AddScoped<IAccountMembershipRepository, AccountMembershipRepository>();
                     services.AddScoped<IAccountMembershipService, AccountMembershipService>();
-                    services.AddHostedService<RemoveMembershipService>(); // REGISTER as hosted service
-                });
+                    services.AddTransient<RemoveMembershipService>();
+                })
+                .Build();
+
+            var service = host.Services.GetRequiredService<RemoveMembershipService>();
+            await service.RunAsync(CancellationToken.None);
+        }
     }
 }
