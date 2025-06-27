@@ -97,23 +97,52 @@ export default function CustomerProfile() {
     });
 
 
-    const uploadImageToFirebase = (file: File): Promise<string> => {
-        return new Promise((resolve, reject) => {
-            const storageRef = ref(storage, `tourmate/${file.name}`);
-            const uploadTask = uploadBytesResumable(storageRef, file);
+    const uploadImageToImageKit = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
 
-            uploadTask.on(
-                "state_changed",
-                (error) => {
-                    reject(error);
-                },
-                async () => {
-                    const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
-                    resolve(downloadURL);
+        reader.onloadend = async () => {
+            try {
+                const base64 = reader.result as string;
+
+                const formData = new FormData();
+                formData.append("file", base64); // base64 string
+                formData.append("fileName", file.name);
+                formData.append("folder", "/tourmate"); // optional
+
+                const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
+                if (!privateKey) {
+                    throw new Error("Missing ImageKit private key");
                 }
-            );
-        });
-    };
+
+                const response = await fetch("https://upload.imagekit.io/api/v1/files/upload", {
+                    method: "POST",
+                    headers: {
+                        Authorization: `Basic ${btoa(privateKey + ":")}`,
+                    },
+                    body: formData,
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(data.message || "ImageKit upload failed");
+                }
+
+                resolve(data.url);
+            } catch (error) {
+                console.error("ImageKit upload error:", error);
+                reject(error);
+            }
+        };
+
+        reader.onerror = (err) => {
+            reject(err);
+        };
+    });
+};
+
 
     const [isUpdating, setIsUpdating] = useState(false);
 
@@ -126,7 +155,7 @@ export default function CustomerProfile() {
                 let imageUrl = customer.image; // url hiện tại
 
                 if (selectedImage) {
-                    imageUrl = await uploadImageToFirebase(selectedImage);
+                    imageUrl = await uploadImageToImageKit(selectedImage);
                 }
 
                 const updatedCustomer: Customer = {

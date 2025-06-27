@@ -45,7 +45,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ onCompleteImageUpload, onImme
       formData.append("fileName", file.name);
       formData.append("folder", "/tourmate"); // tùy chọn
 
-       const privateKey = process.env.image_kit_private_key;
+       const privateKey = process.env.IMAGEKIT_PRIVATE_KEY;
           const auth = `Basic ${btoa(privateKey + ":")}`;
 
           const response = await axios.post(
