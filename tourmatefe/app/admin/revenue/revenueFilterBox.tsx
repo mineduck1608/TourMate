@@ -17,7 +17,7 @@ export function FilterBox({
 }: FilterBoxProps) {
   return (
     <div className="bg-white rounded-xl p-6 mt-6 border mb-6">
-      <div className="font-semibold text-lg mb-4">Filters</div>
+      <div className="font-semibold text-lg mb-4">Lọc</div>
       <div className="flex flex-col md:flex-row gap-3 items-center">
         <div className="flex-1 w-full">
           <div className="relative">
@@ -52,15 +52,15 @@ export function FilterBox({
           value={statusValue}
           onChange={(e) => onStatusChange(e.target.value)}
         >
-          <option value="">All Status</option>
-          <option value="Paid">Paid</option>
-          <option value="Unpaid">Unpaid</option>
+          <option value="">Tất Cả Trạng Thái</option>
+          <option value="Paid">Đã Thanh Toán</option>
+          <option value="Unpaid">Chưa Thanh Toán</option>
         </select>
         <button
           className="border rounded px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 flex items-center gap-1"
           onClick={onClear}
         >
-          <span className="text-lg">×</span> Clear Filters
+          <span className="text-lg">×</span> Xóa Bộ Lọc
         </button>
       </div>
     </div>

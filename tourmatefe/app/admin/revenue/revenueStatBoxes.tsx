@@ -1,9 +1,7 @@
 import React from "react";
 import { useQuery } from "@tanstack/react-query";
 import { getAllRevenue } from "@/app/api/revenue.api";
-import { getTourServices } from "@/app/api/tour-service.api";
 import { RevenueDto } from "@/types/revenue";
-import { TourService } from "@/types/tour-service";
 
 const colorMap = {
   red: "text-red-500",
@@ -23,20 +21,14 @@ const LIMIT = 1000;
 
 export function SummaryBoxes() {
   // Fetch payments (đã sửa lại dùng getAllRevenue)
-  const { data: paymentData, isLoading: isPaymentLoading } = useQuery({
+  const { data: revenueData, isLoading: isPaymentLoading } = useQuery({
     queryKey: ["all-payments"],
     queryFn: () => getAllRevenue(1, LIMIT),
   });
 
-  // Fetch tour services
-  const { data: tourServiceData, isLoading: isTourServiceLoading } = useQuery({
-    queryKey: ["all-tour-services"],
-    queryFn: () => getTourServices(1, LIMIT),
-  });
-
   // Tính toán dữ liệu
   const unpaidRevenues =
-    (paymentData?.result as RevenueDto[] | undefined)?.filter(
+    (revenueData?.result as RevenueDto[] | undefined)?.filter(
       (p) => p.paymentStatus === false
     ) || [];
   const totalUnpaidRevenue = unpaidRevenues.reduce(
@@ -51,16 +43,14 @@ export function SummaryBoxes() {
   const currentMonth = now.getMonth();
   const currentYear = now.getFullYear();
   const bookingsThisMonth =
-    ((tourServiceData?.result as TourService[] | undefined) || []).filter(
-      (s) => {
-        if (!s.createdDate) return false;
-        const d = new Date(s.createdDate);
-        return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
-      }
-    ).length || 0;
+    ((revenueData?.result as RevenueDto[] | undefined) || []).filter((s) => {
+      if (!s.createdAt) return false;
+      const d = new Date(s.createdAt);
+      return d.getMonth() === currentMonth && d.getFullYear() === currentYear;
+    }).length || 0;
 
   // Loading state
-  if (isPaymentLoading || isTourServiceLoading) {
+  if (isPaymentLoading) {
     return (
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 mb-8">
         {[...Array(4)].map((_, idx) => (
@@ -75,16 +65,16 @@ export function SummaryBoxes() {
 
   const boxes = [
     {
-      title: "Total Unpaid Revenue",
+      title: "Tiền Hoa Hồng Chưa Thanh Toán",
       value: `$${totalUnpaidRevenue.toLocaleString(undefined, {
         minimumFractionDigits: 2,
       })}`,
-      subtitle: "Pending payments",
+      subtitle: "Các Giao Dịch Đang Chờ",
       color: "red",
       rightIcon: <span className="text-red-400 text-lg">$</span>,
     },
     {
-      title: "Total Unpaid Tour Guides",
+      title: "Các Tour Guide Chưa Được Trả Tiền",
       value: totalUnpaidGuides,
       subtitle: "Guides awaiting payment",
       color: "orange",
@@ -98,14 +88,14 @@ export function SummaryBoxes() {
       ),
     },
     {
-      title: "Selected Revenue",
+      title: "Tiền Hoa Hồng Đang Được Chọn",
       value: "$0.00",
       subtitle: "0 items selected",
       color: "blue",
       rightIcon: <span className="text-blue-400 text-lg">📈</span>,
     },
     {
-      title: "Bookings This Month",
+      title: "Lượng Booking Tháng Này",
       value: bookingsThisMonth,
       subtitle: "Current month bookings",
       color: "green",
