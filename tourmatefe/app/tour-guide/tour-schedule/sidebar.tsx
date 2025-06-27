@@ -26,8 +26,8 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
     const [selectedNav, setSelectedNav] = useState("Chờ xác nhận");
 
     const token = useToken('accessToken')
-        const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
-        const accountId = Number(payLoad?.AccountId)
+    const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
+    const accountId = Number(payLoad?.AccountId)
 
     const [user, setUser] = useState<TourGuide>();
 
@@ -59,10 +59,10 @@ const TourGuideSidebar: FC<TourGuideSidebarProps> = ({ onNavItemClick }) => {
 
 
     return (
-        <div className="w-full md:w-80 bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-5 mb-4 md:mb-0 md:mx-0">
+        <div className="bg-white rounded-2xl shadow-[0_4px_30px_rgba(0,0,0,0.1)] border border-gray-100 p-5 mb-4 md:mb-0 md:mx-0">
             {/* User */}
             <div className="flex items-center gap-4 mb-6 p-4 rounded-xl shadow-sm">
-                <Avatar className="h-12 w-12 shadow-md">
+                <Avatar className="h-12 w-12 shadow-md mt-4">
                     <AvatarImage src={user?.image} />
                     <AvatarFallback className="bg-blue-600 text-white font-semibold">TG</AvatarFallback>
                 </Avatar>

@@ -72,7 +72,7 @@ const ScheduleCard: FC<TourSchedule> = ({
   return (
     <div className="bg-white rounded-2xl shadow-md border border-gray-100 p-6 space-y-4">
       {/* Header */}
-      <div className="flex justify-between items-center">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
         <h2 className="font-semibold text-lg text-gray-900">Mã lịch hẹn: {invoiceId}</h2>
         <button
           className="flex items-center gap-1 text-gray-600 hover:text-gray-900 text-sm font-medium px-3 py-1 rounded-md border border-gray-300 hover:bg-gray-100 transition"

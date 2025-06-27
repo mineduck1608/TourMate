@@ -74,12 +74,13 @@ export default function TourSchedulePage() {
     <>
       <MegaMenu />
       <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50 min-h-screen">
-        {/* Sidebar mobile */}
-        <div className="w-full px-2 pt-4 md:hidden">
+        
+        {/* Sidebar desktop */}
+        <div className="hidden md:flex p-4 md:p-10 flex-col sticky top-20 h-fit self-start">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
-        {/* Sidebar desktop */}
-        <div className="hidden md:block md:sticky md:top-10 md:h-fit md:self-start md:w-80 md:px-0 md:pt-10">
+        {/* Sidebar mobile */}
+        <div className="md:hidden p-2">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
         <main className="flex-1 px-2 pt-4 md:pr-10 md:pt-10 space-y-6">
