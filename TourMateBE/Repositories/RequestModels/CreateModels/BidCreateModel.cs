@@ -8,7 +8,7 @@ namespace Repositories.DTO.CreateModels
         public int TourBidId { get; set; }
 
         public float Amount { get; set; }
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
         public Bid Convert() => new()
         {
             Status = "Hoạt động",

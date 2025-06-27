@@ -68,16 +68,15 @@ function DurationRender({ d, onChange }: { d: string, onChange: (txt: string) =>
 }
 function ServiceEditModal({ isOpen, onClose }: Props) {
     const { target, setTarget, setSignal, modalOpen, setModalOpen, signal } = useContext(ServiceEditContext) as ServiceEditContextProp
-    const [allowCreate, setAllowCreate] = useState(true)
+    const [allowCreate, setAllowCreate] = useState(modalOpen.edit)
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
     ) => {
         const { name, value } = e.target;
-        console.log(name, value);
-
         const updated = { ...target, [name]: value }
         setTarget(updated);
     };
+    const enabled = target.serviceName && target.price && target.duration && target.title && target.tourDesc && target.image;
     return (
         <div
             className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"}`}
@@ -207,11 +206,11 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             Ảnh dịch vụ
                         </label>
                         <ImageUpload
-                            onImageUpload={(url: string) => {
+                            onImmediateChange={() => {
                                 setAllowCreate(false)
-                                setTarget({ ...target, image: url })
                             }}
-                            onUploadComplete={() => {
+                            onCompleteImageUpload={(url: string) => {
+                                setTarget({ ...target, image: url })
                                 setAllowCreate(true)
                             }}
                         />
@@ -256,6 +255,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                         onClick={() => {
                             setSignal({ edit: true, delete: false, create: false })
                         }}
+                        disabled={!enabled || !allowCreate}
                         type="submit"
                         className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                     >
@@ -268,7 +268,7 @@ function ServiceEditModal({ isOpen, onClose }: Props) {
                             onClick={() => {
                                 setSignal({ edit: false, delete: false, create: true })
                             }}
-                            disabled={!allowCreate}
+                            disabled={!enabled || !allowCreate}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-700 disabled:hover:bg-gray-600"
                         >
