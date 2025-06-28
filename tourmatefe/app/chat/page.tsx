@@ -99,7 +99,7 @@ function ChatContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen w-full bg-gray-50 overflow-x-hidden">
       <MegaMenu />
       <GlobalCallManager
         ref={globalCallManagerRef}
@@ -108,7 +108,7 @@ function ChatContent() {
         conversations={allConversations}
       />
       <div>
-        <div className="flex h-[calc(100vh-80px)] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
+        <div className="flex w-full h-[calc(100vh-80px)] bg-white rounded-2xl shadow-xl overflow-hidden border border-gray-200">
           {/* ConversationList: Ẩn trên mobile nếu đã chọn chat */}
           <div
             className={`h-full ${selectedConversation && !showConversationListMobile ? "hidden" : "block"
