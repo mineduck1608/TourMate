@@ -25,7 +25,7 @@ export type TourGuideDesc = {
     description: string,
     areaId: number,
     company: string,
-    area: ActiveArea
+    area?: ActiveArea
 }
 
 export type TourGuideUpdateModel = {

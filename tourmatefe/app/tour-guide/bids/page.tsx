@@ -93,7 +93,7 @@ function TourBidPageMain() {
                     <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
                         {/* Left Sidebar - Profile & Tour Guides */}
                         <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-                            <div className="lg:sticky lg:top-6 space-y-6">
+                            <div className="lg:sticky lg:top-24 space-y-6">
                                 <Profile tourGuide={tourGuide} />
                                 <div className="hidden lg:block">
                                     <RotatingTourGuide excludeId={tourGuide?.tourGuideId} />
@@ -108,7 +108,7 @@ function TourBidPageMain() {
 
                         {/* Right Sidebar - Search & Popular Areas */}
                         <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-                            <div className="lg:sticky lg:top-6 space-y-6">
+                            <div className="lg:sticky lg:top-24 space-y-6">
                                 {/* Desktop Search */}
                                 <div className="hidden lg:block rounded-md border shadow-lg p-5 bg-white">
                                     <input
