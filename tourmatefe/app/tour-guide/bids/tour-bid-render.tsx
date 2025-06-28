@@ -9,7 +9,6 @@ import { FaHeart, FaMapMarkerAlt, FaRegCommentDots } from "react-icons/fa"
 import DOMPurify from "dompurify"
 import BidListModal from "./bid-list-modal"
 import { BidTaskContext, type BidTaskContextProp } from "./tour-bid-task-context"
-import { TourGuideSiteContext, type TourGuideSiteContextProps } from "../context"
 import { formatNumber } from "@/types/other"
 import BidCommentModal from "./bid-comment-modal"
 import Link from "next/link"
@@ -24,7 +23,6 @@ export default function TourBidRender({
         comment: false,
     })
     const { setTarget, signal, setSignal } = useContext(BidTaskContext) as BidTaskContextProp
-    const { accId } = useContext(TourGuideSiteContext) as TourGuideSiteContextProps
 
     const sanitizeContent = (html: string) => {
         if (typeof window !== "undefined") {
@@ -56,9 +54,6 @@ export default function TourBidRender({
                             <div className="min-w-0">
                                 <h3 className="text-lg md:text-xl font-bold break-words">
                                     {tourBid.customerName}
-                                    {tourBid.accountId === accId && (
-                                        <span className="text-sm font-normal text-gray-600">&nbsp;(Bạn)</span>
-                                    )}
                                 </h3>
                                 <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-2 text-sm md:text-base text-gray-600">
                                     <p>{dayjs(tourBid.createdAt).format("DD [tháng] MM, YYYY")}</p>
