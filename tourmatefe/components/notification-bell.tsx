@@ -44,7 +44,7 @@ const NotificationBell = () => {
     if (!token) return
 
     const connection = new signalR.HubConnectionBuilder()
-      .withUrl(`${apiHub}/notificationHub`, {
+      .withUrl(`${apiHub}/appHub`, {
         accessTokenFactory: () => token,
       })
       .withAutomaticReconnect()

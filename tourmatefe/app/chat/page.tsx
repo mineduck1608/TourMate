@@ -59,7 +59,7 @@ function ChatContent() {
   useEffect(() => {
     if (!currentUserId) return
 
-    const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/chatHub`).withAutomaticReconnect().build()
+    const connection = new signalR.HubConnectionBuilder().withUrl(`${apiHub}/appHub`).withAutomaticReconnect().build()
 
     setHubConnection(connection)
 

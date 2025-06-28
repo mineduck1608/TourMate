@@ -72,7 +72,7 @@ export default function MessageList({
     if (!conversationId) return
 
     const newConnection = new HubConnectionBuilder()
-      .withUrl(`${apiHub}/chatHub?conversationId=${conversationId}`)
+      .withUrl(`${apiHub}/appHub?conversationId=${conversationId}`)
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build()
