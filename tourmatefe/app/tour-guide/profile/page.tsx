@@ -124,9 +124,14 @@ function TourGuideProfileEdit() {
                                 <SafeImage
                                     src={tourGuide?.image}
                                     alt={'shell'}
-                                    className="w-[125px] h-[125px] lg:w-[175px] lg:h-[175px] rounded-full aspect-square relative border-2"
+                                    className="w-[125px] h-[125px] lg:w-[175px] lg:h-[175px] rounded-full aspect-square relative border-2 object-cover"
                                     onClick={() => {
-                                        setToggleMode(p => ({ ...p, view: true, targetType: targetType.profilePic, value: tourGuide?.image ?? '' }))
+                                        setToggleMode(p => ({
+                                            ...p,
+                                            view: true,
+                                            targetType: targetType.profilePic,
+                                            value: tourGuide?.image ?? ''
+                                        }))
                                     }}
                                 />
                                 <div className='absolute right-0 bottom-0 lg:right-[20px] lg:bottom-[5px] border-[1] p-3 rounded-full bg-gray-200 hover:bg-gray-300' onClick={() => {

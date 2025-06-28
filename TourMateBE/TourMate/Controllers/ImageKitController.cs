@@ -34,14 +34,17 @@ namespace TourMate.Controllers
             var base64File = Convert.ToBase64String(bytes);
 
             using var client = new HttpClient();
-            var request = new HttpRequestMessage(HttpMethod.Post, "https://upload.imagekit.io/api/v1/files/upload");
+            var request = new HttpRequestMessage(HttpMethod.Post, "https://upload.imagekit.io/api/v1/files/upload?useUniqueFileName=false");
 
             var content = new MultipartFormDataContent
-        {
-            { new StringContent(base64File), "file" },
-            { new StringContent(file.FileName), "fileName" },
-            { new StringContent("/tourmate"), "folder" }
-        };
+{
+    { new StringContent(base64File), "file" },
+    { new StringContent(file.FileName), "fileName" },
+    { new StringContent("/tourmate"), "folder" },
+    { new StringContent("true"), "overwriteFile" },
+    { new StringContent("false"), "useUniqueFileName" } // 🔥 TẮT thêm hậu tố ngẫu nhiên
+};
+
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Basic",
                 Convert.ToBase64String(Encoding.UTF8.GetBytes($"{privateKey}:")));
