@@ -123,8 +123,8 @@ function Detail({ s }: { s: TourGuide }) {
                     <Label htmlFor="areaId">Khu vực hoạt động</Label>
                     <Input id="yearOfExperience" type="text"
                         name="yearOfExperience"
-                        value={s.tourGuideDescs?.[0].area.areaName}
-                        readOnly
+                        value={s.tourGuideDescs?.[0].area?.areaName}
+                         readOnly
                     />
                 </div>
             </div>

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
+using Repositories.RequestModels.CreateModels;
 using Repositories.ResponseModels;
 using Services.IServices;
 using Services.Utils;
@@ -63,48 +64,115 @@ namespace API.Controllers
 
         [Authorize(Roles = "Admin")]
         [HttpPost]
-        public async Task<IActionResult> Create([FromBody] TourGuide data)
+        public async Task<IActionResult> Create([FromBody] TourGuideAdminCreate data)
         {
-
+            // Validate phone
             if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
                 return BadRequest(new { msg = "Số điện thoại không đúng!" });
+
+            // Validate email
             if (!ValidInput.IsMailFormatted(data.Account.Email))
                 return BadRequest(new { msg = "Email không đúng định dạng!" });
+
+            // Validate password
             if (!ValidInput.IsPasswordSecure(data.Account.Password))
                 return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
 
-            // Kiểm tra tài khoản đã tồn tại
+            // Check account exists
             var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
             if (existingAccount != null)
-                return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
+                return Conflict(new { msg = "Tài khoản đã tồn tại!" });
 
+            // Check phone exists
             var existingPhone = await _tourguideService.GetTourGuideByPhone(data.Phone);
             if (existingPhone != null)
                 return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
 
+            // Validate date of birth
             if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
-            {
                 return BadRequest(new { msg = "Ngày sinh không đúng!" });
-            }
 
-            data.Account.Password = HashString.ToHashString(data.Account.Password);
-            data.Account.RoleId = 3;
-
-
-            var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
-            if (isAccountCreated != null)
+            // Hash password and create account
+            var hashedPassword = HashString.ToHashString(data.Account.Password);
+            var newAccount = new Account
             {
-                data.AccountId = isAccountCreated.AccountId;
-                data.Account = null;
-                var result = await _tourguideService.CreateTourGuide(data);
-                if (result == true)
+                Email = data.Account.Email,
+                Password = hashedPassword,
+                RoleId = 3, // TourGuide role
+                Status = true,
+                CreatedDate = DateTime.UtcNow
+            };
+
+            var isAccountCreated = await _accountService.CreateAccountAdmin(newAccount);
+            if (isAccountCreated == null)
+                return BadRequest(new { msg = "Tạo tài khoản thất bại!" });
+
+            // Map TourGuide entity
+            var newTourGuide = new TourGuide
+            {
+                FullName = data.FullName,
+                Gender = data.Gender,
+                DateOfBirth = data.DateOfBirth,
+                Address = data.Address,
+                Image = data.Image,
+                BannerImage = data.BannerImage,
+                Phone = data.Phone,
+                IsVerified = data.IsVerified,
+                AccountId = isAccountCreated.AccountId,
+                TourGuideDescs = data.TourGuideDescs.Select(desc => new TourGuideDesc
                 {
-                    return Ok();
-                }
-                else return BadRequest();
-            }
-            return BadRequest();
+                    YearOfExperience = desc.YearOfExperience,
+                    Description = desc.Description,
+                    AreaId = desc.AreaId,
+                    Company = desc.Company
+                }).ToList()
+            };
+
+            var result = await _tourguideService.CreateTourGuide(newTourGuide);
+            return result ? Ok(new { msg = "Tạo hướng dẫn viên thành công!" }) : BadRequest(new { msg = "Tạo hướng dẫn viên thất bại!" });
         }
+        //public async Task<IActionResult> Create([FromBody] TourGuide data)
+        //{
+
+        //    if (!ValidInput.IsPhoneFormatted(data.Phone.Trim()))
+        //        return BadRequest(new { msg = "Số điện thoại không đúng!" });
+        //    if (!ValidInput.IsMailFormatted(data.Account.Email))
+        //        return BadRequest(new { msg = "Email không đúng định dạng!" });
+        //    if (!ValidInput.IsPasswordSecure(data.Account.Password))
+        //        return BadRequest(new { msg = "Mật khẩu cần có ít nhất 12 ký tự, bao gồm chữ hoa, chữ thường, số và ký tự đặc biệt." });
+
+        //    // Kiểm tra tài khoản đã tồn tại
+        //    var existingAccount = await _accountService.GetAccountByEmail(data.Account.Email);
+        //    if (existingAccount != null)
+        //        return Conflict(new { msg = "Tài khoảng đã tồn tại!" });
+
+        //    var existingPhone = await _tourguideService.GetTourGuideByPhone(data.Phone);
+        //    if (existingPhone != null)
+        //        return Conflict(new { msg = "Số điện thoại đã được sử dụng!" });
+
+        //    if (data.DateOfBirth >= DateOnly.FromDateTime(DateTime.Now))
+        //    {
+        //        return BadRequest(new { msg = "Ngày sinh không đúng!" });
+        //    }
+
+        //    data.Account.Password = HashString.ToHashString(data.Account.Password);
+        //    data.Account.RoleId = 3;
+
+
+        //    var isAccountCreated = await _accountService.CreateAccountAdmin(data.Account);
+        //    if (isAccountCreated != null)
+        //    {
+        //        data.AccountId = isAccountCreated.AccountId;
+        //        data.Account = null;
+        //        var result = await _tourguideService.CreateTourGuide(data);
+        //        if (result == true)
+        //        {
+        //            return Ok();
+        //        }
+        //        else return BadRequest();
+        //    }
+        //    return BadRequest();
+        //}
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromBody] TourGuideAdminUpdateModel data)

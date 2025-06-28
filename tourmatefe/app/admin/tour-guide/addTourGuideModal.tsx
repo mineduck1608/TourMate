@@ -1,5 +1,7 @@
+import { fetchAreaIdAndName } from "@/app/api/active-area.api";
 import { TourGuide } from "@/types/tour-guide";
-import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useState, useEffect } from "react";
 
 type AddTourGuideModalProps = {
   isOpen: boolean;
@@ -29,6 +31,16 @@ const base: TourGuide = {
   },
   bannerImage: '',
   isVerified: false,
+  tourGuideDescs: [
+    {
+      tourGuideDescId: 0,
+      tourGuideId: 0,
+      yearOfExperience: 0,
+      description: "Không có mô tả",
+      areaId: 0,
+      company: "Không có công ty",
+    }
+  ],
 }
 const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
   isOpen,
@@ -36,6 +48,16 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
   onSave,
 }) => {
   const [formData, setFormData] = useState<TourGuide>({ ...base });
+  const areasMutation = useMutation({
+    mutationFn: fetchAreaIdAndName,
+    onError: (error) => {
+      console.error("Error fetching areas:", error);
+    },
+  });
+
+  useEffect(() => {
+    areasMutation.mutate();
+  }, []);
 
   const handleChange = (
     e: React.ChangeEvent<
@@ -235,6 +257,52 @@ const AddTourGuideModal: React.FC<AddTourGuideModalProps> = ({
                 <option value="Nam">Nam</option>
                 <option value="Nữ">Nữ</option>
                 <option value="Khác">Khác</option>
+              </select>
+            </div>
+
+            {/* Area select */}
+            <div>
+              <label
+                htmlFor="areaId"
+                className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+              >
+                Khu vực hoạt động
+              </label>
+              <select
+                name="areaId"
+                id="areaId"
+                value={formData.tourGuideDescs?.[0]?.areaId ?? 0}
+                onChange={e =>
+                  setFormData(prev => ({
+                    ...prev,
+                    tourGuideDescs: [
+                      {
+                        ...(prev.tourGuideDescs && prev.tourGuideDescs[0]
+                          ? prev.tourGuideDescs[0]
+                          : {
+                              tourGuideDescId: 0,
+                              tourGuideId: 0,
+                              yearOfExperience: 0,
+                              description: "Không có mô tả",
+                              areaId: 0,
+                              company: "Không có công ty",
+                            }),
+                        areaId: Number(e.target.value),
+                      },
+                    ],
+                  }))
+                }
+                required
+                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              >
+                <option value={0} disabled>
+                  {areasMutation.isPending ? "Đang tải..." : "Chọn khu vực"}
+                </option>
+                {areasMutation.data?.map((area) => (
+                  <option key={area.areaId} value={area.areaId}>
+                    {area.areaName}
+                  </option>
+                ))}
               </select>
             </div>
           </div>
