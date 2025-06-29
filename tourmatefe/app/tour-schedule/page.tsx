@@ -44,7 +44,7 @@ export default function TourSchedulePage() {
   return (
     <>
       <MegaMenu />
-      <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50 min-h-screen">
+      <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50">
         {/* Sidebar: ẩn trên mobile, hiện trên md trở lên */}
         <div className="hidden md:flex p-4 md:p-10 flex-col sticky top-20 h-fit self-start">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
@@ -53,7 +53,7 @@ export default function TourSchedulePage() {
         <div className="md:hidden p-2">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
-        <main className="flex-1 py-4 px-2 md:py-10 md:pr-10 space-y-6">
+        <main className="flex-1 md:py-10 md:pr-10 space-y-6">
           {/*
           <div className="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-3">
             <Search className="w-5 h-5 text-gray-400" />
@@ -81,7 +81,6 @@ export default function TourSchedulePage() {
           )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
             <div className="flex items-center justify-center space-x-4 mt-6">
               <button
                 disabled={currentPage === 1}
@@ -99,7 +98,6 @@ export default function TourSchedulePage() {
                 Tiếp <ChevronRight className="inline w-4 h-4" />
               </button>
             </div>
-          )}
         </main>
       </div>
       <Footer />

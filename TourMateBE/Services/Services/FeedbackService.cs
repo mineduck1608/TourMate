@@ -87,7 +87,8 @@ namespace Services.Services
                 CustomerName = f.Customer.FullName, // nếu có navigation property
                 Rating = f.Rating,
                 Content = f.Content,
-                CreatedAt = f.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss")
+                CreatedAt = f.CreatedDate.ToString("dd/MM/yyyy HH:mm:ss"),
+                InvoiceId = f.InvoiceId
             }).ToList();
 
             return feedbackList;
