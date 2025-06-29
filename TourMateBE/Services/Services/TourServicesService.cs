@@ -29,9 +29,9 @@ namespace Services.Services
             await TourServicesRepository.CreateAsync(tourservices);
         }
 
-        public async Task UpdateTourServices(TourService tourservices)
+        public async Task<bool> UpdateTourServices(TourService tourservices)
         {
-            await TourServicesRepository.UpdateAsync(tourservices);
+            return await TourServicesRepository.UpdateAsync(tourservices);
         }
 
         public async Task<bool> DeleteTourServices(int id)
