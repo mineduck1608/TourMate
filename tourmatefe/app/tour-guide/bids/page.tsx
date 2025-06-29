@@ -89,73 +89,69 @@ function TourBidPageMain() {
                     </button>
                 </div>
 
-                <div className="container mx-auto px-4 py-6">
-                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        {/* Left Sidebar - Profile & Tour Guides */}
-                        <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-                            <div className="lg:sticky lg:top-24 space-y-6">
-                                <Profile tourGuide={tourGuide} />
-                                <div className="hidden lg:block">
-                                    <RotatingTourGuide excludeId={tourGuide?.tourGuideId} />
-                                </div>
+                <div className="mx-auto p-10">
+                    <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-120px)]">
+                        {/* Left Sidebar - Sticky */}
+                        <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"} lg:sticky lg:top-28 h-fit`}>
+                            <Profile tourGuide={tourGuide} />
+                            <div className="hidden lg:block">
+                                <RotatingTourGuide excludeId={tourGuide?.tourGuideId} />
                             </div>
                         </div>
 
                         {/* Main Content */}
-                        <div className="lg:col-span-6">
+                        <div className="lg:col-span-6 overflow-y-auto scrollbar-hide max-h-[calc(150vh-120px)]">
                             <Bids tourGuide={tourGuide} search={content} />
                         </div>
 
-                        {/* Right Sidebar - Search & Popular Areas */}
-                        <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-                            <div className="lg:sticky lg:top-24 space-y-6">
-                                {/* Desktop Search */}
-                                <div className="hidden lg:block rounded-md border shadow-lg p-5 bg-white">
-                                    <input
-                                        className="w-full p-3 mb-4 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
-                                        value={content}
-                                        onChange={(e) => setContent(e.target.value)}
-                                        placeholder="Tìm kiếm..."
-                                    />
-                                    <h4 className="text-lg md:text-xl font-medium leading-none mb-4">Địa điểm nổi tiếng</h4>
-                                    <div className="space-y-3">
-                                        {areas.map((v) => (
-                                            <div
-                                                key={v.areaId}
-                                                className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0"
+                        {/* Right Sidebar - Sticky */}
+                        <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"} lg:sticky lg:top-28 h-fit`}>
+                            {/* Desktop Search */}
+                            <div className="hidden lg:block rounded-md border shadow-lg p-5 bg-white">
+                                <input
+                                    className="w-full p-3 mb-4 border-2 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none"
+                                    value={content}
+                                    onChange={(e) => setContent(e.target.value)}
+                                    placeholder="Tìm kiếm..."
+                                />
+                                <h4 className="text-lg md:text-xl font-medium leading-none mb-4">Địa điểm nổi tiếng</h4>
+                                <div className="space-y-3">
+                                    {areas.map((v) => (
+                                        <div
+                                            key={v.areaId}
+                                            className="flex justify-between items-center py-2 border-b border-gray-100 last:border-b-0"
+                                        >
+                                            <Link
+                                                href={"/services/active-area/detail?id=" + v.areaId}
+                                                className="text-blue-600 hover:text-blue-800 font-medium flex-1 mr-2 break-words"
                                             >
-                                                <Link
-                                                    href={"/services/active-area/detail?id=" + v.areaId}
-                                                    className="text-blue-600 hover:text-blue-800 font-medium flex-1 mr-2 break-words"
-                                                >
-                                                    {v.areaName}
-                                                </Link>
-                                                <span className="text-gray-500 text-sm flex-shrink-0">({v.tourBidCount} bài đăng)</span>
-                                            </div>
-                                        ))}
-                                    </div>
+                                                {v.areaName}
+                                            </Link>
+                                            <span className="text-gray-500 text-sm flex-shrink-0">({v.tourBidCount} bài đăng)</span>
+                                        </div>
+                                    ))}
                                 </div>
-
-                                {/* Mobile Popular Areas */}
-                                <div className="lg:hidden rounded-md border shadow-lg p-5 bg-white">
-                                    <h4 className="text-lg font-medium leading-none mb-4">Địa điểm nổi tiếng</h4>
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                                        {areas.map((v) => (
-                                            <div key={v.areaId} className="p-3 border rounded-lg hover:bg-gray-50 transition-colors">
-                                                <Link
-                                                    href={"/services/active-area/detail?id=" + v.areaId}
-                                                    className="text-blue-600 hover:text-blue-800 font-medium block break-words"
-                                                >
-                                                    {v.areaName}
-                                                </Link>
-                                                <span className="text-gray-500 text-sm">{v.tourBidCount} bài đăng</span>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                <RotatingActiveArea />
                             </div>
+
+                            {/* Mobile Popular Areas */}
+                            <div className="lg:hidden rounded-md border shadow-lg p-5 bg-white">
+                                <h4 className="text-lg font-medium leading-none mb-4">Địa điểm nổi tiếng</h4>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    {areas.map((v) => (
+                                        <div key={v.areaId} className="p-3 border rounded-lg hover:bg-gray-50 transition-colors">
+                                            <Link
+                                                href={"/services/active-area/detail?id=" + v.areaId}
+                                                className="text-blue-600 hover:text-blue-800 font-medium block break-words"
+                                            >
+                                                {v.areaName}
+                                            </Link>
+                                            <span className="text-gray-500 text-sm">{v.tourBidCount} bài đăng</span>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <RotatingActiveArea />
                         </div>
                     </div>
                 </div>

@@ -96,25 +96,23 @@ function TourBidPageMain() {
                         </button>
                     </div>
 
-                    <div className="container mx-auto px-4 py-6">
-                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                            {/* Left Sidebar - Profile & Tour Guides */}
-                            <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
-                                <div className="lg:sticky lg:top-24 space-y-6">
-                                    <Profile customer={customer} />
-                                    <div className="hidden lg:block">
-                                        <RotatingTourGuide />
-                                    </div>
+                    <div className="mx-auto p-5">
+                        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 min-h-[calc(100vh-120px)]">
+                            {/* Left Sidebar */}
+                            <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"} lg:sticky lg:top-24 h-fit`}>
+                                <Profile customer={customer} />
+                                <div className="hidden lg:block">
+                                    <RotatingTourGuide />
                                 </div>
                             </div>
 
                             {/* Main Content */}
-                            <div className="lg:col-span-6">
+                            <div className="lg:col-span-6 overflow-y-auto scrollbar-hide max-h-[calc(150vh-120px)]">
                                 <TourBidPage customer={customer} search={content} />
                             </div>
 
-                            {/* Right Sidebar - Search & Popular Areas */}
-                            <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"}`}>
+                            {/* Right Sidebar */}
+                            <div className={`lg:col-span-3 space-y-6 ${sidebarOpen ? "block" : "hidden lg:block"} lg:sticky lg:top-24 h-fit`}>
                                 <div className="lg:sticky lg:top-24 space-y-6">
                                     {/* Desktop Search */}
                                     <div className="hidden lg:block rounded-md border shadow-lg p-5 bg-white">
