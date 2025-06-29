@@ -52,7 +52,8 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
-**/.vs
+/TourMateBE/.vs
+/TourMateRemoveMembership/.vs
 
 # appsettings.json
 appsettings.Development.json
