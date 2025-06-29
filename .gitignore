@@ -53,6 +53,7 @@ CodeCoverage/
 TestResult.xml
 nunit-*.xml
 /TourMateBE/.vs
+/TourMateRemoveMembership/.vs
 
 # appsettings.json
 appsettings.Development.json
@@ -61,4 +62,3 @@ appsettings.json
 
 # firebase
 firebase-adminsdk.json
-/TourMateRemoveMembership/.vs
