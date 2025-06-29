@@ -69,7 +69,7 @@ export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport,
                 <SelectContent>
                   <SelectItem value="all">Tất cả vùng</SelectItem>
                   {areasMutation.data?.map((area) => (
-                    <SelectItem key={area.areaId} value={area.areaId.toString()}>
+                    <SelectItem key={area.areaId} value={area.areaName}>
                       {area.areaName}
                     </SelectItem>
                   ))}
