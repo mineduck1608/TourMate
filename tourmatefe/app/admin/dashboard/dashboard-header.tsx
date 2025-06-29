@@ -7,10 +7,9 @@ import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { format } from "date-fns"
 import type { DashboardFilters } from "@/types/admin-dashboard"
 import type { DateRange } from "react-day-picker"
-import { useEffect, useState } from "react"
+import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { fetchAreaIdAndName } from "@/app/api/active-area.api"
-import { AreaIdAndName } from "@/types/active-area"
 
 interface DashboardHeaderProps {
   filters: DashboardFilters
