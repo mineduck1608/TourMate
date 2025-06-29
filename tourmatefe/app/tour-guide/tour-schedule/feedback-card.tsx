@@ -40,7 +40,8 @@ export default function FeedbackCard({
       setInvoice(data);
       setShowInvoice(true);
     } catch (e) {
-      alert("Không tìm thấy hóa đơn");
+      alert("Không tìm thấy hóa đơn")
+      console.error("Error fetching invoice:", e);
     }
     setLoading(false);
   };
