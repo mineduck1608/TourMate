@@ -21,16 +21,12 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport, loading }: DashboardHeaderProps) {
-  const [areas, setAreas] = useState<AreaIdAndName[]>([])
 
   const areasMutation = useMutation({
     mutationFn: fetchAreaIdAndName,
     onError: (error) => {
       console.error("Error fetching areas:", error)
-    },
-    onSuccess: (data) => {
-      setAreas(data)
-    },
+    }
   })
 
   useEffect(() => {
