@@ -845,7 +845,7 @@ public partial class TourmateContext : DbContext
                 .HasMaxLength(255)
                 .HasColumnName("serviceName");
             entity.Property(e => e.Title)
-                .HasMaxLength(50)
+                .HasMaxLength(200)
                 .HasDefaultValue("")
                 .HasColumnName("title");
             entity.Property(e => e.TourDesc).HasColumnName("tourDesc");

@@ -139,7 +139,7 @@ export default function ConversationList({ onSelect, selectedId, onConversations
   }
 
   return (
-    <div className="flex flex-col border-r border-gray-200 h-full w-80 bg-white">
+<div className="flex flex-col w-100 md:w-[320px] border-r border-gray-200 h-full bg-white">
       {/* Header */}
       <div className="p-6 border-b border-gray-200">
         <div className="flex items-center gap-3 mb-4">

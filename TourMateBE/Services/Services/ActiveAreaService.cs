@@ -1,4 +1,4 @@
-using Repositories.IRepositories;
+﻿using Repositories.IRepositories;
 using Repositories.Models;
 using Repositories.Repositories;
 using Repositories.ResponseModels;
@@ -19,12 +19,16 @@ namespace Services.Services
         {
             var areas = await ActiveAreaRepository.GetAllList();
 
-            return areas.Select(a => new AreaIdAndName
-            {
-                AreaId = a.AreaId,
-                AreaName = a.AreaName
-            }).ToList();
+            return areas
+                .OrderBy(a => a.AreaName) // Sắp xếp theo tên
+                .Select(a => new AreaIdAndName
+                {
+                    AreaId = a.AreaId,
+                    AreaName = a.AreaName
+                })
+                .ToList();
         }
+
 
         public async Task<ActiveArea> GetActiveArea(int id)
         {
@@ -36,7 +40,7 @@ namespace Services.Services
             return await  ActiveAreaRepository.GetAllPaged(pageSize, pageIndex);
         }
 
-        // L?y c�c ActiveAreas v?i b? l?c v� ph�n trang
+        // L?y các ActiveAreas v?i b? l?c và phân trang
         public async Task<PagedResult<ActiveArea>> GetActiveAreas(string search, string region, int page, int limit)
         {
             return await ActiveAreaRepository.GetActiveAreas(search, region, page, limit);
