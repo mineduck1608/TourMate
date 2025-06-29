@@ -22,7 +22,7 @@ export default function TourSchedulePage() {
   const token = useToken('accessToken')
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accountId = Number(payLoad?.AccountId)
-  const role = payLoad?.Role
+  const role = payLoad?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ['tour-schedules', selectedFilter, currentPage],
