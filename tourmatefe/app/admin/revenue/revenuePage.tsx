@@ -57,11 +57,9 @@ export default function RevenuePage() {
 
   const mappedRevenues = React.useMemo(() => {
     if (!revenuesData?.result || !tourGuidesData?.result) return [];
-
     const guideMap = Object.fromEntries(
       tourGuidesData.result.map((g) => [g.tourGuideId, g])
     );
-
     return revenuesData.result.map((rev) => {
       const guide = guideMap[rev.tourGuideId];
       return {
@@ -72,20 +70,6 @@ export default function RevenuePage() {
       };
     });
   }, [revenuesData, tourGuidesData]);
-
-  if (isLoadingRevenues || isLoadingTourGuides) {
-    return (
-      <div className="flex items-center justify-center h-48">
-        <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
-      </div>
-    );
-  }
-
-  if (errorRevenues || errorTourGuides) {
-    return (
-      <div className="text-red-500 text-center p-4">Lỗi khi tải dữ liệu</div>
-    );
-  }
 
   const filteredRevenues = React.useMemo(() => {
     return mappedRevenues.filter((item) => {
@@ -103,6 +87,22 @@ export default function RevenuePage() {
       return matchName && matchStatus;
     });
   }, [mappedRevenues, search, status]);
+
+  if (isLoadingRevenues || isLoadingTourGuides) {
+    return (
+      <div className="flex items-center justify-center h-48">
+        <div className="animate-spin h-8 w-8 border-4 border-blue-500 rounded-full border-t-transparent"></div>
+      </div>
+    );
+  }
+
+  if (errorRevenues || errorTourGuides) {
+    return (
+      <div className="text-red-500 text-center p-4">Lỗi khi tải dữ liệu</div>
+    );
+  }
+
+
 
   return (
     <div>
