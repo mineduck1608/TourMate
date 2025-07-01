@@ -76,7 +76,7 @@ export function SummaryBoxes() {
     {
       title: "Các Tour Guide Chưa Được Trả Tiền",
       value: totalUnpaidGuides,
-      subtitle: "Guides awaiting payment",
+      subtitle: "Tour Guide đang chờ thanh toán",
       color: "orange",
       rightIcon: (
         <span
@@ -90,14 +90,14 @@ export function SummaryBoxes() {
     {
       title: "Tiền Hoa Hồng Đang Được Chọn",
       value: "$0.00",
-      subtitle: "0 items selected",
+      subtitle: "0 đã được chọn",
       color: "blue",
       rightIcon: <span className="text-blue-400 text-lg">📈</span>,
     },
     {
       title: "Lượng Booking Tháng Này",
       value: bookingsThisMonth,
-      subtitle: "Current month bookings",
+      subtitle: "Lượt đặt trong tháng này",
       color: "green",
       rightIcon: <span className="text-green-400 text-lg">📅</span>,
     },

@@ -15,12 +15,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
   Table,
@@ -32,7 +26,6 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { getAllAccount } from "@/app/api/account.api";
 import { getAllRevenue } from "@/app/api/revenue.api";
 import { getTourGuides } from "@/app/api/tour-guide.api";
@@ -60,7 +53,7 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const LIMIT = 10; // Giới hạn số bản ghi/trang
+  const LIMIT = 20; // Giới hạn số bản ghi/trang
 
   // React Table setup
   const table = useReactTable({
@@ -83,7 +76,6 @@ export function DataTable<TData, TValue>({
   });
 
   // React Query lấy dữ liệu theo page
-  const [searchTerm, setSearchTerm] = React.useState("");
   const { refetch: refetchRevenues } = useQuery({
     queryKey: ["revenues", page],
     queryFn: ({ queryKey, signal }) => {
@@ -120,49 +112,17 @@ export function DataTable<TData, TValue>({
     refetchRevenues();
     refetchTourGuides();
     refetchAccounts();
-  }, [searchTerm]);
+  }, []);
 
   return (
     <div>
-      <div className="flex items-center pb-5">
-        <Input
-          type="text"
-          placeholder="Tìm kiếm giao dịch..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="max-w-sm bg-white mr-5 p-2 border rounded"
-        />
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="outline" className="ml-auto">
-              Hiển thị cột
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {table
-              .getAllColumns()
-              .filter((column) => column.getCanHide())
-              .map((column) => (
-                <DropdownMenuCheckboxItem
-                  key={column.id}
-                  className="capitalize"
-                  checked={column.getIsVisible()}
-                  onCheckedChange={(value) => column.toggleVisibility(!!value)}
-                >
-                  {column.id}
-                </DropdownMenuCheckboxItem>
-              ))}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </div>
-
-      <div className="rounded-md border bg-white">
+      <div className="rounded-md border bg-white text-center">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
                 {headerGroup.headers.map((header) => (
-                  <TableHead key={header.id}>
+                  <TableHead key={header.id} className="text-center">
                     {!header.isPlaceholder &&
                       flexRender(
                         header.column.columnDef.header,

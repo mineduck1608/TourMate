@@ -36,7 +36,7 @@ namespace Repositories.Repositories
         {
             // Truy vấn dữ liệu từ cơ sở dữ liệu, loại bỏ serviceId hiện tại và lấy dữ liệu ngẫu nhiên
             var query = _context.TourServices
-                                .Where(x => x.TourGuideId == tourGuideId && x.ServiceId != serviceId)
+                                .Where(x => x.TourGuideId == tourGuideId && x.ServiceId != serviceId && !x.IsDeleted)
                                 .OrderBy(x => Guid.NewGuid())  // Sắp xếp ngẫu nhiên
                                 .AsQueryable();
 
