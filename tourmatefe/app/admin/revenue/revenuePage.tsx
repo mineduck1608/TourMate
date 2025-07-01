@@ -49,7 +49,9 @@ export default function RevenuePage() {
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return await getTourGuides(page, LIMIT, controller.signal);
+      const result = await getTourGuides(page, LIMIT, controller.signal);
+      console.log("Tour guides data:", result);
+      return result;
     },
     retry: 0,
     refetchOnWindowFocus: false,
@@ -101,8 +103,6 @@ export default function RevenuePage() {
       <div className="text-red-500 text-center p-4">Lỗi khi tải dữ liệu</div>
     );
   }
-
-
 
   return (
     <div>

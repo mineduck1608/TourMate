@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const LIMIT = 10; // Giới hạn số bản ghi/trang
+  const LIMIT = 20; // Giới hạn số bản ghi/trang
 
   // React Table setup
   const table = useReactTable({
