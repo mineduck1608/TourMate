@@ -32,7 +32,9 @@ export default function RevenuePage() {
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      return await getAllRevenue(page, LIMIT, controller.signal);
+      const result = await getAllRevenue(page, LIMIT, controller.signal);
+      console.log("Revenues data:", result);
+      return result;
     },
     retry: 0,
     refetchOnWindowFocus: false,
@@ -49,7 +51,7 @@ export default function RevenuePage() {
       setTimeout(() => {
         controller.abort();
       }, 5000);
-      const result = await getTourGuides(page, LIMIT, controller.signal);
+      const result = await getTourGuides(1, 1000, controller.signal);
       console.log("Tour guides data:", result);
       return result;
     },

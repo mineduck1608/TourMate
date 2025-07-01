@@ -94,7 +94,11 @@ export function RevenueUnpaidBox() {
               </div>
               <div className="text-right">
                 <div className="text-red-500 font-bold text-lg">
-                  ${guide.unpaidAmount.toFixed(2)}
+                  {guide.unpaidAmount.toLocaleString("vi-VN", {
+                    style: "currency",
+                    currency: "VND",
+                    minimumFractionDigits: 0,
+                  })}
                 </div>
                 <div className="text-gray-400 text-xs">
                   Tổng chưa thanh toán

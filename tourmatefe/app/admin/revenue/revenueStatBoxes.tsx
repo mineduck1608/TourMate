@@ -66,8 +66,10 @@ export function SummaryBoxes() {
   const boxes = [
     {
       title: "Tiền Hoa Hồng Chưa Thanh Toán",
-      value: `$${totalUnpaidRevenue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
+      value: `$${totalUnpaidRevenue.toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        minimumFractionDigits: 0,
       })}`,
       subtitle: "Các Giao Dịch Đang Chờ",
       color: "red",

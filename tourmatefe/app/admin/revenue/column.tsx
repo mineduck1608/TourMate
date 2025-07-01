@@ -71,7 +71,12 @@ export const columns: ColumnDef<RevenueTableRow>[] = [
     header: "Tổng tiền",
     cell: ({ row }) => {
       const value = row.getValue("totalAmount");
-      return value !== undefined ? value : "";
+      return value !== undefined && value !== null
+      ? Number(value).toLocaleString("vi-VN", {
+        style: "currency",
+        currency: "VND",
+        minimumFractionDigits: 0,
+      }) : "";
     },
   },
   {
@@ -79,7 +84,13 @@ export const columns: ColumnDef<RevenueTableRow>[] = [
     header: "Thực nhận",
     cell: ({ row }) => {
       const value = row.getValue("actualReceived");
-      return value !== undefined ? value : "";
+      return value !== undefined && value !== null
+        ? Number(value).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+            minimumFractionDigits: 0,
+          })
+        : "";
     },
   },
   {
@@ -87,7 +98,13 @@ export const columns: ColumnDef<RevenueTableRow>[] = [
     header: "Hoa hồng nền tảng",
     cell: ({ row }) => {
       const value = row.getValue("platformCommission");
-      return value !== undefined ? value : "";
+      return value !== undefined && value !== null
+        ? Number(value).toLocaleString("vi-VN", {
+            style: "currency",
+            currency: "VND",
+            minimumFractionDigits: 0,
+          })
+        : "";
     },
   },
   {

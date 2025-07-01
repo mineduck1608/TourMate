@@ -26,7 +26,6 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { getAllAccount } from "@/app/api/account.api";
 import { getAllRevenue } from "@/app/api/revenue.api";
 import { getTourGuides } from "@/app/api/tour-guide.api";
 
@@ -53,7 +52,7 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const LIMIT = 40; // Giới hạn số bản ghi/trang
+  const LIMIT = 10; // Giới hạn số bản ghi/trang
 
   // React Table setup
   const table = useReactTable({
@@ -94,24 +93,13 @@ export function DataTable<TData, TValue>({
     enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
   });
 
-  const { refetch: refetchAccounts } = useQuery({
-    queryKey: ["accounts", page],
-    queryFn: ({ queryKey, signal }) => {
-      const [, currentPage] = queryKey;
-      return getAllAccount(currentPage, LIMIT, signal);
-    },
-    enabled: false, // Tắt tự động fetch khi component mount, gọi refetch thủ công
-  });
-
   React.useEffect(() => {
     refetchRevenues();
     refetchTourGuides();
-    refetchAccounts();
   }, [page]);
   React.useEffect(() => {
     refetchRevenues();
     refetchTourGuides();
-    refetchAccounts();
   }, []);
 
   return (
