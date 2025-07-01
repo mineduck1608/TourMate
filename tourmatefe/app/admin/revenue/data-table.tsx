@@ -76,7 +76,6 @@ export function DataTable<TData, TValue>({
   });
 
   // React Query lấy dữ liệu theo page
-  const [searchTerm] = React.useState("");
   const { refetch: refetchRevenues } = useQuery({
     queryKey: ["revenues", page],
     queryFn: ({ queryKey, signal }) => {
@@ -113,7 +112,7 @@ export function DataTable<TData, TValue>({
     refetchRevenues();
     refetchTourGuides();
     refetchAccounts();
-  }, [searchTerm]);
+  }, []);
 
   return (
     <div>
