@@ -91,7 +91,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                                             </button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent align="end" className="w-32">
-                                            <DropdownMenuItem
+                                            {tourBid.status === 'Hoạt động' && <DropdownMenuItem
                                                 onClick={() => {
                                                     setTarget({ ...tourBid })
                                                     setModalOpen({ ...modalOpen, edit: true })
@@ -99,7 +99,7 @@ export default function TourBidRender({ tourBid }: { tourBid: TourBidListResult 
                                                 className="cursor-pointer"
                                             >
                                                 Cập nhật
-                                            </DropdownMenuItem>
+                                            </DropdownMenuItem>}
                                             <DropdownMenuItem
                                                 onClick={() => {
                                                     setTarget({ ...tourBid })

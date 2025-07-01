@@ -7,6 +7,7 @@ import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
 import { CustomerSiteContext, CustomerSiteContextProp } from "../services/context";
 import { baseData } from "./tour-bid-task-context";
+import { extractRawContentFromHTML } from "@/types/other";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -109,7 +110,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 htmlFor="areaType"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Giá mong đợi (tùy chọn)
+                                Giá mong đợi
                             </label>
                             <input
                                 type="number"
@@ -118,6 +119,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                                 min="0"
                                 step="1"
+                                required
                                 value={target.maxPrice ?? ''}
                                 onChange={(e) => {
                                     const rawValue = e.target.value;
@@ -168,7 +170,7 @@ const BidCreateModal: React.FC<BidCreateModalProps> = ({
                     </div>
                     <div className="flex justify-end">
                         <button
-                            disabled={target.content.length === 0 || target.placeRequested === 0}
+                            disabled={extractRawContentFromHTML(target.content).length === 0 || target.placeRequested === 0 || (target.maxPrice === undefined)}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >
