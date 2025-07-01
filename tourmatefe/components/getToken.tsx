@@ -11,10 +11,10 @@ export function useToken(key: string = "accessToken") {
   const [token, setToken] = useState<string | null>(null);
   useEffect(() => {
       const storedToken = sessionStorage.getItem(key);
-      if (!storedToken) throw new Error("Token không tồn tại trong sessionStorage");
+      if (!storedToken) {
+        return;
+      }
       setToken(storedToken);
-
-
   }, [key]);
 
   return token;

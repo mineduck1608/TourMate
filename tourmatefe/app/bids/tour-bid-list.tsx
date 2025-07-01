@@ -71,7 +71,7 @@ function TourBidList({ search }: { search: string }) {
       }
       catch (error) {
         console.error("Error sending location or notification:", error);
-        toast.error("Có lỗi xảy ra khi gửi thông báo");
+        //toast.error("Có lỗi xảy ra khi gửi thông báo");
       }
     },
     onError: (error) => {
