@@ -22,6 +22,8 @@ namespace Repositories.DTO.UpdateModels
         public string Company { get; set; }
         public int AccountId { get; set; }
         public string BannerImage { get; set; }
+        public string? BankAccountNumber { get; set; }
+        public string? BankName { get; set; }
         public TourGuide Convert() => new()
         {
             TourGuideId = TourGuideId,

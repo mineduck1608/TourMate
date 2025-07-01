@@ -32,7 +32,7 @@ const dummyDesc: TourGuideDesc = {
         createdAt: ""
     }
 }
-export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { tourGuide: TourGuide, updateFn: (tourGuide: TourGuide) => void, isOpen: boolean, onClose: () => void }) {
+export default function TourGuideEditModal({ tourGuide, updateFn, isOpen, onClose }: { tourGuide: TourGuide, updateFn: (tourGuide: TourGuide) => void, isOpen: boolean, onClose: () => void }) {
     const [formData, setFormData] = useState(tourGuide)
     const handleChange = (
         e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
@@ -72,7 +72,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                 onClick={onClose}
             ></div>
 
-            <div className="relative p-4 w-full max-w-3xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[600px] overflow-y-auto">
+            <div className="relative p-4 w-full max-w-3xl bg-white rounded-lg shadow-md dark:bg-gray-800 z-10 max-h-[80vh] overflow-y-auto">
                 <div className="flex justify-between items-center pb-4 mb-4 rounded-t border-b sm:mb-5 dark:border-gray-600">
                     <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
                         Chỉnh sửa thông tin
@@ -146,7 +146,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                         </div>
                         <div className="lg:grid grid-cols-2 gap-2 *:mb-4">
                             <div className="grid gap-2">
-                                <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+                                <Label htmlFor="dateOfBirth" className='lg:-mt-2 lg:mb-2'>Ngày sinh</Label>
                                 <div className="relative">
                                     <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                         <svg
@@ -166,7 +166,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 </div>
                             </div>
                             <div className="grid gap-2">
-                                <Label htmlFor="gender">Giới tính</Label>
+                                <Label htmlFor="gender" className='lg:-mt-2 lg:mb-2'>Giới tính</Label>
                                 <select
                                     id="gender"
                                     name="gender"
@@ -186,7 +186,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                     </div>
                     <div className="lg:grid grid-cols-3 gap-4 -mt-6 *:mb-4">
                         <div className="grid gap-2">
-                            <Label htmlFor="company">Công ty</Label>
+                            <Label htmlFor="company" className='lg:-mt-2 lg:mb-2'>Công ty</Label>
                             <Input id="company" type="text"
                                 name="company"
                                 value={formData.tourGuideDescs?.[0].company}
@@ -194,7 +194,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                 required />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="yearOfExperience">Số năm kinh nghiệm</Label>
+                            <Label htmlFor="yearOfExperience" className='lg:-mt-2 lg:mb-2'>Số năm kinh nghiệm</Label>
                             <Input id="yearOfExperience" type="number"
                                 name="yearOfExperience"
                                 value={formData.tourGuideDescs?.[0].yearOfExperience}
@@ -202,7 +202,7 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                             />
                         </div>
                         <div className="grid gap-2">
-                            <Label htmlFor="areaId">Khu vực hoạt động</Label>
+                            <Label htmlFor="areaId" className='lg:-mt-2 lg:mb-2'>Khu vực hoạt động</Label>
                             <select
                                 id="areaId"
                                 name="areaId"
@@ -222,6 +222,27 @@ export default function ProfileForm({ tourGuide, updateFn, isOpen, onClose }: { 
                                     )
                                 }
                             </select>
+                        </div>
+                    </div>
+                    <div className="lg:grid grid-cols-2 gap-4 -mt-6 *:mb-4">
+                        <div className="grid gap-2">
+                            <Label htmlFor="bankAccountNumber" className='lg:mb-2'>Số tài khoản ngân hàng</Label>
+                            <Input id="bankAccountNumber" type="text"
+                                name="bankAccountNumber"
+                                value={formData.bankAccountNumber ?? ''}
+                                onChange={(e) => handleChange(e)}
+                                required
+                            />
+                        </div>
+                        <div className="grid gap-2">
+                            <Label htmlFor="bankName" className='lg:mb-2'>Ngân hàng</Label>
+                            <Input id="bankName" type="text"
+                                name="bankName"
+                                value={formData.bankName ?? ''}
+                                onChange={(e) => handleChange(e)}
+                                required
+
+                            />
                         </div>
                     </div>
                     <div className="sm:col-span-2 -mt-6">

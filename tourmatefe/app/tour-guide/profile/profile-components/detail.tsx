@@ -72,7 +72,7 @@ function Detail({ s }: { s: TourGuide }) {
                 </div>
                 <div className="lg:grid grid-cols-2 gap-2 *:mb-4">
                     <div className="grid gap-2">
-                        <Label htmlFor="dateOfBirth">Ngày sinh</Label>
+                        <Label htmlFor="dateOfBirth" className='lg:-mt-2 lg:mb-2'>Ngày sinh</Label>
                         <div className="relative">
                             <div className="absolute inset-y-0 start-0 flex items-center ps-3 pointer-events-none">
                                 <svg
@@ -92,7 +92,7 @@ function Detail({ s }: { s: TourGuide }) {
                         </div>
                     </div>
                     <div className="grid gap-2">
-                        <Label htmlFor="gender">Giới tính</Label>
+                        <Label htmlFor="gender" className='lg:-mt-2 lg:mb-2'>Giới tính</Label>
                         <Input
                             id="address"
                             name="address"
@@ -105,14 +105,14 @@ function Detail({ s }: { s: TourGuide }) {
             </div>
             <div className="lg:grid grid-cols-3 gap-4 -mt-6 *:mb-4">
                 <div className="grid gap-2">
-                    <Label htmlFor="company">Công ty</Label>
+                    <Label htmlFor="company" className='lg:-mt-2 lg:mb-2'>Công ty</Label>
                     <Input id="company" type="text"
                         name="company"
                         value={s.tourGuideDescs?.[0].company}
                         readOnly />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="yearOfExperience">Số năm kinh nghiệm</Label>
+                    <Label htmlFor="yearOfExperience" className='lg:-mt-2 lg:mb-2'>Số năm kinh nghiệm</Label>
                     <Input id="yearOfExperience" type="number"
                         name="yearOfExperience"
                         value={s.tourGuideDescs?.[0].yearOfExperience}
@@ -120,11 +120,28 @@ function Detail({ s }: { s: TourGuide }) {
                     />
                 </div>
                 <div className="grid gap-2">
-                    <Label htmlFor="areaId">Khu vực hoạt động</Label>
+                    <Label htmlFor="areaId" className='lg:-mt-2 lg:mb-2'>Khu vực hoạt động</Label>
                     <Input id="yearOfExperience" type="text"
                         name="yearOfExperience"
                         value={s.tourGuideDescs?.[0].area?.areaName}
                          readOnly
+                    />
+                </div>
+            </div>
+            <div className="lg:grid grid-cols-2 gap-4 -mt-6 *:mb-4">
+                <div className="grid gap-2">
+                    <Label htmlFor="bankAccountNumber" className='lg:mb-2'>Số tài khoản ngân hàng</Label>
+                    <Input id="bankAccountNumber" type="text"
+                        name="bankAccountNumber"
+                        value={s.bankAccountNumber}
+                        readOnly />
+                </div>
+                <div className="grid gap-2">
+                    <Label htmlFor="bankName" className='lg:mb-2'>Ngân hàng</Label>
+                    <Input id="bankName" type="text"
+                        name="bankName"
+                        value={s.bankName}
+                        readOnly
                     />
                 </div>
             </div>

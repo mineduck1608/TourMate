@@ -11,7 +11,7 @@ import { RoleSelectionModal } from "@/components/role-selection-modal";
 import Link from "next/link";
 import { googleLogin, login } from "../api/account.api";
 import axios from "axios";
-import { useRouter } from "next/navigation"; // ✅ App Router
+import { useRouter } from "next/navigation";
 import { MyJwtPayload } from "@/types/JwtPayload";
 import { jwtDecode } from "jwt-decode";
 import { auth, provider } from "@/firebaseConfig";

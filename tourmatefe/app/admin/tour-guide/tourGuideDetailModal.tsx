@@ -30,9 +30,8 @@ const TourGuideDetailModal: React.FC<TourGuideDetailModalProps> = ({
 
   return (
     <div
-      className={`fixed inset-0 z-50 flex items-center justify-center ${
-        isOpen ? "block" : "hidden"
-      }`}
+      className={`fixed inset-0 z-50 flex items-center justify-center ${isOpen ? "block" : "hidden"
+        }`}
       aria-modal="true"
       role="dialog"
       aria-labelledby="modal-title"
@@ -40,9 +39,8 @@ const TourGuideDetailModal: React.FC<TourGuideDetailModalProps> = ({
     >
       {/* Overlay */}
       <div
-        className={`absolute inset-0 bg-black opacity-50 ${
-          isOpen ? "block" : "hidden"
-        }`}
+        className={`absolute inset-0 bg-black opacity-50 ${isOpen ? "block" : "hidden"
+          }`}
         onClick={onClose}
       ></div>
 
@@ -154,6 +152,38 @@ const TourGuideDetailModal: React.FC<TourGuideDetailModalProps> = ({
               value={formatDate(formData.account?.createdDate || "")}
               readOnly
               className="w-full rounded-md border border-gray-300 bg-gray-50 px-3 py-2 text-gray-900"
+            />
+          </div>
+          <div className="sm:col-span-1">
+            <label
+              htmlFor="bankAccountNumber"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Số tài khoản ngân hàng
+            </label>
+            <input
+              type="text"
+              name="bankAccountNumber"
+              id="bankAccountNumber"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              value={formData.bankAccountNumber}
+              readOnly
+            />
+          </div>
+          <div className="sm:col-span-1">
+            <label
+              htmlFor="bankName"
+              className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
+            >
+              Ngân hàng
+            </label>
+            <input
+              type="text"
+              name="bankName"
+              id="bankName"
+              className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
+              value={formData.bankName}
+              readOnly
             />
           </div>
         </section>

@@ -45,9 +45,9 @@ builder.Services.AddSingleton<IUserIdProvider, CustomUserIdProvider>();
 
 
 // Đăng ký Azure SignalR Service
-builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
+//builder.Services.AddSignalR().AddAzureSignalR(builder.Configuration["Azure:SignalR:ConnectionString"]!);
 
-//builder.Services.AddSignalR();
+builder.Services.AddSignalR();
 
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

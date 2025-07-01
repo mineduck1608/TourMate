@@ -29,7 +29,6 @@ export function SignupForm({
   className,
   ...props
 }: React.ComponentPropsWithoutRef<"form">) {
-  // const router = useRouter()
   const [profileImage, setProfileImage] = useState<string | null>(null);
   const [formData, setFormData] = useState({
     fullName: "",

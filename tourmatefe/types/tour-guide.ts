@@ -15,7 +15,9 @@ export type TourGuide = {
     tourGuideDescs?: TourGuideDesc[],
     tourServices?: TourService[],
     account: Account,
-    bannerImage: string
+    bannerImage: string,
+    bankAccountNumber?: string,
+    bankName?: string,
 }
 
 export type TourGuideDesc = {

@@ -4,6 +4,8 @@ import { ColumnDef } from "@tanstack/react-table";
 import { Checkbox } from "@/components/ui/checkbox";
 import { TourGuide } from "@/types/tour-guide";
 import TourGuideActions from "./tourGuideAction";
+import { useContext } from "react";
+import { SimplifiedAreaContext, SimplifiedAreaContextProps } from "./simplified-area-context";
 
 // Hàm định dạng ngày theo dd/mm/yyyy
 // const formatDate = (dateString: string) => {
@@ -14,14 +16,13 @@ import TourGuideActions from "./tourGuideAction";
 //   const hours = String(date.getHours()).padStart(2, '0');
 //   const minutes = String(date.getMinutes()).padStart(2, '0');
 //   const seconds = String(date.getSeconds()).padStart(2, '0');
-  
+
 //   return `${day}/${month}/${year} ${hours}:${minutes}:${seconds}`;
 // };
 
 
 
 export const columns: ColumnDef<TourGuide>[] = [
-
   {
     id: "select",
     header: ({ table }) => (
@@ -60,6 +61,17 @@ export const columns: ColumnDef<TourGuide>[] = [
     ),
   },
   {
+    header: "Khu vưc hoạt động",
+    cell: ({ row }) => {
+      const t = row.original;
+      const tDesc = t.tourGuideDescs?.[0]
+      const id = tDesc?.areaId ?? -1;
+      return (
+        <AreaName areaId={id} />
+      )
+    },
+  },
+  {
     accessorKey: "account.email",
     header: "Email"
   },
@@ -91,7 +103,7 @@ export const columns: ColumnDef<TourGuide>[] = [
         </span>
       );
     },
-  },  
+  },
   {
     accessorKey: "image",
     header: "Hình ảnh",
@@ -107,9 +119,9 @@ export const columns: ColumnDef<TourGuide>[] = [
           {/* Hiển thị ảnh nếu có URL */}
           {imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
-            <img 
-              src={imageUrl} 
-              alt="Banner" 
+            <img
+              src={imageUrl}
+              alt="Banner"
               style={{ maxWidth: '100%', height: 'auto', borderRadius: '8px' }} // Style cho ảnh
             />
           ) : (
@@ -127,3 +139,18 @@ export const columns: ColumnDef<TourGuide>[] = [
     },
   },
 ];
+
+function AreaName({ areaId }: { areaId: number }) {
+  const { areas } = useContext(SimplifiedAreaContext) as SimplifiedAreaContextProps;
+  return (
+    <div
+      style={{
+        maxWidth: '300px',       // Chiều rộng tối đa của cột
+        whiteSpace: 'normal',    // Cho phép nội dung xuống dòng
+        overflowWrap: 'break-word', // Cho phép cắt từ nếu cần thiết
+      }}
+    >
+      {areas[areaId] || "Chưa xác định"}
+    </div>
+  )
+}
