@@ -53,7 +53,7 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const LIMIT = 20; // Giới hạn số bản ghi/trang
+  const LIMIT = 40; // Giới hạn số bản ghi/trang
 
   // React Table setup
   const table = useReactTable({
@@ -76,7 +76,7 @@ export function DataTable<TData, TValue>({
   });
 
   // React Query lấy dữ liệu theo page
-  const [searchTerm, setSearchTerm] = React.useState("");
+  const [searchTerm] = React.useState("");
   const { refetch: refetchRevenues } = useQuery({
     queryKey: ["revenues", page],
     queryFn: ({ queryKey, signal }) => {
