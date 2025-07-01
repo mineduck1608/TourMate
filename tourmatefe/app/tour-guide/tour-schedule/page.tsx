@@ -27,7 +27,7 @@ export default function TourSchedulePage() {
   const token = useToken("accessToken")
   const payLoad: MyJwtPayload | undefined = token ? jwtDecode<MyJwtPayload>(token) : undefined
   const accountId = Number(payLoad?.AccountId)
-  const role = payLoad?.Role
+  const role = payLoad?.["http://schemas.microsoft.com/ws/2008/06/identity/claims/role"]
 
   const { data, isLoading, isError } = useQuery({
     queryKey: ["tour-schedules", selectedFilter, searchTerm, currentPage],
@@ -73,7 +73,7 @@ export default function TourSchedulePage() {
   return (
     <>
       <MegaMenu />
-      <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50 min-h-screen">
+      <div className="flex flex-col md:flex-row text-gray-900 bg-gray-50">
         
         {/* Sidebar desktop */}
         <div className="hidden md:flex p-4 md:p-10 flex-col sticky top-20 h-fit self-start">
@@ -83,7 +83,7 @@ export default function TourSchedulePage() {
         <div className="md:hidden p-2">
           <TourGuideSidebar onNavItemClick={handleFilterChange} />
         </div>
-        <main className="flex-1 px-2 pt-4 md:pr-10 md:pt-10 space-y-6">
+        <main className="flex-1 md:py-10 md:pr-10 space-y-6">
           {/* Search box (chỉ hiện khi không phải xem đánh giá) */}
           {!showFeedbacks && (
             <div className="w-full max-w-md bg-white rounded-2xl shadow-md border border-gray-100 p-4 flex items-center gap-3">
@@ -100,7 +100,7 @@ export default function TourSchedulePage() {
 
           {/* Lịch hẹn hoặc Đánh giá */}
           {showFeedbacks ? (
-            <div className="mb-4 space-y-4">
+            <div className="space-y-4">
               {feedbackQuery.isLoading && <p>Đang tải đánh giá...</p>}
               {feedbackQuery.isError && <p className="text-red-500">Lỗi khi tải đánh giá.</p>}
               {feedbackQuery.data?.length === 0 && (
@@ -114,6 +114,7 @@ export default function TourSchedulePage() {
                   content={fb.content}
                   createdAt={fb.createdAt}
                   customerAccountId={fb.customerAccountId}
+                  invoiceId={fb.invoiceId}
                 />
               ))}
             </div>

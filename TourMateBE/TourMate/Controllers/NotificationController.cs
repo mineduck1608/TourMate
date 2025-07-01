@@ -17,14 +17,14 @@ public class NotificationController : ControllerBase
     private readonly IActiveAreaService _activeAreaService;
     private readonly ICustomerService _customerService;
     private readonly INotificationService _notificationService;
-    private readonly IHubContext<NotificationHub> _hubContext;
+    private readonly IHubContext<AppHub> _hubContext;
 
     public NotificationController(
         ITourGuideService tourGuideService,
         IActiveAreaService activeAreaService,
         ICustomerService customerService,
         INotificationService notificationService,
-        IHubContext<NotificationHub> hubContext)
+        IHubContext<AppHub> hubContext)
     {
         _tourGuideService = tourGuideService;
         _activeAreaService = activeAreaService;

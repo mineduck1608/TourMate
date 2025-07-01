@@ -72,7 +72,7 @@ export default function MessageList({
     if (!conversationId) return
 
     const newConnection = new HubConnectionBuilder()
-      .withUrl(`${apiHub}/chatHub?conversationId=${conversationId}`)
+      .withUrl(`${apiHub}/appHub?conversationId=${conversationId}`)
       .configureLogging(LogLevel.Information)
       .withAutomaticReconnect()
       .build()
@@ -261,11 +261,10 @@ function ConversationHeader({
           title="Gọi thoại"
           onClick={onVoiceCall}
           disabled={isCallActive}
-          className={`p-3 rounded-full transition-all duration-200 ${
-            isCallActive
+          className={`p-3 rounded-full transition-all duration-200 ${isCallActive
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "hover:bg-green-50 text-green-600 hover:text-green-700 hover:scale-105"
-          }`}
+            }`}
         >
           <Phone size={20} />
         </button>
@@ -273,11 +272,10 @@ function ConversationHeader({
           title="Gọi video"
           onClick={onVideoCall}
           disabled={isCallActive}
-          className={`p-3 rounded-full transition-all duration-200 ${
-            isCallActive
+          className={`p-3 rounded-full transition-all duration-200 ${isCallActive
               ? "bg-gray-100 text-gray-400 cursor-not-allowed"
               : "hover:bg-blue-50 text-blue-600 hover:text-blue-700 hover:scale-105"
-          }`}
+            }`}
         >
           <Video size={20} />
         </button>
@@ -322,9 +320,8 @@ function MessageItem({
           {/* Image */}
           {message.fileName && message.downloadUrl && isImage(message.fileName) && (
             <div
-              className={`${
-                isSender ? "bg-blue-500" : "bg-white border border-gray-200"
-              } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
+              className={`${isSender ? "bg-blue-500" : "bg-white border border-gray-200"
+                } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
               style={{
                 maxWidth: "300px",
                 alignSelf: isSender ? "flex-end" : "flex-start",
@@ -345,9 +342,8 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${
-                  isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
-                } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
+                className={`${isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
+                  } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
                 title={message.fileName}
               >
                 <Download className="w-4 h-4 inline mr-1" />
@@ -359,9 +355,8 @@ function MessageItem({
           {/* Video */}
           {message.fileName && message.downloadUrl && isVideo(message.fileName) && (
             <div
-              className={`${
-                isSender ? "bg-blue-500" : "bg-white border border-gray-200"
-              } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
+              className={`${isSender ? "bg-blue-500" : "bg-white border border-gray-200"
+                } p-3 rounded-2xl mb-2 shadow-sm hover:shadow-md transition-shadow duration-200`}
               style={{
                 maxWidth: "300px",
                 alignSelf: isSender ? "flex-end" : "flex-start",
@@ -381,9 +376,8 @@ function MessageItem({
                 download={message.fileName}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={`${
-                  isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
-                } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
+                className={`${isSender ? "text-blue-100 hover:text-white" : "text-blue-600 hover:text-blue-800"
+                  } text-sm mt-2 block truncate font-medium transition-colors duration-200`}
                 title={message.fileName}
               >
                 <Download className="w-4 h-4 inline mr-1" />
@@ -394,11 +388,10 @@ function MessageItem({
 
           {/* Message content */}
           <div
-            className={`${
-              isSender
+            className={`${isSender
                 ? "bg-gradient-to-r from-blue-500 to-blue-600 text-white"
                 : "bg-white text-gray-900 border border-gray-200"
-            } px-4 py-3 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 break-words`}
+              } px-4 py-3 rounded-2xl shadow-sm hover:shadow-md transition-all duration-200 break-words`}
             style={{
               maxWidth: "400px",
               minWidth: "60px",
@@ -417,9 +410,8 @@ function MessageItem({
                     download={message.fileName}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className={`${
-                      isSender ? "text-white hover:text-blue-100" : "text-blue-600 hover:text-blue-800"
-                    } font-medium text-sm truncate block transition-colors duration-200`}
+                    className={`${isSender ? "text-white hover:text-blue-100" : "text-blue-600 hover:text-blue-800"
+                      } font-medium text-sm truncate block transition-colors duration-200`}
                     title={message.fileName}
                   >
                     {message.fileName}
@@ -460,7 +452,7 @@ function MessageInput({ onSend }: { onSend: (text: string) => void }) {
 
   return (
     <div className="p-4 border-t border-gray-200 bg-white">
-      <div className="flex items-end gap-3 mx-auto">
+      <div className="flex items-end gap-3">
         {/* File upload button */}
         <div className="flex-shrink-0">
           <OtherButtons />

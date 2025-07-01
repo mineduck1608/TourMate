@@ -11,13 +11,17 @@ import OtherAreas from "./otherArea";
 import HotAreas from "./hotArea";
 import OtherTourGuides from "./otherTourGuide";
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
+import { useToken } from "@/components/getToken";
 
 
 
 export function TourServiceDetail() {
   const queryString: { id?: string } = useQueryString();
   const tourServiceId = Number(queryString.id) || 1;
-
+  const router = useRouter();
+  const token = useToken("accessToken");
   const { data, error, isLoading } = useQuery({
     queryKey: ["tour-service-detail", tourServiceId],
     queryFn: () => {
@@ -33,6 +37,13 @@ export function TourServiceDetail() {
   });
 
   const tourGuidId = data?.data?.tourGuideId;
+  const goToChat = () => {
+    if (token) {
+      router.push(`/chat?userId=${tourGuidId}`);
+      return;
+    }
+    alert("Bạn cần đăng nhập để đặt lịch hoặc trò chuyện với hướng dẫn viên du lịch.");
+  }
 
   const {
     data: tourGuideData,
@@ -100,18 +111,18 @@ export function TourServiceDetail() {
             }}
           />
           <div className="flex flex-col sm:flex-row justify-between gap-4 px-4 py-5 bg-[#F2F8FB] rounded-lg mt-5">
-            <Link
-              href={`/chat?userId=${data?.data.tourGuideId}`} 
-              className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
+            <Button
+              onClick={goToChat}
+              className="flex-1 px-6 py-6 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
             >
               Giá cả: {new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(data?.data?.price || 0)}
-            </Link>
-            <Link
-              href={`/chat?userId=${data?.data.tourGuideId}`} 
-              className="flex-1 px-6 py-3 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
+            </Button>
+            <Button
+              onClick={goToChat}
+              className="flex-1 px-6 py-6 bg-[#DBE4F7] text-black rounded text-center hover:bg-gray-300 transition-colors duration-300 font-semibold text-lg"
             >
               Đặt lịch
-            </Link>
+            </Button>
           </div>
         </div>
 

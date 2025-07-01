@@ -106,17 +106,13 @@ export function SignupForm({
   };
 
   const handleChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement
-    >
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
-    const value =
-      e.target.id === "areaId" ? Number(e.target.value) : e.target.value;
-    const v = {
+    const { id, value } = e.target;
+    setFormData({
       ...formData,
-      [e.target.id]: value,
-    };
-    setFormData(v);
+      [id]: id === "areaId" ? Number(value) : value,
+    });
   };
 
   const handleDescriptionChange = (value: string) => {
@@ -129,6 +125,10 @@ export function SignupForm({
   };
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (formData.areaId === 0) {
+      setError("Vui lòng chọn khu vực hoạt động.");
+      return;
+    }
     mutation.mutate(formData);
   };
 
@@ -301,11 +301,11 @@ export function SignupForm({
               id="areaId"
               className="flex h-9 w-full rounded-md border border-input bg-transparent px-3 py-1 text-sm shadow-sm transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring disabled:cursor-not-allowed disabled:opacity-50"
               required
-              value={formData.areaId} // Convert to string for select value
+              value={formData.areaId}
               onChange={handleChange}
               disabled={areasMutation.isPending}
             >
-              <option value="" disabled>
+              <option value={0} disabled>
                 {areasMutation.isPending ? "Đang tải..." : "Chọn khu vực"}
               </option>
               {areasMutation.data?.map((area) => (

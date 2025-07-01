@@ -152,7 +152,7 @@ function ActiveAreaList() {
                       <h4 className="font-bold text-xl text-gray-900 mb-3 group-hover:text-blue-600 transition-colors duration-300 line-clamp-2">
                         {area.areaTitle}
                       </h4>
-                      <p className="text-gray-600 text-base mb-6 line-clamp-1 leading-relaxed">{area.areaSubtitle}</p>
+                      <p className="text-gray-600 text-base mb-6 line-clamp-3 leading-relaxed">{area.areaSubtitle}</p>
                       <button className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white font-semibold py-3 px-6 rounded-xl transition-all duration-300 transform group-hover:scale-105 shadow-lg hover:shadow-xl">
                         Xem ngay
                       </button>

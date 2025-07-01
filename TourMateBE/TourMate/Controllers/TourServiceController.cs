@@ -1,4 +1,4 @@
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Repositories.DTO.CreateModels;
 using Repositories.DTO.UpdateModels;
 using Repositories.Models;
@@ -41,8 +41,14 @@ namespace API.Controllers
         [HttpPut]
         public async Task<IActionResult> UpdateAsync([FromBody] TourServiceEditModel tourservice)
         {
-            await _tourserviceService.UpdateTourServices(tourservice.Convert());
-            return NoContent();
+            if (tourservice == null)
+                return BadRequest(new { msg = "Dữ liệu không hợp lệ." });
+
+            var result = await _tourserviceService.UpdateTourServices(tourservice.Convert());
+            if (result == false)
+                return NotFound(new { msg = "Không tìm thấy dịch vụ cần cập nhật." });
+
+            return Ok(new { msg = "Cập nhật thành công." });
         }
 
         [HttpDelete("{id}")]

@@ -18,6 +18,7 @@ export type TourGuideFeedback = {
   rating: number,
   content: string,
   createdAt: string,
+  invoiceId: number
 }
 
 export interface TourFeedback {

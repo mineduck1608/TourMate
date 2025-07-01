@@ -7,6 +7,9 @@ import { DatePickerWithRange } from "@/components/ui/date-range-picker"
 import { format } from "date-fns"
 import type { DashboardFilters } from "@/types/admin-dashboard"
 import type { DateRange } from "react-day-picker"
+import { useEffect } from "react"
+import { useMutation } from "@tanstack/react-query"
+import { fetchAreaIdAndName } from "@/app/api/active-area.api"
 
 interface DashboardHeaderProps {
   filters: DashboardFilters
@@ -17,6 +20,18 @@ interface DashboardHeaderProps {
 }
 
 export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport, loading }: DashboardHeaderProps) {
+
+  const areasMutation = useMutation({
+    mutationFn: fetchAreaIdAndName,
+    onError: (error) => {
+      console.error("Error fetching areas:", error)
+    }
+  })
+
+  useEffect(() => {
+    areasMutation.mutate()
+  }, [])
+
   const handleDateChange = (dateRange: DateRange | undefined) => {
     onFiltersChange({
       ...filters,
@@ -53,11 +68,11 @@ export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport,
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">Tất cả vùng</SelectItem>
-                  <SelectItem value="hanoi">Hà Nội</SelectItem>
-                  <SelectItem value="hcm">TP.HCM</SelectItem>
-                  <SelectItem value="danang">Đà Nẵng</SelectItem>
-                  <SelectItem value="nhatrang">Nha Trang</SelectItem>
-                  <SelectItem value="halong">Hạ Long</SelectItem>
+                  {areasMutation.data?.map((area) => (
+                    <SelectItem key={area.areaId} value={area.areaName}>
+                      {area.areaName}
+                    </SelectItem>
+                  ))}
                 </SelectContent>
               </Select>
             </div>
