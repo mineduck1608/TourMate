@@ -11,16 +11,10 @@ namespace TourMate.Controllers;
 [ApiController]
 public class PayOSController : ControllerBase
 {
-    private readonly PayOS _payOS;
-    private readonly IMembershipPackagesService _membershipPackagesService;
-    private readonly IPaymentsService _paymentsService;
     private readonly IConfiguration _configuration;
 
-    public PayOSController(PayOS payOS, IMembershipPackagesService membershipPackages, IPaymentsService paymentsService, IConfiguration configuration)
+    public PayOSController(IConfiguration configuration)
     {
-        _payOS = payOS;
-        _membershipPackagesService = membershipPackages;
-        _paymentsService = paymentsService;
         _configuration = configuration;
     }
 

@@ -25,6 +25,10 @@ public partial class TourGuide
 
     public bool IsVerified { get; set; }
 
+    public string? BankAccountNumber { get; set; }
+
+    public string? BankName { get; set; }
+
     public virtual Account Account { get; set; } = null!;
 
     public virtual ICollection<Bid> Bids { get; set; } = new List<Bid>();

@@ -668,8 +668,13 @@ public partial class TourmateContext : DbContext
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
+            entity.Property(e => e.InvoiceId).HasColumnName("invoiceId");
             entity.Property(e => e.PlatformCommission).HasColumnType("decimal(18, 2)");
             entity.Property(e => e.TotalAmount).HasColumnType("decimal(18, 2)");
+
+            entity.HasOne(d => d.Invoice).WithMany(p => p.Revenues)
+                .HasForeignKey(d => d.InvoiceId)
+                .HasConstraintName("FK_Revenue_Invoice");
 
             entity.HasOne(d => d.TourGuide).WithMany(p => p.Revenues)
                 .HasForeignKey(d => d.TourGuideId)
@@ -769,6 +774,12 @@ public partial class TourmateContext : DbContext
             entity.Property(e => e.Address)
                 .HasMaxLength(255)
                 .HasColumnName("address");
+            entity.Property(e => e.BankAccountNumber)
+                .HasMaxLength(50)
+                .HasColumnName("bankAccountNumber");
+            entity.Property(e => e.BankName)
+                .HasMaxLength(50)
+                .HasColumnName("bankName");
             entity.Property(e => e.BannerImage)
                 .HasDefaultValue(" ")
                 .HasColumnName("bannerImage");
