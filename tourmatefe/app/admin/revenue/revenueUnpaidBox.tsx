@@ -54,16 +54,18 @@ export function RevenueUnpaidBox() {
   return (
     <div className="bg-white rounded-xl p-6 mt-2 border">
       <div className="font-semibold text-lg mb-1">
-        Unpaid Revenue Summary by Tour Guide
+        Tổng hợp hoa hồng chưa thanh toán theo Tour Guide
       </div>
       <div className="text-gray-500 mb-5 text-sm">
-        Overview of pending payments for each tour guide
+        Tổng quan các khoản thanh toán đang chờ của từng Tour Guide
       </div>
       <div className="space-y-4">
         {isLoading ? (
           <div>Loading...</div>
         ) : unpaidGuides.length === 0 ? (
-          <div className="text-gray-400">No unpaid revenue found.</div>
+          <div className="text-gray-400">
+            Không tìm thấy hoa hồng chưa thanh toán.
+          </div>
         ) : (
           unpaidGuides.map((guide) => (
             <div
@@ -86,7 +88,7 @@ export function RevenueUnpaidBox() {
                 <div>
                   <div className="font-semibold text-base">{guide.name}</div>
                   <div className="text-gray-400 text-sm">
-                    {guide.unpaidBookings} unpaid bookings
+                    {guide.unpaidBookings} Lượt booking chưa thanh toán
                   </div>
                 </div>
               </div>
@@ -94,7 +96,9 @@ export function RevenueUnpaidBox() {
                 <div className="text-red-500 font-bold text-lg">
                   ${guide.unpaidAmount.toFixed(2)}
                 </div>
-                <div className="text-gray-400 text-xs">Total unpaid</div>
+                <div className="text-gray-400 text-xs">
+                  Tổng chưa thanh toán
+                </div>
               </div>
             </div>
           ))

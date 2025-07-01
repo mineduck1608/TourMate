@@ -64,7 +64,7 @@ export const columns: ColumnDef<RevenueTableRow>[] = [
   },
   {
     accessorKey: "phone",
-    header: "Phone Number",
+    header: "Số điện thoại",
   },
   {
     accessorKey: "totalAmount",

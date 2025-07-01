@@ -57,11 +57,9 @@ export default function RevenuePage() {
 
   const mappedRevenues = React.useMemo(() => {
     if (!revenuesData?.result || !tourGuidesData?.result) return [];
-
     const guideMap = Object.fromEntries(
       tourGuidesData.result.map((g) => [g.tourGuideId, g])
     );
-
     return revenuesData.result.map((rev) => {
       const guide = guideMap[rev.tourGuideId];
       return {
@@ -72,6 +70,23 @@ export default function RevenuePage() {
       };
     });
   }, [revenuesData, tourGuidesData]);
+
+  const filteredRevenues = React.useMemo(() => {
+    return mappedRevenues.filter((item) => {
+      // Lọc theo tên
+      const matchName = search
+        ? item.fullName?.toLowerCase().includes(search.toLowerCase())
+        : true;
+      // Lọc theo trạng thái thanh toán
+      const matchStatus =
+        status === ""
+          ? true
+          : status === "Paid"
+          ? item.paymentStatus === true
+          : item.paymentStatus === false;
+      return matchName && matchStatus;
+    });
+  }, [mappedRevenues, search, status]);
 
   if (isLoadingRevenues || isLoadingTourGuides) {
     return (
@@ -86,6 +101,8 @@ export default function RevenuePage() {
       <div className="text-red-500 text-center p-4">Lỗi khi tải dữ liệu</div>
     );
   }
+
+
 
   return (
     <div>
@@ -108,8 +125,8 @@ export default function RevenuePage() {
       />
       <DataTable
         columns={columns}
-        data={mappedRevenues}
-        totalResults={revenuesData?.totalResult || 0}
+        data={filteredRevenues}
+        totalResults={filteredRevenues.length}
         totalPages={revenuesData?.totalPage || 0}
         page={page}
       />
