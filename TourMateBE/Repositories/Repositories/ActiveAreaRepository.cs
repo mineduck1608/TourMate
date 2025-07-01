@@ -46,7 +46,7 @@ namespace Repositories.Repositories
             {
                 AreaId = x.AreaId,
                 AreaName = x.AreaName,
-            });
+            }).OrderBy(a => a.AreaName);
         }
 
 

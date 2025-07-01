@@ -82,7 +82,7 @@ export default function MembershipPackageComponent({ accountId }: { accountId: n
                     <div className="space-y-6">
                         <div className="text-center">
                             <h3 className="text-2xl font-bold text-gray-900 mb-2">{membershipPackage.name}</h3>
-                            <Badge className="bg-yellow-100 text-yellow-800">
+                            <Badge variant="outline" className="bg-yellow-100 text-yellow-800">
                                 <Star className="h-3 w-3 mr-1" />
                                 Gói Premium
                             </Badge>

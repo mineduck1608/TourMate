@@ -5,6 +5,7 @@ import { codeToStatus, statusToCode, TourBid, TourBidListResult } from "@/types/
 import { getSimplifiedAreas } from "@/app/api/active-area.api";
 import { useQuery } from "@tanstack/react-query";
 import { BidTaskContext, BidTaskContextProp } from "./tour-bid-task-context";
+import { extractRawContentFromHTML } from "@/types/other";
 const ReactQuill = dynamic(() => import("react-quill-new"), {
     ssr: false, // Disable SSR for this component
 });
@@ -102,7 +103,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                                 htmlFor="areaType"
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-white"
                             >
-                                Giá mong đợi (tùy chọn)
+                                Giá mong đợi
                             </label>
                             <input
                                 type="number"
@@ -186,7 +187,7 @@ const BidEditModal: React.FC<BidEditModalProps> = ({
                     </div>
                     <div className="flex justify-end">
                         <button
-                            disabled={target.content.length === 0 || target.placeRequested === 0}
+                            disabled={extractRawContentFromHTML(target.content).length === 0 || target.placeRequested === 0 || (target.maxPrice === undefined)}
                             type="submit"
                             className="text-white inline-flex items-center bg-primary-700 hover:bg-primary-800 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center dark:bg-primary-600 dark:hover:bg-primary-700 dark:focus:ring-primary-800 disabled:bg-gray-500"
                         >
