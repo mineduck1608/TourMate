@@ -272,5 +272,35 @@ namespace Repositories.Repositories
 
             await _context.SaveChangesAsync();
         }
+
+        public async Task<DashboardStatsAdmin> GetDashboardStatsAsync()
+        {
+            var unpaidRevenues = await _context.Revenues
+                .Where(r => !r.PaymentStatus)
+                .ToListAsync();
+
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+
+            var paidThisMonth = await _context.Revenues
+                .Where(r => r.PaymentStatus &&
+                           r.CreatedAt.Month == currentMonth &&
+                           r.CreatedAt.Year == currentYear)
+                .ToListAsync();
+
+            var uniqueTourGuideIds = unpaidRevenues
+                .Select(r => r.TourGuideId)
+                .Distinct()
+                .Count();
+
+            return new DashboardStatsAdmin
+            {
+                TotalUnpaidAmount = unpaidRevenues.Sum(r => r.ActualReceived),
+                TotalUnpaidCount = unpaidRevenues.Count,
+                TotalPaidThisMonth = paidThisMonth.Sum(r => r.ActualReceived),
+                TotalPaidCountThisMonth = paidThisMonth.Count,
+                TotalTourGuidesWithUnpaidRevenues = uniqueTourGuideIds
+            };
+        }
     }
 }

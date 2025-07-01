@@ -10,6 +10,7 @@ import {
   ProcessPaymentRequest,
   PaymentResultAdmin,
   PaymentHistoryAdmin,
+  DashboardStatsAdmin,
 } from "../../types/revenue";
 // Types based on .NET API DTOs
 
@@ -206,6 +207,12 @@ export const revenueApi = {
   exportExcel: exportRevenueExcel,
 }
 
+export const getDashboardStats = async (signal?: AbortSignal) => {
+  const response = await http.get<DashboardStatsAdmin>(`revenue/dashboard-stats`, {
+    signal,
+  })
+  return response.data
+}
 
 export const getAdminRevenueById = async (
   revenueId: number,

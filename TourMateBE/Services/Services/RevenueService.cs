@@ -143,6 +143,12 @@ namespace Services.Services
             };
         }
 
+        public async Task<DashboardStatsAdmin> GetDashboardStatsAsync()
+        {
+            var stats = await _revenueRepository.GetDashboardStatsAsync();
+            return stats;
+        }
+
         private string MaskAccountNumber(string accountNumber)
         {
             if (string.IsNullOrEmpty(accountNumber) || accountNumber.Length <= 4)

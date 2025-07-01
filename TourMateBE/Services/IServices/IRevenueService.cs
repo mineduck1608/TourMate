@@ -25,5 +25,7 @@ namespace Services.IServices
         Task<PagedResult<RevenueAdmin>> GetUnpaidRevenuesAsync(int page, int pageSize, string? searchTerm = null);
         Task<PaymentResultAdmin> ProcessPaymentAsync(List<int> revenueIds, int adminId);
         Task<PagedResult<PaymentHistoryAdmin>> GetPaymentHistoryAsync(int page, int pageSize);
+        Task<DashboardStatsAdmin> GetDashboardStatsAsync();
+
     }
 }

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useMemo } from "react"
+
 import {
   Search,
   DollarSign,
@@ -37,11 +38,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription } from "@/components/ui/alert"
 
 import {
+  useDashboardStatsForAdmin,
   useUnpaidRevenuesForAdmin,
   usePaymentHistoryForAdmin,
   useProcessPaymentForAdmin,
 } from "@/hooks/use-admin-revenue"
 import type { RevenueAdmin } from "@/types/revenue"
+
 import { toast } from "react-toastify"
 
 export default function AdminDashboard() {
@@ -56,6 +59,13 @@ export default function AdminDashboard() {
   const itemsPerPage = 10
 
   // API hooks
+  const {
+    data: dashboardStats,
+    loading: statsLoading,
+    error: statsError,
+    refetch: refetchStats,
+  } = useDashboardStatsForAdmin()
+
   const {
     data: revenueData,
     loading: revenueLoading,
@@ -147,8 +157,7 @@ export default function AdminDashboard() {
 
   const handlePayment = async () => {
     if (!hasBankInfo) {
-      toast("⚠️ Thiếu thông tin ngân hàng. Vui lòng liên hệ hướng dẫn viên.");
-
+      toast("⚠️ Thiếu thông tin ngân hàng. Vui lòng liên hệ hướng dẫn viên.")
       return
     }
 
@@ -158,17 +167,14 @@ export default function AdminDashboard() {
         adminId: 1, // Replace with actual admin ID from auth context
       })
 
-      toast.success(`Đánh dấu thanh toán thành công: ${result.message}`);
+      toast.success(`Đánh dấu thanh toán thành công: ${result.message}`)
 
       setShowPaymentDialog(false)
       setSelectedRevenues([])
       refetchRevenues() // Refresh the data
+      refetchStats() // Refresh dashboard stats
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? `❌ ${error.message}`
-          : '❌ Có lỗi xảy ra khi xử lý thanh toán'
-      );
+      toast.error(error instanceof Error ? `❌ ${error.message}` : "❌ Có lỗi xảy ra khi xử lý thanh toán")
     }
   }
 
@@ -178,9 +184,6 @@ export default function AdminDashboard() {
       currency: "VND",
     }).format(amount)
   }
-
-  const totalUnpaidAmount = revenueData?.result.reduce((sum, r) => sum + r.actualReceived, 0) || 0
-  const totalPaidThisMonth = historyData?.result.reduce((sum, p) => sum + p.totalAmount, 0) || 0
 
   const PaginationComponent = ({
     currentPage,
@@ -237,13 +240,13 @@ export default function AdminDashboard() {
     </div>
   )
 
-  if (revenueError || historyError) {
+  if (revenueError || historyError || statsError) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex items-center justify-center">
         <Alert className="max-w-md">
           <AlertCircle className="h-4 w-4" />
           <AlertDescription>
-            Có lỗi xảy ra khi tải dữ liệu: {revenueError || historyError}
+            Có lỗi xảy ra khi tải dữ liệu: {revenueError || historyError || statsError}
             <Button variant="outline" size="sm" onClick={() => window.location.reload()} className="ml-2">
               Thử lại
             </Button>
@@ -272,8 +275,17 @@ export default function AdminDashboard() {
               <Clock className="h-4 w-4 text-blue-200" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatCurrency(totalUnpaidAmount)}</div>
-              <p className="text-xs text-blue-200">{revenueData?.totalResult || 0} giao dịch</p>
+              {statsLoading ? (
+                <div className="flex items-center">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <span className="text-sm">Đang tải...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">{formatCurrency(dashboardStats?.totalUnpaidAmount || 0)}</div>
+                  <p className="text-xs text-blue-200">{dashboardStats?.totalUnpaidCount || 0} giao dịch</p>
+                </>
+              )}
             </CardContent>
           </Card>
 
@@ -283,8 +295,17 @@ export default function AdminDashboard() {
               <CheckCircle className="h-4 w-4 text-green-200" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{formatCurrency(totalPaidThisMonth)}</div>
-              <p className="text-xs text-green-200">{historyData?.totalResult || 0} giao dịch</p>
+              {statsLoading ? (
+                <div className="flex items-center">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <span className="text-sm">Đang tải...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">{formatCurrency(dashboardStats?.totalPaidThisMonth || 0)}</div>
+                  <p className="text-xs text-green-200">{dashboardStats?.totalPaidCountThisMonth || 0} giao dịch</p>
+                </>
+              )}
             </CardContent>
           </Card>
 
@@ -294,8 +315,17 @@ export default function AdminDashboard() {
               <Users className="h-4 w-4 text-purple-200" />
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{Object.keys(groupedRevenues).length}</div>
-              <p className="text-xs text-purple-200">Có hoa hồng chờ thanh toán</p>
+              {statsLoading ? (
+                <div className="flex items-center">
+                  <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  <span className="text-sm">Đang tải...</span>
+                </div>
+              ) : (
+                <>
+                  <div className="text-2xl font-bold">{dashboardStats?.totalTourGuidesWithUnpaidRevenues || 0}</div>
+                  <p className="text-xs text-purple-200">Có hoa hồng chờ thanh toán</p>
+                </>
+              )}
             </CardContent>
           </Card>
         </div>
@@ -360,7 +390,8 @@ export default function AdminDashboard() {
                     <CreditCard className="h-4 w-4 mt-1" />
                     <AlertDescription>
                       <p className="inline">
-                        Đang chọn thanh toán cho <span className="font-semibold">{selectedTourGuide?.name}</span>. Chỉ có thể thanh toán cho 1 hướng dẫn viên tại một thời điểm.
+                        Đang chọn thanh toán cho <span className="font-semibold">{selectedTourGuide?.name}</span>. Chỉ
+                        có thể thanh toán cho 1 hướng dẫn viên tại một thời điểm.
                       </p>
                     </AlertDescription>
                   </Alert>
@@ -372,12 +403,13 @@ export default function AdminDashboard() {
                     <AlertTriangle className="h-4 w-4 text-orange-600" />
                     <AlertDescription className="text-orange-800">
                       <p className="inline">
-                        <span className="font-semibold text-orange-800">Cảnh báo:</span> Hướng dẫn viên <span className="font-semibold">{selectedTourGuide?.name}</span> chưa cập nhật thông tin ngân hàng. Vui lòng liên hệ để cập nhật trước khi thanh toán.
+                        <span className="font-semibold text-orange-800">Cảnh báo:</span> Hướng dẫn viên{" "}
+                        <span className="font-semibold">{selectedTourGuide?.name}</span> chưa cập nhật thông tin ngân
+                        hàng. Vui lòng liên hệ để cập nhật trước khi thanh toán.
                       </p>
                     </AlertDescription>
                   </Alert>
                 )}
-
 
                 {/* Loading State */}
                 {revenueLoading ? (
@@ -397,12 +429,13 @@ export default function AdminDashboard() {
                         return (
                           <Card
                             key={group.tourGuideId}
-                            className={`py-5 border shadow-md hover:shadow-lg transition-shadow ${isCurrentlySelected
-                              ? "border-blue-300 bg-blue-50/30"
-                              : isDisabled
-                                ? "border-gray-200 opacity-60"
-                                : "border-gray-200"
-                              }`}
+                            className={`py-5 border shadow-md hover:shadow-lg transition-shadow ${
+                              isCurrentlySelected
+                                ? "border-blue-300 bg-blue-50/30"
+                                : isDisabled
+                                  ? "border-gray-200 opacity-60"
+                                  : "border-gray-200"
+                            }`}
                           >
                             <CardHeader className="bg-gradient-to-r from-gray-50 to-gray-100 border-b">
                               <div className="flex justify-between items-center">
@@ -438,10 +471,11 @@ export default function AdminDashboard() {
                                   variant="outline"
                                   onClick={() => handleSelectAllForGuide(group.revenues)}
                                   disabled={isDisabled}
-                                  className={`${isCurrentlySelected
-                                    ? "border-blue-300 text-blue-700 bg-blue-100"
-                                    : "border-blue-200 text-blue-600 hover:bg-blue-50"
-                                    }`}
+                                  className={`${
+                                    isCurrentlySelected
+                                      ? "border-blue-300 text-blue-700 bg-blue-100"
+                                      : "border-blue-200 text-blue-600 hover:bg-blue-50"
+                                  }`}
                                 >
                                   {group.revenues.every((r: RevenueAdmin) => selectedRevenues.includes(r.revenueId))
                                     ? "Bỏ chọn tất cả"
@@ -467,10 +501,11 @@ export default function AdminDashboard() {
                                   {group.revenues.map((revenue: RevenueAdmin) => (
                                     <TableRow
                                       key={revenue.revenueId}
-                                      className={`${selectedRevenues.includes(revenue.revenueId)
-                                        ? "bg-blue-50"
-                                        : "hover:bg-blue-50/50"
-                                        }`}
+                                      className={`${
+                                        selectedRevenues.includes(revenue.revenueId)
+                                          ? "bg-blue-50"
+                                          : "hover:bg-blue-50/50"
+                                      }`}
                                     >
                                       <TableCell>
                                         <Checkbox

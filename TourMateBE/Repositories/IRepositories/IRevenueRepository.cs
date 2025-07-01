@@ -26,5 +26,7 @@ namespace Repositories.IRepositories
         Task<(List<Revenue> revenues, int totalCount)> GetPaidRevenuesAsync(int page, int pageSize);
         Task<List<Revenue>> GetByIdsAsync(List<int> revenueIds);
         Task UpdatePaymentStatusAsync(List<int> revenueIds, bool paymentStatus);
+        Task<DashboardStatsAdmin> GetDashboardStatsAsync();
+
     }
 }

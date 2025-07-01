@@ -112,4 +112,13 @@ namespace Repositories.DTO
         public string BankAccountNumber { get; set; } = string.Empty;
         public string BankName { get; set; } = string.Empty;
     }
+
+    public class DashboardStatsAdmin
+    {
+        public decimal TotalUnpaidAmount { get; set; }
+        public int TotalUnpaidCount { get; set; }
+        public decimal TotalPaidThisMonth { get; set; }
+        public int TotalPaidCountThisMonth { get; set; }
+        public int TotalTourGuidesWithUnpaidRevenues { get; set; }
+    }
 }

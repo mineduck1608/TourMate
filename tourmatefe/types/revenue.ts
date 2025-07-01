@@ -94,3 +94,11 @@ export interface PaymentHistoryAdmin {
   accountNumber: string
   toursCount: number
 }
+
+export interface DashboardStatsAdmin {
+  totalUnpaidAmount: number
+  totalUnpaidCount: number
+  totalPaidThisMonth: number
+  totalPaidCountThisMonth: number
+  totalTourGuidesWithUnpaidRevenues: number
+}

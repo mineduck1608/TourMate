@@ -364,6 +364,20 @@ namespace TourMate.Controllers
             };
         }
 
+        [HttpGet("dashboard-stats")]
+        public async Task<ActionResult<DashboardStatsAdmin>> GetDashboardStats()
+        {
+            try
+            {
+                var stats = await _revenueService.GetDashboardStatsAsync();
+                return Ok(stats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
         [HttpGet("details/{revenueId}")]
         public async Task<ActionResult<RevenueAdmin>> GetRevenueByIdForAdmin(int revenueId)
         {

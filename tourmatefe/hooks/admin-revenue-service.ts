@@ -1,5 +1,9 @@
-import { getRevenueById, getUnpaidRevenues, processPayment, getPaymentHistory } from "@/app/api/revenue.api"
+import { getRevenueById, getUnpaidRevenues, processPayment, getPaymentHistory, getDashboardStats } from "@/app/api/revenue.api"
 import type { ProcessPaymentRequest } from "@/types/revenue"
+
+export const getDashboardStatsForAdmin = async (signal?: AbortSignal) => {
+  return await getDashboardStats(signal)
+}
 
 export const getRevenueByIdForAdmin = async (revenueId: number, signal?: AbortSignal) => {
   return await getRevenueById(revenueId, signal)
