@@ -15,12 +15,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
   Table,
@@ -32,7 +26,6 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { getAllAccount } from "@/app/api/account.api";
 import { getAllRevenue } from "@/app/api/revenue.api";
 import { getTourGuides } from "@/app/api/tour-guide.api";
@@ -83,7 +76,6 @@ export function DataTable<TData, TValue>({
   });
 
   // React Query lấy dữ liệu theo page
-  const [searchTerm, setSearchTerm] = React.useState("");
   const { refetch: refetchRevenues } = useQuery({
     queryKey: ["revenues", page],
     queryFn: ({ queryKey, signal }) => {
@@ -120,7 +112,7 @@ export function DataTable<TData, TValue>({
     refetchRevenues();
     refetchTourGuides();
     refetchAccounts();
-  }, [searchTerm]);
+  }, []);
 
   return (
     <div>
