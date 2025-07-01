@@ -15,12 +15,6 @@ import {
 } from "@tanstack/react-table";
 
 import { Button } from "@/components/ui/button";
-import {
-  DropdownMenu,
-  DropdownMenuCheckboxItem,
-  DropdownMenuContent,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
 
 import {
   Table,
@@ -32,7 +26,6 @@ import {
 } from "@/components/ui/table";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
-import { Input } from "@/components/ui/input";
 import { getAllAccount } from "@/app/api/account.api";
 import { getAllRevenue } from "@/app/api/revenue.api";
 import { getTourGuides } from "@/app/api/tour-guide.api";
@@ -60,7 +53,7 @@ export function DataTable<TData, TValue>({
     React.useState<VisibilityState>({});
   const [rowSelection, setRowSelection] = React.useState({});
 
-  const LIMIT = 10; // Giới hạn số bản ghi/trang
+  const LIMIT = 20; // Giới hạn số bản ghi/trang
 
   // React Table setup
   const table = useReactTable({
