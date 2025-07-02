@@ -102,3 +102,12 @@ export interface DashboardStatsAdmin {
   totalPaidCountThisMonth: number
   totalTourGuidesWithUnpaidRevenues: number
 }
+
+// New DTOs for component props
+export interface GroupedRevenue {
+  tourGuideId: number
+  tourGuide: TourGuideAdmin
+  revenues: RevenueAdmin[]
+  totalAmount: number
+  totalReceived: number
+}
