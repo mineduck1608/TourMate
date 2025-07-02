@@ -13,7 +13,6 @@ import {
   MapPin,
   Home,
   Award,
-  Camera,
   Download,
 } from "lucide-react";
 import { Applications } from "@/types/applications";
@@ -86,9 +85,6 @@ export default function CVDetailModal({
                         referrerPolicy="no-referrer"
                       />
                     </div>
-                  </div>
-                  <div className="absolute -bottom-2 -right-2 bg-green-500 w-8 h-8 rounded-full flex items-center justify-center">
-                    <Camera className="w-4 h-4 text-white" />
                   </div>
                 </div>
 

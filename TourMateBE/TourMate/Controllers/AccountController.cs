@@ -438,7 +438,7 @@ namespace API.Controllers
 
 <div class='warning'>
         <p><strong>Chú ý:</strong></p>
-        <p style='margin-top: 10px'>Bạn cần cập nhật số tài khoản ngân hàng để sử dụng các dịch vụ của TourMate. Truy cập <strong>Menu người dùng</strong> để cập nhật thông tin.</p>
+        <p style='margin-top: 10px'>Bạn cần cập nhật số tài khoản ngân hàng để được nền tảng thanh toán tiền dịch vụ. Vui lòng truy cập <strong>Menu người dùng -> Thông tin tài khoản</strong> để cập nhật các thông tin cần thiết.</p>
       </div>
 
       {responseSection}
