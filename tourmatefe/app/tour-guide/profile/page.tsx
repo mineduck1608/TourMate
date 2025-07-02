@@ -3,7 +3,7 @@ import { changePicture as changeTourGuidePicture, getTourGuide, updateTourGuideC
 import Banner from '@/components/Banner';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { Suspense, useContext, useState } from 'react'
-import ProfileForm from './profile-components/tour-guide-edit-modal';
+import TourGuideEditModal from './profile-components/tour-guide-edit-modal';
 import { TourGuide } from '@/types/tour-guide';
 import { toast } from 'react-toastify';
 import { FaCamera } from 'react-icons/fa';
@@ -155,7 +155,7 @@ function TourGuideProfileEdit() {
                             </Button>
                         </div>
                         <div className={`${toggleSection.info ? 'block' : 'hidden'} mb-1`}>
-                            {tourGuide && <ProfileForm tourGuide={tourGuide} updateFn={(v) => update(v)} isOpen={editFormOpen} onClose={() => setEditFormOpen(false)} />}
+                            {tourGuide && <TourGuideEditModal tourGuide={tourGuide} updateFn={(v) => update(v)} isOpen={editFormOpen} onClose={() => setEditFormOpen(false)} />}
                             {tourGuide && <Detail s={tourGuide} />}
                             <Button
                                 onClick={() => setEditFormOpen(true)}

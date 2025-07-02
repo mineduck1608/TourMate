@@ -95,6 +95,7 @@ namespace Repositories.Repositories
             var data = await query
                 .Skip((pageIndex - 1) * pageSize)  // Phân trang: bỏ qua các bản ghi trước
                 .Take(pageSize)                    // Lấy số lượng bản ghi cần thiết
+                .Include(x => x.TourGuideDescs)
                 .Select(c => new TourGuide
                 {
                     TourGuideId = c.TourGuideId,
@@ -105,6 +106,8 @@ namespace Repositories.Repositories
                     Phone = c.Phone,
                     Address = c.Address,
                     Image = c.Image,
+                    BankAccountNumber = c.BankAccountNumber,
+                    BankName = c.BankName,
                     // Chỉ lấy các trường cần thiết từ Account
                     Account = new Account
                     {
@@ -114,7 +117,12 @@ namespace Repositories.Repositories
                         CreatedDate = c.Account.CreatedDate,
                         Status = c.Account.Status,
                         Role = c.Account.Role
-                    }
+                    },
+                    TourGuideDescs = c.TourGuideDescs.Select(td => new TourGuideDesc
+                    {
+                        TourGuideDescId = td.TourGuideDescId,
+                        AreaId = td.AreaId,
+                    }).ToList()
                 })
                 .ToListAsync();
 

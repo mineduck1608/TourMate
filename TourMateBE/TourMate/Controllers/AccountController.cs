@@ -385,6 +385,14 @@ namespace API.Controllers
       border-radius: 6px;
       margin-top: 20px;
     }}
+
+    .warning {{
+      background-color: #ffe6e6;
+      padding: 12px 16px;
+      border-left: 5px solid #ff0000;
+      border-radius: 6px;
+      margin-top: 20px;
+    }}
     .response-section {{
       /* optional override */
     }}
@@ -426,6 +434,11 @@ namespace API.Controllers
         <p><strong>Email:</strong> {email}<br />
            <strong>Mật khẩu:</strong> {password}</p>
         <p style='margin-top: 10px; font-style: italic; color: #555;'>Vui lòng đổi mật khẩu sau khi đăng nhập lần đầu để đảm bảo an toàn thông tin.</p>
+      </div>
+
+<div class='warning'>
+        <p><strong>Chú ý:</strong></p>
+        <p style='margin-top: 10px'>Bạn cần cập nhật số tài khoản ngân hàng để sử dụng các dịch vụ của TourMate. Truy cập <strong>Menu người dùng</strong> để cập nhật thông tin.</p>
       </div>
 
       {responseSection}
