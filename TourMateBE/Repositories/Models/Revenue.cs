@@ -19,5 +19,9 @@ public partial class Revenue
 
     public bool PaymentStatus { get; set; }
 
+    public int? InvoiceId { get; set; }
+
+    public virtual Invoice? Invoice { get; set; }
+
     public virtual TourGuide TourGuide { get; set; } = null!;
 }
