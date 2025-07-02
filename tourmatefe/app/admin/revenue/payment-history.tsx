@@ -48,7 +48,7 @@ export function PaymentHistory({
                     <TableHead className="font-semibold min-w-[80px]">Số tour</TableHead>
                     <TableHead className="font-semibold min-w-[120px]">Ngân hàng</TableHead>
                     <TableHead className="font-semibold min-w-[140px]">Số tài khoản</TableHead>
-                    <TableHead className="font-semibold min-w-[120px]">Ngày thanh toán</TableHead>
+                    <TableHead className="font-semibold min-w-[120px]">Ngày tạo</TableHead>
                     <TableHead className="font-semibold min-w-[80px]">Thao tác</TableHead>
                   </TableRow>
                 </TableHeader>

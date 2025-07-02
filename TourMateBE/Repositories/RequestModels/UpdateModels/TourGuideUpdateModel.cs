@@ -35,6 +35,8 @@ namespace Repositories.DTO.UpdateModels
             Phone = Phone,
             AccountId = AccountId,
             BannerImage = BannerImage,
+            BankAccountNumber = BankAccountNumber,
+            BankName = BankName,
             TourGuideDescs = [
                 new(){
                     AreaId = AreaId,

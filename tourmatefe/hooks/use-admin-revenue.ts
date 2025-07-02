@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useEffect, useRef } from "react"
+import { useState, useEffect, useRef, useCallback } from "react"
 import {
   getUnpaidRevenuesForAdmin,
   getPaymentHistoryForAdmin,
@@ -19,9 +19,10 @@ export const useDashboardStatsForAdmin = () => {
   const [data, setData] = useState<DashboardStatsAdmin | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     // Cancel previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
@@ -31,60 +32,60 @@ export const useDashboardStatsForAdmin = () => {
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+    try {
+      setLoading(true)
+      setError(null)
 
-        // Add small delay to prevent rapid cancellations
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Add small delay to prevent rapid cancellations
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
-        // Check if request was canceled during delay
-        if (controller.signal.aborted) {
-          return
-        }
+      // Check if request was canceled during delay
+      if (controller.signal.aborted) {
+        return
+      }
 
-        const result = await getDashboardStatsForAdmin(controller.signal)
+      const result = await getDashboardStatsForAdmin(controller.signal)
 
-        // Check if request was canceled after completion
-        if (!controller.signal.aborted) {
-          setData(result)
-        }
-      } catch (err) {
-        // Only set error if request wasn't canceled
-        if (!controller.signal.aborted) {
-          console.error("Error fetching dashboard stats:", err)
+      // Check if request was canceled after completion
+      if (!controller.signal.aborted) {
+        setData(result)
+      }
+    } catch (err) {
+      // Only set error if request wasn't canceled
+      if (!controller.signal.aborted) {
+        console.error("Error fetching dashboard stats:", err)
 
-          if (err instanceof Error) {
-            if (err.name === "AbortError" || err.name === "CanceledError") {
-              // Request was canceled, don't show error
-              return
-            }
-            setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
-          } else {
-            setError("Có lỗi xảy ra khi tải dữ liệu")
+        if (err instanceof Error) {
+          if (err.name === "AbortError" || err.name === "CanceledError") {
+            // Request was canceled, don't show error
+            return
           }
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
+          setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
+        } else {
+          setError("Có lỗi xảy ra khi tải dữ liệu")
         }
       }
+    } finally {
+      if (!controller.signal.aborted) {
+        setLoading(false)
+      }
     }
+  }, [refreshTrigger])
 
+  useEffect(() => {
     fetchData()
 
     // Cleanup function
     return () => {
-      controller.abort()
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
     }
-  }, [])
+  }, [fetchData])
 
-  const refetch = () => {
-    setData(null)
-    setError(null)
-    setLoading(true)
-  }
+  const refetch = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1)
+  }, [])
 
   return { data, loading, error, refetch }
 }
@@ -93,9 +94,10 @@ export const useUnpaidRevenuesForAdmin = (page: number, pageSize: number, search
   const [data, setData] = useState<PagedResult<RevenueAdmin> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     // Cancel previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
@@ -105,60 +107,60 @@ export const useUnpaidRevenuesForAdmin = (page: number, pageSize: number, search
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+    try {
+      setLoading(true)
+      setError(null)
 
-        // Add small delay to prevent rapid cancellations
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Add small delay to prevent rapid cancellations
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
-        // Check if request was canceled during delay
-        if (controller.signal.aborted) {
-          return
-        }
+      // Check if request was canceled during delay
+      if (controller.signal.aborted) {
+        return
+      }
 
-        const result = await getUnpaidRevenuesForAdmin(page, pageSize, searchTerm, controller.signal)
+      const result = await getUnpaidRevenuesForAdmin(page, pageSize, searchTerm, controller.signal)
 
-        // Check if request was canceled after completion
-        if (!controller.signal.aborted) {
-          setData(result)
-        }
-      } catch (err) {
-        // Only set error if request wasn't canceled
-        if (!controller.signal.aborted) {
-          console.error("Error fetching unpaid revenues:", err)
+      // Check if request was canceled after completion
+      if (!controller.signal.aborted) {
+        setData(result)
+      }
+    } catch (err) {
+      // Only set error if request wasn't canceled
+      if (!controller.signal.aborted) {
+        console.error("Error fetching unpaid revenues:", err)
 
-          if (err instanceof Error) {
-            if (err.name === "AbortError" || err.name === "CanceledError") {
-              // Request was canceled, don't show error
-              return
-            }
-            setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
-          } else {
-            setError("Có lỗi xảy ra khi tải dữ liệu")
+        if (err instanceof Error) {
+          if (err.name === "AbortError" || err.name === "CanceledError") {
+            // Request was canceled, don't show error
+            return
           }
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
+          setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
+        } else {
+          setError("Có lỗi xảy ra khi tải dữ liệu")
         }
       }
+    } finally {
+      if (!controller.signal.aborted) {
+        setLoading(false)
+      }
     }
+  }, [page, pageSize, searchTerm, refreshTrigger])
 
+  useEffect(() => {
     fetchData()
 
     // Cleanup function
     return () => {
-      controller.abort()
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
     }
-  }, [page, pageSize, searchTerm])
+  }, [fetchData])
 
-  const refetch = () => {
-    setData(null)
-    setError(null)
-    setLoading(true)
-  }
+  const refetch = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1)
+  }, [])
 
   return { data, loading, error, refetch }
 }
@@ -167,9 +169,10 @@ export const usePaymentHistoryForAdmin = (page: number, pageSize: number) => {
   const [data, setData] = useState<PagedResult<PaymentHistoryAdmin> | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshTrigger, setRefreshTrigger] = useState(0)
   const abortControllerRef = useRef<AbortController | null>(null)
 
-  useEffect(() => {
+  const fetchData = useCallback(async () => {
     // Cancel previous request if it exists
     if (abortControllerRef.current) {
       abortControllerRef.current.abort()
@@ -179,56 +182,62 @@ export const usePaymentHistoryForAdmin = (page: number, pageSize: number) => {
     const controller = new AbortController()
     abortControllerRef.current = controller
 
-    const fetchData = async () => {
-      try {
-        setLoading(true)
-        setError(null)
+    try {
+      setLoading(true)
+      setError(null)
 
-        // Add small delay to prevent rapid cancellations
-        await new Promise((resolve) => setTimeout(resolve, 100))
+      // Add small delay to prevent rapid cancellations
+      await new Promise((resolve) => setTimeout(resolve, 100))
 
-        // Check if request was canceled during delay
-        if (controller.signal.aborted) {
-          return
-        }
+      // Check if request was canceled during delay
+      if (controller.signal.aborted) {
+        return
+      }
 
-        const result = await getPaymentHistoryForAdmin(page, pageSize, controller.signal)
+      const result = await getPaymentHistoryForAdmin(page, pageSize, controller.signal)
 
-        // Check if request was canceled after completion
-        if (!controller.signal.aborted) {
-          setData(result)
-        }
-      } catch (err) {
-        // Only set error if request wasn't canceled
-        if (!controller.signal.aborted) {
-          console.error("Error fetching payment history:", err)
+      // Check if request was canceled after completion
+      if (!controller.signal.aborted) {
+        setData(result)
+      }
+    } catch (err) {
+      // Only set error if request wasn't canceled
+      if (!controller.signal.aborted) {
+        console.error("Error fetching payment history:", err)
 
-          if (err instanceof Error) {
-            if (err.name === "AbortError" || err.name === "CanceledError") {
-              // Request was canceled, don't show error
-              return
-            }
-            setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
-          } else {
-            setError("Có lỗi xảy ra khi tải dữ liệu")
+        if (err instanceof Error) {
+          if (err.name === "AbortError" || err.name === "CanceledError") {
+            // Request was canceled, don't show error
+            return
           }
-        }
-      } finally {
-        if (!controller.signal.aborted) {
-          setLoading(false)
+          setError(err.message === "Failed to fetch" ? "Không thể kết nối đến server" : err.message)
+        } else {
+          setError("Có lỗi xảy ra khi tải dữ liệu")
         }
       }
+    } finally {
+      if (!controller.signal.aborted) {
+        setLoading(false)
+      }
     }
+  }, [page, pageSize, refreshTrigger])
 
+  useEffect(() => {
     fetchData()
 
     // Cleanup function
     return () => {
-      controller.abort()
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort()
+      }
     }
-  }, [page, pageSize])
+  }, [fetchData])
 
-  return { data, loading, error }
+  const refetch = useCallback(() => {
+    setRefreshTrigger((prev) => prev + 1)
+  }, [])
+
+  return { data, loading, error, refetch }
 }
 
 export const useProcessPaymentForAdmin = () => {

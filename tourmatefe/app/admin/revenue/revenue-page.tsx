@@ -13,14 +13,13 @@ import {
   usePaymentHistoryForAdmin,
   useProcessPaymentForAdmin,
 } from "@/hooks/use-admin-revenue"
-import type { GroupedRevenue, RevenueAdmin } from "@/types/revenue"
-
-
-import { toast } from "react-toastify"
+import type { RevenueAdmin, GroupedRevenue } from "@/types/revenue"
 import { DashboardStats } from "./dashboard-status"
 import { RevenueManagement } from "./revenue-management"
 import { PaymentHistory } from "./payment-history"
 import { PaymentDialog } from "./payment-dialog"
+
+import { toast } from "react-toastify"
 
 export default function RevenuePage() {
   const [searchTerm, setSearchTerm] = useState("")
@@ -52,6 +51,7 @@ export default function RevenuePage() {
     data: historyData,
     loading: historyLoading,
     error: historyError,
+    refetch: refetchHistory,
   } = usePaymentHistoryForAdmin(historyPage, itemsPerPage)
 
   const { processPaymentAsync, loading: paymentLoading } = useProcessPaymentForAdmin()
@@ -124,11 +124,11 @@ export default function RevenuePage() {
   }, 0)
 
   const selectedTourGuide = selectedTourGuideId
-    ? revenueData?.result.find((r) => r.tourGuideId === selectedTourGuideId)?.tourGuide
+    ? revenueData?.result.find((r) => r.tourGuideId === selectedTourGuideId)?.tourGuide || null
     : null
 
   // Check if selected tour guide has bank info
-  const hasBankInfo = !!(selectedTourGuide?.bankAccountNumber && selectedTourGuide?.bankName)
+  const hasBankInfo = Boolean(selectedTourGuide?.bankAccountNumber && selectedTourGuide?.bankName)
 
   const handlePayment = async () => {
     if (!hasBankInfo) {
@@ -144,11 +144,16 @@ export default function RevenuePage() {
 
       toast.success(`Đánh dấu thanh toán thành công: ${result.message}`)
 
+      // Close dialog and clear selections first
       setShowPaymentDialog(false)
       setSelectedRevenues([])
-      refetchRevenues() // Refresh the data
-      refetchStats() // Refresh dashboard stats
+
+      // Then refresh data
+      console.log("Refreshing data after payment...")
+      await Promise.all([refetchRevenues(), refetchStats(), refetchHistory()])
+      console.log("Data refresh completed")
     } catch (error) {
+      console.error("Payment error:", error)
       toast.error(error instanceof Error ? `❌ ${error.message}` : "❌ Có lỗi xảy ra khi xử lý thanh toán")
     }
   }
@@ -257,7 +262,7 @@ export default function RevenuePage() {
         open={showPaymentDialog}
         onOpenChange={setShowPaymentDialog}
         selectedRevenues={selectedRevenues}
-        selectedTourGuide={selectedTourGuide ?? null}
+        selectedTourGuide={selectedTourGuide}
         selectedTotal={selectedTotal}
         revenueData={revenueData}
         hasBankInfo={hasBankInfo}

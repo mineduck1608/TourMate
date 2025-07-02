@@ -58,7 +58,7 @@ export const updateTourGuideAdmin = async (id: number, data: TourGuideAdminUpdat
   const response = await http.put(`/tour-guide/${id}`, data);
   return response.data;
 };
-export const updateTourGuideClient = async (data: TourGuide) => {
+export const  updateTourGuideClient = async (data: TourGuide) => {
   const response = await http.put(`/tour-guide/update-from-client`, convertToUpdateModel(data));
   return response.data;
 };
