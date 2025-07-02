@@ -363,5 +363,88 @@ namespace TourMate.Controllers
                 _ => $"Tháng {month}"
             };
         }
+
+        [HttpGet("dashboard-stats")]
+        public async Task<ActionResult<DashboardStatsAdmin>> GetDashboardStats()
+        {
+            try
+            {
+                var stats = await _revenueService.GetDashboardStatsAsync();
+                return Ok(stats);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("details/{revenueId}")]
+        public async Task<ActionResult<RevenueAdmin>> GetRevenueByIdForAdmin(int revenueId)
+        {
+            try
+            {
+                var revenue = await _revenueService.GetAdminRevenueByIdAsync(revenueId);
+                if (revenue == null)
+                {
+                    return NotFound($"Revenue with ID {revenueId} not found");
+                }
+                return Ok(revenue);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("unpaid")]
+        public async Task<ActionResult<PagedResult<RevenueAdmin>>> GetUnpaidRevenues(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10,
+            [FromQuery] string? searchTerm = null)
+        {
+            try
+            {
+                var result = await _revenueService.GetUnpaidRevenuesAsync(page, pageSize, searchTerm);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpPost("process-payment")]
+        public async Task<ActionResult<PaymentResultAdmin>> ProcessPayment([FromBody] ProcessPaymentRequest request)
+        {
+            try
+            {
+                var result = await _revenueService.ProcessPaymentAsync(request.RevenueIds, request.AdminId);
+                return Ok(result);
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("payment-history")]
+        public async Task<ActionResult<PagedResult<PaymentHistoryAdmin>>> GetPaymentHistory(
+            [FromQuery] int page = 1,
+            [FromQuery] int pageSize = 10)
+        {
+            try
+            {
+                var result = await _revenueService.GetPaymentHistoryAsync(page, pageSize);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

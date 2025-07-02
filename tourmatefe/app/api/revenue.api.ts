@@ -6,6 +6,11 @@ import {
   RevenueStatsDto,
   MonthlyRevenueDto,
   RevenueFilterDto,
+  RevenueAdmin,
+  ProcessPaymentRequest,
+  PaymentResultAdmin,
+  PaymentHistoryAdmin,
+  DashboardStatsAdmin,
 } from "../../types/revenue";
 // Types based on .NET API DTOs
 
@@ -200,4 +205,68 @@ export const revenueApi = {
   delete: deleteRevenue,
   getGrowth: getGrowthPercentage,
   exportExcel: exportRevenueExcel,
+}
+
+export const getDashboardStats = async (signal?: AbortSignal) => {
+  const response = await http.get<DashboardStatsAdmin>(`revenue/dashboard-stats`, {
+    signal,
+  })
+  return response.data
+}
+
+export const getAdminRevenueById = async (
+  revenueId: number,
+  signal?: AbortSignal
+) => {
+  const response = await http.get<RevenueAdmin>(`revenue/details/${revenueId}`, {
+    signal,
+  })
+  return response.data
+}
+
+export const getUnpaidRevenues = async (
+  page: number = 1,
+  pageSize: number = 10,
+  searchTerm?: string,
+  signal?: AbortSignal
+) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    pageSize: pageSize.toString(),
+  })
+
+  if (searchTerm) {
+    params.append("searchTerm", searchTerm)
+  }
+
+  const response = await http.get<PagedResult<RevenueAdmin>>(`revenue/unpaid?${params}`, {
+    signal,
+  })
+  return response.data
+}
+
+export const processPayment = async (
+  request: ProcessPaymentRequest,
+  signal?: AbortSignal
+) => {
+  const response = await http.post<PaymentResultAdmin>("revenue/process-payment", request, {
+    signal,
+  })
+  return response.data
+}
+
+export const getPaymentHistory = async (
+  page: number = 1,
+  pageSize: number = 10,
+  signal?: AbortSignal
+) => {
+  const params = new URLSearchParams({
+    page: page.toString(),
+    pageSize: pageSize.toString(),
+  })
+
+  const response = await http.get<PagedResult<PaymentHistoryAdmin>>(`revenue/payment-history?${params}`, {
+    signal,
+  })
+  return response.data
 }

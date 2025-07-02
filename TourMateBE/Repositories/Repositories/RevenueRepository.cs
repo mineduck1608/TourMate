@@ -197,5 +197,110 @@ namespace Repositories.Repositories
                 TotalPage = totalAmount / pageSize + (totalAmount % pageSize != 0 ? 1 : 0)
             };
         }
+
+        public async Task<Revenue?> GetByIdWithDetailsAsync(int revenueId)
+        {
+            return await _context.Revenues
+                .Include(r => r.TourGuide).ThenInclude(tg => tg.Account)
+                .Include(r => r.Invoice)
+                .FirstOrDefaultAsync(r => r.RevenueId == revenueId);
+        }
+
+        public async Task<(List<Revenue> revenues, int totalCount)> GetUnpaidRevenuesAsync(int page, int pageSize, string? searchTerm = null)
+        {
+            var query = _context.Revenues
+                .Include(r => r.TourGuide).ThenInclude(tg => tg.Account)
+                .Include(r => r.Invoice).ThenInclude(i => i.Customer)
+                .Where(r => !r.PaymentStatus); // Only unpaid revenues
+
+            if (!string.IsNullOrEmpty(searchTerm))
+            {
+                query = query.Where(r =>
+                    r.TourGuide.FullName.Contains(searchTerm) ||
+                    r.Invoice.TourName.Contains(searchTerm) ||
+                    r.Invoice.Customer.FullName.Contains(searchTerm));
+            }
+
+            var totalCount = await query.CountAsync();
+
+            var revenues = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (revenues, totalCount);
+        }
+
+        public async Task<(List<Revenue> revenues, int totalCount)> GetPaidRevenuesAsync(int page, int pageSize)
+        {
+            var query = _context.Revenues
+                .Include(r => r.TourGuide).ThenInclude(tg => tg.Account)
+                .Include(r => r.Invoice)
+                .Where(r => r.PaymentStatus); // Only paid revenues
+
+            var totalCount = await query.CountAsync();
+
+            var revenues = await query
+                .OrderByDescending(r => r.CreatedAt)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (revenues, totalCount);
+        }
+
+        public async Task<List<Revenue>> GetByIdsAsync(List<int> revenueIds)
+        {
+            return await _context.Revenues
+                .Include(r => r.TourGuide).ThenInclude(tg => tg.Account)
+                .Include(r => r.Invoice)
+                .Where(r => revenueIds.Contains(r.RevenueId))
+                .ToListAsync();
+        }
+
+        public async Task UpdatePaymentStatusAsync(List<int> revenueIds, bool paymentStatus)
+        {
+            var revenues = await _context.Revenues
+                .Where(r => revenueIds.Contains(r.RevenueId))
+                .ToListAsync();
+
+            foreach (var revenue in revenues)
+            {
+                revenue.PaymentStatus = paymentStatus;
+            }
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task<DashboardStatsAdmin> GetDashboardStatsAsync()
+        {
+            var unpaidRevenues = await _context.Revenues
+                .Where(r => !r.PaymentStatus)
+                .ToListAsync();
+
+            var currentMonth = DateTime.Now.Month;
+            var currentYear = DateTime.Now.Year;
+
+            var paidThisMonth = await _context.Revenues
+                .Where(r => r.PaymentStatus &&
+                           r.CreatedAt.Month == currentMonth &&
+                           r.CreatedAt.Year == currentYear)
+                .ToListAsync();
+
+            var uniqueTourGuideIds = unpaidRevenues
+                .Select(r => r.TourGuideId)
+                .Distinct()
+                .Count();
+
+            return new DashboardStatsAdmin
+            {
+                TotalUnpaidAmount = unpaidRevenues.Sum(r => r.ActualReceived),
+                TotalUnpaidCount = unpaidRevenues.Count,
+                TotalPaidThisMonth = paidThisMonth.Sum(r => r.ActualReceived),
+                TotalPaidCountThisMonth = paidThisMonth.Count,
+                TotalTourGuidesWithUnpaidRevenues = uniqueTourGuideIds
+            };
+        }
     }
 }

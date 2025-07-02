@@ -41,5 +41,7 @@ public partial class Invoice
 
     public virtual ICollection<Payment> Payments { get; set; } = new List<Payment>();
 
+    public virtual ICollection<Revenue> Revenues { get; set; } = new List<Revenue>();
+
     public virtual TourGuide TourGuide { get; set; } = null!;
 }

@@ -202,6 +202,7 @@ namespace API.Controllers
                     PlatformCommission = platformCommission,
                     ActualReceived = actualReceived,
                     CreatedAt = DateTime.UtcNow,
+                    InvoiceId = invoice.InvoiceId,
                     PaymentStatus = false // Chưa thanh toán lại cho hướng dẫn viên
                 };
 

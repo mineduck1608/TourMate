@@ -20,5 +20,13 @@ namespace Repositories.IRepositories
         Task<Revenue> CreateRevenueAsync(Revenue revenue);
         Task<Revenue> UpdateRevenueAsync(Revenue revenue);
         Task<bool> DeleteRevenueAsync(int revenueId);
+
+        Task<Revenue?> GetByIdWithDetailsAsync(int revenueId);
+        Task<(List<Revenue> revenues, int totalCount)> GetUnpaidRevenuesAsync(int page, int pageSize, string? searchTerm = null);
+        Task<(List<Revenue> revenues, int totalCount)> GetPaidRevenuesAsync(int page, int pageSize);
+        Task<List<Revenue>> GetByIdsAsync(List<int> revenueIds);
+        Task UpdatePaymentStatusAsync(List<int> revenueIds, bool paymentStatus);
+        Task<DashboardStatsAdmin> GetDashboardStatsAsync();
+
     }
 }
