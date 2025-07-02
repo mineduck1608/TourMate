@@ -16,7 +16,7 @@ interface DatePickerWithRangeProps {
   maxRange?: number // Maximum days allowed
 }
 
-export function DatePickerWithRange({ className, date, onDateChange, maxRange = 180 }: DatePickerWithRangeProps) {
+export function DatePickerWithRange({ className, date, onDateChange, maxRange = 30 }: DatePickerWithRangeProps) {
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>

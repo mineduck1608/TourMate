@@ -31,7 +31,7 @@ export function UserStatsComponent({ data }: UserStatsProps) {
             </div>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-3xl font-bold text-blue-600 mb-2">+{data.userGrowthRate.toFixed(1)}%</div>
+            <div className="text-3xl font-bold text-blue-600 mb-2">{data.userGrowthRate.toFixed(1)}%</div>
             <div className="text-sm text-blue-700">Tăng trưởng user</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -57,7 +57,7 @@ export function UserStatsComponent({ data }: UserStatsProps) {
             </div>
           </div>
           <div className="text-center p-4 bg-yellow-50 rounded-lg">
-            <div className="text-3xl font-bold text-yellow-600 mb-2">+{data.guideGrowthRate.toFixed(1)}%</div>
+            <div className="text-3xl font-bold text-yellow-600 mb-2">{data.guideGrowthRate.toFixed(1)}%</div>
             <div className="text-sm text-yellow-700">Tăng trưởng HDV</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">

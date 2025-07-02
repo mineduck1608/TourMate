@@ -21,6 +21,20 @@ namespace Repositories.Repositories
             _context = context;
         }
 
+        private decimal CalculateGrowth(decimal current, decimal previous)
+        {
+            if (previous == 0)
+                return current > 0 ? 100 : 0;
+            return ((current - previous) / previous) * 100;
+        }
+
+        private decimal CalculateGrowth(int current, int previous)
+        {
+            if (previous == 0)
+                return current > 0 ? 100 : 0;
+            return ((decimal)(current - previous) / previous) * 100;
+        }
+
         public async Task<FinancialStatus> GetFinancialStatsAsync(DateTime? fromDate, DateTime? toDate, string? areaFilter)
         {
             var revenueQuery = _context.Revenues.AsQueryable();
@@ -28,11 +42,9 @@ namespace Repositories.Repositories
                 .Where(p => p.MembershipPackageId != null);
 
             var totalPayments = await _context.Payments
-                    .Where(p => p.CreatedAt >= fromDate && p.CreatedAt <= toDate)
-                    .CountAsync();
+                .Where(p => p.CreatedAt >= fromDate && p.CreatedAt <= toDate)
+                .CountAsync();
 
-
-            // Apply date filters
             if (fromDate.HasValue)
             {
                 revenueQuery = revenueQuery.Where(r => r.CreatedAt >= fromDate.Value);
@@ -45,25 +57,21 @@ namespace Repositories.Repositories
                 membershipQuery = membershipQuery.Where(m => m.CreatedAt <= toDate.Value);
             }
 
-            // Apply area filter for tour commissions
             if (!string.IsNullOrEmpty(areaFilter) && areaFilter != "all")
             {
                 revenueQuery = revenueQuery.Include(r => r.TourGuide)
                     .ThenInclude(tg => tg.TourGuideDescs)
-                        .ThenInclude(desc => desc.Area)
+                    .ThenInclude(desc => desc.Area)
                     .Where(r => r.TourGuide.TourGuideDescs
                         .Any(desc => desc.Area.AreaName.ToLower() == areaFilter.ToLower()));
             }
 
-            // Calculate current period stats
             var tourCommissionRevenue = await revenueQuery.SumAsync(r => r.PlatformCommission);
             var membershipRevenue = await membershipQuery.SumAsync(m => m.Price);
             var totalRevenue = tourCommissionRevenue + (decimal)membershipRevenue;
 
-            // Calculate previous period for growth comparison
-            var periodDays = (toDate ?? DateTime.UtcNow) - (fromDate ?? DateTime.UtcNow.AddMonths(-3));
-            var previousFromDate = (fromDate ?? DateTime.UtcNow.AddMonths(-3)) - periodDays;
-            var previousToDate = fromDate ?? DateTime.UtcNow.AddMonths(-3);
+            var previousFromDate = fromDate?.AddMonths(-1);
+            var previousToDate = toDate?.AddMonths(-1);
 
             var prevTourCommission = await _context.Revenues
                 .Where(r => r.CreatedAt >= previousFromDate && r.CreatedAt <= previousToDate)
@@ -75,12 +83,10 @@ namespace Repositories.Repositories
 
             var prevTotalRevenue = prevTourCommission + (decimal)prevMembershipRevenue;
 
-            // Calculate growth rates
-            var revenueGrowth = prevTotalRevenue > 0 ? ((totalRevenue - prevTotalRevenue) / prevTotalRevenue) * 100 : 0;
-            var commissionGrowth = prevTourCommission > 0 ? ((tourCommissionRevenue - prevTourCommission) / prevTourCommission) * 100 : 0;
-            var membershipGrowth = prevMembershipRevenue > 0 ? ((membershipRevenue - prevMembershipRevenue) / prevMembershipRevenue) * 100 : 0;
+            var revenueGrowth = CalculateGrowth(totalRevenue, prevTotalRevenue);
+            var commissionGrowth = CalculateGrowth(tourCommissionRevenue, prevTourCommission);
+            var membershipGrowth = CalculateGrowth((decimal)membershipRevenue, (decimal)prevMembershipRevenue);
 
-            // Assume 20% operational costs for net profit calculation
             var netProfit = totalRevenue * 0.8m;
             var profitMargin = totalRevenue > 0 ? (netProfit / totalRevenue) * 100 : 0;
 
@@ -97,7 +103,6 @@ namespace Repositories.Repositories
                 TotalPayments = totalPayments
             };
         }
-
         public async Task<List<AreaStatus>> GetAreaStatsAsync(DateTime? fromDate, DateTime? toDate, int limit)
         {
             var invoicesQuery = _context.Invoices.AsQueryable();
@@ -159,8 +164,8 @@ namespace Repositories.Repositories
 
         public async Task<UserStatus> GetUserStatsAsync(DateTime? fromDate, DateTime? toDate)
         {
-            var userQuery = _context.Accounts.Where(a => a.RoleId == 2); // Assuming RoleId 1 is for regular users
-            var guideQuery = _context.Accounts.Where(a => a.RoleId == 3); // Assuming RoleId 2 is for guides
+            var userQuery = _context.Accounts.Where(a => a.RoleId == 2);
+            var guideQuery = _context.Accounts.Where(a => a.RoleId == 3);
 
             if (fromDate.HasValue)
             {
@@ -176,21 +181,21 @@ namespace Repositories.Repositories
 
             var newUsers = await userQuery.CountAsync();
             var newGuides = await guideQuery.CountAsync();
-            var totalActiveUsers = await _context.Accounts.CountAsync(u => u.RoleId == 1 && u.Status);
-            var totalActiveGuides = await _context.Accounts.CountAsync(g => g.RoleId == 2 && g.Status);
 
-            // Calculate growth rates (simplified - comparing with previous period)
-            var periodDays = (toDate ?? DateTime.UtcNow) - (fromDate ?? DateTime.UtcNow.AddMonths(-1));
-            var previousFromDate = (fromDate ?? DateTime.UtcNow.AddMonths(-1)) - periodDays;
-            var previousToDate = fromDate ?? DateTime.UtcNow.AddMonths(-1);
+            var totalActiveUsers = await _context.Accounts.CountAsync(u => u.RoleId == 2 && u.Status);
+            var totalActiveGuides = await _context.Accounts.CountAsync(g => g.RoleId == 3 && g.Status);
+
+            var previousFromDate = fromDate?.AddMonths(-1);
+            var previousToDate = toDate?.AddMonths(-1);
 
             var prevNewUsers = await _context.Accounts
-                .CountAsync(u => u.RoleId == 1 && u.CreatedDate >= previousFromDate && u.CreatedDate <= previousToDate);
-            var prevNewGuides = await _context.Accounts
-                .CountAsync(g => g.RoleId == 2 && g.CreatedDate >= previousFromDate && g.CreatedDate <= previousToDate);
+                .CountAsync(u => u.RoleId == 2 && u.CreatedDate >= previousFromDate && u.CreatedDate <= previousToDate);
 
-            var userGrowthRate = prevNewUsers > 0 ? ((decimal)(newUsers - prevNewUsers) / prevNewUsers) * 100 : 0;
-            var guideGrowthRate = prevNewGuides > 0 ? ((decimal)(newGuides - prevNewGuides) / prevNewGuides) * 100 : 0;
+            var prevNewGuides = await _context.Accounts
+                .CountAsync(g => g.RoleId == 3 && g.CreatedDate >= previousFromDate && g.CreatedDate <= previousToDate);
+
+            var userGrowthRate = CalculateGrowth(newUsers, prevNewUsers);
+            var guideGrowthRate = CalculateGrowth(newGuides, prevNewGuides);
 
             return new UserStatus
             {
@@ -322,70 +327,60 @@ namespace Repositories.Repositories
 
         public async Task<List<MembershipStatus>> GetMembershipStatsAsync(DateTime? fromDate, DateTime? toDate)
         {
-            // Lấy danh sách package và liên kết dữ liệu liên quan ở phía client
             var packages = await _context.MembershipPackages
                 .Include(p => p.AccountMemberships)
                 .Include(p => p.Payments)
                 .ToListAsync();
 
-            var membershipStats = new List<MembershipStatus>();
+            var previousFromDate = fromDate?.AddMonths(-1);
+            var previousToDate = toDate?.AddMonths(-1);
 
-            var periodDays = (toDate ?? DateTime.UtcNow) - (fromDate ?? DateTime.UtcNow.AddMonths(-1));
-            var previousFromDate = (fromDate ?? DateTime.UtcNow.AddMonths(-1)) - periodDays;
-            var previousToDate = fromDate ?? DateTime.UtcNow.AddMonths(-1);
+            var membershipStats = new List<MembershipStatus>();
 
             foreach (var package in packages)
             {
                 var filteredPayments = package.Payments
-                    .Where(p =>
-                        (!fromDate.HasValue || p.CreatedAt >= fromDate.Value) &&
-                        (!toDate.HasValue || p.CreatedAt <= toDate.Value) && p.PaymentType == "Membership")
-                    .ToList() ?? new List<Payment>();
-
-                var durationText = FormatDuration(package.Duration);
-                var benefits = ParseBenefits(package.BenefitDesc);
+                    .Where(p => (!fromDate.HasValue || p.CreatedAt >= fromDate.Value) &&
+                                (!toDate.HasValue || p.CreatedAt <= toDate.Value) &&
+                                p.PaymentType == "Membership")
+                    .ToList();
 
                 var totalSales = filteredPayments.Count;
                 var revenue = filteredPayments.Sum(p => (decimal)p.Price);
 
-                // Tính số lượng ở kỳ trước
-                var prevSales = package.Payments?
-                    .Count(p => p.CreatedAt >= previousFromDate && p.CreatedAt <= previousToDate) ?? 0;
+                var prevSales = package.Payments
+                    .Count(p => p.CreatedAt >= previousFromDate && p.CreatedAt <= previousToDate);
 
-                var growthRate = prevSales > 0 ? ((decimal)(totalSales - prevSales) / prevSales) * 100 : 0;
+                var growthRate = CalculateGrowth(totalSales, prevSales);
 
                 membershipStats.Add(new MembershipStatus
                 {
                     PackageId = package.MembershipPackageId,
                     PackageName = package.Name,
                     Price = (decimal)package.Price,
-                    Duration = durationText,
+                    Duration = FormatDuration(package.Duration),
                     TotalSales = totalSales,
                     Revenue = revenue,
                     GrowthRate = growthRate
                 });
             }
 
-            return membershipStats
-                .OrderByDescending(m => m.TotalSales)
-                .Take(10) // thêm giới hạn
-                .ToList();
+            return membershipStats.OrderByDescending(m => m.TotalSales).Take(10).ToList();
         }
 
+        //private List<string> ParseBenefits(string benefitDesc)
+        //{
+        //    if (string.IsNullOrEmpty(benefitDesc))
+        //        return new List<string>();
 
-        private List<string> ParseBenefits(string benefitDesc)
-        {
-            if (string.IsNullOrEmpty(benefitDesc))
-                return new List<string>();
+        //    // Split by common delimiters like newlines, semicolons, or bullet points
+        //    var benefits = Regex.Split(benefitDesc, @"[\n;•]+")
+        //        .Where(b => !string.IsNullOrWhiteSpace(b))
+        //        .Select(b => b.Trim())
+        //        .ToList();
 
-            // Split by common delimiters like newlines, semicolons, or bullet points
-            var benefits = Regex.Split(benefitDesc, @"[\n;•]+")
-                .Where(b => !string.IsNullOrWhiteSpace(b))
-                .Select(b => b.Trim())
-                .ToList();
-
-            return benefits;
-        }
+        //    return benefits;
+        //}
 
         private string FormatDuration(int durationInDays)
         {

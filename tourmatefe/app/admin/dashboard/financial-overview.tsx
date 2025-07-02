@@ -40,7 +40,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.revenueGrowth)}`}>
               {getGrowthIcon(data.revenueGrowth)}
               <p className="text-xs text-green-100">
-                {data.revenueGrowth > 0 ? "+" : ""}
+                {data.revenueGrowth > 0 ? "+" : "-"}
                 {data.revenueGrowth.toFixed(1)}% so với kỳ trước
               </p>
             </div>
@@ -57,7 +57,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.commissionGrowth)}`}>
               {getGrowthIcon(data.commissionGrowth)}
               <p className="text-xs text-blue-100">
-                {data.commissionGrowth > 0 ? "+" : ""}
+                {data.commissionGrowth > 0 ? "+" : "-"}
                 {data.commissionGrowth.toFixed(1)}% so với kỳ trước
               </p>
             </div>
@@ -74,7 +74,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.membershipGrowth)}`}>
               {getGrowthIcon(data.membershipGrowth)}
               <p className="text-xs text-purple-100">
-                {data.membershipGrowth > 0 ? "+" : ""}
+                {data.membershipGrowth > 0 ? "+" : "-"}
                 {data.membershipGrowth.toFixed(1)}% so với kỳ trước
               </p>
             </div>
@@ -161,17 +161,17 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-500 mb-2">+{data.revenueGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-green-500 mb-2">{data.revenueGrowth.toFixed(1)}%</div>
               <p className="text-sm text-gray-600">Tăng trưởng tổng doanh thu</p>
             </div>
             <Separator />
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-500 mb-2">+{data.commissionGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-blue-500 mb-2">{data.commissionGrowth.toFixed(1)}%</div>
               <p className="text-sm text-gray-600">Tăng trưởng hoa hồng</p>
             </div>
             <Separator />
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-500 mb-2">+{data.membershipGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-purple-500 mb-2">{data.membershipGrowth.toFixed(1)}%</div>
               <p className="text-sm text-gray-600">Tăng trưởng membership</p>
             </div>
           </CardContent>
