@@ -5,7 +5,8 @@ import { Applications } from "@/types/applications";
 import { Badge } from "@/components/ui/badge";
 import RecruitActions from "./recruitAction";
 import { Checkbox } from "@/components/ui/checkbox";
-
+import { useQuery } from "@tanstack/react-query";
+import { getActiveArea } from "@/app/api/active-area.api";
 export const columns: ColumnDef<Applications>[] = [
   {
     id: "select",
@@ -60,9 +61,7 @@ export const columns: ColumnDef<Applications>[] = [
     accessorKey: "areaId",
     header: "Khu vực",
     cell: ({ row }) => (
-      <div className="max-w-[200px] whitespace-normal break-words">
-        {row.getValue("areaId")}
-      </div>
+      <AreaNameCell areaId={row.getValue("areaId") as number} />
     ),
   },
   {
@@ -115,4 +114,19 @@ export const columns: ColumnDef<Applications>[] = [
     },
   },
 ];
+
+function AreaNameCell({ areaId }: { areaId: number }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["active-area", areaId],
+    queryFn: () => getActiveArea(areaId),
+    enabled: !!areaId,
+    staleTime: 5 * 60 * 1000,
+  });
+
+  return (
+    <div className="max-w-[200px] whitespace-normal break-words">
+      {isLoading ? "Đang tải..." : data?.areaName || areaId}
+    </div>
+  );
+}
 

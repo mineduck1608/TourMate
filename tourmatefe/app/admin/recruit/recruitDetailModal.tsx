@@ -191,18 +191,14 @@ const CVDetailModal: React.FC<CVDetailModalProps> = ({
             <div className="mt-1">
               <Badge
                 variant={
-                  formData.status === "pending"
+                  formData.status === "Đang chờ duyệt"
                     ? "outline"
-                    : formData.status === "approved"
+                    : formData.status === "Đã xử lí"
                     ? "secondary"
                     : "destructive"
                 }
               >
-                {formData.status === "pending"
-                  ? "Chờ duyệt"
-                  : formData.status === "approved"
-                  ? "Đã duyệt"
-                  : "Từ chối"}
+                {formData.status}
               </Badge>
             </div>
           </div>
