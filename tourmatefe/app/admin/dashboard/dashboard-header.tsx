@@ -8,7 +8,6 @@ import type { DashboardFilters } from "@/types/admin-dashboard"
 import { useEffect } from "react"
 import { useMutation } from "@tanstack/react-query"
 import { fetchAreaIdAndName } from "@/app/api/active-area.api"
-import { m } from "framer-motion"
 
 interface DashboardHeaderProps {
   filters: DashboardFilters
