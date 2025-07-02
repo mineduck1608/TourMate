@@ -90,11 +90,11 @@ export default function TourFeedbackList() {
               <TableHeader>
                 <TableRow>
                   <TableHead>Khách hàng</TableHead>
-                  <TableHead>Hướng dẫn viên</TableHead>
-                  <TableHead>Tour</TableHead>
+                  <TableHead className="hidden md:table-cell">Hướng dẫn viên</TableHead>
+                  {/* <TableHead className="hidden lg:table-cell">Tour</TableHead> */}
                   <TableHead>Đánh giá</TableHead>
-                  <TableHead>Nội dung</TableHead>
-                  <TableHead>Ngày tạo</TableHead>
+                  <TableHead className="hidden xl:table-cell">Nội dung</TableHead>
+                  <TableHead className="hidden lg:table-cell">Ngày tạo</TableHead>
                   <TableHead>Thao tác</TableHead>
                 </TableRow>
               </TableHeader>
@@ -102,11 +102,11 @@ export default function TourFeedbackList() {
                 {filteredFeedbacks.map((feedback: TourFeedback) => (
                   <TableRow key={feedback.feedbackId}>
                     <TableCell className="font-medium">{feedback.customerName}</TableCell>
-                    <TableCell>{feedback.tourGuideName}</TableCell>
-                    <TableCell className="max-w-xs truncate">{feedback.tourName}</TableCell>
+                    <TableCell className="hidden md:table-cell">{feedback.tourGuideName}</TableCell>
+                    {/* <TableCell className="hidden lg:table-cell max-w-xs truncate">{feedback.tourName}</TableCell> */}
                     <TableCell>{getRatingBadge(feedback.rating)}</TableCell>
-                    <TableCell className="max-w-md truncate">{feedback.content}</TableCell>
-                    <TableCell>{formatDate(feedback)}</TableCell>
+                    <TableCell className="hidden xl:table-cell max-w-md truncate">{feedback.content}</TableCell>
+                    <TableCell className="hidden lg:table-cell">{formatDate(feedback)}</TableCell>
                     <TableCell>
                       <Button variant="outline" size="sm" onClick={() => handleViewDetail(feedback)}>
                         <Eye className="w-4 h-4" />
