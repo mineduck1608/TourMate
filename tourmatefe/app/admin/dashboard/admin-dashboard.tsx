@@ -18,18 +18,24 @@ import { IssuesStatsComponent } from "./issues-stats"
 import { useAdminDashboard } from "@/hooks/userAdminDashboard"
 import type { DashboardFilters as ComponentFilters } from "@/types/admin-dashboard"
 import { toast } from "react-toastify"
+import { startOfMonth, endOfMonth } from "date-fns"
+
 
 export default function AdminDashboard() {
+
+  const now = new Date()
+
   const [filters, setFilters] = useState<ComponentFilters>({
     dateRange: {
-      from: subMonths(new Date(), 3),
-      to: new Date(),
+      from: startOfMonth(now), // 👈 Lấy đầu tháng hiện tại
+      to: endOfMonth(now),     // 👈 Lấy cuối tháng hiện tại
     },
     selectedArea: "all",
   })
 
+
   // Tạo các giá trị primitive cho query key
-   const fromDate = filters.dateRange?.from ? format(filters.dateRange.from, "yyyy-MM-dd") : undefined
+  const fromDate = filters.dateRange?.from ? format(filters.dateRange.from, "yyyy-MM-dd") : undefined
   const toDate = filters.dateRange?.to ? format(filters.dateRange.to, "yyyy-MM-dd") : undefined
   const areaFilter = filters.selectedArea === "all" ? undefined : filters.selectedArea
 

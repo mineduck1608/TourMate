@@ -26,8 +26,23 @@ export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport,
   })
 
   useEffect(() => {
-    areasMutation.mutate()
-  }, [])
+  areasMutation.mutate()
+
+  // ⚠️ Nếu chưa có dateRange thì đặt mặc định là tháng hiện tại
+  if (!filters.dateRange?.from || !filters.dateRange?.to) {
+    const now = new Date()
+    const defaultRange = {
+      from: startOfMonth(now),
+      to: endOfMonth(now),
+    }
+
+    onFiltersChange({
+      ...filters,
+      dateRange: defaultRange,
+    })
+  }
+}, [])
+
 
   // Generate month options (current month and previous 11 months)
   const generateMonthOptions = () => {
