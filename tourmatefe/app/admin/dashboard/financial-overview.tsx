@@ -26,6 +26,21 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
     return growth >= 0 ? <TrendingUp className="w-4 h-4" /> : <TrendingDown className="w-4 h-4" />
   }
 
+  const renderGrowth = (growth: number, colorClass: string, textClass: string) => {
+    if (growth === 0) {
+      return <p className={`text-xs ${textClass}`}>Không có dữ liệu tháng trước</p>
+    }
+    return (
+      <div className={`flex items-center gap-1 mt-2 ${colorClass}`}>
+        {getGrowthIcon(growth)}
+        <p className={`text-xs ${textClass}`}>
+          {growth > 0 ? "+" : ""}
+          {growth.toFixed(1)}% so với kỳ trước
+        </p>
+      </div>
+    )
+  }
+
   return (
     <div className="space-y-6">
       {/* Revenue Cards */}
@@ -37,13 +52,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(data.totalRevenue)}</div>
-            <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.revenueGrowth)}`}>
-              {getGrowthIcon(data.revenueGrowth)}
-              <p className="text-xs text-green-100">
-                {data.revenueGrowth > 0 ? "+" : "-"}
-                {data.revenueGrowth.toFixed(1)}% so với kỳ trước
-              </p>
-            </div>
+            {renderGrowth(data.revenueGrowth, getGrowthColor(data.revenueGrowth), "text-green-100")}
           </CardContent>
         </Card>
 
@@ -54,13 +63,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(data.tourCommissionRevenue)}</div>
-            <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.commissionGrowth)}`}>
-              {getGrowthIcon(data.commissionGrowth)}
-              <p className="text-xs text-blue-100">
-                {data.commissionGrowth > 0 ? "+" : "-"}
-                {data.commissionGrowth.toFixed(1)}% so với kỳ trước
-              </p>
-            </div>
+            {renderGrowth(data.commissionGrowth, getGrowthColor(data.commissionGrowth), "text-blue-100")}
           </CardContent>
         </Card>
 
@@ -71,13 +74,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">{formatCurrency(data.membershipRevenue)}</div>
-            <div className={`flex items-center gap-1 mt-2 ${getGrowthColor(data.membershipGrowth)}`}>
-              {getGrowthIcon(data.membershipGrowth)}
-              <p className="text-xs text-purple-100">
-                {data.membershipGrowth > 0 ? "+" : "-"}
-                {data.membershipGrowth.toFixed(1)}% so với kỳ trước
-              </p>
-            </div>
+            {renderGrowth(data.membershipGrowth, getGrowthColor(data.membershipGrowth), "text-purple-100")}
           </CardContent>
         </Card>
 
@@ -87,8 +84,9 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <TrendingUp className="w-5 h-5" />
           </CardHeader>
           <CardContent className="flex flex-col items-center">
-            <div className="text-4xl font-extrabold mb-1">{data.totalPayments.toLocaleString("vi-VN")}</div>
-            <div className="text-sm text-orange-100">lượt giao dịch</div>          </CardContent>
+            <div className="text-4xl font-extrabold mb-1">{data.totalPayments?.toLocaleString("vi-VN") ?? "Không có dữ liệu"}</div>
+            <div className="text-sm text-orange-100">lượt giao dịch</div>
+          </CardContent>
         </Card>
       </div>
 
@@ -130,7 +128,7 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <div>
               <div className="flex justify-between text-sm mb-2">
                 <span className="text-gray-600">Tỷ suất lợi nhuận</span>
-                <span className="font-semibold text-orange-600">{data.profitMargin.toFixed(1)}%</span>
+                <span className="font-semibold text-orange-600">{data.profitMargin?.toFixed(1) ?? "Không có dữ liệu"}%</span>
               </div>
               <Progress value={data.profitMargin} className="h-3" />
             </div>
@@ -138,13 +136,17 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
                 <div className="text-lg font-bold text-blue-600">
-                  {((data.tourCommissionRevenue / data.totalRevenue) * 100).toFixed(1)}%
+                  {data.totalRevenue
+                    ? ((data.tourCommissionRevenue / data.totalRevenue) * 100).toFixed(1) + "%"
+                    : "Không có dữ liệu"}
                 </div>
                 <div className="text-sm text-blue-700">Tỷ trọng hoa hồng</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
                 <div className="text-lg font-bold text-purple-600">
-                  {((data.membershipRevenue / data.totalRevenue) * 100).toFixed(1)}%
+                  {data.totalRevenue
+                    ? ((data.membershipRevenue / data.totalRevenue) * 100).toFixed(1) + "%"
+                    : "Không có dữ liệu"}
                 </div>
                 <div className="text-sm text-purple-700">Tỷ trọng membership</div>
               </div>
@@ -161,17 +163,29 @@ export function FinancialOverview({ data }: FinancialOverviewProps) {
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="text-center">
-              <div className="text-3xl font-bold text-green-500 mb-2">{data.revenueGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-green-500 mb-2">
+                {data.revenueGrowth === 0
+                  ? "Không có dữ liệu tháng trước"
+                  : (data.revenueGrowth > 0 ? "+" : "") + data.revenueGrowth.toFixed(1) + "%"}
+              </div>
               <p className="text-sm text-gray-600">Tăng trưởng tổng doanh thu</p>
             </div>
             <Separator />
             <div className="text-center">
-              <div className="text-3xl font-bold text-blue-500 mb-2">{data.commissionGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-blue-500 mb-2">
+                {data.commissionGrowth === 0
+                  ? "Không có dữ liệu tháng trước"
+                  : (data.commissionGrowth > 0 ? "+" : "") + data.commissionGrowth.toFixed(1) + "%"}
+              </div>
               <p className="text-sm text-gray-600">Tăng trưởng hoa hồng</p>
             </div>
             <Separator />
             <div className="text-center">
-              <div className="text-3xl font-bold text-purple-500 mb-2">{data.membershipGrowth.toFixed(1)}%</div>
+              <div className="text-3xl font-bold text-purple-500 mb-2">
+                {data.membershipGrowth === 0
+                  ? "Không có dữ liệu tháng trước"
+                  : (data.membershipGrowth > 0 ? "+" : "") + data.membershipGrowth.toFixed(1) + "%"}
+              </div>
               <p className="text-sm text-gray-600">Tăng trưởng membership</p>
             </div>
           </CardContent>

@@ -48,6 +48,8 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
     }
   }
 
+ // ...existing code...
+
   const totalSales = packages.reduce((sum, pkg) => sum + pkg.totalSales, 0)
   const totalRevenue = packages.reduce((sum, pkg) => sum + pkg.revenue, 0)
 
@@ -64,8 +66,8 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
                   {getPackageIcon(pkg.packageName)}
                   <span className="capitalize">{pkg.packageName}</span>
                 </div>
-                <Badge variant="outline" className="text-green-600 border-green-200">
-                  +{pkg.growthRate.toFixed(1)}%
+                <Badge variant="outline" className={`border-green-200 ${pkg.growthRate === 0 ? "text-gray-400 border-gray-200" : "text-green-600"}`}>
+                  {pkg.growthRate === 0 ? "Không có dữ liệu tháng trước" : (pkg.growthRate > 0 ? "+" : "") + pkg.growthRate.toFixed(1) + "%"}
                 </Badge>
               </CardTitle>
             </CardHeader>
@@ -73,42 +75,28 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
               <div className="grid grid-cols-2 gap-4">
                 <div>
                   <p className="text-sm text-gray-500">Số lượng bán</p>
-                  <p className="text-xl font-bold">{formatNumber(pkg.totalSales)}</p>
+                  <p className="text-xl font-bold">{pkg.totalSales ?? "Không có dữ liệu"}</p>
                 </div>
                 <div>
                   <p className="text-sm text-gray-500">Doanh thu</p>
-                  <p className="text-xl font-bold text-green-600">{formatCurrency(pkg.revenue)}</p>
+                  <p className="text-xl font-bold text-green-600">{pkg.revenue == null ? "Không có dữ liệu" : formatCurrency(pkg.revenue)}</p>
                 </div>
               </div>
 
               <div>
                 <div className="flex justify-between text-sm mb-2">
                   <span>Thị phần</span>
-                  <span className="font-semibold">{((pkg.totalSales / totalSales) * 100).toFixed(1)}%</span>
+                  <span className="font-semibold">
+                    {totalSales === 0 ? "Không có dữ liệu" : ((pkg.totalSales / totalSales) * 100).toFixed(1) + "%"}
+                  </span>
                 </div>
-                <Progress value={(pkg.totalSales / totalSales) * 100} className="h-2" />
+                <Progress value={totalSales === 0 ? 0 : (pkg.totalSales / totalSales) * 100} className="h-2" />
               </div>
 
               <div className="space-y-2">
-                <p className="text-sm font-medium text-gray-700">Giá: {formatCurrency(pkg.price)}</p>
-                <p className="text-sm text-gray-500">Thời hạn: {pkg.duration}</p>
+                <p className="text-sm font-medium text-gray-700">Giá: {pkg.price == null ? "Không có dữ liệu" : formatCurrency(pkg.price)}</p>
+                <p className="text-sm text-gray-500">Thời hạn: {pkg.duration ?? "Không có dữ liệu"}</p>
               </div>
-
-              {/* <div className="space-y-1">
-                <p className="text-sm font-medium text-gray-700">Tính năng:</p>
-                <div className="flex flex-wrap gap-1">
-                  {pkg.benefits.slice(0, 3).map((benefit, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {benefit}
-                    </Badge>
-                  ))}
-                  {pkg.benefits.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{pkg.benefits.length - 3} khác
-                    </Badge>
-                  )}
-                </div>
-              </div> */}
             </CardContent>
           </Card>
         ))}
@@ -133,13 +121,13 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
                     {getPackageIcon(pkg.packageName)}
                     <div>
                       <p className="font-medium capitalize">{pkg.packageName}</p>
-                      <p className="text-sm text-gray-500">{formatNumber(pkg.totalSales)} gói đã bán</p>
+                      <p className="text-sm text-gray-500">{pkg.totalSales ?? "Không có dữ liệu"} gói đã bán</p>
                     </div>
                   </div>
                   <div className="text-right">
-                    <p className="font-semibold text-green-600">{formatCurrency(pkg.revenue)}</p>
+                    <p className="font-semibold text-green-600">{pkg.revenue == null ? "Không có dữ liệu" : formatCurrency(pkg.revenue)}</p>
                     <p className="text-sm text-gray-500">
-                      {((pkg.revenue / totalRevenue) * 100).toFixed(1)}% tổng doanh thu
+                      {totalRevenue === 0 ? "Không có dữ liệu" : ((pkg.revenue / totalRevenue) * 100).toFixed(1) + "% tổng doanh thu"}
                     </p>
                   </div>
                 </div>
@@ -153,14 +141,13 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
                 <div key={pkg.packageId} className="space-y-2">
                   <div className="flex justify-between items-center">
                     <span className="capitalize font-medium">{pkg.packageName}</span>
-                    <span className={`font-semibold ${pkg.growthRate >= 0 ? "text-green-600" : "text-red-600"}`}>
-                      {pkg.growthRate > 0 ? "+" : ""}
-                      {pkg.growthRate.toFixed(1)}%
+                    <span className={`font-semibold ${pkg.growthRate > 0 ? "text-green-600" : pkg.growthRate < 0 ? "text-red-600" : "text-gray-400"}`}>
+                      {pkg.growthRate === 0 ? "Không có dữ liệu tháng trước" : (pkg.growthRate > 0 ? "+" : "") + pkg.growthRate.toFixed(1) + "%"}
                     </span>
                   </div>
                   <Progress
-                    value={Math.abs(pkg.growthRate)}
-                    className={`h-2 ${pkg.growthRate >= 0 ? "bg-green-100" : "bg-red-100"}`}
+                    value={pkg.growthRate === 0 ? 0 : Math.abs(pkg.growthRate)}
+                    className={`h-2 ${pkg.growthRate > 0 ? "bg-green-100" : pkg.growthRate < 0 ? "bg-red-100" : "bg-gray-100"}`}
                   />
                 </div>
               ))}
@@ -171,22 +158,25 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
           <div className="mt-6 pt-6 border-t">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
               <div className="text-center p-4 bg-blue-50 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{formatNumber(totalSales)}</div>
+                <div className="text-2xl font-bold text-blue-600">{totalSales || "Không có dữ liệu"}</div>
                 <div className="text-sm text-blue-700">Tổng gói đã bán</div>
               </div>
               <div className="text-center p-4 bg-green-50 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">{formatCurrency(totalRevenue)}</div>
+                <div className="text-2xl font-bold text-green-600">{totalRevenue == 0 ? "Không có dữ liệu" : formatCurrency(totalRevenue)}</div>
                 <div className="text-sm text-green-700">Tổng doanh thu</div>
               </div>
               <div className="text-center p-4 bg-purple-50 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{formatCurrency(totalRevenue / totalSales)}</div>
+                <div className="text-2xl font-bold text-purple-600">
+                  {totalSales === 0 ? "Không có dữ liệu" : formatCurrency(totalRevenue / totalSales)}
+                </div>
                 <div className="text-sm text-purple-700">Giá trung bình</div>
               </div>
               <div className="text-center p-4 bg-yellow-50 rounded-lg">
                 <div className="text-2xl font-bold text-yellow-600">
                   {
-                    packages.find((p) => p.totalSales === Math.max(...packages.map((pkg) => pkg.totalSales)))
-                      ?.packageName
+                    totalSales === 0
+                      ? "Không có dữ liệu"
+                      : packages.find((p) => p.totalSales === Math.max(...packages.map((pkg) => pkg.totalSales)))?.packageName
                   }
                 </div>
                 <div className="text-sm text-yellow-700">Gói phổ biến nhất</div>

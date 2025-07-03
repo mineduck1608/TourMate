@@ -10,7 +10,20 @@ interface UserStatsProps {
 
 export function UserStatsComponent({ data }: UserStatsProps) {
   const formatNumber = (num: number) => {
+    if (num == null) return "Không có dữ liệu"
     return new Intl.NumberFormat("vi-VN").format(num)
+  }
+
+  const renderGrowth = (growth: number, color: string) => {
+    if (growth === 0) {
+      return <div className={`text-3xl font-bold ${color} mb-2`}>Không có dữ liệu tháng trước</div>
+    }
+    return (
+      <div className={`text-3xl font-bold ${color} mb-2`}>
+        {growth > 0 ? "+" : ""}
+        {growth.toFixed(1)}%
+      </div>
+    )
   }
 
   return (
@@ -31,7 +44,7 @@ export function UserStatsComponent({ data }: UserStatsProps) {
             </div>
           </div>
           <div className="text-center p-4 bg-blue-50 rounded-lg">
-            <div className="text-3xl font-bold text-blue-600 mb-2">{data.userGrowthRate.toFixed(1)}%</div>
+            {renderGrowth(data.userGrowthRate, "text-blue-600")}
             <div className="text-sm text-blue-700">Tăng trưởng user</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -57,7 +70,7 @@ export function UserStatsComponent({ data }: UserStatsProps) {
             </div>
           </div>
           <div className="text-center p-4 bg-yellow-50 rounded-lg">
-            <div className="text-3xl font-bold text-yellow-600 mb-2">{data.guideGrowthRate.toFixed(1)}%</div>
+            {renderGrowth(data.guideGrowthRate, "text-yellow-600")}
             <div className="text-sm text-yellow-700">Tăng trưởng HDV</div>
           </div>
           <div className="text-center p-4 bg-gray-50 rounded-lg">

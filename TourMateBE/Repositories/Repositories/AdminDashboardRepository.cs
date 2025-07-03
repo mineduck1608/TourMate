@@ -24,16 +24,17 @@ namespace Repositories.Repositories
         private decimal CalculateGrowth(decimal current, decimal previous)
         {
             if (previous == 0)
-                return current > 0 ? 100 : 0;
+                return 0; // hoặc return current * 100 nếu bạn muốn thể hiện toàn bộ là tăng mới
             return ((current - previous) / previous) * 100;
         }
 
         private decimal CalculateGrowth(int current, int previous)
         {
             if (previous == 0)
-                return current > 0 ? 100 : 0;
+                return 0;
             return ((decimal)(current - previous) / previous) * 100;
         }
+
 
         public async Task<FinancialStatus> GetFinancialStatsAsync(DateTime? fromDate, DateTime? toDate, string? areaFilter)
         {
@@ -70,8 +71,16 @@ namespace Repositories.Repositories
             var membershipRevenue = await membershipQuery.SumAsync(m => m.Price);
             var totalRevenue = tourCommissionRevenue + (decimal)membershipRevenue;
 
-            var previousFromDate = fromDate?.AddMonths(-1);
-            var previousToDate = toDate?.AddMonths(-1);
+            DateTime? previousFromDate = fromDate.HasValue
+    ? new DateTime(fromDate.Value.Year, fromDate.Value.Month, 1).AddMonths(-1)
+    : (DateTime?)null;
+
+            DateTime? previousToDate = previousFromDate.HasValue
+                ? new DateTime(previousFromDate.Value.Year, previousFromDate.Value.Month,
+                    DateTime.DaysInMonth(previousFromDate.Value.Year, previousFromDate.Value.Month))
+                : (DateTime?)null;
+
+
 
             var prevTourCommission = await _context.Revenues
                 .Where(r => r.CreatedAt >= previousFromDate && r.CreatedAt <= previousToDate)
@@ -185,8 +194,15 @@ namespace Repositories.Repositories
             var totalActiveUsers = await _context.Accounts.CountAsync(u => u.RoleId == 2 && u.Status);
             var totalActiveGuides = await _context.Accounts.CountAsync(g => g.RoleId == 3 && g.Status);
 
-            var previousFromDate = fromDate?.AddMonths(-1);
-            var previousToDate = toDate?.AddMonths(-1);
+            DateTime? previousFromDate = fromDate.HasValue
+    ? new DateTime(fromDate.Value.Year, fromDate.Value.Month, 1).AddMonths(-1)
+    : (DateTime?)null;
+
+            DateTime? previousToDate = previousFromDate.HasValue
+                ? new DateTime(previousFromDate.Value.Year, previousFromDate.Value.Month,
+                    DateTime.DaysInMonth(previousFromDate.Value.Year, previousFromDate.Value.Month))
+                : (DateTime?)null;
+
 
             var prevNewUsers = await _context.Accounts
                 .CountAsync(u => u.RoleId == 2 && u.CreatedDate >= previousFromDate && u.CreatedDate <= previousToDate);
@@ -332,8 +348,15 @@ namespace Repositories.Repositories
                 .Include(p => p.Payments)
                 .ToListAsync();
 
-            var previousFromDate = fromDate?.AddMonths(-1);
-            var previousToDate = toDate?.AddMonths(-1);
+            DateTime? previousFromDate = fromDate.HasValue
+    ? new DateTime(fromDate.Value.Year, fromDate.Value.Month, 1).AddMonths(-1)
+    : (DateTime?)null;
+
+            DateTime? previousToDate = previousFromDate.HasValue
+                ? new DateTime(previousFromDate.Value.Year, previousFromDate.Value.Month,
+                    DateTime.DaysInMonth(previousFromDate.Value.Year, previousFromDate.Value.Month))
+                : (DateTime?)null;
+
 
             var membershipStats = new List<MembershipStatus>();
 
