@@ -18,10 +18,6 @@ export function MembershipStatsComponent({ packages }: MembershipStatsProps) {
     }).format(amount)
   }
 
-  const formatNumber = (num: number) => {
-    return new Intl.NumberFormat("vi-VN").format(num)
-  }
-
   const getPackageIcon = (packageName: string) => {
     switch (packageName.toLowerCase()) {
       case "basic":
