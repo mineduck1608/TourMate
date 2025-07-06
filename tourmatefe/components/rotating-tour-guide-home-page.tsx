@@ -140,7 +140,7 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
                                 <div className="absolute inset-0 bg-gradient-to-br from-blue-400 to-purple-400 rounded-full blur-md opacity-30 group-hover:opacity-50 transition-opacity"></div>
                                 <SafeImage
                                     src={currentGuide.image}
-                                    className="relative w-16 h-16 rounded-full aspect-square border-3 border-white shadow-lg"
+                                    className="relative w-16 h-16 rounded-full aspect-square object-cover object-center border-3 border-white shadow-lg"
                                     alt={currentGuide.fullName || "Tour guide"}
                                 />
                             </div>
