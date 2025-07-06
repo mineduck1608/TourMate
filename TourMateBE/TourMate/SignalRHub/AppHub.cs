@@ -242,6 +242,14 @@ namespace TourMate.SignalRHub
         private async Task<MessageDto> SaveMessageToDb(int conversationId, string text, int senderId, FileUploadModel data)
         {
             var file = data.Convert();
+            var extension = Path.GetExtension(file.FileName)?.ToLowerInvariant();
+            int messageTypeId;
+            if (extension is ".jpg" or ".jpeg" or ".png" or ".gif" or ".bmp" or ".webp")
+                messageTypeId = 2; // Image
+            else if (extension is ".mp4" or ".avi" or ".mov" or ".wmv" or ".flv" or ".mkv" or ".webm")
+                messageTypeId = 3; // Video
+            else
+                messageTypeId = 4; // Other
             var message = new Message
             {
                 ConversationId = conversationId,
@@ -251,7 +259,8 @@ namespace TourMate.SignalRHub
                 IsRead = false,
                 IsDeleted = false,
                 IsEdited = false,
-                File = file
+                File = file,                
+                MessageTypeId = messageTypeId // Assuming 2 is the ID for file messages
             };
 
             var result = await _messageService.CreateMessages(message);
