@@ -13,7 +13,6 @@ export function IssuesStatsComponent({ areas = [] }: IssuesStatsProps) {
     return new Intl.NumberFormat("vi-VN").format(num)
   }
 
-  console.log("IssuesStatsComponent areas:", areas)
   
   // Add null checks and default values
   const totalCancelled = areas?.reduce((sum, area) => sum + area.cancelledTours, 0) ?? 0

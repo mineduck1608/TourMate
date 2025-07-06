@@ -70,7 +70,6 @@ const AddCustomerModal: React.FC<AddCustomerModalProps> = ({
     };
 
     onSave(dataToSave);
-    console.log("Form data submitted:", dataToSave);
 
     setFormData({
       customerId: 0,

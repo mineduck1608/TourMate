@@ -102,7 +102,6 @@ export const columns: ColumnDef<ActiveArea>[] = [
         return `<img src="${match}" alt="Image" style="max-width: 100%; height: auto; object-fit: contain; margin-bottom: 10px;" />`;
       }
     );
-    console.log("Updated Content:", updatedContent); // In ra nội dung đã cập nhật
 
     return (
       <div

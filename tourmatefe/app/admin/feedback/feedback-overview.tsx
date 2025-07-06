@@ -34,7 +34,6 @@ export default function FeedbackOverview() {
   // Calculate recent count (this might need a separate API endpoint)
   const recentCount = 0 // TODO: Implement recent feedback count API
 
-  console.log(topTourGuidesData)
 
   return (
     <div className="space-y-6">

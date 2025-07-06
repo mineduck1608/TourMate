@@ -20,19 +20,13 @@ export default function PaymentsPage() {
         controller.abort();
       }, 5000);
       const response = await getAllPayments(page, LIMIT, controller.signal);
-      console.log("API response:", response);
       return response;
     },
     retry: 0,
     refetchOnWindowFocus: false,
   });
 
-  console.log("Current data:", data);
-  console.log("Data being passed to DataTable:", {
-    result: data?.result,
-    totalResults: data?.totalResult,
-    totalPages: data?.totalPage,
-  });
+
 
   if (isLoading) {
     return (

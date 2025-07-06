@@ -47,7 +47,6 @@ const AddActiveAreaModal: React.FC<AddActiveAreaModalProps> = ({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSave(formData);
-    console.log(formData);
     setFormData({
       areaId: 0,
       areaName: "",

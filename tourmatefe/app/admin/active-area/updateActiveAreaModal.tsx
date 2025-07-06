@@ -26,7 +26,6 @@ const UpdateActiveAreaModal: React.FC<UpdateActiveAreaModalProps> = ({
   const [formData, setFormData] = useState<ActiveArea>(currentData);
 
   useEffect(() => {
-    console.log(currentData);
     
     setFormData(currentData);
   }, [currentData]);

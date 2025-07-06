@@ -55,7 +55,6 @@ const UpdateCustomerModal: React.FC<UpdateCustomerModalProps> = ({
         password: formData.account.password
       };
   
-      console.log("Update Model:", updateModel);
       onSave(updateModel);
       onClose();
     };

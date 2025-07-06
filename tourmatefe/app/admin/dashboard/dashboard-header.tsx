@@ -80,7 +80,6 @@ export function DashboardHeader({ filters, onFiltersChange, onRefresh, onExport,
       to: endOfMonth(selectedDate),
     }
 
-    console.log(dateRange)
 
 
     onFiltersChange({

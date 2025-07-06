@@ -149,9 +149,7 @@ export default function RevenuePage() {
       setSelectedRevenues([])
 
       // Then refresh data
-      console.log("Refreshing data after payment...")
       await Promise.all([refetchRevenues(), refetchStats(), refetchHistory()])
-      console.log("Data refresh completed")
     } catch (error) {
       console.error("Payment error:", error)
       toast.error(error instanceof Error ? `❌ ${error.message}` : "❌ Có lỗi xảy ra khi xử lý thanh toán")
