@@ -48,9 +48,9 @@ namespace Services.Services
             return true;
         }
 
-        public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category)
+        public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category, bool excludeContent)
         {
-            return await NewsRepository.FilterByCategory(pageSize, pageIndex, category);
+            return await NewsRepository.FilterByCategory(pageSize, pageIndex, category, excludeContent);
         }
         public async Task<List<News>> GetRecentNews(int excludeId, int count)
         {

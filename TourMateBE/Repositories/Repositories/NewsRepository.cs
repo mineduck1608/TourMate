@@ -13,13 +13,22 @@ namespace Repositories.Repositories
     {
         public NewsRepository(TourmateContext context) : base(context) { }
 
-        public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category)
+        public async Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category, bool excludeContent)
         {
             var query = _context.News.AsQueryable();
             query = query.Where(e => category.IsNullOrEmpty() || e.Category == category).OrderByDescending(e => e.CreatedAt);
 
             // Phân trang
             var result = await query
+                .Select(e => new News
+                {
+                    NewsId = e.NewsId,
+                    Title = e.Title,
+                    Category = e.Category,
+                    CreatedAt = e.CreatedAt,
+                    Content = excludeContent ? "" : e.Content, // Nếu excludeContent là true, không lấy nội dung
+                    BannerImg = e.BannerImg
+                })
                 .Skip(pageSize * (pageIndex - 1))
                 .Take(pageSize)
                 .ToListAsync();

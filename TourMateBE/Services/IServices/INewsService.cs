@@ -16,7 +16,7 @@ namespace Services.IServices
         Task<bool> UpdateNews(News news);
         Task<bool> DeleteNews(int id);
         Task<IEnumerable<News>> GetAllList();
-        Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category);
+        Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category, bool excludeContent);
         Task<List<News>> GetRecentNews(int excludeId, int count);
     }
 }

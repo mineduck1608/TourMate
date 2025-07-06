@@ -28,22 +28,7 @@ namespace API.Controllers
         [HttpGet]
         public async Task<ActionResult<PagedResult<News>>> Search(string category = "", int pageSize = 10, int pageIndex = 1, bool excludeContent = false)
         {
-            var result = await _newsService.FilterByCategory(pageSize, pageIndex, category);
-            if(excludeContent)
-            {
-                // Nếu không bao gồm nội dung, loại bỏ trường Content khỏi kết quả
-                foreach (var news in result.Result)
-                {
-                    news.Content = ""; // Hoặc có thể sử dụng một giá trị mặc định khác
-                }
-            }
-            // Tạo đối tượng response với dữ liệu đã bọc
-            var response = new PagedResult<News>
-            {
-                Result = result.Result, // Tin tức đã bọc trong "Data"
-                TotalResult = result.TotalResult, // Tổng số kết quả
-                TotalPage = result.TotalPage // Tổng số trang
-            };
+            var result = await _newsService.FilterByCategory(pageSize, pageIndex, category, excludeContent);
             return Ok(result);
         }
         [HttpGet("recent")]
