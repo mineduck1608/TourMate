@@ -6,7 +6,7 @@ namespace Repositories.IRepositories
 {
     public interface INewsRepository : IGenericRepository<News>
     {
-        Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category);
+        Task<PagedResult<News>> FilterByCategory(int pageSize, int pageIndex, string category, bool excludeContent);
         Task<List<News>> GetRecentNews(int excludeId, int count);
     }
 }
