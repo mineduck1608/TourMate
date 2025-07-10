@@ -3,7 +3,7 @@
 import type React from "react"
 
 import { useEffect, useState, useRef, useCallback } from "react"
-import { Bell, Dot, Clock, ExternalLink, Loader2, Check, Trash2 } from "lucide-react"
+import { Bell, Dot, Clock, Loader2, Check, Trash2 } from "lucide-react"
 import * as signalR from "@microsoft/signalr"
 import { apiHub } from "@/types/constants"
 import { useRouter } from "next/navigation"
@@ -347,7 +347,6 @@ const NotificationBell = () => {
                             </div>
                           </div>
 
-                          <ExternalLink className="h-4 w-4 text-gray-400 group-hover:text-blue-500 transition-colors flex-shrink-0 opacity-0 group-hover:opacity-100" />
                         </div>
                       </button>
 
