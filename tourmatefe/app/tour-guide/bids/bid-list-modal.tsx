@@ -288,7 +288,7 @@ const BidListModal: React.FC<BidCommentModalProps> = ({
                                     <div className="flex justify-between">
                                         <div className="flex items-center">
                                             <Link href={'/services/tour-guide/' + displayBid.tourGuideId}>
-                                                <SafeImage src={displayBid.image} alt="pfp" className="w-15 h-15 rounded-full" />
+                                                <SafeImage src={displayBid.image} alt="pfp" className="w-15 h-15 rounded-full object-cover" />
                                             </Link>
                                             <div className="ml-2">
                                                 <p>

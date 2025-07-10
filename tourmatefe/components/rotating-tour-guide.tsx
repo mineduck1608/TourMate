@@ -50,7 +50,7 @@ export default function RotatingTourGuide({ excludeId = -1 }: RotatingTourGuideP
                     <div className="flex gap-3 mb-3">
                         <SafeImage
                             src={currentGuide.image}
-                            className="w-16 h-16 rounded-full aspect-square border-2"
+                            className="w-16 h-16 rounded-full aspect-square border-2 object-cover"
                             alt={currentGuide.fullName || "Tour guide"}
                         />
                         <div className="flex-1">

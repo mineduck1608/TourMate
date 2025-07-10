@@ -224,7 +224,7 @@ const BidCommentModal: React.FC<BidCommentModalProps> = ({
                                         <SafeImage
                                             src={v.image}
                                             alt="avatar"
-                                            className="w-10 h-10 rounded-full flex-shrink-0"
+                                            className="w-10 h-10 rounded-full flex-shrink-0 object-cover"
                                         />
 
                                         <div className="flex-1 min-w-0">
