@@ -79,3 +79,58 @@ export interface DashboardFilters {
   }
   selectedArea: string
 }
+
+
+// Types for dashboard data
+export interface AreaData {
+  areaName: string;
+  completedTours: number;
+  totalRequests: number;
+  averageRating: number;
+  totalRevenue: number;
+  cancelledTours: number;
+  activeGuides: number;
+}
+
+export interface TourData {
+  tourTitle: string;
+  areaName: string;
+  profit: number;
+  averageBids: number;
+  averageRating: number;
+  completedCount: number;
+}
+
+export interface GuideData {
+  guideName: string;
+  areaName: string;
+  averageRating: number;
+  totalTours: number;
+  totalRevenue: number;
+}
+
+export interface MembershipPackageData {
+  packageName: string;
+  price: number;
+  duration: string;
+  totalSales: number;
+  revenue: number;
+  growthRate: number;
+}
+
+// Types for feedback data
+export interface TourFeedbackData {
+  customerName: string;
+  tourGuideName: string;
+  rating: number;
+  content: string;
+  createdDate: string;
+  tourRevenue?: number;
+}
+
+export interface PlatformFeedbackData {
+  accountName: string;
+  rating: number;
+  content: string;
+  createdAt: string;
+}

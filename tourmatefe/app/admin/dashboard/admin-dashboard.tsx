@@ -16,9 +16,10 @@ import { IssuesStatsComponent } from "./issues-stats"
 
 // Import hooks and types
 import { useAdminDashboard } from "@/hooks/userAdminDashboard"
-import type { DashboardFilters as ComponentFilters } from "@/types/admin-dashboard"
+import type { AreaData, DashboardFilters as ComponentFilters, GuideData, MembershipPackageData, TourData } from "@/types/admin-dashboard"
 import { toast } from "react-toastify"
 import { startOfMonth, endOfMonth } from "date-fns"
+import { createExcelWorkbook, addWorksheetToWorkbook, exportToExcel, formatCurrencyForExcel } from "@/lib/export-utils"
 
 
 export default function AdminDashboard() {
@@ -57,8 +58,140 @@ export default function AdminDashboard() {
 
   const handleExport = async () => {
     try {
-      toast.loading("Đang tạo báo cáo...")
-      await new Promise((resolve) => setTimeout(resolve, 2000)) // Simulate export
+      toast.loading("Đang tạo báo cáo tổng hợp...")
+      
+      if (!dashboardData) {
+        toast.dismiss()
+        toast.error("Không có dữ liệu để xuất")
+        return
+      }
+
+      const wb = createExcelWorkbook();
+      
+      // 1. Tổng quan tài chính
+      if (dashboardData.financial) {
+        const financialData = [
+          {
+            "Chỉ Số": "Tổng Doanh Thu",
+            "Giá Trị (VND)": formatCurrencyForExcel(dashboardData.financial.totalRevenue),
+            "Tăng Trưởng (%)": dashboardData.financial.revenueGrowth?.toFixed(1) || "0",
+            "Ghi Chú": "Tổng doanh thu hệ thống"
+          },
+          {
+            "Chỉ Số": "Doanh Thu Hoa Hồng Tour",
+            "Giá Trị (VND)": formatCurrencyForExcel(dashboardData.financial.tourCommissionRevenue),
+            "Tăng Trưởng (%)": dashboardData.financial.commissionGrowth?.toFixed(1) || "0",
+            "Ghi Chú": "Hoa hồng từ tour"
+          },
+          {
+            "Chỉ Số": "Doanh Thu Membership",
+            "Giá Trị (VND)": formatCurrencyForExcel(dashboardData.financial.membershipRevenue),
+            "Tăng Trưởng (%)": dashboardData.financial.membershipGrowth?.toFixed(1) || "0",
+            "Ghi Chú": "Thu từ gói membership"
+          },
+          {
+            "Chỉ Số": "Lợi Nhuận Ròng",
+            "Giá Trị (VND)": formatCurrencyForExcel(dashboardData.financial.netProfit),
+            "Tăng Trưởng (%)": "N/A",
+            "Ghi Chú": `Biên lợi nhuận: ${dashboardData.financial.profitMargin?.toFixed(2) || 0}%`
+          }
+        ];
+        addWorksheetToWorkbook(wb, financialData, "Tài Chính");
+      }
+
+      // 2. Thống kê người dùng
+      if (dashboardData.users) {
+        const userStatsData = [
+          {
+            "Loại Người Dùng": "Người dùng mới",
+            "Số Lượng": dashboardData.users.newUsers || 0,
+            "Tăng Trưởng (%)": dashboardData.users.userGrowthRate?.toFixed(1) || "0",
+            "Mô Tả": "Người dùng đăng ký mới"
+          },
+          {
+            "Loại Người Dùng": "Hướng dẫn viên mới",
+            "Số Lượng": dashboardData.users.newGuides || 0,
+            "Tăng Trưởng (%)": dashboardData.users.guideGrowthRate?.toFixed(1) || "0",
+            "Mô Tả": "HDV đăng ký mới"
+          },
+          {
+            "Loại Người Dùng": "Tổng người dùng hoạt động",
+            "Số Lượng": dashboardData.users.totalActiveUsers || 0,
+            "Tăng Trưởng (%)": "N/A",
+            "Mô Tả": "Tổng người dùng đang hoạt động"
+          },
+          {
+            "Loại Người Dùng": "Tổng HDV hoạt động",
+            "Số Lượng": dashboardData.users.totalActiveGuides || 0,
+            "Tăng Trưởng (%)": "N/A",
+            "Mô Tả": "Tổng HDV đang hoạt động"
+          }
+        ];
+        addWorksheetToWorkbook(wb, userStatsData, "Người Dùng");
+      }
+
+      // 3. Thống kê khu vực
+      if (dashboardData.areas && dashboardData.areas.length > 0) {
+        const areaStatsData = dashboardData.areas.map((area: AreaData, index: number) => ({
+          "STT": index + 1,
+          "Tên Khu Vực": area.areaName || "N/A",
+          "Tour Hoàn Thành": area.completedTours || 0,
+          "Tổng Yêu Cầu": area.totalRequests || 0,
+          "Đánh Giá TB": area.averageRating?.toFixed(2) || "0",
+          "Doanh Thu (VND)": formatCurrencyForExcel(area.totalRevenue || 0),
+          "Tour Hủy": area.cancelledTours || 0,
+          "HDV Hoạt Động": area.activeGuides || 0
+        }));
+        addWorksheetToWorkbook(wb, areaStatsData, "Khu Vực");
+      }
+
+      // 4. Hiệu suất tour
+      if (dashboardData.topTours && dashboardData.topTours.length > 0) {
+        const tourPerformanceData = dashboardData.topTours.map((tour: TourData, index: number) => ({
+          "STT": index + 1,
+          "Tên Tour": tour.tourTitle || "N/A",
+          "Khu Vực": tour.areaName || "N/A",
+          "Lợi Nhuận (VND)": formatCurrencyForExcel(tour.profit || 0),
+          "Bid TB": tour.averageBids?.toFixed(0) || "0",
+          "Đánh Giá": tour.averageRating?.toFixed(2) || "0",
+          "Số Lần Hoàn Thành": tour.completedCount || 0
+        }));
+        addWorksheetToWorkbook(wb, tourPerformanceData, "Top Tour");
+      }
+
+      // 5. Hiệu suất HDV
+      if (dashboardData.topGuides && dashboardData.topGuides.length > 0) {
+        const guidePerformanceData = dashboardData.topGuides.map((guide: GuideData, index: number) => ({
+          "STT": index + 1,
+          "Tên HDV": guide.guideName || "N/A",
+          "Khu Vực": guide.areaName || "N/A",
+          "Đánh Giá TB": guide.averageRating?.toFixed(2) || "0",
+          "Tổng Tour": guide.totalTours || 0,
+          "Doanh Thu (VND)": formatCurrencyForExcel(guide.totalRevenue || 0)
+        }));
+        addWorksheetToWorkbook(wb, guidePerformanceData, "Top HDV");
+      }
+
+      // 6. Gói membership
+      if (dashboardData.membershipPackages && dashboardData.membershipPackages.length > 0) {
+        const membershipData = dashboardData.membershipPackages.map((pkg: MembershipPackageData, index: number) => ({
+          "STT": index + 1,
+          "Tên Gói": pkg.packageName || "N/A",
+          "Giá (VND)": formatCurrencyForExcel(pkg.price || 0),
+          "Thời Hạn": pkg.duration || "N/A",
+          "Số Lượng Bán": pkg.totalSales || 0,
+          "Doanh Thu (VND)": formatCurrencyForExcel(pkg.revenue || 0),
+          "Tăng Trưởng (%)": pkg.growthRate?.toFixed(2) || "0"
+        }));
+        addWorksheetToWorkbook(wb, membershipData, "Membership");
+      }
+
+      // Xuất file
+      const now = new Date();
+      const dateStr = now.toISOString().split('T')[0];
+      const timeStr = now.toTimeString().split(' ')[0].replace(/:/g, '-');
+      exportToExcel(wb, `BaoCaoTongHop_Dashboard_${dateStr}_${timeStr}`);
+      
       toast.dismiss()
       toast.success("Xuất báo cáo thành công!")
     } catch (error) {

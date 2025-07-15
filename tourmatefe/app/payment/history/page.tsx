@@ -102,19 +102,17 @@ export default function PaymentHistory() {
 
   const handleExportCSV = () => {
     const csv = Papa.unparse(
-      filteredPayments.map((p) => ({
-        ID: p.paymentId,
-        Loai: p.paymentType,
-        MoTa: p.paymentType === "Membership" ? p.membershipPackage?.name : p.invoice?.tourName,
-        SoTien: p.price,
-        PhuongThuc: p.paymentMethod,
-        NgayHoanThanh: new Date(p.createdAt).toLocaleString("vi-VN", {
-          year: "numeric",
-          month: "2-digit",
-          day: "2-digit",
-          hour: "2-digit",
-          minute: "2-digit",
-        })
+      filteredPayments.map((p, idx) => ({
+        "STT": idx + 1,
+        "Mã giao dịch": "#" + p.paymentId.toString().padStart(6, "0"),
+        "Loại giao dịch": p.paymentType === "Membership" ? "Membership" : "Đặt chuyến đi",
+        "Tên gói/Tour": p.paymentType === "Membership" ? p.membershipPackage?.name : p.invoice?.tourName,
+        "Số tiền": formatCurrency(p.price),
+        "Phương thức": p.paymentMethod?.toUpperCase(),
+        "Ngày hoàn thành": formatDate(p.createdAt),
+        "Mô tả": p.paymentType === "Membership"
+          ? (p.membershipPackage?.benefitDesc?.replace(/<[^>]+>/g, " ") ?? "")
+          : (p.invoice?.tourDesc?.replace(/<[^>]+>/g, " ") ?? "")
       }))
     )
     const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" })
