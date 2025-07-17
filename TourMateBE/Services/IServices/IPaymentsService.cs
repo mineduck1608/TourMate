@@ -15,9 +15,6 @@ namespace Services.IServices
         Task<Payment> CreatePayments(Payment payments);
         void UpdatePayments(Payment payments);
         bool DeletePayments(int id);
-        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime createdAt, string paymentType);
-        public string GenerateTourGuideInvoiceEmail(Invoice invoice);
-        public string GenerateCustomerInvoiceEmail(Invoice invoice);
         Task<List<Payment>> GetByAccountId(int accountId);
     }
 }

@@ -17,10 +17,11 @@ namespace Services.Services
             private readonly IRefreshTokenService _refreshTokenService;
             private readonly IEmailSender _emailSender;
             private readonly IConfiguration _config;
+            private readonly EmailBody _emailBody;
 
 
 
-        public AccountService(IAccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService, IEmailSender emailSender, IConfiguration config)
+        public AccountService(IAccountRepository repo, TokenService tokenService, ICustomerService customerService, IRefreshTokenService refreshTokenService, ITourGuideService tourGuideService, IEmailSender emailSender, IConfiguration config, EmailBody emailBody)
             {
                 _repo = repo;
                 _tokenService = tokenService;
@@ -29,6 +30,7 @@ namespace Services.Services
                 _refreshTokenService = refreshTokenService;
                 _emailSender = emailSender;
                 _config = config;
+                _emailBody = emailBody;
         }
 
         public async Task<string> ChangePasswordAsync(int accountId, string currentPassword, string newPassword)
@@ -242,144 +244,27 @@ namespace Services.Services
                 return true;
             }
 
-            public async Task<bool> RequestPasswordResetAsync(string email)
-            {
-                var user = await _repo.GetAccountByEmail(email);
-                if (user == null) return false;
+        public async Task<bool> RequestPasswordResetAsync(string email)
+        {
+            var user = await _repo.GetAccountByEmail(email);
+            if (user == null) return false;
 
-                // Tạo JWT token cho reset password
-                var token = _tokenService.GenerateResetPasswordToken(user);
-
-                var baseUrl = _config["FrontEndURL:BaseUrl"];
-
+            // Tạo token
+            var token = _tokenService.GenerateResetPasswordToken(user);
+            var baseUrl = _config["FrontEndURL:BaseUrl"];
             var resetLink = $"{baseUrl}/reset-password/reset?token={token}";
 
-            var emailBody = $@"
-<!DOCTYPE html>
-<html lang=""vi"">
-<head>
-<meta charset=""UTF-8"" />
-<meta name=""viewport"" content=""width=device-width, initial-scale=1"" />
-<title>Đặt lại mật khẩu TourMate</title>
-<style>
-  body, html {{
-    margin: 0; padding: 0; height: 100%; width: 100%; background-color: #e0e0e0;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    color: #000000;
-  }}
-  a {{
-    color: #ffffff; text-decoration: none;
-  }}
-  .email-wrapper {{
-    margin: 40px auto;
-    background-color: #ffffff;
-    border-radius: 14px;
-    box-shadow: 0 6px 20px rgba(0,0,0,0.1);
-    overflow: hidden;
-  }}
-  .email-header {{
-    background-color: lightgray;
-    padding: 30px 20px;
-    text-align: center;
-    color: #000000;
-  }}
-  .email-header img {{
-    max-width: 200px;
-    margin-bottom: 15px;
-  }}
-  .email-header h1 {{
-    margin: 0;
-    font-weight: 700;
-    font-size: 32px;
-    letter-spacing: 1px;
-  }}
-  .email-header p {{
-    margin: 8px 0 0;
-    font-style: italic;
-    font-weight: 500;
-    font-size: 18px;
-    opacity: 0.85;
-  }}
-  .email-body {{
-    padding: 40px 40px 60px;
-    font-size: 17px;
-    line-height: 1.5;
-  }}
-  .email-body p {{
-    margin-bottom: 20px;
-  }}
-  .email-footer {{
-    background-color: #e0e0e0;
-    color: #555555;
-    text-align: center;
-    font-size: 13px;
-    padding: 20px 30px;
-    border-top: 1px solid #dfe3e9;
-  }}
-  @media only screen and (max-width: 480px) {{
-    .email-wrapper {{
-      width: 95% !important;
-      margin: 20px auto !important;
-    }}
-    .email-header h1 {{
-      font-size: 24px !important;
-    }}
-    .email-header p {{
-      font-size: 14px !important;
-    }}
-    .email-body {{
-      font-size: 15px !important;
-      padding: 25px 20px 35px !important;
-    }}
-    .btn-reset {{
-      font-size: 18px !important;
-      padding: 14px 30px !important;
-    }}
-  }}
-</style>
-</head>
-<body>
-  <div class=""email-wrapper"" role=""article"" aria-roledescription=""email"" lang=""vi"">
-    <header class=""email-header"">
-      <img src=""https://firebasestorage.googleapis.com/v0/b/badmintoncourtbooking-183b2.appspot.com/o/tourmate%2FLogo.png?alt=media&token=dddca32f-667c-4913-9ccb-0f2d36d6e779"" alt=""TourMate Logo"" />
-    </header>
-    <section class=""email-body"">
-      <h1>TourMate xin chào,</h1>
-      <p>Bạn nhận được email này vì chúng tôi đã nhận được yêu cầu đặt lại mật khẩu cho tài khoản TourMate của bạn. Hãy nhấn nút dưới đây để đặt lại mật khẩu !!!</p>
-      <p style=""text-align: center;"">
-        <a href=""{resetLink}""target=""_blank"" rel=""noopener noreferrer""
-   style=""
-       display: inline-block;
-       background-color: black;
-       padding: 15px 45px;
-       border-radius: 50px;
-       font-weight: 700;
-       font-size: 20px;
-       color: white;      
-       text-align: center;
-       text-decoration: none;
-       transition: none;  
-   "">Đặt lại mật khẩu</a>
-      </p>
-      <p>Nếu bạn không yêu cầu thay đổi mật khẩu, bạn có thể bỏ qua email này.</p>
-      <p>Trân trọng,<br />Đội ngũ TourMate</p>
-    </section>
-    <footer class=""email-footer"">
-      © 2025 TourMate. Bản quyền mọi quyền được bảo lưu.
-    </footer>
-  </div>
-</body>
-</html>
+            // Tạo nội dung email HTML
+            var emailBody = _emailBody.BuildResetPasswordEmail(resetLink);
 
-";
-
-
+            // Gửi email
             await _emailSender.SendEmailAsync(user.Email, "Reset Password", emailBody);
 
-                return true;
-            }
+            return true;
+        }
 
-            public async Task<bool> ResetPasswordAsync(string token, string newPassword)
+
+        public async Task<bool> ResetPasswordAsync(string token, string newPassword)
             {
                 var principal = _tokenService.ValidateResetPasswordToken(token);
                 if (principal == null) return false;

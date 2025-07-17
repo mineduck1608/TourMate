@@ -26,8 +26,9 @@ namespace API.Controllers
         private readonly IRevenueService _revenueService;
         private readonly IMembershipPackagesService _membershipPackageService;
         private readonly IAccountMembershipService _accountMembershipService;
+        private readonly EmailBody _emailBody;
 
-        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService, IRevenueService revenueService, IMembershipPackagesService membershipPackageService, IAccountMembershipService accountMembershipService)
+        public PaymentController(IVnPayService vnPayService, IConfiguration config, IInvoiceService invoiceService, IPaymentsService paymentService, ICustomerService customerService, IEmailSender emailSender, IAccountService accountSerivce, ITourGuideService tourGuideService, IRevenueService revenueService, IMembershipPackagesService membershipPackageService, IAccountMembershipService accountMembershipService, EmailBody emailBody)
         {
             _vnPayService = vnPayService;
             _config = config;
@@ -40,6 +41,7 @@ namespace API.Controllers
             _revenueService = revenueService;
             _membershipPackageService = membershipPackageService;
             _accountMembershipService = accountMembershipService;
+            _emailBody = emailBody;
         }
 
         [HttpGet("{id}")]
@@ -209,8 +211,8 @@ namespace API.Controllers
                 await _revenueService.CreateRevenue(revenue);
 
 
-                string customerEmailBody = _paymentService.GenerateCustomerInvoiceEmail(invoice);
-                string tourGuideEmailBody = _paymentService.GenerateTourGuideInvoiceEmail(invoice);
+                string customerEmailBody = _emailBody.GenerateCustomerInvoiceEmail(invoice);
+                string tourGuideEmailBody = _emailBody.GenerateTourGuideInvoiceEmail(invoice);
                 var customerEmail = await _customerService.GetCustomer(invoice.CustomerId);
                 var tourGuideEmail = await _tourGuideService.GetTourGuide(invoice.TourGuideId);
                 try
@@ -244,7 +246,7 @@ namespace API.Controllers
 
                 var account = await _accountSerivce.GetAccount(payment.AccountId);
                 var tourGuide = await _tourGuideService.GetTourGuideByAccountIdAsync(payment.AccountId);
-                var email = _paymentService.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CreatedAt, payment.PaymentType);
+                var email = _emailBody.GenerateSuccessfulPaymentEmail(tourGuide.FullName, payment.Price, payment.CreatedAt, payment.PaymentType);
                 try
                 {
                     await _emailSender.SendEmailAsync(account.Email, "Thanh toán thành công - TourMate", email);
