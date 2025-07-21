@@ -164,7 +164,7 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
                                         )}
                                     <div className="flex items-center gap-1 text-yellow-500">
                                         <Star className="h-3 w-3 fill-current" />
-                                        <span className="font-medium">4.8</span>
+                                        <span className="font-medium">5.0</span>
                                     </div>
                                 </div>
                             </div>
