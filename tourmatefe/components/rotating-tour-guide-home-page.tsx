@@ -191,7 +191,7 @@ function TourGuideCard({ currentGuide, index }: { currentGuide: TourGuide; index
                         {/* Rating badge */}
                         <div className="absolute top-4 left-4 bg-white/90 backdrop-blur-sm rounded-full px-3 py-1.5 flex items-center gap-1.5 shadow-lg">
                             <Star className="h-3 w-3 text-yellow-500 fill-current" />
-                            <span className="text-xs font-semibold text-gray-900">4.8</span>
+                            <span className="text-xs font-semibold text-gray-900">5.0</span>
                         </div>
                     </div>
 
