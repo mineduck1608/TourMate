@@ -173,11 +173,11 @@ namespace API.Controllers
             var isCustomerCreated = await _customerService.CreateCustomer(customer);
             if (!isCustomerCreated)
                 return StatusCode(500, new { msg = "Đã xảy ra lỗi khi đăng ký khách hàng." });
-            string emailBody = GenerateCustomerWelcomeEmail(request.FullName, request.Email);
+            string emailBody = GenerateCustomerWelcomeEmail(fullName, email);
 
             try
             {
-                await _emailSender.SendEmailAsync(request.Email, "Chào mừng đến với TourMate", emailBody);
+                await _emailSender.SendEmailAsync(email, "Chào mừng đến với TourMate", emailBody);
             }
             catch (Exception ex)
             {
