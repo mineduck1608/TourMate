@@ -48,9 +48,9 @@ const AreaDetail = () => {
         title={data?.areaTitle || "No title available"}
         subtitle={data?.areaSubtitle || "No title available"}
       />
-      <div className="flex justify-between gap-5 py-15 px-15">
+      <div className="lg:flex justify-between gap-5 py-15 px-15">
         {/* LEFT CONTENT */}
-        <div className="w-[68%]">
+        <div className="lg:w-[68%]">
           <h1 className="mb-5 text-xl font-semibold">{data?.areaTitle}</h1>
           <div
             className="w-full quill-content text-justify"
@@ -68,7 +68,7 @@ const AreaDetail = () => {
         </div>
 
         {/* SIDEBAR */}
-        <div className="w-[30%] p-2">
+        <div className="lg:w-[30%] lg:p-2">
           <div className="sticky top-30 max-h-[calc(100vh-5rem)] overflow-auto space-y-10">
             <TourGuidesInArea />
           </div>
