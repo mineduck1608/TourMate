@@ -128,7 +128,7 @@ export function TourServiceDetail() {
 
         {/* RIGHT CONTENT */}
         <div className="w-full md:w-[30%] p-2 mt-10 md:mt-0">
-          <div className="sticky top-20 flex flex-col gap-15 max-h-[calc(100vh-5rem)] overflow-auto">
+          <div className="sticky top-30 flex flex-col gap-15 max-h-[calc(100vh-5rem)] overflow-auto">
             {/* Div 1 */}
             <div className="bg-[#F2F8FB] p-4 rounded-lg space-y-4">
               <h2 className="text-xl font-semibold text-center">THÔNG TIN</h2>

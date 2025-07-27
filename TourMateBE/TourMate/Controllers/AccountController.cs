@@ -11,6 +11,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 using TourMate.MailBody;
+using Repositories.RequestModels;
 
 namespace API.Controllers
 {
@@ -24,13 +25,14 @@ namespace API.Controllers
         private readonly ITourGuideDescService _tourGuideDescService;
         private readonly IEmailSender _emailSender;
         private readonly ICvapplicationService _cvApplicationService;
+        private readonly EmailBody _emailBody;
 
 
 
 
 
 
-        public AccountController(IAccountService accountService, ICustomerService customerService, ITourGuideService tourGuideService, ITourGuideDescService tourGuideDescService, IEmailSender emailSender, ICvapplicationService cvApplicationService)
+        public AccountController(IAccountService accountService, ICustomerService customerService, ITourGuideService tourGuideService, ITourGuideDescService tourGuideDescService, IEmailSender emailSender, ICvapplicationService cvApplicationService, EmailBody emailBody)
         {
             _accountService = accountService;
             _customerService = customerService;
@@ -38,6 +40,7 @@ namespace API.Controllers
             _tourGuideDescService = tourGuideDescService;
             _emailSender = emailSender;
             _cvApplicationService = cvApplicationService;
+            _emailBody = emailBody;
         }
 
         [HttpPost("refresh-token")]
@@ -312,7 +315,7 @@ namespace API.Controllers
             cvApplication.Status = "Đã xử lí";
             await _cvApplicationService.UpdateCvapplication(cvApplication);
 
-            string emailBody = TourGuideApprovedEmailBody.GenerateContent(fullName, email, password, cvApplication?.Response);
+            string emailBody = _emailBody.GenerateTourGuideApprovalEmail(fullName, email, password, cvApplication?.Response);
 
             try
             {
@@ -325,6 +328,7 @@ namespace API.Controllers
 
             return Ok(new { msg = "Register successfully." });
         }      
+        
 
         // Hàm tạo mật khẩu ngẫu nhiên mạnh
         private string GenerateRandomPassword(int length)
@@ -392,7 +396,7 @@ namespace API.Controllers
                     return StatusCode(500, new { msg = "Thiếu thông tin email hoặc họ tên ứng viên." });
 
                 // Tạo email từ chối
-                string emailBody = TourGuideRejectedEmailBody.GenerateContent(fullName, response);
+                string emailBody = _emailBody.GenerateTourGuideRejectionEmail(fullName, response);
 
                 try
                 {
@@ -414,6 +418,10 @@ namespace API.Controllers
                 });
             }
         }
+
+
+        
+
 
         [HttpPost("login")]
         public async Task<ActionResult<AuthResponse>> Login([FromBody] LoginRequest loginRequest)
@@ -492,7 +500,7 @@ namespace API.Controllers
         }
 
         [HttpPost("request-reset-password")]
-        public async Task<IActionResult> RequestResetPassword([FromBody] RequestResetPasswordDto dto)
+        public async Task<IActionResult> RequestResetPassword([FromBody] RequestResetPassword dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Email))
                 return BadRequest(new { msg = "Vui lòng nhập email!" });
@@ -504,7 +512,7 @@ namespace API.Controllers
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDto dto)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPassword dto)
         {
             if (string.IsNullOrWhiteSpace(dto.Token) || string.IsNullOrWhiteSpace(dto.NewPassword))
                 return BadRequest(new { msg = "Thiếu thông tin xử lý!" });
@@ -528,6 +536,3 @@ namespace API.Controllers
         }
     }
 }
-
-public record RequestResetPasswordDto(string Email);
-public record ResetPasswordDto(string Token, string NewPassword);

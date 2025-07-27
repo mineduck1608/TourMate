@@ -44,12 +44,5 @@ namespace Services.Services
             PaymentsRepository.Remove(id);
             return true;
         }
-        public string GenerateCustomerInvoiceEmail(Invoice invoice) => CustomerInvoiceEmailBody.GenerateContent(invoice);
-
-
-        public string GenerateTourGuideInvoiceEmail(Invoice invoice) => TourGuideInvoiceEmailBody.GenerateContent(invoice);
-
-
-        public string GenerateSuccessfulPaymentEmail(string fullName, float price, DateTime createdAt, string paymentType) => PaymentSuccessEmailBody.GenerateContent(fullName, price, createdAt, paymentType);
-    }
+     }
 }
