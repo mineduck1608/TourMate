@@ -19,7 +19,7 @@ public class PayOSController : ControllerBase
     }
 
     [HttpPost("create-embedded-payment-link")]
-    public async Task<IActionResult> Create([FromQuery] string type, [FromQuery] float amount)
+    public async Task<IActionResult> Create([FromBody] string type, [FromBody] float amount)
     {
         // 2. Lấy cấu hình từ appsettings.json hoặc secrets
         var clientId = _configuration["PayOS:ClientId"];
