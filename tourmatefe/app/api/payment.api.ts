@@ -7,20 +7,18 @@ export interface PaymentResponse {
   // thêm các thuộc tính khác nếu cần
 }
 
-// Gọi API tạo link thanh toán dùng embedded method (POST + query params)
+// Gọi API tạo link thanh toán dùng embedded method (POST với body)
 export const createEmbeddedPaymentLink = async (
   amount: number,
   type: string,
   signal?: AbortSignal
 ): Promise<string> => {
-  const queryParams = new URLSearchParams({
-    amount: amount.toString(),
-    type,
-  }).toString();
-
   const response = await http.post<PaymentResponse>(
-    `payos/create-embedded-payment-link?${queryParams}`,
-    null, // POST nhưng không có body
+    `payos/create-embedded-payment-link`,
+    {
+      amount,
+      type,
+    },
     {
       headers: {
         "Content-Type": "application/json",
