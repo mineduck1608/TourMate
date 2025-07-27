@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Net.payOS;
 using Net.payOS.Types;
-using Services.IServices;
+using Repositories.RequestModels;
 
 namespace TourMate.Controllers;
 
@@ -19,7 +19,7 @@ public class PayOSController : ControllerBase
     }
 
     [HttpPost("create-embedded-payment-link")]
-    public async Task<IActionResult> Create([FromBody] string type, [FromBody] float amount)
+    public async Task<IActionResult> Create([FromBody] CreatePaymentRequest request)
     {
         // 2. Lấy cấu hình từ appsettings.json hoặc secrets
         var clientId = _configuration["PayOS:ClientId"];
@@ -28,13 +28,13 @@ public class PayOSController : ControllerBase
 
         var payOS = new PayOS(clientId, apiKey, checksumKey);
 
-        var roundedAmount = (int)Math.Round(amount);
+        var roundedAmount = (int)Math.Round(request.Amount);
 
         var paymentLinkRequest = new PaymentData(
                 orderCode: int.Parse(DateTimeOffset.Now.ToString("ffffff")),
             amount: roundedAmount,
-            description: $"Thanh toán {type}",
-            items: [new(type, 1, roundedAmount)],
+            description: $"Thanh toán {request.Type}",
+            items: [new(request.Type, 1, roundedAmount)],
             returnUrl: _configuration["ReturnURL:Success"],
             cancelUrl: _configuration["ReturnURL:Failed"]
         );
