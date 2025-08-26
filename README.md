@@ -1,43 +1,43 @@
-# 🌟 TourMate - Nền Tảng Kết Nối Hướng Dẫn Viên Du Lịch
+# 🌟 TourMate - Tour Guide Connection Platform
 
 [![.NET](https://img.shields.io/badge/.NET-8.0-blue.svg)](https://dotnet.microsoft.com/)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black.svg)](https://nextjs.org/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0-blue.svg)](https://www.typescriptlang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-TourMate là một nền tảng web hiện đại kết nối du khách với các hướng dẫn viên du lịch địa phương, tạo ra những trải nghiệm du lịch độc đáo và cá nhân hóa.
+TourMate is a modern web platform that connects travelers with local tour guides, creating unique and personalized travel experiences.
 
-## 📸 Ảnh Demo
+## 📸 Demo Screenshots
 
-![TourMate Dashboard](public/demo-dashboard.png)
-*Dashboard quản trị với thống kê toàn diện*
+![TourMate Dashboard](public/admin-dashboard.png)
+*Admin dashboard with comprehensive statistics*
 
-![Tour Booking](public/demo-booking.png)
-*Giao diện đặt tour trực quan và dễ sử dụng*
+![Tour Booking](public/main-page.png)
+*Intuitive and user-friendly tour booking interface*
 
-## 🚀 Tính Năng Chính
+## 🚀 Key Features
 
-### 👥 Dành cho Du Khách
-- **Tìm kiếm hướng dẫn viên**: Lọc theo khu vực, đánh giá, kinh nghiệm
-- **Đặt tour cá nhân hóa**: Tạo lịch trình theo nhu cầu riêng
-- **Thanh toán an toàn**: Tích hợp VNPay và PayOS
-- **Chat real-time**: Liên lạc trực tiếp với hướng dẫn viên
-- **Đánh giá và nhận xét**: Chia sẻ trải nghiệm sau chuyến đi
+### 👥 For Travelers
+- **Find tour guides**: Filter by area, ratings, experience
+- **Book personalized tours**: Create custom itineraries based on personal needs
+- **Secure payments**: Integrated VNPay and PayOS payment gateways
+- **Real-time chat**: Direct communication with tour guides
+- **Reviews and ratings**: Share experiences after trips
 
-### 🎯 Dành cho Hướng Dẫn Viên
-- **Quản lý hồ sơ**: Giới thiệu bản thân và kỹ năng
-- **Tạo tour**: Thiết kế các gói tour đa dạng
-- **Quản lý lịch trình**: Theo dõi các tour đã đặt
-- **Nhận thanh toán**: Hệ thống chia sẻ doanh thu minh bạch
-- **Gói membership**: Nâng cấp tài khoản để có thêm tính năng
+### 🎯 For Tour Guides
+- **Profile management**: Showcase skills and experience
+- **Create tours**: Design diverse tour packages
+- **Schedule management**: Track booked tours
+- **Receive payments**: Transparent revenue sharing system
+- **Membership packages**: Upgrade accounts for additional features
 
-### 🔧 Dành cho Quản Trị Viên
-- **Dashboard thống kê**: Báo cáo tài chính và hoạt động
-- **Quản lý người dùng**: Phê duyệt hướng dẫn viên mới
-- **Quản lý khu vực**: Thiết lập các điểm đến du lịch
-- **Báo cáo chi tiết**: Xuất dữ liệu Excel cho phân tích
+### 🔧 For Administrators
+- **Statistics dashboard**: Financial and activity reports
+- **User management**: Approve new tour guides
+- **Area management**: Set up tourist destinations
+- **Detailed reports**: Export Excel data for analysis
 
-## 🏗️ Kiến Trúc Hệ Thống
+## 🏗️ System Architecture
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
@@ -73,7 +73,7 @@ TourMate là một nền tảng web hiện đại kết nối du khách với c�
 - **ORM**: Entity Framework Core (Code First)
 - **Migrations**: Automatic database schema management
 
-## 📦 Cấu Trúc Dự Án
+## 📦 Project Structure
 
 ```
 TourMate/
@@ -114,13 +114,13 @@ TourMate/
 └── 📄 docker-compose.yml            # Docker Configuration
 ```
 
-## 🛠️ Cài Đặt và Chạy Dự Án
+## 🛠️ Installation and Setup
 
-### Yêu Cầu Hệ Thống
+### System Requirements
 - **Node.js**: v18+ 
 - **.NET SDK**: 8.0+
-- **SQL Server**: 2019+ hoặc SQL Server Express
-- **Git**: Để clone repository
+- **SQL Server**: 2019+ or SQL Server Express
+- **Git**: To clone repository
 
 ### 1. Clone Repository
 ```bash
@@ -128,15 +128,15 @@ git clone https://github.com/mineduck1608/TourMate.git
 cd TourMate
 ```
 
-### 2. Cài Đặt Backend (.NET)
+### 2. Backend Setup (.NET)
 
 ```bash
 cd TourMateBE
 ```
 
-#### Cấu hình Database
-1. Mở `appsettings.json` trong thư mục `TourMate/`
-2. Cập nhật connection string:
+#### Database Configuration
+1. Open `appsettings.json` in `TourMate/` folder
+2. Update connection string:
 ```json
 {
   "ConnectionStrings": {
@@ -145,52 +145,52 @@ cd TourMateBE
 }
 ```
 
-#### Chạy Migrations
+#### Run Migrations
 ```bash
 dotnet ef database update --project Repositories --startup-project TourMate
 ```
 
-#### Chạy Backend
+#### Run Backend
 ```bash
 cd TourMate
 dotnet run
 ```
-Backend sẽ chạy tại: `https://localhost:5001` hoặc `http://localhost:5000`
+Backend will run at: `https://localhost:5001` or `http://localhost:5000`
 
-### 3. Cài Đặt Frontend (Next.js)
+### 3. Frontend Setup (Next.js)
 
 ```bash
 cd ../tourmatefe
 npm install
 ```
 
-#### Cấu hình Environment Variables
-Tạo file `.env.local`:
+#### Environment Variables Configuration
+Create `.env.local` file:
 ```env
 NEXT_PUBLIC_API_URL=http://localhost:5000
 NEXT_PUBLIC_FIREBASE_API_KEY=your_firebase_api_key
-# ... các biến môi trường khác
+# ... other environment variables
 ```
 
-#### Chạy Frontend
+#### Run Frontend
 ```bash
 npm run dev
 ```
-Frontend sẽ chạy tại: `http://localhost:3000`
+Frontend will run at: `http://localhost:3000`
 
-### 4. Chạy với Docker (Tùy chọn)
+### 4. Run with Docker (Optional)
 
 ```bash
-# Từ thư mục gốc
+# From root directory
 docker-compose up --build
 ```
 
-## 🔧 Công Nghệ Sử Dụng
+## 🔧 Technologies Used
 
 ### Frontend Technologies
-| Công nghệ | Phiên bản | Mục đích |
+| Technology | Version | Purpose |
 |-----------|-----------|----------|
-| Next.js | 14.x | React Framework với App Router |
+| Next.js | 14.x | React Framework with App Router |
 | TypeScript | 5.x | Type Safety |
 | Tailwind CSS | 3.x | Styling Framework |
 | Shadcn/ui | Latest | Component Library |
@@ -199,7 +199,7 @@ docker-compose up --build
 | SignalR | Latest | Real-time Communication |
 
 ### Backend Technologies  
-| Công nghệ | Phiên bản | Mục đích |
+| Technology | Version | Purpose |
 |-----------|-----------|----------|
 | .NET | 8.0 | Backend Framework |
 | Entity Framework Core | 8.x | ORM |
@@ -250,14 +250,14 @@ GET /api/admin-dashboard/users
 GET /api/admin-dashboard/areas
 ```
 
-## 🔐 Bảo Mật
+## 🔐 Security
 
-- **JWT Authentication**: Tokens với thời gian hết hạn
+- **JWT Authentication**: Tokens with expiration time
 - **Role-based Authorization**: Customer, TourGuide, Admin
 - **Firebase Security**: Google OAuth integration
-- **API Rate Limiting**: Chống spam và abuse
-- **Input Validation**: Kiểm tra dữ liệu đầu vào
-- **HTTPS**: Mã hóa dữ liệu truyền tải
+- **API Rate Limiting**: Anti-spam and abuse protection
+- **Input Validation**: Input data verification
+- **HTTPS**: Data transmission encryption
 
 ## 🧪 Testing
 
@@ -306,13 +306,13 @@ dotnet publish -c Release -o ./publish
 - AWS RDS SQL Server
 - On-premise SQL Server
 
-## 🤝 Đóng Góp
+## 🤝 Contributing
 
-1. Fork dự án
-2. Tạo feature branch (`git checkout -b feature/AmazingFeature`)
+1. Fork the project
+2. Create feature branch (`git checkout -b feature/AmazingFeature`)
 3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
 4. Push to branch (`git push origin feature/AmazingFeature`)
-5. Tạo Pull Request
+5. Create Pull Request
 
 ### Code Style Guidelines
 - **Frontend**: ESLint + Prettier configuration
@@ -321,16 +321,16 @@ dotnet publish -c Release -o ./publish
 
 ## 📄 License
 
-Dự án này được cấp phép theo [MIT License](LICENSE).
+This project is licensed under the [MIT License](LICENSE).
 
 ## 👥 Team
 
-- **Frontend Developer**: Phát triển giao diện người dùng
-- **Backend Developer**: Xây dựng API và business logic  
-- **DevOps Engineer**: Triển khai và quản lý infrastructure
-- **UI/UX Designer**: Thiết kế trải nghiệm người dùng
+- **Frontend Developer**: User interface development
+- **Backend Developer**: API and business logic development  
+- **DevOps Engineer**: Deployment and infrastructure management
+- **UI/UX Designer**: User experience design
 
-## 📞 Liên Hệ
+## 📞 Contact
 
 - **Email**: support@tourmate.com
 - **Website**: https://tourmate.com
@@ -355,4 +355,4 @@ Dự án này được cấp phép theo [MIT License](LICENSE).
 
 ---
 
-⭐ **Nếu dự án này hữu ích, hãy cho chúng tôi một star!** ⭐
+⭐ **If this project is helpful, please give us a star!** ⭐
